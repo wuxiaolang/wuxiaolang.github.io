@@ -3,7 +3,7 @@
   
   <url>
     <loc>https://wuxiaolang.github.io/post/even-preview/</loc>
-    <lastmod>2018-07-10T00:00:00+08:00</lastmod>
+    <lastmod>2018-07-11T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -16,50 +16,97 @@
   </url>
   
   <url>
+    <loc>https://wuxiaolang.github.io/slam/</loc>
+    <lastmod>2017-08-28T21:41:52+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuxiaolang.github.io/ar/</loc>
+    <lastmod>2017-08-28T21:41:52+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuxiaolang.github.io/za/</loc>
+    <lastmod>2017-08-28T21:41:52+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuxiaolang.github.io/test/</loc>
+    <lastmod>2017-08-28T21:41:52+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://wuxiaolang.github.io/categories/</loc>
-    <lastmod>2018-11-05T16:01:23+08:00</lastmod>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://wuxiaolang.github.io/</loc>
-    <lastmod>2018-11-05T16:01:23+08:00</lastmod>
-    <priority>0</priority>
+    <loc>https://wuxiaolang.github.io/post/orbslam1/</loc>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://wuxiaolang.github.io/post/</loc>
-    <lastmod>2018-11-05T16:01:23+08:00</lastmod>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuxiaolang.github.io/categories/slam/</loc>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuxiaolang.github.io/tags/slam/</loc>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wuxiaolang.github.io/tags/</loc>
-    <lastmod>2018-11-05T16:01:23+08:00</lastmod>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://wuxiaolang.github.io/</loc>
+    <lastmod>2019-05-03T16:01:23+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wuxiaolang.github.io/categories/theme-preview/</loc>
-    <lastmod>2018-07-10T00:00:00+08:00</lastmod>
+    <lastmod>2018-07-11T00:00:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wuxiaolang.github.io/tags/theme-preview/</loc>
-    <lastmod>2018-07-10T00:00:00+08:00</lastmod>
+    <lastmod>2018-07-11T00:00:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wuxiaolang.github.io/categories/category-2/</loc>
-    <lastmod>2018-07-10T00:00:00+08:00</lastmod>
+    <lastmod>2018-07-11T00:00:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://wuxiaolang.github.io/categories/category-3/</loc>
-    <lastmod>2018-07-10T00:00:00+08:00</lastmod>
+    <lastmod>2018-07-11T00:00:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -71,7 +118,7 @@
   
   <url>
     <loc>https://wuxiaolang.github.io/tags/tag-3/</loc>
-    <lastmod>2018-07-10T00:00:00+08:00</lastmod>
+    <lastmod>2018-07-11T00:00:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Even - A super concise theme for Hugo</title>
+    <title>知不足而后进--wuxiaolang</title>
     <link>https://wuxiaolang.github.io/</link>
-    <description>Recent content on Even - A super concise theme for Hugo</description>
+    <description>Recent content on 知不足而后进--wuxiaolang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wuyanmin</copyright>
-    <lastBuildDate>Tue, 10 Jul 2018 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 May 2019 16:01:23 +0800</lastBuildDate>
     
 	<atom:link href="https://wuxiaolang.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Theme preview</title>
+      <title>Learnable Line Segment Descriptor for Visual SLAM</title>
       <link>https://wuxiaolang.github.io/post/even-preview/</link>
-      <pubDate>Tue, 10 Jul 2018 00:00:00 +0800</pubDate>
+      <pubDate>Wed, 11 Jul 2018 00:00:00 +0800</pubDate>
       
       <guid>https://wuxiaolang.github.io/post/even-preview/</guid>
-      <description></description>
+      <description>Learnable Line Segment Descriptor for Visual SLAM 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &amp;emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫斯科） 作者</description>
     </item>
     
     <item>
@@ -28,6 +28,51 @@
       
       <guid>https://wuxiaolang.github.io/about/</guid>
       <description>\[ evidence\_{i}=\sum\_{j}W\_{ij}x\_{j}+b\_{i} \] $p(x|y) = \frac{p(y|x)p(x)}{p(y)}$, (p(x|y) = \frac{p(y|x)p(x)}{p(y)}). \[ E(\mathbf{v}, \mathbf{h}) = -\sum_{i,j}w_{ij}v_i h_j - \sum_i b_i v_i - \sum_j c_j h_j \] \[3 &amp;lt; 4\] \begin{align} 1 2 p(v_i=1|\mathbf{h}) &amp;amp; = \sigma\left(\sum_j w_{ij}h_j + b_i\right) \\ p(h_j=1|\mathbf{v}) &amp;amp; = \sigma\left(\sum_i w_{ij}v_i + c_j\right) \end{align} Learnable Line Segment Descriptor for Visual SLAM 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable</description>
+    </item>
+    
+    <item>
+      <title>SLAM</title>
+      <link>https://wuxiaolang.github.io/slam/</link>
+      <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://wuxiaolang.github.io/slam/</guid>
+      <description> SLAM </description>
+    </item>
+    
+    <item>
+      <title>AR</title>
+      <link>https://wuxiaolang.github.io/ar/</link>
+      <pubDate>Tue, 22 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://wuxiaolang.github.io/ar/</guid>
+      <description> AR </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://wuxiaolang.github.io/za/</link>
+      <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://wuxiaolang.github.io/za/</guid>
+      <description>杂·记</description>
+    </item>
+    
+    <item>
+      <title>测试页面</title>
+      <link>https://wuxiaolang.github.io/test/</link>
+      <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
+      
+      <guid>https://wuxiaolang.github.io/test/</guid>
+      <description>测试页面</description>
+    </item>
+    
+    <item>
+      <title>ORBSLAM2</title>
+      <link>https://wuxiaolang.github.io/post/orbslam1/</link>
+      <pubDate>Fri, 03 May 2019 16:01:23 +0800</pubDate>
+      
+      <guid>https://wuxiaolang.github.io/post/orbslam1/</guid>
+      <description>test</description>
     </item>
     
     <item>
@@ -45,8 +90,7 @@
       <pubDate>Thu, 31 Aug 2017 15:43:48 +0800</pubDate>
       
       <guid>https://wuxiaolang.github.io/post/english-preview/</guid>
-      <description>Introduction This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&amp;rsquo;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&amp;rsquo;t cover using CSS to style your theme.
-We&amp;rsquo;ll start with creating a new site with a very basic template.</description>
+      <description></description>
     </item>
     
     <item>
