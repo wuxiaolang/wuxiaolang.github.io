@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Theme preview - Even - A super concise theme for Hugo</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="olOwOlo" /><meta name="description" content="Learnable Line Segment Descriptor for Visual SLAM [toc] 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &amp;emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫斯科） 作" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.4 with even 4.0.0" />
+
+
+<link rel="canonical" href="https://wuxiaolang.github.io/post/even-preview/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.93844dae.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Theme preview" />
+<meta property="og:description" content="Learnable Line Segment Descriptor for Visual SLAM [toc] 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫斯科） 作" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuxiaolang.github.io/post/even-preview/" />
+<meta property="article:published_time" content="2018-07-10T00:00:00&#43;08:00"/>
+<meta property="article:modified_time" content="2018-07-10T00:00:00&#43;08:00"/>
+
+<meta itemprop="name" content="Theme preview">
+<meta itemprop="description" content="Learnable Line Segment Descriptor for Visual SLAM [toc] 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫斯科） 作">
+
+
+<meta itemprop="datePublished" content="2018-07-10T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2018-07-10T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="14330">
+
+
+
+<meta itemprop="keywords" content="preview,Theme preview,tag-3," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Theme preview"/>
+<meta name="twitter:description" content="Learnable Line Segment Descriptor for Visual SLAM [toc] 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫斯科） 作"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">五小郎的学习笔记</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">论文阅读</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">标签</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">AR</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">五小郎的学习笔记</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">论文阅读</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">标签</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">AR</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Theme preview</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-07-10 </span>
+        <div class="post-category">
+            <a href="/categories/theme-preview/"> Theme preview </a>
+            <a href="/categories/category-2/"> category-2 </a>
+            <a href="/categories/category-3/"> category-3 </a>
+            </div>
+          <span class="more-meta"> 约 14330 字 </span>
+          <span class="more-meta"> 预计阅读 29 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#learnable-line-segment-descriptor-for-visual-slam">Learnable Line Segment Descriptor for Visual SLAM</a>
+<ul>
+<li><a href="#c-四问">【C】 四问</a></li>
+<li><a href="#0-摘要">0. 摘要</a></li>
+<li><a href="#1-简介">1. 简介</a></li>
+<li><a href="#2-相关研究">2. 相关研究</a>
+<ul>
+<li><a href="#2-1-线段匹配">2.1 线段匹配</a></li>
+<li><a href="#2-2-可学习的点特征描述符">2.2 可学习的点特征描述符</a></li>
+<li><a href="#2-3-可学习的全局描述符">2.3 可学习的全局描述符</a></li>
+<li><a href="#2-4-点-线-slam">2.4 点-线 SLAM</a></li>
+</ul></li>
+<li><a href="#3-可学习的线段描述符">3. 可学习的线段描述符</a>
+<ul>
+<li><a href="#3-1-线段描述符的结构">3.1 线段描述符的结构</a></li>
+<li><a href="#3-2-描述符学习">3.2 描述符学习</a></li>
+<li><a href="#3-3-匹配滤波">3.3 匹配滤波</a>
+<ul>
+<li><a href="#3-3-1-种子构造">3.3.1 种子构造</a></li>
+<li><a href="#3-3-2-轨迹增长">3.3.2 轨迹增长</a></li>
+</ul></li>
+<li><a href="#3-4-带有线特征的-orb-slam2">3.4 带有线特征的 ORB-SLAM2</a>
+<ul>
+<li><a href="#3-4-1-线段检测与双目匹配">3.4.1 线段检测与双目匹配</a></li>
+<li><a href="#3-4-2-轨迹初始化">3.4.2 轨迹初始化</a></li>
+<li><a href="#3-4-3-将检测与现有的轨迹匹配">3.4.3 将检测与现有的轨迹匹配</a></li>
+<li><a href="#3-4-4-地图中线段剔除">3.4.4 地图中线段剔除</a></li>
+<li><a href="#3-4-5-局部-ba">3.4.5 局部 BA</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#4-实验">4. 实验</a>
+<ul>
+<li><a href="#4-1-数据集">4.1 数据集</a></li>
+<li><a href="#4-2-architecture-search">4.2 Architecture Search</a>
+<ul>
+<li><a href="#4-2-1-下采样层">4.2.1 下采样层</a></li>
+<li><a href="#4-2-2-可学习的-skip-connections">4.2.2 可学习的 skip connections</a></li>
+<li><a href="#4-2-3-损失函数">4.2.3 损失函数</a></li>
+<li><a href="#4-2-4-采样密度">4.2.4 采样密度</a></li>
+</ul></li>
+<li><a href="#4-3-线段检索">4.3 线段检索</a></li>
+<li><a href="#4-4-对相机运动描述不变性比较">4.4 对相机运动描述不变性比较</a></li>
+<li><a href="#4-5-slam-系统中评估">4.5 SLAM 系统中评估</a></li>
+</ul></li>
+<li><a href="#5-总结">5. 总结</a></li>
+<li><a href="#r-参考文献">【R】 参考文献</a></li>
+<li><a href="#q-问题">【Q】 问题</a></li>
+<li><a href="#t-思考">【T】 思考</a></li>
+<li><a href="#n">【N】</a></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<p><font size = 4><br />
+<font face = times></p>
+
+<h1 id="learnable-line-segment-descriptor-for-visual-slam">Learnable Line Segment Descriptor for Visual SLAM</h1>
+
+<p>[toc]</p>
+
+<blockquote>
+<p><strong>视觉 SLAM 的可学习线段描述符</strong></p>
+
+<p>Vakhitov A, Lempitsky V. <a href="https://ieeexplore.ieee.org/abstract/document/8651490/"><strong>Learnable Line Segment Descriptor for Visual SLAM</strong></a>[J]. IEEE Access, <strong>2019</strong>.</p>
+
+<p><strong>作者</strong>：<strong>Alexander Vakhitov</strong> <a href="https://scholar.google.com/citations?user=g_2iut0AAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>谷歌学术</strong></a> &emsp; <strong>Victor Lempitsky</strong> <a href="https://scholar.google.com/citations?user=gYYVokYAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>谷歌学术</strong></a><br />
+三星 AI 实验室（莫斯科） <a href="https://sites.google.com/site/alexandervakhitov/"><strong>作者主页</strong></a>    &emsp; <a href="https://ieeexplore.ieee.org/abstract/document/8651490/media#media">演示视频</a></p>
+
+<p><strong>期刊</strong>：IEEE Access &emsp;JCR分区：Q1 &emsp; IF：4.199</p>
+
+<p>作者另外几篇<strong>点线结合</strong>的论文：<br />
+ECCV 2016：<a href="https://link.springer.com/chapter/10.1007/978-3-319-46478-7_36">Accurate and linear time pose estimation from points and lines</a><br />
+ICRA 2017：<a href="https://ieeexplore.ieee.org/abstract/document/7989522">PL-SLAM: Real-time monocular visual SLAM with points and lines</a><br />
+ECCV 2018：<a href="http://openaccess.thecvf.com/content_ECCV_2018/html/Alexander_Vakhitov_Stereo_relative_pose_ECCV_2018_paper.html">Stereo relative pose from line and point feature triplets</a></p>
+</blockquote>
+
+<h2 id="c-四问">【C】 四问</h2>
+
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+
+<ul>
+<li><strong>传统线段匹配基于手工制作</strong>，并不是最优的；</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+
+<ul>
+<li>在既深而又轻量级的完全卷积神经网络使用自动收集的匹配和非匹配线段的数据集来训练参数，<strong>改进 L2_Net 提出 LLD - Net 构造学习的描述符</strong>；</li>
+<li>点-线 SLAM 中采用最小线参数，用两个端点的非最小参数方便构造 BA 优化项，但参数更多，本文利用<strong>最小参数构造了 BA 的优化项</strong>；</li>
+<li>构造三元组结构，在<strong>学习过程中采用难例挖掘</strong> hard-negative 的思想；</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+
+<ul>
+<li>卷积网络仅对每帧图像应用一次，而不管在 I 中检测到的线段的数量，从而<strong>描述符在一帧图像的多条线段中可以共享</strong>，实现高效运行；</li>
+<li>在描述符提取阶段实验显示用 1080Ti GPU 显卡<strong>计算一帧图像的描述符仅需要 17 毫秒</strong>；</li>
+<li>不仅在独立的线段匹配时效果更好，放在实时运行的 SLAM 系统中效果也更明显；</li>
+<li>在线段学习网络上基于 L2_Net 做了一些改进（3.1节），并通过实验<strong>验证了其与其他变体的优越性</strong>（表 5）；</li>
+<li>在 KITTI 数据上相对于 ORB-SLAM <strong>RMSE 和相对旋转误差减小了 10—20%</strong> ，在 EuROC 数据集上<strong>平均误差减小了 40% 以上</strong>；</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+
+<ul>
+<li>3.4.4 节<strong>线段剔除机制</strong>过于简单，缺乏说服力，可以通过实验先证明一下，或者有什么理论依据；</li>
+<li><strong>点线之间共享相同的卷积结构</strong>。
+<br /></li>
+</ul></li>
+</ul>
+
+<h2 id="0-摘要">0. 摘要</h2>
+
+<ul>
+<li><strong>问题：</strong>传统的间接视觉运动估计和 SLAM 系统基于点特征，近年来，提出了几种<strong>使用线元素</strong>的 SLAM 系统，尽管<strong>线段匹配带来了额外的稳健性和准确性</strong>，但这种系统中使用的<strong>线段描述符是手工设计</strong>的，因此并不是最优的；</li>
+<li><strong>方法：</strong>在本文中，建议<strong>应用描述符学习</strong>来构建针对匹配任务<strong>优化的线段描述符</strong>，本文展示了如何<strong>在既深而又轻量级的完全卷积神经网络之上构造这样的描述符</strong>，<strong>使用自动收集的匹配和非匹配线段的数据集来训练</strong>该网络的系数；</li>
+<li><strong>优势：</strong>
+
+<ul>
+<li>使用完全卷积网络可<strong>确保计算描述符所需的大部分计算在同一图像中的多个线段之间共享</strong>，从而实现高效运行；</li>
+<li>本文展示了学习的线段描述符不仅在单独情况下（即用于区分匹配和非匹配线段的子任务）优于先前提议的手工线段描述符，而且当内置到 SLAM 系统中时也表现更好；</li>
+</ul></li>
+<li><strong>贡献：</strong>
+
+<ul>
+<li>本文<strong>在最先进的仅含有点特征的系统上构建了基于线的 SLAM 线程</strong>；</li>
+<li>概括了用于自动驾驶和室内微型飞行器导航的两个<strong>数据集的描述符网络参数的学习</strong>。</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2 id="1-简介">1. 简介</h2>
+
+<ul>
+<li><font color = red><strong>引入线段的必要性：</strong></font>大多数机器人都在<strong>由人类创建或大量修改的环境中运行，例如建筑物内部或城市街道</strong>，因此在这样的环境中进行<strong>可靠的视觉导航以及定位建图</strong>等相关工作是一项至关重要的任务；
+
+<ul>
+<li>如今，大多数实际使用的视觉 SLAM 系统都<strong>基于点特征</strong>，虽然点特征经过充分研究并且在数学上和算法上相对容易处理，但是<strong>人类改造的环境中的特征点通常达不到足以跟踪的数量</strong>；</li>
+<li>同时，<strong>人工修改的环境通常包含视觉上与众不同的直线段</strong>，当机器人在环境中移动时，<strong>可以从多个视角检测和匹配这些直线线段</strong>；</li>
+<li>在这种人造情况下，<strong>点匹配与线匹配的结合能够大大提高运动估计和 SLAM 的准确性与鲁棒性</strong> <sup><strong>[1-4]</strong></sup>。</li>
+</ul></li>
+<li><font color = red><strong>手工线段描述符：</strong></font>为了<strong>跨帧进行线段匹配</strong>，需要使用<strong>线段描述符</strong>，即将<strong>线段的外观映射</strong>到<strong>适合于基于距离匹配的高维空间</strong>的功能；
+
+<ul>
+<li>良好的线段描述符<strong>对端点的改变应具有鲁棒性</strong>，即<strong>同一线段的重叠线段对的描述符应该是相似的</strong>；</li>
+<li>以前的工作使用<strong>手工制作的线段描述符</strong>，如文献 <strong>[5]</strong> 中的 Line Band descriptor (<strong>LBD</strong>) 或文献 <strong>[6]</strong> 中的尺度不变的均值标准偏差线段描述符（scale-invariant meanstandard deviation line segment descriptor，<strong>SMLSD</strong>）；</li>
+<li><strong>手工线描述符的灵感来自 SIFT</strong>，并且在纹理良好的场景中运行良好，但在用于重复和低纹理场景时可能毫无用处。</li>
+</ul></li>
+<li><font color = red><strong>学习方式描述符：</strong></font>现有的线描述符基于流行的尺度不变特征变换（SIFT）点描述符 <sup><strong>[7]</strong></sup>，虽然SIFT是一种非常成功的算法，但它的点匹配精度已经被<strong>基于机器学习的描述符</strong>所超越 <sup><strong>[8-13]</strong></sup>；
+
+<ul>
+<li>其背后的<font color = red><strong>思想是收集匹配和非匹配特征对的数据集，并使用这些配对以有区别的方式学习描述符函数的参数</strong></font>；</li>
+<li>虽然最初的基于学习的架构相对较浅 <sup><strong>[8-10]</strong></sup>，但最近的架构 <sup><strong>[11,12]</strong></sup> <strong>使用基于梯度的学习</strong>来训练使用 <strong>Siamese 架构</strong> <sup><strong>[13]</strong></sup> 和相关损失函数的更深层架构；</li>
+<li>通常，通过更好地利用视觉的大量统计数据，与 SIFT 和相关的手工特征相比，<strong>基于学习的描述符能够提高视觉匹配的准确性和稳健性</strong>。</li>
+</ul></li>
+<li><font color = red><strong>本文可学习的线段描述符：</strong></font>本文表明了<strong>基于学习方式获取的深度描述符可以以类似于点特征的方式提高线段特征的匹配精度</strong>；
+
+<ul>
+<li>为此，本文设计了一种架构<strong>为图像中的一组直线段计算判别描述符</strong>，该框架<strong>不局限于特定的线检测器</strong>，因为它可以适应所有检测器在学习过程中的特点。</li>
+</ul></li>
+
+<li><p><font color = red><strong>① 网络：</strong></font>在测试时，所提出的架构采用<strong>输入图像以及一组检测到的线段</strong>，通过<strong>完全卷积神经网络 <sup>[14]</sup> 传递图像</strong>，获得<strong>与输入图像分辨率相当的一组卷积图</strong>；</p>
+
+<ul>
+<li>然后使用沿线段的固定数量的卷积特征的平均池（average-pooling）来<strong>获得每个单独线段的描述符</strong>如图 1 所示；</li>
+<li>重要的是，<strong>输入图像仅通过卷积网络传递一次，因此大部分计算在多个线段之间共享，而不是每条线段运行一次卷积网络</strong>，这使得本文方法更高效。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/fig1.PNG?raw=true" title="fig1" width="600" /></center><br /></li>
+</ul></li>
+
+<li><p><font color = red><strong>② 数据：</strong></font><strong>卷积网络参数的训练是在匹配和非匹配线段对的数据集上自动挖掘</strong>的；</p>
+
+<ul>
+<li>在本文的实现中，这样的挖掘是在两个流行的数据集上执行的（Kitti <sup>[<strong>15</strong>]</sup> ，Euroc Mav <sup>[<strong>16</strong>]</sup>），使用了数据集提供的帧的 ground truth 姿态。</li>
+</ul></li>
+
+<li><p><font color = red><strong>③ 评估：</strong></font>然后对这些数据集的<strong>剩余部分进行评估</strong>（尽管它们之间存在显著差异，但两个数据集<strong>使用相同的参数</strong>）；</p>
+
+<ul>
+<li>作为<strong>基于 RANSAC 的运动估计模块和完整 SLAM 系统</strong> <sup>[<strong>17</strong>]</sup> 中的一个组成部分，本文<strong>评估了新的描述符</strong>及其变体，以及<strong>用于区分匹配和非匹配线段的基线</strong>。</li>
+</ul></li>
+
+<li><p><font color = red><strong>主要贡献：</strong></font></p>
+
+<ul>
+<li>引入了一种新的高效深度卷积结构，可以<strong>生成可学习的深度线段描述符</strong>；</li>
+<li>展示了如何从具有已知 ground truth 相机姿势的数据集中<strong>挖掘本系统所需要的学习数据</strong>；</li>
+<li>基于最先进的间接双目 SLAM 系统使用最小的 3D 线参数化构建<strong>点线 SLAM 线程</strong>；</li>
+<li><strong>评估了通过学习获得的线段描述符</strong>，并展示了其在包括完整 SLAM 在内的多个任务中相对于先前提出的线段描述符的优势。</li>
+</ul></li>
+
+<li><p>在本文的其余部分安排如下：</p>
+
+<ul>
+<li>在第二部分的相关工作讨论之后，将详细介绍本文的方法，包括<strong>网络架构，学习过程，挖掘过程</strong>以及第三部分中<strong>点 + 线 SLAM 系统的变体</strong>；</li>
+<li>然后，在第四部分中介绍了<strong>学习线段描述符的评估</strong>，最后，我们在第五节进行简短讨论。</li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2 id="2-相关研究">2. 相关研究</h2>
+
+<h3 id="2-1-线段匹配">2.1 线段匹配</h3>
+
+<ul>
+<li>虽然<strong>线段匹配</strong>比点特征匹配研究更少，但仍然可以分为<strong>三种不同类别的匹配方法</strong>；</li>
+<li>第一种是<font color = red><strong>依赖几何信息进行初始匹配</strong></font>的方法：
+
+<ul>
+<li>文献 <strong>[18]</strong> 提出一种<strong>用于局部跟踪直线段</strong>的早期方法；</li>
+<li>文献 <strong>[19]</strong> 假设图像之间存在<strong>已知的极线几何，并使用线段端点将线段对应起来</strong>，通过计算图像邻域之间的平均互相关来匹配线；</li>
+<li>文献 <strong>[20]</strong> 提出的<strong>线对应的几何验证</strong>假设图像三元组之间存在已知的三焦张量；</li>
+<li>一般来说，这些方法<strong>需要大量关于相机内部和外部校准的额外信息</strong>，这限制了它们的适用性。</li>
+</ul></li>
+<li>第二组方法<font color = red><strong>匹配线段组而不是单条线段</strong></font>：
+
+<ul>
+<li>文献 <strong>[21]</strong> 提议在<strong>平面上进行 “两条线 + 两个点”</strong> 的线段匹配；</li>
+<li>文献 <strong>[22]</strong> 将<strong>线段按空间接近程度分组</strong>，然后计算并匹配组的特征（signatures）；</li>
+<li>文献 <strong>[23]</strong> 对<strong>共面线段及其交叉点</strong>进行操作；</li>
+<li>文献 <strong>[24]</strong> 使用从不同邻近线段的结构信息进行<strong>迭代匹配</strong>；</li>
+<li>文献 <strong>[25,26]</strong> 使用线匹配的三元组提出了<strong>联合进行点线匹配</strong>；</li>
+<li>文献 <strong>[27]</strong> 使用图像中线段<strong>相对位置的形状描述符</strong>来匹配卫星图像。</li>
+</ul></li>
+
+<li><p>第三种与本文工作相关的两视图中的<font color = red><strong>线段匹配描述符</strong></font>：</p>
+
+<ul>
+<li>与点匹配类似，此类方法<strong>构造各个线段的描述符，并基于这些描述符之间的距离匹配线段</strong>；</li>
+<li>文献 <strong>[28]</strong> 使用忽略周围图像纹理的<strong>线段颜色直方图</strong>；</li>
+<li>文献 <strong>[29]</strong> 提出了一种<strong>均值-标准差线段描述符（MSLD）</strong>，将线段的邻域划分为重叠的单元网格，并使用<strong>梯度方向直方图</strong>（一种受SIFT类点描述符启发的方法）描述单个单元；</li>
+<li>在各种图像修改场景（模糊，JPEG，旋转或视点变化，噪声，光线）中，<strong>MSLD</strong> 与在高曲率点 <sup>[<strong>40</strong>]</sup> 中分离的 Canny 边缘一起进行评估，显示其<strong>优于基于极线几何的施密德的方法</strong> <sup>[<strong>19</strong>]</sup> ；</li>
+<li><strong>MSLD 的多尺度</strong>版本在文献 <strong>[6]</strong> 中有描述；</li>
+
+<li><p>文献 <strong>[5]</strong> 提出了一种 line-band descriptor（LBD），计算与所考虑的线段<strong>平行的频带上的梯度直方图</strong>。</p>
+
+<h3 id="2-2-可学习的点特征描述符">2.2 可学习的点特征描述符</h3></li>
+</ul></li>
+
+<li><p>虽然自最初的 SIFT <sup>[<strong>7</strong>]</sup> 以来已经提出了大量的手工描述符 <sup>[<strong>30</strong>]</sup> ，但在最近的几年里，重点一直放在<strong>可学习的描述符上</strong>。</p>
+
+<ul>
+<li>用于学习的数据集最初使用 Phototourism dataset <sup>[<strong>31</strong>]</sup> ，调整了当时流行的手工制作描述符 Daisy <sup>[<strong>32</strong>]</sup> ，另一种数据集集合涉及合成图像 <sup>[<strong>33</strong>]</sup> 。</li>
+</ul></li>
+
+<li><p>之后通过利用大型自动生成的图像块对的数据集，学习具有大量<font color = red><strong>可调参数的特征点描述符</strong></font>成为可能；</p>
+
+<ul>
+<li>文献 <strong>[34]</strong> 使用<strong>凸优化学习两层描述符</strong>；</li>
+<li>文献 <strong>[10,11,12]</strong>，<strong>[35]</strong> 使用<strong>非凸局部优化</strong>来调整深度网络参数；</li>
+<li>文献 <strong>[36]</strong> 学习并评估了用于图像匹配和图像块检索的压缩<strong>二进制 patch 描述符</strong>；</li>
+<li>但是尽管深度学习高级计算机视觉信息 <sup>[<strong>37</strong>]</sup> 以及一些密集匹配任务（如立体和光流匹配 <sup>[<strong>38</strong>]</sup> ）取得了巨大成功，但<font color = red><strong>至今深度学习应用于点特征描述符并没有从根本上改进现有技术</strong></font>；</li>
+
+<li><p>实际上，根据最近的一项比较 <sup>[<strong>39</strong>]</sup> ，在某些情况下，<font color = red><strong>手工设计的特性仍然与基于深度学习的描述符的竞争性相当</strong></font>。</p>
+
+<h3 id="2-3-可学习的全局描述符">2.3 可学习的全局描述符</h3></li>
+</ul></li>
+
+<li><p>本文发现<strong>线描述</strong>方法与通过<strong>在整个图像 <sup>[40]</sup> 或边界框 <sup>[41]</sup> 上</strong>汇集卷积特征来<strong>构建全局图像或区域描述符</strong>的方法密切相关。</p>
+
+<h3 id="2-4-点-线-slam">2.4 点-线 SLAM</h3></li>
+
+<li><p>在文献 <strong>[2]</strong> 中，作者使用<strong>最小的 3D 线参数化</strong> <sup>[42]</sup> 并提出了一个<strong>仅有线特征的双目 SLAM 方案</strong>，然而，<strong>由于依赖于每帧中大量线特征的可用性，该系统在公开的数据集上表现不佳</strong>；</p></li>
+
+<li><p><font color = red><strong>非最小线参数的优势与缺陷</strong></font>：最近，文献 <strong>[4]，[43] - [46]</strong> 研究分析了<strong>基于现行优化的点线融合方案</strong>在 SLAM 中的作用；</p>
+
+<ul>
+<li>在这些工作中，<font color = red>使用<strong>非最小线参数</strong>，因为它<strong>允许更容易地与基于点的位姿图优化集成</strong></font>；</li>
+<li>然而，非最小线参数化会产生问题，因为<strong>无限的参数值集可以编码相同的 3D 线，同时导致不同的重投影成本值</strong>；</li>
+</ul></li>
+
+<li><p>作为修正，文献 [45] 提出了一种 <strong>“线切割”算法</strong>，它基本上限制了有效线参数集并提高了准确性；</p></li>
+
+<li><p>在<strong>本文中展示了<font color = red>使用最小线参数化</font>的方法也可以在标准 SLAM 基准测试中成功使用</strong>。</p></li>
+</ul>
+
+<hr />
+
+<h2 id="3-可学习的线段描述符">3. 可学习的线段描述符</h2>
+
+<ul>
+<li>本节讲解方法的具体实现：
+
+<ul>
+<li>首先介绍<strong>描述符的结构</strong>，然后描述如何从匹配和非匹配线段对的<strong>数据集中学习</strong>它；</li>
+<li>由于本文工作的基于学习的性质，挖掘匹配和非匹配线段是该方法的重要部分；</li>
+<li>将学习的线段描述符集成到可视 SLAM 系统中的方法将在本节末尾介绍；</li>
+<li>在第四节中有关于描述符的评估。</li>
+</ul></li>
+
+<li><p>符号：使用粗体大写来表示图像和立体图像，3D 目标使用大写，2D 目标使用小写，$ \left | \cdot  \right |_{p} $  表示 $ l^{p} $  的范数。</p>
+
+<h3 id="3-1-线段描述符的结构">3.1 线段描述符的结构</h3></li>
+
+<li><p>在测试时，单目灰度图像 I 通过卷积神经网络 $ f_{\theta } $ ，其中 $ \theta $  是训练集上学习的参数；</p>
+
+<ul>
+<li>该网络具有如下所述的<strong>全卷积结构</strong>，并且网络处理 $ \mathcal {F}=f_{\theta }\left ( I \right ) $  的结果具有与输入图像 I 和 64 通道相同的空间维度；</li>
+<li>映射 $ f_{\theta } $  为<strong>每个图像像素</strong> $ (x,y) $  分配一个 $ q=64 $  维度的<strong>特征向量</strong> $ \mathcal {F}\left ( x,y \right ) $ 。</li>
+</ul></li>
+
+<li><p>给定卷积表示 $ \mathcal {F} $  ，然后使用简单的<font color = red><strong>池化操作来计算各个线段的描述符</strong></font>，详细描述：</p>
+
+<ul>
+<li>给定线段 $ l $  ，将其<strong>均分</strong>为 $ T $  个子段（ $ T $  是算法的参数）；</li>
+<li>然后选择每个<strong>子段的中心</strong>，并使用<strong>双线性插值</strong> <sup>[<strong>47</strong>]</sup> 为其<strong>获取特征向量</strong>；</li>
+<li>再通过对与采样点对应的 T 个特征向量（64 维）求平均来<strong>获取线段描述符</strong> $ d^{\theta }\left (l \right ) $ ；</li>
+<li>在实验中， T ≥ 5 提供了一个很好的选择。</li>
+</ul></li>
+
+<li><p>表 1 给出了网络 $ f_{\theta } $  的结构，<font color = red>该网络基于文献 <strong>[11]</strong> 计算点描述符的 <strong>L2_Net</strong> ，然后对其结构进行了<strong>如下修改</strong></font>：</p>
+
+<ul>
+<li>添加了一对<strong>卷积和跨步卷积层</strong>；</li>
+<li>还在<strong>归一化层</strong>之前插入了一个 8× <strong>上采样层</strong>，这确保了表示 $ \mathcal {F} $  和输入图像 I 具有<strong>相同的空间分辨率</strong>；</li>
+<li>将最后一个卷积的<strong>滤波器大小</strong>从 88 变为 77；</li>
+<li>与 L2<em>Net 类似，以标准化层结束，标准化层**将每个像素的描述符转换为单位 $ l</em>{2} $  范数**；</li>
+<li>将本文框架称为 <strong>LLD - Net</strong>（Learnable line segment descriptor network），并通过实验验证了其背后的选择。</li>
+</ul></li>
+
+<li><p>本文方法最吸引人的特性是<font color = red><strong>卷积网络 $ f_{\theta } $   仅对图像 I 应用一次，而不管在 I 中检测到的线段的数量</strong></font>；</p>
+
+<ul>
+<li>实验显示用 1080Ti GPU 显卡计算<strong>一帧图像的描述符仅需要 17 毫秒</strong>；</li>
+<li>通过诸如<strong>张量因子分解/可分离卷积</strong> <sup>[<strong>48</strong>]</sup> ，<strong>低位量化</strong> <sup>[<strong>49</strong>]</sup> ，<strong>群体稀疏化</strong> <sup>[<strong>50</strong>]</sup> 等技术，可以进一步显着加速。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/tab1+tab2.PNG?raw=true" title="tab1" width="900" /></center><br /></li>
+</ul></li>
+</ul>
+
+<h3 id="3-2-描述符学习">3.2 描述符学习</h3>
+
+<ul>
+<li>本文的主要目标是<strong>学习一个在 SLAM 或 VO 系统中运行良好的线段描述符</strong>，它主要考虑输入视频序列中的附近帧匹配；
+
+<ul>
+<li>因此，本文关注的是在<strong>小时间跨度进行匹配</strong>时表现最佳的描述符，例如，五帧以内；</li>
+<li>本文形成了一个由双目训练序列中的 <strong>11 个后续立体图像组成的迷你序列数据集</strong>，迷你序列中的<strong>中间帧</strong>对和任何其他帧对之间的时间间隔小于等于 5，故小序列包含 2 × 11 = 22 个单眼图像。</li>
+</ul></li>
+<li>然后在小批量的图像对 $ \left ( I,\mathcal{J} \right ) $  上训练卷积网络 $ f_{\theta } $  ；
+
+<ul>
+<li>每个小批量图像包括迷你序列的 <strong>中间双目像的左图像（在随后的推导中表示为 I）</strong> 和迷你序列中剩余的 21 个图像的子集；</li>
+<li>将整个子集表示为 $ \mathcal{J} $  ，<strong>子集中的独立图像表示为 J</strong>；</li>
+<li>采样 b（≤ 21） 张图像作为 $ \mathcal{J} $  ，从而将迷你序列转换成 b 对<strong>小批量的图像对</strong> $ \left ( I,J \in \mathcal{J} \right ) $ 。</li>
+</ul></li>
+<li>接下来，假设<strong>线段检测器</strong>已经识别出每个图像中的多个<strong>候选线段</strong>；
+
+<ul>
+<li>在学习过程期间，对于采样图像 I 中的每个 2D 线段 $ l $ ，使用网络的当前状态来计算<font color =red><strong>线段的描述符</strong> $ d^{\theta }\left ( l \right ) = AvgPool\left ( f_{\theta }\left ( I,l \right ) \right ) $ </font></li>
+</ul></li>
+
+<li><p>现在描述线段候选的<font color= red><strong>三元组采样</strong>过程</font>，其中三元组的<strong>前两个元素</strong>对应于计算同一 3D 线段的 3D 线段投影的描述符（<strong>如图 2 下</strong>所示）；</p>
+
+<ul>
+<li>令 L 为一条 3D 线，$ l_{a} $   是 2D 线段，是图像 I 中线段 L 的投影；</li>
+<li>在 $ J \in \mathcal{J} $  的图像上，**将线段 L 投影到 J 上得到 2D 线段 $ l_{+,j} $ ** ；</li>
+<li>对于 $ J \in \mathcal{J} $  的<strong>每张图像都有一个集合</strong> $ \mathbf{l}<em>{-j} = \left { l</em>{-,j,i} \right }_{i} $  <strong>包含不是 L 上任一线段投影的 2D 线段</strong>；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/fig2_bottom.PNG?raw=true" title="fig2_bottom" width="900" /></center><br /></li>
+</ul></li>
+
+<li><p>对每条 3D 线段 L 和图像 $ J \in \mathcal{J}  $  考虑以下<font color= red><strong>三元组</strong>结构</font>：</p>
+
+<ul>
+<li>在图像 I <strong>锚 anchor 的描述符</strong>：$ d<em>{a}^{\theta } = d^{\theta }\left ( l</em>{a} \right ) $ ；</li>
+<li>在图像 J 上<strong>匹配的描述符</strong>：$ d<em>{+}^{\theta } = d^{\theta }\left ( l</em>{+,j} \right ) $ ；</li>
+<li>在图像 J 上所有<strong>不匹配的描述符的集合</strong>：$ d<em>{-}^{\theta } = \left { d^{\theta}\left ( l</em>{-,j,i} \right ) \right }<em>{l</em>{-,j,i\in \mathbf{l_{-}}}} $ ；</li>
+<li>3.3 节详细介绍了查找匹配线段和识别不匹配线段集的过程。</li>
+</ul></li>
+
+<li><p>计算文献 <strong>[51]</strong> 提出的 <font color= red><strong>hard-negative 三元组损失函数</strong></font>，在本文中定义为：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/f1.PNG?raw=true" title="f1" width="700" /></center></p></li>
+
+<li><p>将具有可用 ground truth 的 KITTI 和 EuRoC 数据集分成<strong>训练和验证集</strong>以及实验部分中描述的<strong>测试集</strong>；</p>
+
+<ul>
+<li><strong>训练过程</strong>使用批量的 b 个图像对，计算所有选定帧中所有线段的描述符，然后<strong>对通过损失（公式1）计算并累加的三元组进行抽样</strong>；</li>
+
+<li><p>然后<strong>反向传播累计损失</strong>，以便更新参数。</p>
+
+<h3 id="3-3-匹配滤波">3.3 匹配滤波</h3></li>
+</ul></li>
+
+<li><p>上述学习过程是本文的主要贡献，但要成功，<strong>需要一个匹配和非匹配对的大型数据集</strong>；</p>
+
+<ul>
+<li>为了避免昂贵的注释过程，本文<font color =red><strong>利用 ground truth 相机位姿自动从训练序列中挖掘每个三元组中的匹配和非匹配对</strong></font>（参见图 2 上），这可以被视为<strong>弱监督</strong>的训练；</li>
+<li>如图 4 中所示，<font color =red>首先找到几何一致的<strong>四条线段组成的种子线</strong>，将种子线所在的视图为 第 6,7 对双目视图，并<strong>挖掘在四个视图中具有匹配的所有线段</strong>；然后在<strong>相机的每一帧位姿时</strong>，对 <strong>3D 线进行三角测量并将其投影</strong>到 mini-sequence 的<strong>其他帧上</strong>，然后寻找足够<strong>接近投影</strong>（轨迹增长）的匹配线段</font>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/fig2_top.PNG?raw=true" title="fig2_top" width="900" /></center><br /></li>
+</ul></li>
+
+<li><p><strong>[如线段检测与剔除方法]</strong>：对每帧图像，使用文献 <strong>[52]</strong> 的 <strong>EDLine 线段检测</strong>算法在四个图像金字塔上检测图像中的线段，其中<strong>尺度步长</strong>为 $ \sqrt{2} $ ；</p>
+
+<ul>
+<li><strong>剔除长度小于 $ w $  像素</strong>（以原始图像分辨率测量）的二维线段检测；</li>
+<li>注意<strong>本文算法可以与任何线段检测器一起使用，并且可以在描述符学习过程中根据其特点进行调整</strong>。</li>
+</ul></li>
+
+<li><p><font color =red><strong>如何从给定的 mini-sequence 中挖掘 positive（匹配）对</strong></font>，包括种子构建（seed constructionand）和轨迹增长(track growth)两步:</p>
+
+<ul>
+<li><strong>种子构造</strong>使用中间（第六）和相邻（第七）帧的双目图像对；</li>
+<li><strong>轨迹增长</strong>使用 mini-sequence 的剩余帧；
+
+<ul>
+<li>该过程的结果是一组轨迹 $ \mathcal{T} = \left { t<em>{i} \right }</em>{i=1}^{n} $ ，每个轨迹都是一组三元组 $ t<em>{i} = \left { \left ( \mathbf{I}</em>{j},l<em>{j},\mathbf{l}</em>{j}^{-} \right ) \right }<em>{j =1}^{n</em>{i}} $ （其中第一项是 anchor descriptor，第二项在图像 J 下的 positive detection，第三项是一系列的 negative matches）。</li>
+</ul></li>
+</ul></li>
+
+<li><p><font color =red><strong>线段投影关系及参数</strong></font>对于一帧图像 I ，考虑 3D 线 L 和投影 2D 线段 $ l $  的两个端点 $ a,b $  ；</p>
+
+<ul>
+<li>设点 $ X,Y\subseteqq L $  是线段 L 上的 3D 点，通过 ground truth 的相机位姿将这两个 3D 点投影到图像 I 得到 2D 点  $ x,y $  ；</li>
+<li>通过选择 X,Y <strong>最小化在图像坐标系中 $ x,y $  到 $ a,b $  的距离</strong>，然后将选择出的 X,Y 构成的 3D 线段称为 <strong>$ l $  到 L 的反投影</strong>；</li>
+<li>将直线 $ l $  和图像坐标的水平正轴之间的顺时针<strong>角度</strong>定义为 $ \phi \left ( l \right ) $ ；</li>
+<li>定义 2D-3D <strong>最大线距离</strong>为 $ \rho \left ( l,L \right ) = \max \left { \left | x-a \right |,\left | y-b \right | \right } $<br />
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<strong>$ l^{2} $  距离</strong>为 $ \rho_{2} \left ( l,L \right ) = \left { \left | x-a \right |^{2},\left | y-b \right |^{2} \right } $ ；</li>
+</ul></li>
+
+<li><p>在<strong>数据集挖掘算法</strong>的不同阶段中检查以下条件：</p>
+
+<ul>
+<li><font color =red><strong>① 手性 Cheirality：</strong></font> 如果 $ l $  到 L 的 3D 重投影位于用于线段检测的相机前面，则手性成立；</li>
+<li><font color =red><strong>② 重投影 Reprojection：</strong></font> 如果在对应于 $ l $  的图像金字塔层级中重投影误差 $ \rho \left ( l,L \right ) &lt; \epsilon $  （预定的阈值 $ \epsilon =3 $ ），则满足重投影；</li>
+<li><font color =red><strong>③ 角度一致性 Angle consistency：</strong></font> 如果满足 $ \left | \phi \left ( l \right ) - \phi ^{&lsquo;} \right | &lt;  \delta  $  （预定阈值 $ \delta  = 10^{\circ} $  和 $ \phi^{&lsquo;} $ ）；</li>
+<li><font color =red><strong>④ 三维重叠 3D overlap：</strong></font> $ \frac{\left | \left ( X,Y \right )\cup \left ( X^{&lsquo;},Y^{&rsquo;} \right ) \right |}{\left | X,Y \right |} &gt; \xi $ ，预定义 3D 线 $ \left ( X^{&lsquo;},Y^{&rsquo;} \right ),X^{&lsquo;},Y^{&rsquo;}\in L $  和阈值 $ \xi = 0.25 $ 。</li>
+</ul></li>
+
+<li><p>仅缺少上面列出的条件之一表明 L 和 $ l $  之间的匹配不确定并且可能是偶然的，因此不影响学习过程。</p>
+
+<h4 id="3-3-1-种子构造">3.3.1 种子构造</h4></li>
+
+<li><p>从中间（第六对）图像对构建数据集，<font color =red><strong>为了检查 2D 线的集合是否与 3D 线相对应，需要至少三个图像</strong></font>，因此在此阶段使用另一个相邻的双目图像（第七对）。因此，我们<strong>采取两个连续的双目图像</strong>，即 mini-batch 内的第六对和第七对；</p>
+
+<ul>
+<li>相应的左右帧分别定义为：$ \mathbf{I}<em>{l},\mathbf{I}</em>{r}; \mathbf{J}<em>{l},\mathbf{J}</em>{r} $ ；</li>
+<li>给定 $ \mathbf{I}<em>{l},\mathbf{I}</em>{r} $  和 $ \mathbf{J}<em>{l},\mathbf{J}</em>{r} $  中线段检测集合，，考虑所有可能的成对匹配；</li>
+<li>对于每对可能的匹配 $ \left ( l<em>{l} ,l</em>{r}\right ) $ ，对 3D 线段 L 进行三角测量，然后检查 $ l<em>{l},L $  和 $ l</em>{r},L $  的<strong>手性</strong>，并用 $ \phi ^{&lsquo;} = \phi \left ( l<em>{l} \right ) $  检查 $ l</em>{r} $  的<strong>角度一致性</strong>；</li>
+<li>如果一对匹配满足了上述两个条件，则从 $ \mathbf{J}<em>{l},\mathbf{J}</em>{r} $  中寻找相应的线段；</li>
+<li>通过最小化 $ \rho \left (l<em>{l}^{*},L\right )\rho \left (l</em>{r}^{<em>},L\right ) $  满足重投影和三维重叠条件来选择 $ l_{l}^{</em>}\in \mathbf{J}<em>{l} $  和 $ l</em>{r}^{*}\in \mathbf{J}_{r} $<br /></li>
+</ul></li>
+
+<li><p>为每一组 $ \left ( l<em>{l} ,l</em>{r},l<em>{l}^{*},l</em>{r}^{*}\right ) $  添加一个<strong>新的轨迹</strong>，将 <strong>negative 集合</strong>定义为：$ \mathbf{I}<em>{j}^{-}=\left { l</em>{j} \in \mathbf{I}<em>{j}:\rho \left ( l</em>{j},L \right )&lt; \psi \right } $ ，其中 $ \psi =12 $  像素。</p></li>
+
+<li><p>种子构造过程大约一秒处理一对双目图像，每帧检测几百条线段。</p>
+
+<h4 id="3-3-2-轨迹增长">3.3.2 轨迹增长</h4></li>
+
+<li><p>在这个阶段的开始，每个轨迹恰好有 4 个元素，因为在种子构造阶段，只有在两个双目图像对的每个视图中都存在相同 3D 线投影时才创建轨迹；</p>
+
+<ul>
+<li>按照以下方式以与中间（第六）帧对<strong>增加绝对时间差</strong>的顺序处理未在种子构造阶段中使用的 mini batch 的帧 J；</li>
+<li>对于每条 3D 线段 $ L_{i} $ ，使用重投影条件来找到可能的匹配候选线段；</li>
+<li>在不属于其他任何轨迹的线段中，挑选出具有<strong>最低重投影误差</strong> $ \rho \left ( l<em>{j},L</em>{i} \right ) $  的 $ l<em>{j} $  ，其对应的三元组 $ \left ( \mathbf{J},l</em>{j},\mathbf{l}_{j}^{-} \right ) $  也被加到新的轨迹中；</li>
+<li>通过**最小化整个轨迹中的 $ \rho <em>{2}^{2}\left ( l</em>{j} ,L\right ) $  之和来细化反投影得到的 3D 线 $ L_{i} $ **。</li>
+</ul></li>
+
+<li><p><font color =red>轨迹增长过程的结果提供了积极的匹配，然后可以用于<strong>构建三元组并训练 LLD 网络</strong>。</font></p>
+
+<h3 id="3-4-带有线特征的-orb-slam2">3.4 带有线特征的 ORB-SLAM2</h3></li>
+
+<li><p>本文将线段特征添加到 ORB-SLAM2 中，使其基本上成为点 + 线融合系统；</p>
+
+<ul>
+<li>使用线段描述符匹配线段特征；</li>
+<li>然后描述添加之后的 ORB-SLAM2 系统，注意这一部分<strong>独立于具体描述符</strong>（与使用 LBD 描述符的基本系统步骤相同）；</li>
+
+<li><p>对于不管是由 LLD 描述符还是实际的 LBD 描述符描述的线段 $ l<em>{i},l</em>{j} $ ，在匹配阶段都使用<strong>标准的欧几里得距离</strong> $ \mu \left ( d^{\theta }\left ( l<em>{i} \right ),d^{\theta }\left ( l</em>{j} \right ) \right )=\left | d^{\theta }\left ( l<em>{i} \right ),d^{\theta }\left ( l</em>{j} \right ) \right |_{2} $</p>
+
+<h4 id="3-4-1-线段检测与双目匹配">3.4.1 线段检测与双目匹配</h4></li>
+</ul></li>
+
+<li><p><strong>线特征的结合起始于</strong>包含左图像 $ \mathbf{I}<em>{l} $  和右图像 $ \mathbf{I}</em>{r} $  的立体对中的<strong>线检测</strong>，在学习过程中，过滤掉短于 $ w $  像素的线段（在图像金字塔的第 0 级）；</p>
+
+<ul>
+<li>在 2D 线空间中形成非重叠的 50 * 50 的网格，其中<strong>每条线段由一对 $ \left ( \gamma ,\nu  \right ) $  表示</strong>， $ \gamma $  是线与图像水平轴之间的角度， $ \nu $  是线段到图像中心点的距离；</li>
+<li>在网格中的<strong>每个单元格只保留最长的前</strong> $ N_{g} $  <strong>条线段</strong>；</li>
+<li><strong>迭代来自 $ \mathbf{I}_{l} $  的检测</strong>，并以贪婪的方式将他们<strong>与 $ \mathbf{I}_{r} $  的检测相匹配</strong>；</li>
+<li>对于来自 $\mathbf{I}<em>{l}$ 的每条线段 $ I</em>{l} $ ，从满足手性原则的 $ \mathbf{I}<em>{r} $  中选择未匹配的线段 $ \left { l</em>{ri} \right } $ ，并在所选择的线段中选择具有<strong>最短描述符距离</strong> $ \mu \left ( d^{\theta }\left ( l<em>{l} \right ),d^{\theta }\left ( l</em>{ri} \right ) \right ) $  <strong>的线段</strong>；</li>
+
+<li><p>不存储在右视图中没有匹配的检测 $ I_{l} $  。</p>
+
+<h4 id="3-4-2-轨迹初始化">3.4.2 轨迹初始化</h4></li>
+</ul></li>
+
+<li><p>下面描述<strong>线段轨迹的初始化</strong>（在文献 [17] 中称为“<strong>添加到地图</strong>”）；</p>
+
+<ul>
+<li>通常，<strong>地图中包含参与 BA 的几何特征</strong>，从而影响机器人位置的最终估计。</li>
+</ul></li>
+
+<li><p>与点特征一样，<strong>在创建新的关键帧时向地图添加线段特征</strong>；</p>
+
+<ul>
+<li>如果检测到的线段特征<strong>不属于其他轨迹帧</strong>，则认为来自于左右帧中的每个匹配对 $ \left ( l<em>{l},l</em>{r} \right ) $  <strong>符合地图添加条件</strong>；</li>
+<li>然后通过 $ l<em>{l} $  和 $ l</em>{r} $  对 3D 线 $ L $  进行<strong>三角测量</strong>；</li>
+<li>如果存在来自前一帧的附加线段，使得满足<strong>重投影条件</strong>（ $ \epsilon =6  $ ）和<strong>三维重叠条件</strong>，则<strong>初始化轨迹</strong>；</li>
+
+<li><p>通过检查这些条件，基本上可以使用<strong>几何验证来剔除异常值</strong>。</p>
+
+<h4 id="3-4-3-将检测与现有的轨迹匹配">3.4.3 将检测与现有的轨迹匹配</h4></li>
+</ul></li>
+
+<li><p>给定一对<strong>新的双目图像</strong>，左视图中检测到的线段 $ l<em>{l} $  与右视图检测到的线段 $ l</em>{r} $  相匹配，尝试<strong>将其与地图中已有的 3D 线段匹配</strong>；</p>
+
+<ul>
+<li>将对应于该轨迹的地图中的每条 3D 线段 $ L $  投影到两帧上，并检查 $ \left ( L,l<em>{li} \right ) $  和  $ \left ( L,l</em>{ri} \right ) $   是否符合重投影条件；</li>
+
+<li><p>当地图中已有的几条 3D 线与检测到的匹配时，为形成轨迹的线段选择描述符集合中的中间值 $ d<em>{med} $ ，并选择具有最低描述符距离  $ \mu \left ( d</em>{med},d^{\theta }\left ( l_{i} \right )\right ) $  的检测。</p>
+
+<h4 id="3-4-4-地图中线段剔除">3.4.4 地图中线段剔除</h4></li>
+</ul></li>
+
+<li><p>ORB-SLAM2 系统维护用于局部 BA 优化过程的活跃的地图元素集，同样，<strong>每个线段元素在创建之后保持活跃，直到被移除</strong>；</p>
+
+<ul>
+<li>在每个时刻，如果它们<strong>在三个最近的关键帧中具有少于四个匹配的 2D 线段</strong>（每个关键帧可以具有最多两个匹配的线段，两帧中的每一帧都有一个），从活跃地图中移除线段轨迹（line segment tracks）；</li>
+
+<li><p>如果从第一次检测到重投影的<strong>整个 3D 线段的长度不在（0.2, 50）米范围</strong>，则 track 也从活跃地图中移除，从而从活跃地图中移除太短或太长的线段。</p>
+
+<h4 id="3-4-5-局部-ba">3.4.5 局部 BA</h4></li>
+</ul></li>
+
+<li><p>活跃地图中的元素 <strong>（点和线段）参与局部 BA 优化过程</strong>；</p>
+
+<ul>
+<li>在束调整中使用线段需要在 3D 中参数化线段，使用文献 <strong>[42]</strong> 启发的<strong>最小化 3D 线参数</strong>。</li>
+</ul></li>
+
+<li><p>当一条<strong>线由一个 3D 点 $ X $  和一个三维矢量 $ Y $  参数化</strong>时，则线包含点：$ \left { X+tY|t\in \mathbb{R} \right } $ ；</p>
+
+<ul>
+<li>为了在这种情况下<strong>固定尺度自由度</strong>，施加条件：$ X^{T}Y=0, \left | Y \right |=1 $ ；</li>
+<li>但是在 BA 期间难以施加这样的条件。</li>
+</ul></li>
+
+<li><p>为了更新线参数，通过旋转矩阵 $ \texttt{R}\left ( L \right )=\begin{bmatrix}
+Y, &amp; \frac{X}{\left | X \right |}, &amp; Y\frac{X}{\left | X \right |}
+\end{bmatrix} $  和一个常数 $ \alpha \left ( L \right )=\left | X \right | $  构造 L 的新的最小参数化，<strong>旋转矩阵和常量唯一地确定线</strong>；</p>
+
+<ul>
+<li>接下来<strong>用四元数进一步参数化矩阵</strong>  $ R\left ( L \right ) $ ；</li>
+<li>所提出的参数化与文献 [42] 中描述的最小化具有相同的好处，<strong>不需要额外地引入约束或自由度</strong>，同时，它导致将线条投影到下面描述的图像上具有<strong>非零解机制</strong>（nontrivial mechanism）；</li>
+<li>在 <strong>BA 优化期间使用新的旋转 + 常量线参数化</strong>。</li>
+</ul></li>
+
+<li><p>为了将直线投影到图像平面，从矩阵 $ \texttt{R} $  和常量 $ \alpha $  中解码得到 $ X $  和 $ Y $   ；</p>
+
+<ul>
+<li>然后利用<font color =red>函数 $ \pi _{L}\left ( L,\beta  \right ) $  使用相机参数计算 <strong>3D 线 $ L $   投影得到定义在 2D 齐次坐标系中的 2D 线</strong> $ l $  </font>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/f2.PNG?raw=true" title="f2" width="700" /></center><br /></li>
+</ul></li>
+
+<li><p>对于 BA 优化过程，使用以下公式<strong>计算参数更新的雅克比</strong>；</p>
+
+<ul>
+<li>首先对于<strong>四元数，利用李代数 $ SO3 $  提供的雅克比</strong>；</li>
+<li><strong>X 和 Y 关于旋转矩阵和标量的雅克比矩阵</strong>可以直接从参数化定义中获得；</li>
+<li>如果将 $ J<em>{\pi ,X}\left ( cot \right ) $  表示为<strong>透视投影相对于点参数的雅克比</strong>，那么 **$ l</em>{h} $  关于 X 和 Y 的雅克比**为公式（4）（5）；</li>
+<li><strong>投影函数相对于 $ l_{h} $  向量的雅克比</strong>为公式（5）；</li>
+<li>最后可以根据链式法则直接获得 <strong>$ \pi\left ( L,\beta  \right ) $  关于线参数的雅克比</strong>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/f3+f4.PNG?raw=true" title="f3+f4" width="700" /></center><br />
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/f5.PNG?raw=true" title="f5" width="650" /></center><br /></li>
+</ul></li>
+
+<li><p><font color =red><strong>[ 如何计算 3D 线的 X 和 Y ]</strong>：为获得参数值，<strong>从两个不同相机帧检测到的一对 2D 线段 $ l<em>{i},l</em>{j} $  来计算 Y ，然后计算 X</strong>；</p>
+
+<ul>
+<li>为计算 Y ，注意它是 <strong>3D 线的单位范数的方向向量</strong>，所以 $ Y=\frac{l<em>{i}\times l</em>{j}}{\left | l<em>{i} \times l</em>{j}\right |} $ ，其中 $ l<em>{i} $  和 $ l</em>{j} $  是归一化坐标系中的 2D 线方程；</li>
+<li>然后通过公式（6）的<strong>线性约束来计算 X</strong>；
+
+<ul>
+<li>其中 R 和 t 分别是该帧相机的旋转矩阵和平移向量。</font>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/f6.PNG?raw=true" title="f6" width="500" /></center><br /></li>
+</ul></li>
+</ul></li>
+
+<li><p>本文所提出的线参数化方法类似于文献 [42] 中提出的方法，但略有不同；</p>
+
+<ul>
+<li>文献 [42] 将 $ \left | X \right | $  编码为 2D 旋转矩阵的元素比例，<strong>本文将参数 $ \alpha $  明确地编码 $ \left | X \right | $  的长度</strong>；</li>
+<li>文献 [42] 使用线段 L 与原点 O 构成的平面的法线 N ，<strong>本文使用线段的方向向量 Y</strong>；</li>
+<li>注意，虽然通常点线 SLAM 中使用<strong>基于端点的参数化</strong>，例如文献 [4] ，<strong>不是最小参数表达，将导致更简单的投影方程</strong>。</li>
+</ul></li>
+
+<li><p>在本文的实验中，没有修改 ORB-SLAM2 点特征处理方案，<strong>保留点特征描述符，点的三角测量和点的投影函数</strong>，以及与点特征处理相关的线程的其他部分；</p>
+
+<ul>
+<li>BA 目标包含与 ORB-SLAM2 中相同的项，并<font color =red><strong>使用公式（7）定义的线特征重投影残差进行扩充</strong></font>；</li>
+<li><strong>通过公式优化 $ \beta  $ （仅优化运行状态）或 $ L $ （仅环境路标）</strong> 或者同时优化 $ \beta  $  和 $ L $ ；</li>
+<li>利用<strong>信息矩阵</strong> $ \sum { }^{-1} = \frac{1}{s^{2}}I $  对运动估计状态和公式（7）的局部 BA 过程的目标进行扩充；</li>
+<li><strong>Huber 代价中的常数</strong> $  $  与原始 ORB-SLAM2 中用于匹配立体图像中二维点的<strong>常数</strong>相同。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/f7.PNG?raw=true" title="f7" width="900" /></center><br /></li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2 id="4-实验">4. 实验</h2>
+
+<h3 id="4-1-数据集">4.1 数据集</h3>
+
+<ul>
+<li>本文使用 KITTI 和 EuROC 两个数据集进行测试，这两个数据集代表 SLAM 的两种不同的流行应用（自动驾驶和微型飞行器），它们在<strong>运动统计</strong>方面有很大不同（<strong>前者运动更平滑，后者运动更加剧烈</strong>），应用场景方面也不同（前者室外，后者室内）；
+
+<ul>
+<li>在从 KITTI 的 0 - 6 序列和 EuRoC MAV 的 MH01，MH02，MH04，V101，V103，V201，V202，V203 序列的数据集上<strong>训练</strong>，<strong>产生适合两种情况的描述符</strong>；</li>
+<li><strong>剩余的序列</strong>（KITTI 的 8 - 10 序列和 EuRoC MAV 的 MH01，MH05，V102 序列）<strong>用于评估</strong>。</li>
+</ul></li>
+<li>文献 [52] 的检测器总是在四层的金字塔上使用，尺度步长为 1.44；
+
+<ul>
+<li>本文经历了<strong>几个训练阶段</strong>，在每个阶段之后，使用验证序列 KITTI 07 上的<strong>相对姿态算法 <sup>[</strong>53<strong>]</sup>  检查匹配线段的运动估计的准确性</strong>，当内部<strong>数值最大时停止训练</strong>；</li>
+<li>使用 <strong>ADAM <sup>[54]</sup> 算法学习网络</strong>，<strong>学习率</strong>为 $ 10^{-4} $ ，使用的采样 mini-batches 为 <strong>b = 6 张图像</strong>。</li>
+</ul></li>
+<li>在选择描述符的变体之后，在几个任务上对其进行评估，首先<strong>将它与区分匹配和非匹配线段的基本任务进行比较</strong>，然后再次对其进行评估，以获得更实际的<strong>帧内运动估计任务</strong>。</li>
+
+<li><p>最后将其嵌入到 ORB-SLAM2 系统中来评估 SLAM 任务上的新描述符；</p>
+
+<ul>
+<li>使用<strong>手工制作的 LBD 描述符</strong> <sup>[<strong>5</strong>]</sup> （ORB-SLAM2 + LBD）和不使用任何线路特征的<strong>原始 ORB-SLAM2 系统</strong>，来评估<strong>使用学习的描述符系统（ORB-SLAM2 + LLD）</strong>；</li>
+<li>所有实验，取超过5次运行的误差中值；</li>
+<li>实验平台为：i7-4960X 3.6 GHz CPU 和 <strong>GT1080 TI GPU</strong> 的计算机；</li>
+<li>对于新的点线 SLAM 系统，对 KITTI 数据集使用 $ w = 25 $  像素（<strong>短线剔除阈值</strong>），$ N<em>{g}=5 $ （<strong>每个网格保留的线段数量</strong>） ，对 EuROC 数据集使用 $ w = 75 $  像素，$ N</em>{g}=2 $  ；</li>
+
+<li><p>线测量误差项的<strong>权重因子</strong>两个数据集都设置 $ \lambda =0.5 $  ，<strong>与所用的描述符无关</strong>。</p>
+
+<h3 id="4-2-architecture-search">4.2 Architecture Search</h3></li>
+</ul></li>
+
+<li><p>在这一节中比较了框架的集中变体，以证明提出的方案是合理的；</p>
+
+<ul>
+<li><p>作为比较测量，使用<strong>在训练期间未使用</strong>的 KITTI 序列 08-10 和 EuRoC 序列比较 SLAM <strong>轨迹的平均均方根误差（RMSE）</strong>。</p>
+
+<h4 id="4-2-1-下采样层">4.2.1 下采样层</h4></li>
+</ul></li>
+
+<li><p>将使用 <strong>×8 与 ×4 下采样网络</strong>的方案进行比较（有关网络架构的描述，请参阅表 2 ）；</p>
+
+<ul>
+<li>利用由这些网络生成的描述符获得的<strong>轨迹重建误差</strong>在表 4 中给出；</li>
+<li>表 3 中给出了 KITTI 序列（约 1MPix 图像）的<strong>立体对的推断时间</strong>，可以看出所选择的网络具有 <strong>×8 个输入图像的下采样</strong>在<strong>轨迹精度</strong>方面更好并且更快 30％；</li>
+<li>在<strong>准确性</strong>方面的优势可以解释为：<strong>×8 在计算描述符时具有更大的接受域</strong>(在默认体系结构的情况下)。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/tab3+tab4+tab6.PNG?raw=true" title="tab3+tab4+tab6" width="900" /></center><br /></li>
+</ul></li>
+</ul>
+
+<h4 id="4-2-2-可学习的-skip-connections">4.2.2 可学习的 skip connections</h4>
+
+<ul>
+<li><p>本文默认架构最后有一个 8×8 的上采样层，有人可能想知道<strong>通过多个层进行更为传统的逐步向上采样</strong>是否会导致更好的匹配精度；</p>
+
+<ul>
+<li>为此，本文用一系列 2×2 上采样层和 3×3 的卷积 + BatchNormalization + ReLu blocks 替换了 8×8 上采样层；</li>
+<li>这个层重复三次，产生与默认 LLD-Net 架构相同的输出大小；</li>
+<li>同时本文还将所谓的 skip-connections 添加到相同分辨率的下采样层，正如 U-Net 架构 <sup>[<strong>55</strong>]</sup> 所推广的那样；</li>
+
+<li><p>结果（表 4 中的“skip”列）显示<strong>精度下降</strong>，具有  skip-connections  的新变体也<strong>显着增加了运行时间</strong>。</p>
+
+<h4 id="4-2-3-损失函数">4.2.3 损失函数</h4></li>
+</ul></li>
+
+<li><p>将<strong>本文提出的训练方法</strong>与使用最近提出的<strong>局部描述符学习损失函数</strong> <sup>[<strong>12</strong>]</sup> 的方法进行比较，其中 m = 0.5；</p>
+
+<ul>
+<li>他们的损失函数会对绝对比例的 small negative 距离产生不利影响，而<strong>不是对正负距离的接近程度进行惩罚</strong>；</li>
+
+<li><p>结果（表 4 中的“loss_ldl”）表明<strong>用于训练默认系统的三重态损失的变体对我们的任务更有效</strong>。</p>
+
+<h4 id="4-2-4-采样密度">4.2.4 采样密度</h4></li>
+</ul></li>
+
+<li><p>为了突出在解算器计算中<strong>池化的作用</strong>，我们比较了<strong>在线段上采样 T = 5 个点</strong>的网络与<strong>仅使用线段的单个中间点</strong>的基本方案；</p>
+
+<ul>
+<li>如预期的那样，结果（表 4 中的 T = 1 列）显示了准确性的下降，证明了<font color =red><strong>特征描述符的基于线的池化的重要性</strong></font>；</li>
+
+<li><p>注意，与计算描述符的成本相比，<strong>池化的计算成本可以忽略不计</strong>。</p>
+
+<h3 id="4-3-线段检索">4.3 线段检索</h3></li>
+</ul></li>
+
+<li><p>在针对多种变体验证了默认的 LLD-Net 架构的优势之后，现在将其与基本系统进行比较。</p>
+
+<ul>
+<li>首先<strong>根据手工制作的 LBD（线带描述符）基本系统评估可学习描述符</strong>，以区分匹配和非匹配描述符；</li>
+<li>对于所有的线段，使用 OpenCV 实现和构建的 64 维 <strong>lld 描述符计算 72 维的 lbd 描述符</strong>；</li>
+<li>一旦识别出匹配和非匹配对，<strong>通过比较描述符与特定阈值 $ \tau $  之间的距离来测试描述符区分这些匹配的能力</strong>（我们期望在合适的条件下，匹配线段描述符之间的距离应该小于 $ \tau $  ，而不匹配线段描述符之间的距离应该大于 $ \tau $  )。</li>
+</ul></li>
+
+<li><p>本文比较了原始序列的描述符，以及在训练期间和在测试数据上计算描述符时将强人工噪声（高斯噪声，$ \sigma = 30 $ ）添加到图像的情况；</p>
+
+<ul>
+<li>后续实验测试<strong>可学习描述符适应某些传感器特性的能力</strong>；</li>
+<li>图 5 展示了<strong>不同匹配阈值 $ \tau $  获得的召回精度曲线</strong>；</li>
+
+<li><p>观察到<strong>本文的描述符在相当大的范围内优于基本方案</strong>，并且当添加噪声时也只有略微的下降（事实上，<strong>在高召回区域中，当添加噪声时，可学习描述符的性能根本不会降低</strong>）。</p>
+
+<h3 id="4-4-对相机运动描述不变性比较">4.4 对相机运动描述不变性比较</h3></li>
+</ul></li>
+
+<li><p>现在从更加人为的任务（线段的检索）转向更实际的帧间运动估计任务，比较了<strong>描述符对相机运动的不变性</strong>，也就是进行<strong>基于线特征的相对相机姿态估计</strong>；</p>
+
+<ul>
+<li>匹配来自左右的帧，右帧数为 n，左帧数为 n+s ，s = 1,3,5 情况下的所有 n；</li>
+<li>再次使用剩下的 KITTI 和 EuRoC 序列，并<strong>比较 LLD 和 LBD 描述符</strong>，对于相对姿态估计，本文在一个<strong>阈值为 10 个像素的 RANSAC 循环</strong>中使用了一种算法 <sup>[<strong>53</strong>]</sup> ；</li>
+<li>图 3 所示的不同 s 的平均 inliers 数，表明 <strong>LLD 对于较小和较大的相机运动具有更大的不变性</strong>，因此<strong>基于LLD的运动估计始终比基于LBD的运动估计产生更多的 inliers</strong>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/fig3+fig5.PNG?raw=true" title="fig3+fig5" width="800" /></center><br /></li>
+</ul></li>
+</ul>
+
+<h3 id="4-5-slam-系统中评估">4.5 SLAM 系统中评估</h3>
+
+<ul>
+<li>评估这种新的描述符如何影响 SLAM 系统的性能。</li>
+
+<li><p>将原始的 <strong>ORB-SLAM2</strong> 方案、与未学习的 LBD 线段描述符结合的方案（<strong>ORB-SLAM2+LBD</strong>）和本文所提出的系统（<strong>ORB-SLAM2+LLD</strong>）进行了比较；</p>
+
+<ul>
+<li><strong>KITTI</strong> 序列的比较结果显示在表 5 中，<strong>本文提出的 ORB-SLAM2 + LLD 系统除了在三个序列的相对旋转外其余都优于仅有点特征的 ORB-SLAM2</strong>；</li>
+<li>虽然相对平移误差几乎没有变化，但与仅有点特征相比，<strong>ORB-SLAM2 + LLD 的 RMSE 和相对旋转误差减少了10-20％</strong>；</li>
+<li><font color =red><strong>这是由于基于线的系统中的旋转估计精度的提高，轨迹的旋转部分被更精确地估计</strong></font>，这导致预测轨迹与地面实况的近乎对齐。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/tab5.PNG?raw=true" title=tab5" width="800" /></center><br /></li>
+</ul></li>
+
+<li><p>在 <strong>EuRoC</strong> 序列的优势更大，这更具挑战性，并且 ORB-SLAM 的性能不那么接近完美；</p>
+
+<ul>
+<li>EuRoC MAV 的结果显示在表 6 中，其中我们在数据集的三个测试序列上<strong>测试了 RMSE</strong>；</li>
+<li>与仅使用点的系统相比，<strong>使用可学习的线描述符系统时，平均误差减少了 40％ 以上</strong>，使用<strong>基于手工线描述符的系统时，平均误差减少了 20％ 以上</strong>；</li>
+<li>图 4 中的一个 EuRoC 序列上显示了获得的轨迹的差异；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190314/fig6.PNG?raw=true" title="fig6" width="800" /></center><br /></li>
+</ul></li>
+</ul>
+
+<hr />
+
+<h2 id="5-总结">5. 总结</h2>
+
+<ul>
+<li>本文研究了<strong>深度学习在线段描述符训练中的应用</strong>，在此过程中，已经证明在流行的 ORB-SLAM2 系统中添加手工线条描述符可以提高其准确性，一旦集成到 ORB-SLAM2 中，<strong>使用本文的深度学习方法获得的线段描述符优于手工制作的描述符</strong>。</li>
+<li>学习描述符优于手工制作的描述符的优势在于<strong>计算成本，目前每帧对 1080Ti GPU 上的计算价格约为 17 毫秒</strong>，在本文系统中，这种计算成本在很大程度上<strong>取决于帧中检测到的线段数量</strong>。</li>
+<li>本文目前的系统使用外部线段探测器，因此，它可以被视为<strong>面向基于视觉线段 SLAM 的完全可学习的特征方案的迈出了第一步</strong>；
+
+<ul>
+<li>描述符和检测器的端到端学习可以<strong>通过在当前系统中分别训练的模块之间的相互适应来提高最终的精度</strong>。</li>
+</ul></li>
+<li>另一个前瞻性的方向是<strong>研究如何在点和线描述符之间共享相同的卷积结构</strong>，从而提高效率；</li>
+<li>另一个可能留给未来工作的方法是研究各种<strong>加速计算的方法</strong>，进一步使用低位量化的权重和量化，<strong>纵向可分离和空间可分离的卷积，这可能可以减少层数</strong>（潜在的使用扩大卷积，以保持接受域大）。</li>
+</ul>
+
+<hr />
+
+<h2 id="r-参考文献">【R】 参考文献</h2>
+
+<ul class="task-list">
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[1]</strong> Sola J, Vidal-Calleja T, Civera J, et al. <a href="https://hal.archives-ouvertes.fr/hal-00451778/file/solaIJCV11.pdf"><strong>Impact of landmark parametrization on monocular EKF-SLAM with points and lines</strong></a>[J]. International journal of computer vision, <strong>2012</strong>, 97(3): 339-368.<br />
+<font color = gray> 点线路标参数化对单目 EKF-SLAM 的影响 </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[2]</strong> Zhang G, Lee J H, Lim J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/7327206"><strong>Building a 3-D line-based map using stereo SLAM</strong></a>[J]. IEEE Transactions on Robotics, <strong>2015</strong>, 31(6): 1364-1377.<br />
+<font color = gray> <strong>通过双目 SLAM 构建基于 3D 线的地图，开源：<a href="https://github.com/slslam/slslam">https://github.com/slslam/slslam</a> ，线段检测：<a href="https://github.com/slslam/linedetector">https://github.com/slslam/linedetector</a></strong> </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[3]</strong> Holzmann T, Fraundorfer F, Bischof H. <a href="https://elib.dlr.de/104774/1/holzmann_fraundorfer_VISAPP16.pdf"><strong>Direct Stereo Visual Odometry based on Lines</strong></a>[C]//VISIGRAPP (3: VISAPP). <strong>2016</strong>: 476-487.<br />
+<font color = gray> 基于线段的直接法双目里程计，IMU </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[4]</strong> Pumarola A, Vakhitov A, Agudo A, et al. <a href="https://ieeexplore.ieee.org/abstract/document/7989522"><strong>PL-SLAM: Real-time monocular visual SLAM with points and lines</strong></a>[C]//2017 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2017</strong>: 4503-4508.<br />
+<font color = gray> 作者前期工作，基于点线的单目 SLAM </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[5]</strong> Zhang L, Koch R. <a href="https://www.**sciencedirect.com/science/article/pii/S1047320313000874"><strong>An efficient and robust line segment matching approach based on LBD descriptor and pairwise geometric consistency</strong></a>[J]. Journal of Visual Communication and Image Representation, <strong>2013</strong>, 24(7): 794-805.<br />
+<font color = gray> LBD 线段描述符 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[6]</strong> Verhagen B, Timofte R, Van Gool L. <a href="https://ieeexplore.ieee.org/abstract/document/6836061"><strong>Scale-invariant line descriptors for wide baseline matching</strong></a>[C]//IEEE Winter Conference on Applications of Computer Vision. IEEE, <strong>2014</strong>: 493-500.<br />
+<font color = gray> 尺度不变的均值标准偏差线段描述符 </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[11]</strong> Tian Y, Fan B, Wu F. <a href="http://openaccess.thecvf.com/content_cvpr_2017/html/Tian_L2-Net_Deep_Learning_CVPR_2017_paper.html"><strong>L2-net: Deep learning of discriminative patch descriptor in euclidean space</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2017</strong>: 661-669.<br />
+<font color = gray> <strong>本文参考的网络 L2-Net</strong>，欧几里德空间中判别性图像块描述符的深度学习，基于梯度的学习，<a href="https://github.com/yuruntian/L2-Net">代码</a> </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[12]</strong> Mishchuk A, Mishkin D, Radenovic F, et al. <a href="http://papers.nips.cc/paper/7068-working-hard-to-know-your-neighbors-margins-local-descriptor-learning-loss"><strong>Working hard to know your neighbor&rsquo;s margins: Local descriptor learning loss</strong></a>[C]//Advances in Neural Information Processing Systems. <strong>2017</strong>: 4826-4837.<br />
+<font color = gray> 本地描述符学习损失 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[25]</strong> Li Y, Stevenson R L. <a href="https://ieeexplore.ieee.org/abstract/document/7453190"><strong>Multimodal image registration with line segments by selective search</strong></a>[J]. IEEE transactions on cybernetics, <strong>2017</strong>, 47(5): 1285-1298.<br />
+<font color = gray> 使用线匹配的三元组提出了联合进行点线匹配，通过选择性搜索对线段进行多模态图像配准 </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[26]</strong> Jia Q, Gao X, Fan X, et al. <strong>Novel coplanar line-points invariants for robust line matching across views</strong>[C]//European Conference on Computer Vision. Springer, Cham, <strong>ECCV 2016</strong>: 599-611.<br />
+<font color = gray> <strong>使用线匹配的三元组提出了联合进行点线匹配，新颖的共面线点不变量，用于跨视图的稳健线匹配，开源：<a href="https://github.com/dlut-dimt/LineMatching">https://github.com/dlut-dimt/LineMatching</a></strong> </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[39]</strong> Balntas V, Lenc K, Vedaldi A, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Balntas_HPatches_A_Benchmark_CVPR_2017_paper.pdf"><strong>HPatches: A benchmark and evaluation of handcrafted and learned local descriptors</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>CVPR 2017</strong>: 5173-5182.<br />
+<font color = gray> <strong>手工特征与深度学习特征比较，两者竞争相当</strong> </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[40]</strong> Babenko A, Lempitsky V. <a href="http://openaccess.thecvf.com/content_iccv_2015/papers/Babenko_Aggregating_Local_Deep_ICCV_2015_paper.pdf"><strong>Aggregating local deep features for image retrieval</strong></a>[C]//Proceedings of the IEEE international conference on computer vision. <strong>ICCV 2015</strong>: 1269-1277.<br />
+<font color = gray> 学习型线描述符参考：局部深度信息聚合进行图像检索 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[41]</strong> Gordo A, Almazán J, Revaud J, et al. <a href="https://link.springer.com/chapter/10.1007/978-3-319-46466-4_15"><strong>Deep image retrieval: Learning global representations for image search</strong></a>[C]//European conference on computer vision. Springer, Cham, <strong>ECCV 2016</strong>: 241-257.<br />
+<font color = gray> 学习型线描述符参考：学习图像搜索的全局表示 </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[42]</strong> Bartoli A, Sturm P. <a href="https://www.sciencedirect.com/science/article/pii/S1077314205000846"><strong>Structure-from-motion using lines: Representation, triangulation, and bundle adjustment</strong></a>[J]. Computer vision and image understanding, <strong>2005</strong>, 100(3): 416-441.<br />
+<font color = gray> <strong>使用线段的 SFM ：表示，三角测量，BA；最小化 3D 线参数</strong> </font></label></li>
+<li><label><input type="checkbox" checked disabled class="task-list-item"> <strong>[43]</strong> Gomez-Ojeda R, Zuñiga-Noël D, Moreno F A, et al. <a href="https://arxiv.org/pdf/1705.09479.pdf"><strong>PL-SLAM: a Stereo SLAM System through the Combination of Points and Line Segments</strong></a>[J]. arXiv preprint arXiv:1705.09479, <strong>2017</strong>.<br />
+<font color = gray> <strong>双目点线 SLAM ，使用非最小线参数，开源：<a href="https://github.com/rubengooj/pl-slam">https://github.com/rubengooj/pl-slam</a></strong> </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[44]</strong> Li H, Yao J, Bazin J C, et al. <a href="http://cvrs.whu.edu.cn/projects/Struct-PL-SLAM/source/file/Struct_PL_SLAM.pdf"><strong>A monocular SLAM system leveraging structural regularity in Manhattan world</strong></a>[C]//2018 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2018</strong>: 2518-2525.<br />
+<font color = gray> 曼哈顿结构化环境的单目<strong>点线</strong> SLAM，使用非最小线参数 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[45]</strong> Zhao Y, Vela P A. <a href="http://openaccess.thecvf.com/content_ECCV_2018/papers/Yipu_Zhao_Good_Line_Cutting_ECCV_2018_paper.pdf"><strong>Good Line Cutting: towards Accurate Pose Tracking of Line-assisted VO/VSLAM</strong></a>[C]//Proceedings of the European Conference on Computer Vision (<strong>ECCV</strong>). <strong>2018</strong>: 516-531.<br />
+<font color = gray> <strong>线段分割</strong>辅助视觉 SLAM 位姿跟踪 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[46]</strong> Zhang J, Zeng G, Zha H. <a href="https://www.sciencedirect.com/science/article/pii/S0167865518308663"><strong>Structure-aware SLAM with planes and lines in man-made environment</strong></a>[J]. Pattern Recognition Letters, <strong>2018</strong>.<br />
+<font color = gray> 在人造环境中具有<strong>平面和线段</strong>的结构感知 SLAM </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[47]</strong> Jaderberg M, Simonyan K, Zisserman A. <a href="http://papers.nips.cc/paper/5854-spatial-transformer-networks.pdf"><strong>Spatial transformer networks</strong></a>[C]//Advances in neural information processing systems. <strong>2015</strong>: 2017-2025.<br />
+<font color = gray> <strong>双线性插值</strong>获取特征向量 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[51]</strong> Schroff F, Kalenichenko D, Philbin J. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Schroff_FaceNet_A_Unified_2015_CVPR_paper.pdf"><strong>Facenet: A unified embedding for face recognition and clustering</strong></a>[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. <strong>2015</strong>: 815-823.<br />
+<font color = gray>  hard-negative，<strong>难例挖掘</strong> </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[52]</strong> Akinlar C, Topal C. <a href="https://www.sciencedirect.com/science/article/pii/S0167865511001772"><strong>EDLines: A real-time line segment detector with a false detection control</strong></a>[J]. Pattern Recognition Letters, <strong>2011</strong>, 32(13): 1633-1642.<br />
+<font color = gray>  本文采用的 EDLine <strong>线段检测</strong>算法 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[53]</strong> Vakhitov A, Lempitsky V, Zheng Y. <a href="http://openaccess.thecvf.com/content_ECCV_2018/papers/Alexander_Vakhitov_Stereo_relative_pose_ECCV_2018_paper.pdf"><strong>Stereo relative pose from line and point feature triplets</strong></a>[C]//Proceedings of the European Conference on Computer Vision (<strong>ECCV</strong>). <strong>2018</strong>: 648-663.<br />
+<font color = gray> 基于点线的三维立体位姿解算 </font></label></li>
+<li><label><input type="checkbox" disabled class="task-list-item"> <strong>[54]</strong> Kingma D P, Ba J. <a href="https://arxiv.org/pdf/1412.6980.pdf"><strong>Adam: A method for stochastic optimization</strong></a>[J]. arXiv preprint arXiv:1412.6980, 2014.<br />
+<font color = gray> 本文使用的网络学习的类型，ADAM：一种随机优化方法 </font></label></li>
+</ul>
+
+<hr />
+
+<h2 id="q-问题">【Q】 问题</h2>
+
+<ul>
+<li>2.1 节<strong>线段描述符 MSLD 和 LBD</strong>；</li>
+<li>2.4 节点-线 SLAM 中的<strong>最小线参数与非最小线参数</strong>；</li>
+<li>3.3.2 节中轨迹增长，构造三元组是提到 $ \mathbf{l}_{j}^{-} $  是之前构造的？</li>
+<li>3.4.4 节将检测与现有数据匹配是数据关联吗？选择描述符集合中的中间值 $ d_{med} $ 这部分不理解；</li>
+<li>3.4.5 节雅克比矩阵更新部分没看懂；</li>
+<li>3.4.5 节中关于线的参数化，用端点不是最小参数反而产生更简单的投影方程？本文是最小化参数，是四元数 + 一个常数吗？</li>
+<li>公式 7 中的信息矩阵，Huber 代价的常数，ORB-SLAM2 中用于匹配立体图像中二维点的常数；
+&mdash;</li>
+</ul>
+
+<h2 id="t-思考">【T】 思考</h2>
+
+<ul>
+<li><strong>1.</strong> 3.2 节中公式（1）难例挖掘的思想是否可以作为评分依据？误差函数？</li>
+<li><strong>2.</strong> 3.3 节中反投影的手性原则，在二次曲面那篇论文中也有这样的问题，可以考虑将其作为一个约束项；</li>
+<li><strong>3.</strong> 3.4.5 节关于线方向的描述，文献 [42] 和 Cube SLAM 采用的是法向量，本文采用的是线的方向 Y；</li>
+<li><strong>4.</strong> 4.2.4 节关于采样密度，比较了<strong>在线段上采样 T = 5 个点</strong>的网络与<strong>仅使用线段的单个中间点</strong>的基本方案，证明了特征描述符的基于线的池化的重要性；</li>
+</ul>
+
+<h2 id="n">【N】</h2>
+
+<ul>
+<li><a href="https://blog.csdn.net/lanchunhui/article/details/50422230">线性拟合——从最大似然估计到平方误差到huber loss</a>
+&mdash;
+&gt; 2019.03.14<br />
+wuyanminmax@gmail.com</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">olOwOlo</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">2018-07-10</span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content">MIT</span>
+  </p>
+</div><footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/preview/">preview</a>
+          <a href="/tags/theme-preview/">Theme preview</a>
+          <a href="/tags/tag-3/">tag-3</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/hidden-post/">
+            <span class="next-text nav-default">This is a hidden post.</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://localhost:1313" class="iconfont icon-stack-overflow" title="stack-overflow"></a>
+      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
+      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
+      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
+      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
+      <a href="http://localhost:1313" class="iconfont icon-github" title="github"></a>
+      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
+      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
+      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="http://localhost:1313" class="iconfont icon-pocket" title="pocket"></a>
+      <a href="http://localhost:1313" class="iconfont icon-tumblr" title="tumblr"></a>
+      <a href="http://localhost:1313" class="iconfont icon-instagram" title="instagram"></a>
+      <a href="http://localhost:1313" class="iconfont icon-gitlab" title="gitlab"></a>
+      <a href="http://localhost:1313" class="iconfont icon-bilibili" title="bilibili"></a>
+  <a href="https://wuxiaolang.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wuyanmin</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.ece58db6.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
