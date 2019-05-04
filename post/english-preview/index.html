@@ -24,7 +24,7 @@ We&amp;rsquo;ll start with creating a new site with a very basic template." /><m
 
 
 
-<meta name="generator" content="Hugo 0.55.4 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.55.5 with even 4.0.0" />
 
 
 <link rel="canonical" href="https://wuxiaolang.github.io/post/english-preview/" />
@@ -34,7 +34,7 @@ We&amp;rsquo;ll start with creating a new site with a very basic template." /><m
 <link rel="manifest" href="/manifest.json">
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
-
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <link href="/dist/even.a45084d3.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
@@ -158,7 +158,7 @@ We&rsquo;ll start with creating a new site with a very basic template."/>
             </div>
           <span class="more-meta"> 约 7829 字 </span>
           <span class="more-meta"> 预计阅读 37 分钟 </span>
-        
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
       </div>
     </header>
 
@@ -1754,7 +1754,7 @@ i&#39;m speechless
     &lt;h1&gt;&lt;a href=&#34;http://localhost:1313/post/first-post/&#34;&gt;first&lt;/a&gt;&lt;/h1&gt;
 &lt;script&gt;document.write(&#39;&lt;script src=&#34;http://&#39;
         + (location.host || &#39;localhost&#39;).split(&#39;:&#39;)[0]
-		+ &#39;:1313/livereload.js?mindelay=10&#34;&gt;&lt;/&#39;
+        + &#39;:1313/livereload.js?mindelay=10&#34;&gt;&lt;/&#39;
         + &#39;script&gt;&#39;)&lt;/script&gt;&lt;/body&gt;
 &lt;/html&gt;</pre></td></tr></table>
 </div>
@@ -1838,8 +1838,8 @@ i&#39;m speechless
 <td class="lntd">
 <pre class="chroma">$ vi config.toml
 [permalinks]
-	page = &#34;/:title/&#34;
-	about = &#34;/:filename/&#34;</pre></td></tr></table>
+    page = &#34;/:title/&#34;
+    about = &#34;/:filename/&#34;</pre></td></tr></table>
 </div>
 </div>
 <p>Generate the web site and verify that this didn&rsquo;t work. Hugo lets &ldquo;slug&rdquo; or &ldquo;URL&rdquo; override the permalinks setting in the configuration file. Go ahead and comment out the slug in content/about.md, then generate the web site to get it to be created in the right place.</p>
@@ -1874,7 +1874,7 @@ i&#39;m speechless
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-	&lt;title&gt;{{ .Title }}&lt;/title&gt;
+    &lt;title&gt;{{ .Title }}&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
 :wq
@@ -2135,7 +2135,11 @@ $ vi themes/zafta/layouts/_default/single.html
     <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
   </span>
 
-  
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
 
   <span class="copyright-year">
     &copy; 
