@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>SLAM on 知不足而后进--wuxiaolang</title>
-    <link>https://wuxiaolang.github.io/categories/slam/</link>
+    <link>https://wuyanmin.coding.me/categories/slam/</link>
     <description>Recent content in SLAM on 知不足而后进--wuxiaolang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wuyanmin</copyright>
     <lastBuildDate>Fri, 03 May 2019 16:01:23 +0800</lastBuildDate>
     
-	<atom:link href="https://wuxiaolang.github.io/categories/slam/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wuyanmin.coding.me/categories/slam/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ORBSLAM2</title>
-      <link>https://wuxiaolang.github.io/post/orbslam1/</link>
+      <link>https://wuyanmin.coding.me/post/orbslam1/</link>
       <pubDate>Fri, 03 May 2019 16:01:23 +0800</pubDate>
       
-      <guid>https://wuxiaolang.github.io/post/orbslam1/</guid>
+      <guid>https://wuyanmin.coding.me/post/orbslam1/</guid>
       <description>test</description>
     </item>
     

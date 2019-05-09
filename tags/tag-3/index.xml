@@ -2,23 +2,23 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tag-3 on 知不足而后进--wuxiaolang</title>
-    <link>https://wuxiaolang.github.io/tags/tag-3/</link>
+    <link>https://wuyanmin.coding.me/tags/tag-3/</link>
     <description>Recent content in tag-3 on 知不足而后进--wuxiaolang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wuyanmin</copyright>
     <lastBuildDate>Wed, 11 Jul 2018 00:00:00 +0800</lastBuildDate>
     
-	<atom:link href="https://wuxiaolang.github.io/tags/tag-3/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wuyanmin.coding.me/tags/tag-3/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Learnable Line Segment Descriptor for Visual SLAM</title>
-      <link>https://wuxiaolang.github.io/post/even-preview/</link>
+      <link>https://wuyanmin.coding.me/post/even-preview/</link>
       <pubDate>Wed, 11 Jul 2018 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.github.io/post/even-preview/</guid>
-      <description>Learnable Line Segment Descriptor for Visual SLAM 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &amp;emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫斯科） 作者</description>
+      <guid>https://wuyanmin.coding.me/post/even-preview/</guid>
+      <description>Learnable Line Segment Descriptor for Visual SLAM 2019.05.04 论文泛读 视觉 SLAM 的可学习线段描述符 Vakhitov A, Lempitsky V. Learnable Line Segment Descriptor for Visual SLAM[J]. IEEE Access, 2019. 作者：Alexander Vakhitov 谷歌学术 &amp;emsp; Victor Lempitsky 谷歌学术 三星 AI 实验室（莫</description>
     </item>
     
   </channel>

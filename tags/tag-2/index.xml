@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tag-2 on 知不足而后进--wuxiaolang</title>
-    <link>https://wuxiaolang.github.io/tags/tag-2/</link>
+    <link>https://wuyanmin.coding.me/tags/tag-2/</link>
     <description>Recent content in tag-2 on 知不足而后进--wuxiaolang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wuyanmin</copyright>
     <lastBuildDate>Thu, 31 Aug 2017 15:43:48 +0800</lastBuildDate>
     
-	<atom:link href="https://wuxiaolang.github.io/tags/tag-2/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wuyanmin.coding.me/tags/tag-2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>[English] Creating a New Theme</title>
-      <link>https://wuxiaolang.github.io/post/english-preview/</link>
+      <link>https://wuyanmin.coding.me/post/english-preview/</link>
       <pubDate>Thu, 31 Aug 2017 15:43:48 +0800</pubDate>
       
-      <guid>https://wuxiaolang.github.io/post/english-preview/</guid>
+      <guid>https://wuyanmin.coding.me/post/english-preview/</guid>
       <description>Introduction This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&amp;rsquo;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&amp;rsquo;t cover using CSS to style your theme.
 We&amp;rsquo;ll start with creating a new site with a very basic template.</description>
     </item>
