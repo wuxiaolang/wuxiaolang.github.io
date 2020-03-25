@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM
+Yang S, Song Y, Kaess M, et al. Pop-up slam: Semantic monocular plane slam for low-texture environments[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 1222-1229.
+作者：YangShichao：个人主页 Google Scholar Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=TOSOWdxmtkw
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-01-11-pup-up-slam/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM" />
+<meta property="og:description" content="
+Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM
+Yang S, Song Y, Kaess M, et al. Pop-up slam: Semantic monocular plane slam for low-texture environments[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 1222-1229.
+作者：YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=TOSOWdxmtkw
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-01-11-pup-up-slam/" />
+<meta property="article:published_time" content="2019-01-11T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-01-11T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM">
+<meta itemprop="description" content="
+Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM
+Yang S, Song Y, Kaess M, et al. Pop-up slam: Semantic monocular plane slam for low-texture environments[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 1222-1229.
+作者：YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=TOSOWdxmtkw
+">
+<meta itemprop="datePublished" content="2019-01-11T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-01-11T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8769">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM"/>
+<meta name="twitter:description" content="
+Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM
+Yang S, Song Y, Kaess M, et al. Pop-up slam: Semantic monocular plane slam for low-texture environments[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 1222-1229.
+作者：YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=TOSOWdxmtkw
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-01-11 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/cube-slam/"> cube slam </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 8769 字 </span>
+          <span class="more-meta"> 预计阅读 18 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</strong><br />
+Yang S, Song Y, Kaess M, et al. <a href="https://arxiv.org/pdf/1703.07334"><strong>Pop-up slam: Semantic monocular plane slam for low-texture environments</strong></a>[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2016</strong>: 1222-1229.<br />
+作者：<strong>YangShichao</strong>：<a href="http://www.frc.ri.cmu.edu/~syang/"><strong>个人主页</strong></a>   <a href="https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>Google Scholar</strong></a>   <a href="https://github.com/shichaoy"><strong>Github</strong></a><br />
+卡内基梅隆大学机器人研究所：<a href="https://www.ri.cmu.edu/"><strong>The Robotics Institute of CUM</strong></a><br />
+演示视频：<a href="https://www.youtube.com/watch?v=TOSOWdxmtkw">https://www.youtube.com/watch?v=TOSOWdxmtkw</a></p>
+</blockquote>
+<p>注：<a href="https://www.wuxiaolang.cn/slam/"><u><strong>🌐 Cube SLAM 系列论文，代码注释、总结汇总</strong></u></a></p>
+<h1 id="pop-up-slam-semantic-monocular-plane-slam-for-low-texture-environments">Pop-up SLAM: Semantic Monocular Plane SLAM for Low-texture Environments</h1>
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li><strong>问题</strong>：
+<ul>
+<li>在具有挑战性的<strong>低纹理环境中由于缺少显著的特征</strong>，现存的 SLAM 算法不够鲁棒；由此而产生的<strong>稀疏的或半稠密的地图对运动规划提供的信息也比较有限</strong>；</li>
+<li>虽然有些工作<strong>利用平面或场景布局来进行稠密地图正则化</strong>，但<strong>需要从其他来源进行适当的状态估计</strong>；</li>
+</ul></li>
+<li><font color = red><strong>方法</strong>：
+<ul>
+<li>本文提出一个<strong>实时的单目 SLAM，以验证场景理解可以改善状态估计和稠密建图</strong>，尤其是在低纹理情况下；</li>
+<li><strong>平面的测量数据</strong>从应用于每个单视图的<strong>立体 3D 平面模型（pop-up 3D plane）</strong> 中获得；并将平面与基于点的 SLAM 相结合，提高鲁棒性；</font></li>
+</ul></li>
+<li><strong>结果</strong>：
+<ul>
+<li>通过 <strong>TUM</strong> 公共数据库验证，本文算法能生成一个<strong>稠密的语义3D模型</strong>，其中<strong>像素点深度误差为6.2厘米</strong>，而在同样情况下现有的SLAM 算法则运行失败；</li>
+<li>在一个 60 米长<strong>带回环</strong>的数据库上测试，本文算法<strong>能够创建一个更好的三维模型，状态估计误差为0.67%</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="介绍">1. 介绍</h2>
+<ul>
+<li>SLAM 介绍；单目相机以小体积、低成本提供丰富的视觉信息，特别适用于重量受限的微型飞行器；故<strong>本文致力于用单目图像来估计环境中的位姿和地图</strong>；</li>
+<li>一方面现存的许多视觉 SLAM 方案使用<strong>点信息</strong>，比如 <strong>LSD-SLAM，ORB-SLAM</strong>，这些方法<strong>通过跨帧跟踪特征点或高梯度值的像素来找到对应的关系和三角测量的深度</strong>；在特征丰富的环境中表现良好，但在走廊等常见的低纹理环境下无法工作，此外地图点是稀疏或者半稠密的，不足以为运动规划提供太多信息。</li>
+<li>另一方面，<strong>人类能够从单张图像中理解场景布局、估计深度并从中检测障碍物</strong>；很多方法<strong>利用几何线索和场景假设来构建简单地三维模型</strong>；近年来随着卷积神经网络（CNN）的出现，视觉理解的性能得到了很大的提升。</li>
+<li>在<font color = red><strong>本文</strong></font>中，<strong>将场景理解和传统视觉 SLAM 相结合</strong>，以提高状态估计的精度和稠密建图的性能，尤其是在低纹理的环境中；
+<ul>
+<li>本文使用<strong>单个图像的立体平面模型（pop-up plane model）<sup>[4]</sup> 在 SLAM 中生成平面地标测量</strong>；</li>
+<li><strong>通过适当的平面关联和闭环，在 SLAM 框架中同时优化场景布局和多帧位姿</strong>；</li>
+<li>在图 1 所示的<strong>低纹理环境下，本文算法仍然可以生成稠密的 3D 模型和适当的状态估计</strong>，而其他 SLAM 算法则运行失败；</li>
+<li>但是<strong>平面 SLAM 容易受到约束，因此本文将其与基于点的 LSD-SLAM 结合</strong>，提高鲁棒性。</li>
+</ul></li>
+<li><font color = red><strong>主要贡献</strong></font>
+<ul>
+<li>提出一个<strong>结合场景布局理解的单目平面 SLAM</strong>；</li>
+<li>使用<strong>点和平面集成</strong>的方式提高鲁棒性；</li>
+<li>在低纹理环境下优于现有方法，并在几个带有闭环的大型数据集下验证了其实用性。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<ul>
+<li>本文研究牵涉两个研究领域：<strong>单帧图像的场景理解</strong>和<strong>多视图的视觉 SLAM</strong>。 ### 2.1 单帧图像理解</li>
+<li>有很多研究视图<strong>从单张图像中模拟世界环境</strong>，两个代表性的研究是<strong>基于消失点的立方体房间模型</strong> <sup><strong>[5]</strong></sup> 和<strong>基于线段的固定建筑模型集合</strong> <sup><strong>[6]</strong></sup>；</li>
+<li>本文之前的研究 <strong>[4]</strong> 提出了<strong>立体 3D 平面模型（pop-up 3D plane model），将 CNN 与几何建模相结合</strong>，结果表明与现有方法相比，这种方法在各种走廊和照明环境下效果稳健。 ### 2.2 多视图 SLAM</li>
+<li>基于<font color = red><strong>点</strong></font>的 V-SLAM
+<ul>
+<li><strong>通过多帧跟踪特征点或像素值</strong>，并通过优化构建全局一致的 3D 地图；</li>
+<li>代表性的有<strong>直接法的 LSD-SLAM 和特征点法的 ORB-SLAM2</strong>，但由于视觉上几何上信息的稀疏性，在低纹理情况下表现不佳。</li>
+</ul></li>
+<li>基于<font color = red><strong>平面</strong></font>的 V-SLAM
+<ul>
+<li>文献 <strong>[8] [9] [10]</strong> 中<strong>使用平面或超像素</strong>，在低纹理环境下提供稠密的建图；<strong>但他们假设相机的位姿是从其他来源提供的</strong>（比如基于点的 SLAM），但同样在无纹理的条件下无法正常工作；</li>
+<li>近期文献 [11] 也提出<strong>使用房间布局信息来生成稠密地图</strong>的深度先验，但不进行跟踪和更新房间局部，只适用于小工作空间；</li>
+</ul></li>
+<li><font color = red><strong>场景理解</strong></font>
+<ul>
+<li>有些工作侧重于<strong>使用多个图像的场景理解</strong>，特别是在<strong>曼哈顿世界</strong>中；</li>
+<li>文献 <strong>[12]</strong> 使用<strong>单目和 3D 特征将其表示成贝叶斯框架</strong>；</li>
+<li>文献 <strong>[13,14]</strong> 生成许多<strong>候选的 3D 模型假设，然后通过特征跟踪和点云匹配更新其概率</strong>；</li>
+<li>但这些方法<strong>不使用平面世界来约束状态估计</strong>，因此不能解决低纹理华景下的 V-SLAM 问题。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="单视图中立体平面提取">3. 单视图中立体平面提取</h2>
+<ul>
+<li>本节拓展了之前的工作 [4] ，以便<strong>从单个图像中创建立体的 3D 平面模型</strong>； ### 3.1 Pop-up 3D 模型</li>
+<li>在文献 <strong>[4]</strong> 中主要有<strong>三个步骤来生成 3D 世界</strong>： <strong>CNN 网络地面分割</strong>（可以选择 CRF 来优化），<strong>折线拟合</strong>和 <strong>Pop-up 3D 平面模型</strong>；</li>
+<li>在个中数据集下均表现良好，但存在下面的一些<strong>局限</strong>：
+<ul>
+<li>① 文献 [4] <strong>沿检测到的地面区域拟合折线，有可能不是真正地墙-地边缘</strong>，从而产生无效的 3D 场景模型；比如在图 2 中上面三幅图，无法模拟向右转弯的走廊，将导致在 SLAM 框架在使用这些平面的时候出现问题，因为即使在相邻帧中，拟合出的线段也可能不同，但是 <strong>SLAM 中要求路标（比如这里的平面路标）在帧与帧之间是不变的</strong>；</li>
+<li>② 文献 [4] 中使用<strong>零旋转姿态的假设</strong>，不具有普适性，不同的旋转角度可以生成不同的 Pop-up 3D 模型。</li>
+</ul></li>
+<li>在下面两节中将解决上述问题，并生成更精确的 3D 地图，如图 2 底部的三张图所示。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig2.PNG?raw=true" alt="fig2" /> ### 3.2 最优边界检测</li>
+<li>本文选择<strong>检测真正的地-墙边缘</strong>，而不是使用拟合多边形作墙-地边界，首先使用文献 <strong>[15]</strong> 中的 <font color = red><strong>LSD 算法提取所有的线段</strong></font>；<br />
+但 LSD 算法也存在<strong>噪声</strong>，比如长直线可能被检测为两条断开的线段，<font color = red>本文<strong>提出一种优化算法来选择和合并边缘作为墙-地的边界</strong></font>，如图 2 下面中间的图所示。</li>
+<li><strong>数学表达上</strong>，假如给定了<strong>一组检测到的边缘</strong> <span class="math inline">\(V = \left ( e_{1},e_{2},\cdots , e_{n} \right )\)</span> ，希望能找到<strong>最佳的边缘子集</strong> <span class="math inline">\(S \subseteqq V\)</span> ，定义边缘子集的得分为公式 1：
+<ul>
+<li>其中， <font color = red><strong>F 是边缘子集的得分函数， I 是约束</strong></font>；</li>
+<li>由于现实场景中情况复杂，<strong>没有标准的方式来表达 F 和约束 I，本文更直观地设计它们并使之能适应各种环境</strong>，不仅限于曼哈顿世界（因为在文献 [11] [13] 中已经相应的解决了） <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f1.PNG?raw=true" alt="f1" /></li>
+</ul></li>
+<li>第一个约束<font color = red><strong>距离约束</strong></font>：检测到的<strong>边缘应该接近 CNN 检测到的在一定阈值内的边界曲线</strong> ,如图 2 左上方图中红色曲线所示，定义约束为：
+<ul>
+<li>约束要求最优线段子集 S 中的每条子线段 e 与 CNN 检测的边界的距离小于一定值。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f2.PNG?raw=true" alt="f2" /></li>
+</ul></li>
+<li>第二个约束<font color = red><strong>重叠约束</strong></font>：在图像的<strong>水平方向上（水平投影），边缘之间彼此的不重叠（overlap）如图 3a 所示或小于一定的阈值</strong>，这符合正常的情形；<br />
+但要是在 如图 3b 构造的地面中本算法也能有效运行；<br />
+定义约束为： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f3.PNG?raw=true" alt="f3" /> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig3.PNG?raw=true" alt="fig3" /></li>
+<li>同时希望<strong>在水平 x 方向上最大化边缘覆盖长度</strong>，定义<font color = red><strong>得分函数</strong></font>为：
+<ul>
+<li>其中 C 是 子集 S 线段的水平覆盖长度； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f4.PNG?raw=true" alt="f4" /></li>
+</ul></li>
+<li><font color = red>从而得到得分函数 F 和约束 <span class="math inline">\(I = I_{close} \bigcap I_{ovlp}\)</span>，问题变为对<strong>子模块集优化</strong>（详见附录）；</font><br />
+<font color = red>本文<strong>采用贪心算法</strong> <sup><strong>[16]</strong></sup> 来<strong>按顺序选择边缘</strong>；</font><br />
+首先从一个空的边集合 S 开始，然后用公式（5）迭代地添加边，直到没有可用的边缘。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f5.PNG?raw=true" alt="f5" /></li>
+<li>在得到集合 S 之后需要进行后期处理，比如<strong>去除细小边缘并将相邻边缘合并</strong>为类似于 <strong>[5]</strong> 的较长边缘。 ### 3.3 从任意姿态中 Pop-up World</li>
+<li><strong>符号说明</strong>：
+<ul>
+<li>用下标 <span class="math inline">\(w\)</span> 表示世界坐标系；<span class="math inline">\(c\)</span> 表示相机坐标系；<span class="math inline">\(gnd\)</span> 是地平面的缩写；</li>
+<li>一个<strong>平面可以用一个齐次向量表示</strong>：<span class="math inline">\(\pi = \left ( \pi _{1},\pi _{2},\pi _{3},\pi _{4} \right )^{T} = \left ( n^{T},d \right )^{T}\)</span> ，其中 n 是平面的法向量，d 是它到原点的距离 <sup><strong>[17,18]</strong></sup> ；</li>
+<li><strong>相机的位姿</strong>由<strong>从 local 到 global 帧</strong>的 <strong>3D 欧式变换矩阵</strong> <span class="math inline">\(T_{w,c} \in \mathbf{SE}\left ( 3 \right )\)</span> 表示；</li>
+<li>可以将<strong>相机帧中的点</strong> <span class="math inline">\(p_c\)</span> 通过 <span class="math inline">\(p_{w} = T_{w,c}\cdot p_{c}\)</span> 转换到世界系中；</li>
+<li><strong>相机系中的平面</strong>与世界系平面的转换关系为： <span class="math display">\[
+{\color{Blue} \pi _{w} = \left (T^{-}_{w,c}  \right )^{T} \cdot \pi _{c} \quad (6)}
+\]</span></li>
+</ul></li>
+</ul>
+<h4 id="创建-3d-模型">3.3.1 创建 3D 模型</h4>
+<ul>
+<li><font color= red><strong>如何计算点 <span class="math inline">\(p_{c}\)</span></strong></font>：对于每个所属于某个局部平面 <span class="math inline">\(\pi _{c}\)</span> 的图像像素 <span class="math inline">\(u \in \mathbb{R}^{3}\)</span> （齐次形式），其相应的 <strong>3D pop-up 点 <span class="math inline">\(p_c\)</span> 是像素的反投影射线 <span class="math inline">\(K^{-1}u\)</span> 与平面 <span class="math inline">\(\pi _{c}\)</span> 的交点</strong>（其中 K 是相机内参矩阵）:
+<ul>
+<li><span class="math inline">\(u\)</span> 是点的齐次化像素坐标，通过 K 将其反投影到相机坐标系得到 <span class="math inline">\(p_c\)</span> ； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f7.PNG?raw=true" alt="f7" /></li>
+</ul></li>
+<li><font color= red><strong>如何计算平面 <span class="math inline">\(\pi_{c}\)</span> </strong></font>：将世界坐标系建立在<strong>由 <span class="math inline">\(\pi _{gnd,w} = \left ( 0,0,1,0 \right )^{T}\)</span> 表示的地平面</strong>上；
+<ul>
+<li>假设地面边缘的边界像素是 <span class="math inline">\(u_{0},u_{1}\)</span>，它们<strong>对应的 3D 点</strong> <span class="math inline">\(p_{c0},p_{c1}\)</span> 可以通过公示（6）（7）来计算；</li>
+<li>假设墙壁垂直于地面，用公式（8）来计算<strong>墙面的法线</strong>：
+<ul>
+<li>同样可以用这两个 3D 点在墙壁上的约束来计算距离 <span class="math inline">\(d_{wall,c}\)</span> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f8.PNG?raw=true" alt="f8" /></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="相机位姿估计">3.3.2 相机位姿估计</h4>
+<ul>
+<li>相机的位姿 <span class="math inline">\(T_{w,c}\)</span> 可以由其他传感器或状态估计方法确定，本文中，<strong>在 SLAM 初始化阶段使用单个图像的位姿估计方法</strong>；</li>
+<li>在<strong>曼哈顿世界</strong>中，存在<strong>三个正交的主导方向</strong> <span class="math inline">\(e_{1} = \left ( 1,0,0 \right ),e_{2} = \left ( 0,1,0 \right ),e_{3} = \left ( 0,0,1 \right )\)</span>，分别<strong>对应齐次坐标系中的三个消失点</strong> <span class="math inline">\(v_{1},v_{2},v_{3}\in \mathbb{R}^{3}\)</span>，若相机的旋转矩阵表示为 <span class="math inline">\(\mathbf{R}_{w,c} \in \mathbb{R}^{3\times 3}\)</span>，那么<font color =red><strong>消失点可以通过以下的公式计算</strong></font> <sup><strong>[5,19]</strong></sup>：
+<ul>
+<li>每个消失点可以计算出三个自由度的旋转，<font color =red><strong>三个消失点即可以恢复相机的变换矩阵</strong></font>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f9.PNG?raw=true" alt="f9" /></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="pop-up-plane-slam">4. Pop-up Plane SLAM</h2>
+<ul>
+<li>文献 [18] 中使用 RGBD 图像解决了平面 SLAM 的问题，本文将其拓展到<strong>单目 pop-up SLAM</strong> 的情况中。</li>
+</ul>
+<h3 id="平面-slam-公式化">4.1 平面 SLAM 公式化</h3>
+<ul>
+<li>平面 SLAM 的因子图如图 4 所示；</li>
+<li><font color =red>目标是<strong>通过平面测量 <span class="math inline">\(c_{0},\cdots ,c_{m}\)</span> ，里程计测量 <span class="math inline">\(u_{0},\cdots ,u_{m}\)</span> 和初始位姿 <span class="math inline">\(p\)</span> 来估计 6 自由度的相机位姿 <span class="math inline">\(x_{0},\cdots ,x_{m}\)</span> 和平面路标 <span class="math inline">\(\pi_{0},\cdots ,\pi_{m}\)</span></strong>；</font></li>
+<li>平面地标也含有一个标签（墙面或者地面），<strong>地面路标 <span class="math inline">\(\pi_{0}\)</span> 与所有的位姿节点相连</strong>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig4.PNG?raw=true" alt="fig4" /></li>
+<li>齐次平面用 <span class="math inline">\(\pi = \left ( n^{T},d \right )^{T}\)</span> 实际上<strong>过参数化</strong>，因此 SLAM 中的信息矩阵是单数的，<strong>不适用于高斯牛顿求解器和增量式求解器</strong>，比如 <strong>iSAM</strong> <sup><strong>[20]</strong></sup> ；</li>
+<li><font color = red>本文使用文献 [18] 中的最小平面来将平面表示为四元数 <span class="math inline">\(\mathbf{q} = \left ( q_{1}, q_{2}, q_{3}, q_{4} \right )^{T}\in \mathbb{R}^{4} \quad st.\left \| q \right \|=1\)</span> 的形式，比如 ，因此，本文可以李代数和指数映射在优化中进行平面更新。</font></li>
+</ul>
+<h3 id="平面测量">4.2 平面测量</h3>
+<ul>
+<li>大多数平面 SLAM <strong>使用 RGBD 相机 <sup>[18,21]</sup> 从点云分割中获得平面测量</strong> <span class="math inline">\(c\)</span>；<strong>本文的平面测量 <span class="math inline">\(c\)</span> 来自于 3.3 节的 pop-up 平面模型</strong>；</li>
+<li>注意 <strong>pop-up 过程取决于相机的位姿，确切说是旋转和高度 z</strong> ，因为水平面的 x 和 y 不会影响局部平面测量；所说<strong>需要重新 pop-up 3D 平面模型，并在平面 SLAM 优化相机位姿后更新平面测量 <span class="math inline">\(c\)</span></strong> ；在第 3.3 节中解释了，这一步可以通过简单的矩阵运算来求解，速度很快，更新百位级的平面测量时间不到一毫秒。</li>
+</ul>
+<h3 id="数据关联">4.3 数据关联</h3>
+<ul>
+<li>使用以下三种几何信息进行<strong>平面匹配</strong>
+<ul>
+<li>平面<strong>法线</strong>之间的差异；</li>
+<li>平面彼此之间的<strong>距离</strong>；</li>
+<li>平面之间<strong>投影的重叠</strong>；
+<ul>
+<li>用于投影的平面边界多边形来自于 pop-up 过程。</li>
+</ul></li>
+</ul></li>
+<li><strong>异常值匹配首先按照三个指标的阈值删除，然后基于他们的加权选择最佳的匹配。</strong></li>
+</ul>
+<h3 id="闭环">4.4 闭环</h3>
+<ul>
+<li>采用 BoW 地点识别的方法 <sup><strong>[22]</strong></sup> 进行<strong>闭环检测</strong>；<strong>每一帧都被 ORB 特征描述为视觉世界的一个矢量，以便计算两帧之间的相似度得分</strong>；一旦检测到闭环，搜索两帧中的所有成对的平面并<strong>找到具有最小图像空间距离的平面对</strong>；</li>
+<li><strong>本文测试了保留每个平面的 BoW 视觉词汇，但并不稳定，特别是在无纹理的图像中；与点路标不同，平面路标在不同视图中具有不同的外观和大小</strong>，因此可能会在路标被创建和观察后识别出相同的平面；</li>
+<li>在检测后，<span class="math inline">\(\pi_{n},\pi_{2}\)</span> 是图 6 中<strong>相同的平面</strong>，<strong>将平面 <span class="math inline">\(\pi_{n}\)</span> 的所有因子移到另一个平面 <span class="math inline">\(\pi_{2}\)</span> ，并从因子图中删除路标 <span class="math inline">\(\pi_{n}\)</span></strong>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig6.PNG?raw=true" alt="fig6" /></li>
+</ul>
+<hr />
+<h2 id="点-面融合-slam">5. 点-面融合 SLAM</h2>
+<ul>
+<li>与基于点的 SLAM 比较，<strong>平面 SLAM 通常包含更少的路标以至于容易不受约束</strong>；比如在图 5 所示的长走廊中，左右墙面是平行的，如果没有其他的平面约束，沿着走廊有一个自由的无约束的方向 <span class="math inline">\(t_{free}\)</span>；</li>
+<li>本文通过结合点的 SLAM，特别是 LSD SLAM 来解决这样的问题，以<strong>提供沿着自由方向的光度测量约束</strong>，提出了以下两种组合方式。</li>
+</ul>
+<h3 id="depth-enhanced-lsd-slam">5.1 Depth Enhanced LSD SLAM</h3>
+<ul>
+<li>本节说明了场景布局理解可以提高传统 SLAM 的性能；</li>
+<li><strong>LSD SLAM 含有三个主要的线程</strong>（如图 7 所示）：<strong>相机跟踪线程，深度估计线程和全局优化线程</strong>。
+<ul>
+<li>其中<strong>深度估计部分是核心</strong>，决定了其他部分的质量；</li>
+<li>在 LSD-SLAM 中，<strong>在创建关键帧的新深度图时，将从前一个关键帧中传播一些可用的像素深度</strong>，然后使用 multiple-view stereo (MVS) 通过新的帧连续更新深度图 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig7.PNG?raw=true" alt="fig7" /></li>
+</ul></li>
+<li><font color =red>由于本文在第 3 节中<strong>单个图像的 pop-up 模型提供了每个像素的深度估计，通过以下的方式将其集成到 LSD 深度图中</strong>：
+<ul>
+<li>如果像素<strong>没有传播深度</strong>或 LSD-SLAM 深度的方差超过了阈值，则<strong>直接使用 pop-up 模型的深度</strong>；</li>
+<li>如果来自 LSD 的像素<strong>具有传播深度</strong> <span class="math inline">\(d_{l}\)</span>，且其方差为 <span class="math inline">\(\sigma _{l}^{2}\)</span>，则<strong>使用滤波的方法 <sup>[23]</sup> 将其与 pop-up 中方差为 <span class="math inline">\(\sigma _{p}^{2}\)</span> 的深度 <span class="math inline">\(d_{p}\)</span> 融合</strong>；</font>
+<ul>
+<li>其中 <span class="math inline">\(\sigma _{p}^{2}\)</span> 可以在 pop-up 阶段通过误差传播规则计算得到。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f10.PNG?raw=true" alt="f10" /></li>
+</ul></li>
+</ul></li>
+<li>在 3.3 节中，u 的像素不确定性可以建模为二维标准高斯分布 ∑<sub>u</sub>；如果像素点 ｕ 根据公式（7）对应的 3D 点 <span class="math inline">\(p_{c}\)</span> 的雅克比是 <span class="math inline">\(J_{u}\)</span>，那么 3D 点的协方差为：<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/f10+.PNG?raw=true" alt="f10+" /></li>
+<li>本文发现<strong>深度不确定性 <span class="math inline">\(\sigma _{p}^{2}\)</span> 与深度的平方成正比</strong>，即：<span class="math inline">\(\sigma _{p}^{2}\propto d_{p}^{2}\)</span></li>
+<li><font color =red>深度融合可以极大地增加 LSD-SLAM 的深度估计质量，尤其是在 LSD-SLAM <strong>随机初始化深度的初始帧处</strong>和 <strong>MVS 深度三角测量质量较低的低视差场景中</strong>。</font></li>
+</ul>
+<h3 id="lsd-pop-up-slam">5.2 LSD Pop-up SLAM</h3>
+<ul>
+<li>在文献 [21] 中基于 RGBD 相机的 SLAM 框架中，已经有联合使用点和面作为路标的工作了；</li>
+<li>本文提出了一个简单的版本来运行两个阶段的 SLAM 方法<br />
+第一阶段是 5.1 节中的 <strong>Depth Enhanced LSD SLAM</strong>，然后利用其输出的位姿作为测距约束以运行第 6 节中的平面 SLAM；<br />
+<strong>基于光度误差最小化的帧间测量跟踪可以沿着无约束方向提供约束，并且可以获得更精细的运动状态</strong>。</li>
+<li>图 8 中展示了本文中三种 SLAM 方法的关系：
+<ul>
+<li>蓝色框是改进的 LSD-SLAM：<font color =blue><strong>Depth Enhanced LSD SLAM（具有来自 pop-up 模型深度融合的 LSD-SLAM）</strong></font>；</li>
+<li>绿色和红色的是两种平面 SLAM，<font color =red><strong>LSD Pop-up SLAM（在 Depth Enhanced LSD SLAM 的基础上添加了额外的里程计测量）</strong></font> 具有额外的里程计测量<br />
+</li>
+<li><font color =green><strong>Pop-up Plane SLAM（使用来自于单视图的 pop-up 模型的平面测量）</strong></font> 没有，并通常使用恒定速度假设。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig8.PNG?raw=true" alt="fig8" /></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实验与结果">6. 实验与结果</h2>
+<ul>
+<li><strong>TUM 数据集</strong>和两个<strong>采集的走廊数据集</strong>，评估<strong>准确性和计算成本</strong>；</li>
+<li>将状态估计和三维重建的质量与两种基于点的单目 SLAM 对比：LSD-SLAM 和 ORB-SLAM。</li>
+</ul>
+<h3 id="tum-数据集">6.1 TUM 数据集</h3>
+<ul>
+<li><code>TUM fr3/structure notexture far</code> 数据集由 5 面白墙和一个地平面组成，如图 1 所示；仅适用 RGB 图像进行实验，并使用深度图进行评估； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig1.PNG?raw=true" alt="fig1" /></li>
+<li><strong>定性比较</strong>
+<ul>
+<li>LSD-SLAM 与 ORB-SLAM 在这种环境下无法工作，由于缺少特征点和高梯度像素；</li>
+<li>对于第四节中的 <strong>Pop-up Plane SLAM，使用地面真实位姿进行初始化，将恒定速度运动假设用作里程计测量</strong>；
+<ul>
+<li>由于提供了初始真实高度， pop-up 模型具有绝对尺度，因此可以不需要缩放直接将位姿与地图估计与 ground truth 比较。</li>
+</ul></li>
+</ul></li>
+<li><strong>定量比较</strong>
+<ul>
+<li>绝对轨迹如图 9 所示，该数据集总长 4.58 米，平均误差为 0.18 ± 0.07 m，端点误差为 0.1 米；</li>
+<li>如图 9 所示，本文算法能捕获整体的运动，但无法精确获得中间小扰动的运动；
+<ul>
+<li><font color= red><strong>因为这里只有很少的平面路标，并且 pop-up SLAM 没有帧到帧的里程计跟踪，这通常是基于点的 SLAM</strong></font>；</li>
+</ul></li>
+<li>在后面的实验中，证明了<font color= red><strong>在获得里程计测量之后，LSD Pop-up SLAM 状态估计得到了很大的改善</strong></font>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig9.PNG?raw=true" alt="fig9" /></li>
+<li><strong>建图质量评估</strong>
+<ul>
+<li><font color = red><strong>为评估地图质量，采用 PCL RANSAC 算法在提供的深度图中进行点云平面分割计算出 ground truth 平面位置</strong></font>，平面法线误差仅为 2.8°，如表 1 所示；</li>
+<li>然后<font color = red><strong>将 3D 平面模型重新投影到图像上以获得每个像素的深度估计</strong></font>，评估结果如图 10 和表 1 所示，平均像素深度误差为 6.2cm ，且 86.8% 的像素深度误差在 0.1m 内。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig10+tab1.PNG?raw=true" alt="fig10+tab1" /></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="大型室内环境">6.2 大型室内环境</h3>
+<ul>
+<li>使用手持式单目相机（分辨率为640 * 480）在两个大型的低纹理的走廊环境中进行实验；相机具有大视场（90°），这也是 ORB 和 LSD SLAM 比较适合的场景；</li>
+<li>由于<strong>没有地面的实况深度和位姿，只评估闭合误差和定性的地图重建</strong>；位姿初始化使用 3.3 节中单图像旋转估计，并假设高度为 1 米。</li>
+<li><strong>走廊数据集 1</strong>:
+<ul>
+<li>数据集如图 11 所示，LSD-SLAM 上排中间图表现不佳，ORB-SLAM 最好的结果如右上角所示；</li>
+<li>实验发现即使使用相同的数据集，ORB-SLAM 通常无法完成初始化地图，并且无法跟踪相机；<strong>随机性来自于 ORB-SLAM 的 RANSAC 地图初始化</strong>；</li>
+<li><strong>Depth Enhanced LSD SLAM 能更生成更好的地图，与原始 LSD-SLAM 相比，虽然只是半稠密但可以清晰地辨别走廊和弯道</strong>；</li>
+<li>在此基础上，<strong>LSD Pop-up SLAM 生成了具有不同门和支柱的稠密 3D 模型</strong>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig11.PNG?raw=true" alt="fig11" /></li>
+</ul></li>
+<li><strong>走廊数据集 2</strong>：
+<ul>
+<li>60 平方米的走廊数据集，包含如图 2 所示的大环；</li>
+<li><strong>ORB-SLAM</strong> 生成的地图比 LSD-SLAM 更好，但<strong>不会从一开始就跟踪，需要有足够的特征点和足够的视差空间</strong>；</li>
+<li>本文算法如图 13 所示，其中<strong>红色的是 Depth Enhanced LSD SLAM ，绿色的是 LSD Pop-up SLAM</strong>；
+<ul>
+<li>通过闭环检测，LSD Pop-up SLAM 可以生成最佳的 3D 地图和最小的闭环误差；图 13 中的网格尺寸为 1 * 1 米，<strong>闭环定位误差在 60 米长的轨迹中为 0.4 米</strong>；</li>
+<li>闭环位置误差为 0.67%，闭环发生在左上角。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/fig12+13.PNG?raw=true" alt="fig12+13" /></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="运行时间分析">6.3 运行时间分析</h3>
+<ul>
+<li>在走廊数据集 2 中的数据分析如表 2 所示，所有时序测量都在 <strong>CPU (Intel i7, 4.0 GHz) 和 GPU (仅在 CNN 时)</strong> 上；代码基本上都用 C++ 实现；
+<ul>
+<li>CNN 分割，边缘检测和选择耗时约 30ms，与文献 [4] 相比，本文将全连接层从 4096 改为 2048，以将分割时间减少一半又不至于影响精度；</li>
+<li>iSAM 增量式更新需要 17.43ms，批量优化需要 45.35ms，因此<strong>当检测到闭环时，仅适用批量优化来重新分解信息矩阵</strong>；</li>
+<li>总之，本文的平面 SLAM 算法可以使用单线程编程达到超过 <strong>20HZ 的实时运行</strong>。</li>
+</ul></li>
+<li><strong>与点作为路标不同，本文方案可以在许多相邻帧中观察到平面</strong>，实际上不需要为每帧都 pop-up 平面；<br />
+因此，在上述的 pop-up 实验中，以 3HZ/10帧图像的频率来处理图像也足以捕获所有的平面；<br />
+这<strong>类似于许多基于点的 SLAM 中使用的关键帧技术</strong>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190111/tab2.PNG?raw=true" alt="tab2" /></li>
+</ul>
+<h3 id="讨论">6.4 讨论</h3>
+<ul>
+<li><strong>高度对地图尺度的影响</strong>
+<ul>
+<li>不像基于 RGBD 的平面 SLAM 其平面测量实际上有深度传感器生成，<strong>本方案的平面测量和尺度由 3.3 节的 pop-up 过程和相机高度决定</strong>；</li>
+<li>而<font color =red><strong>相机高度不受平面测量的约束，因此只能受其他测量（比如 IMU 测量）的约束，如果信息不准确或无法获取，则地图的尺度和相机的高度可能仅依赖于平面 SLAM 从而产生漂移</strong></font>；</li>
+<li>在本文的实验中由于<strong>保持相机的高度恒定</strong>几乎没有产生漂移。</li>
+</ul></li>
+<li><strong>地面对地图复杂性的影响</strong>
+<ul>
+<li><strong>由于在 pop-up 过程中需要对地面可见，因此地平面路标需要连接所有的相机位姿</strong>，如图 4 的因子图所示，这将减少信息矩阵的洗属性并在理论上增加计算的复杂度；</li>
+<li>但<strong>可以通过矩阵分解之前进行变量重新排序来解决</strong>这个问题，比如使用 <strong>COLAMD 算法</strong>将变量强制转向最后一个块列，从而降低其影响（详见文献 [20]）；</li>
+<li>实验中，<strong>这个影响并不是十分明显</strong>，地平面通常增加填充（fill-in）（添加的非零条目）仅约 10%。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">7. 总结</h2>
+<ul>
+<li>本文<strong>提出一个 Pop-up Plane SLAM，一个结合场景布局理解的实时的单目 SLAM</strong>，其尤其适用于低纹理的环境，甚至可以从单视图中生成粗糙的 3D 模型；
+<ul>
+<li>首先<strong>通过检测地-墙边缘和估计相机旋转</strong>来拓展之前的文献 [4] 的工作，以<strong>从单个图像中 pop-up 3D 平面世界</strong>；</li>
+<li>然后定制平面 SLAM 方案，<strong>跨多个帧构造一致的基于平面的地图，并提供良好的状态估计</strong>；</li>
+<li>平面路标来自于单个图像的 pop-up 模型，利用<strong>最小化平面表示进行优化</strong>，并实现<strong>平面 SLAM 的闭环</strong>。</li>
+</ul></li>
+<li>由于<strong>平面 SLAM 在某些环境中很容易受到约束</strong>，本文将其<strong>与基于点的 LSD-SLAM 以两种方式结合起来</strong>
+<ul>
+<li><strong>Depth Enhanced LSD SLAM</strong> ：将 pop-up 像素深度集成到 LSD-SLAM 的深度估计中；</li>
+<li><strong>LSD Pop-up SLAM</strong> ：使用来自 Depth Enhanced LSD SLAM 的位姿作为测距约束并单独地运行 Pop-up Plane SLAM。</li>
+</ul></li>
+<li><strong>实验结果</strong>
+<ul>
+<li>在 TUM 数据集上，<strong>Pop-up Plane SLAM</strong> 能生成稠密的 3D 地图，深度误差为 6.2cm，状态估计误差为 3.9%，而 LSD-SLAM 和 ORB-SLAM 则运行失败；<br />
+</li>
+<li>在采集的走廊的数据集中， <strong>LSD Pop-up SLAM</strong> 在 60 米长的数据集上闭环误差为 0.67%，大大优于其他两种方案，运行时间表明可以接近 10 HZ 实时运行。</li>
+</ul></li>
+<li><strong>展望</strong>
+<ul>
+<li>将在统一的 SLAM 框架中<strong>联合点、边和平面路标</strong>；</li>
+<li>并在机器人上进行测试；</li>
+<li><strong>在可能存在地-墙边界遮挡的杂乱的走廊中还存在较大的挑战性</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="r-参考文献">【R】 参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[1]</strong> Engel J, Schöps T, Cremers D. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.7193&amp;rep=rep1&amp;type=pdf"><strong>LSD-SLAM: Large-scale direct monocular SLAM</strong></a>[C]//European Conference on Computer Vision. Springer, Cham, <strong>ECCV 2014</strong>: 834-849.</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[4]</strong> Yang S, Maturana D, Scherer S. <a href="https://ieeexplore.ieee.org/abstract/document/7487368"><strong>Real-time 3D scene layout from a single image using convolutional neural networks</strong></a>[C]//Robotics and Automation (<strong>ICRA</strong>), <strong>2016</strong> IEEE International Conference on. IEEE, 2016: 2183-2189. <font color = gray>作者之前的研究，使用卷积神经网络<strong>从单个图像进行实时3D场景布局</strong>；立体平面模型（pop-up plane model）</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[5]</strong> Hedau V, Hoiem D, Forsyth D. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.149.9603&amp;rep=rep1&amp;type=pdf"><strong>Recovering the spatial layout of cluttered rooms</strong></a>[C]//Computer vision, 2009 IEEE 12th international conference on. IEEE, <strong>2009</strong>: 1849-1856.<br />
+<font color = gray><strong>基于消失点检测的立方体房间模型；消失点的计算公式</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[6]</strong> Lee D C, Hebert M, Kanade T. <a href="https://www.ri.cmu.edu/pub_files/2009/6/CVPR.2009.pdf"><strong>Geometric reasoning for single image structure recovery</strong></a>[C]//Computer Vision and Pattern Recognition, 2009. CVPR 2009. IEEE Conference on. IEEE, <strong>CVPR 2009</strong>: 2136-2143.<br />
+<font color = gray><strong>基于线段的固定建筑模型集合</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[8]</strong> Furukawa Y, Ponce J. <a href="https://ieeexplore.ieee.org/document/5226635"><strong>Accurate, dense, and robust multiview stereopsis</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2010</strong>, 32(8): 1362-1376.<br />
+<font color = gray>低纹理稠密建图</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[9]</strong> Concha Belenguer A, Civera Sancho J. <a href="https://zaguan.unizar.es/record/36752/files/texto_completo.pdf"><strong>DPPTAM: Dense piecewise planar tracking and mapping from a monocular sequence</strong></a>[C]//Proc. IEEE/RSJ Int. Conf. Intell. Rob. Syst. 2015 (ART-2015-92153).<br />
+<font color = gray><strong>单目稠密分段跟踪与建图；开源！！相关研究：基于超像素的单目 SLAM <a href="http://webdiis.unizar.es/~jcivera/papers/concha_civera_icra14.pdf"><strong>Using Superpixels in Monocular SLAM</strong></a></strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[10]</strong> Pinies P, Paz L M, Newman P. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=7139927"><strong>Dense mono reconstruction: Living with the pain of the plain plane</strong></a>[C]//Robotics and Automation (ICRA), 2015 IEEE International Conference on. IEEE, 2015: 5226-5231.<br />
+<font color = gray>生活场景下单目平面 SLAM </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[12]</strong> Flint A, Murray D, Reid I. <a href="https://www.robots.ox.ac.uk/ActiveVision/Publications/flint_etal_iccv2011/flint_etal_iccv2011.pdf"><strong>Manhattan scene understanding using monocular, stereo, and 3d features</strong></a>[C]//Computer Vision (ICCV), 2011 IEEE International Conference on. IEEE, 2011: 2228-2235.<br />
+<font color = gray>可代码可能是这个：https://github.com/alexflint/manhattan-vision </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[15]</strong> Von Gioi R G, Jakubowicz J, Morel J M, et al. <a href="https://ieeexplore.ieee.org/abstract/document/4731268"><strong>LSD: A fast line segment detector with a false detection control</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, 2010, 32(4): 722-732.<br />
+<font color = gray><strong>本文所使用的线检测方法 LSD</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[18]</strong> Kaess M. <a href="https://www.ri.cmu.edu/pub_files/2015/5/Kaess15icra.pdf"><strong>Simultaneous localization and mapping with infinite planes</strong></a>[C]//ICRA. 2015, 1: 2.<br />
+<font color = gray><strong>基于无限平面的 SLAM；RGB-D相机直接获取平面测量；定义了对数四元数的平面误差</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[19]</strong> Rother C. A new approach to vanishing point detection in architectural environments[J]. Image and Vision Computing, 2002, 20(9-10): 647-655.<br />
+<font color = gray><strong>建筑环境消失点检测，消失点的计算公式</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[20]</strong> Kaess M, Ranganathan A, Dellaert F. <a href="https://smartech.gatech.edu/bitstream/handle/1853/26572/kaess_michael_200812_phd.pdf?sequence=1&amp;isAllowed=y"><strong>iSAM: Incremental smoothing and mapping</strong></a>[J]. IEEE Transactions on Robotics, 2008, 24(6): 1365-1378.<br />
+<font color = gray><strong>增量式平滑 SLAM ：iSAM；因子图</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[21]</strong> Taguchi Y, Jian Y D, Ramalingam S, et al. <a href="https://merl.com/publications/docs/TR2013-031.pdf"><strong>Point-plane SLAM for hand-held 3D sensors</strong></a>[C]//ICRA. 2013: 5182-5189.<br />
+<font color = gray><strong>RGBD 传感器，点-平面联合路标</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[22]</strong> Gálvez-López D, Tardos J D. <a href="https://ieeexplore.ieee.org/abstract/document/6202705"><strong>Bags of binary words for fast place recognition in image sequences</strong></a>[J]. IEEE Transactions on Robotics, <strong>2012</strong>, 28(5): 1188-1197.<br />
+<font color = gray>BoW 词袋模型</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[23]</strong> Engel J, Sturm J, Cremers D. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2013/papers/Engel_Semi-dense_Visual_Odometry_2013_ICCV_paper.pdf"><strong>Semi-dense visual odometry for a monocular camera</strong></a>[C]//Proceedings of the IEEE international conference on computer vision. <strong>2013</strong>: 1449-1456.<br />
+<font color = gray><strong>SVO；半稠密；滤波方法深度融合</strong></font></li>
+</ul>
+<hr />
+<h2 id="q-问题">【Q】 问题</h2>
+<ul>
+<li>3.3 节中 <span class="math inline">\(p_{c0},p_{c1}\)</span> 是指怎样的两个点？为什么可以通过这两个点计算出两个平面的关系呢？</li>
+<li>4.1 节中平面测量 <span class="math inline">\(c_{0},\cdots ,c_{m}\)</span> ，里程计测量 <span class="math inline">\(u_{0},\cdots ,u_{m}\)</span> 是怎么表示和计算的？</li>
+<li>4.4 节关于闭环的部分，系统不是基于 LSD 做的吗？为什么还有 ORB 特征呢？</li>
+<li>4.4 节中关于闭环，好像并没有说是如何检测平面闭环的啊，还是依然使用特征点来检测闭环，再比较着两帧之间的平面？低纹理的情况下如何检测闭环呢？</li>
+<li>6.1 节中提到 “Pop-up Plane SLAM 使用地面真实位姿进行初始化，将恒定速度运动假设用作里程计测量”，为什么要用 ground truth pose 进行初始化，要是 ORB 也提供这样的初始化并减小程序中设定的初始化特征点的数量是否可以工作呢？恒定速度运动假设是什么作用呢？为什么要这么假设？</li>
+<li>6.1 定量实验中了解一下 <strong>PCL RANSAC 算法进行点云平面分割</strong> 和 <strong>将 3D 平面模型重新投影到图像上以获得每个像素的深度估计</strong>代码上怎么做的；</li>
+<li>CNN 进行分割只是在选择最优的边界中作为约束使用吗？</li>
+</ul>
+<hr />
+<h2 id="t-思考">【T】 思考</h2>
+<ul>
+<li>3.2 节中提到没有具体的方式来定义子集得分函数 F 和约束 I，可以考虑一下定义跟他不一样的方式；</li>
+<li>3.2 节中的第二个约束，使集合中线段水平投影覆盖面积最大作为评分依据，有理论依据吗？是否可以换一种方式？</li>
+<li>4.1 节中提到平面过参数化用四元数表示，思考一些典型的问题通过修改变量的表示形式来优化；</li>
+<li>6.1 节中定量比较可以发现总体误差虽然不大，对整体的估计效果也不错，但对中间的状态估计偏差很大，是由于平面测量没有提供基于点的里程计测量，考虑一下是否可以解决这个问题，<strong>如何构造基于平面的里程计测量</strong>！！；</li>
+<li>本文使用的是高度恒定假设，只存在平面的情况下高度无法收到约束，<strong>需要额外的测量（比如IMU），这是一个可以做的点</strong>；</li>
+<li>在因子图优化过程中，地面要求一直可见并保持为同一个地平面，可以考虑跨楼层的多平面问题；</li>
+<li>考虑小型化环境，从走廊室内到桌面级，大型物体到小型物体，多平面物体；</li>
+</ul>
+<hr />
+<blockquote>
+<p>2019.01.11<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-01-28-quadric-slam/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-01-06-object-plane-slam/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

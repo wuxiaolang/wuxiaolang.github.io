@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😀 ORB-SLAM2 代码解读（二）：跟踪线程 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="0. 跟踪线程总体介绍 Tracking 线程运行在系统主线程中，负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作，可以简单理解为 SLAM 的前端里程计部" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-04-27-orb-slam2-tracking/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😀 ORB-SLAM2 代码解读（二）：跟踪线程" />
+<meta property="og:description" content="0. 跟踪线程总体介绍 Tracking 线程运行在系统主线程中，负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作，可以简单理解为 SLAM 的前端里程计部" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-04-27-orb-slam2-tracking/" />
+<meta property="article:published_time" content="2019-04-27T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-04-27T00:00:00+08:00" />
+<meta itemprop="name" content=" 😀 ORB-SLAM2 代码解读（二）：跟踪线程">
+<meta itemprop="description" content="0. 跟踪线程总体介绍 Tracking 线程运行在系统主线程中，负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作，可以简单理解为 SLAM 的前端里程计部">
+<meta itemprop="datePublished" content="2019-04-27T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-04-27T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="18617">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😀 ORB-SLAM2 代码解读（二）：跟踪线程"/>
+<meta name="twitter:description" content="0. 跟踪线程总体介绍 Tracking 线程运行在系统主线程中，负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作，可以简单理解为 SLAM 的前端里程计部"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😀 ORB-SLAM2 代码解读（二）：跟踪线程</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-27 </span>
+        <div class="post-category">
+            <a href="/categories/orb-slam2/"> ORB-SLAM2 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            </div>
+          <span class="more-meta"> 约 18617 字 </span>
+          <span class="more-meta"> 预计阅读 38 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-跟踪线程总体介绍">0. 跟踪线程总体介绍</a>
+      <ul>
+        <li><a href="#01-流程简述">0.1 流程简述</a></li>
+        <li><a href="#02-两种工作模式">0.2 两种工作模式</a></li>
+        <li><a href="#03-五种跟踪状态">0.3 五种跟踪状态</a></li>
+        <li><a href="#04-三种跟踪模式">0.4 三种跟踪模式</a></li>
+        <li><a href="#05-局部地图跟踪">0.5 局部地图跟踪</a></li>
+      </ul>
+    </li>
+    <li><a href="#1-构造帧">1. 构造帧</a>
+      <ul>
+        <li><a href="#11-创建特征提取器">1.1 创建特征提取器</a></li>
+        <li><a href="#12-frame-构造函数构造图像帧">1.2 Frame() 构造函数构造图像帧</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-初始化">2. 初始化</a>
+      <ul>
+        <li><a href="#21-单目初始化">2.1 单目初始化</a></li>
+        <li><a href="#22-双目rgb-d-初始化">2.2 双目/RGB-D 初始化</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-帧间位姿估计">3. 帧间位姿估计</a>
+      <ul>
+        <li><a href="#31-跟踪参考关键帧模型">3.1 跟踪参考关键帧模型</a></li>
+        <li><a href="#32-恒速运动模型">3.2 恒速运动模型</a></li>
+        <li><a href="#33-重定位">3.3 重定位</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-局部地图跟踪">4. 局部地图跟踪</a></li>
+    <li><a href="#5-关键帧生成">5. 关键帧生成</a>
+      <ul>
+        <li><a href="#51-关键帧生成条件判断">5.1 关键帧生成条件判断</a></li>
+        <li><a href="#52-创建关键帧">5.2 创建关键帧</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-信息维护与线程同步">6. 信息维护与线程同步</a></li>
+    <li><a href="#r参考资料">【R】参考资料</a></li>
+    <li><a href="#q问题">【Q】问题</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="0-跟踪线程总体介绍">0. 跟踪线程总体介绍</h2>
+<p>   Tracking 线程运行在系统主线程中，<strong>负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作</strong>，可以简单理解为 SLAM 的前端里程计部分，但该线程也存在一些优化。</p>
+<h3 id="01-流程简述">0.1 流程简述</h3>
+<ul>
+<li><!-- raw HTML omitted --><strong>1. 系统初始化</strong><!-- raw HTML omitted -->：在 ==<code>System SLAM()</code>== 初始化 SLAM 系统时<strong>初始化了跟踪线程</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpTracker</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tracking</span><span class="p">(</span><span class="k">this</span><span class="p">,</span>				
+                         <span class="n">mpVocabulary</span><span class="p">,</span>			<span class="c1">//字典
+</span><span class="c1"></span>                         <span class="n">mpFrameDrawer</span><span class="p">,</span> 			<span class="c1">//帧绘制器
+</span><span class="c1"></span>                         <span class="n">mpMapDrawer</span><span class="p">,</span>			<span class="c1">//地图绘制器
+</span><span class="c1"></span>                         <span class="n">mpMap</span><span class="p">,</span> 				<span class="c1">//地图
+</span><span class="c1"></span>                         <span class="n">mpKeyFrameDatabase</span><span class="p">,</span> 		<span class="c1">//关键帧地图
+</span><span class="c1"></span>                         <span class="n">strSettingsFile</span><span class="p">,</span> 			<span class="c1">//配置文件路径
+</span><span class="c1"></span>                         <span class="n">mSensor</span><span class="p">);</span>				<span class="c1">//传感器类型
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>在 <code>Tracking.cc</code> 的 ==<code>Tracking()</code>== 构造函数中主要初始化系统的一些参数，包括<strong>加载相机参数、创建 ORB 特征提取器</strong>
+<ul>
+<li>注意在设置特征提取数量时，<strong>单目初始化时提取的数量是双目和 RGB-D 的两倍</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 如果是双目，tracking 过程中还会用用到 mpORBextractorRight 作为右目特征点提取器
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">sensor</span><span class="o">==</span><span class="n">System</span><span class="o">::</span><span class="n">STEREO</span><span class="p">)</span>
+    <span class="n">mpORBextractorRight</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span><span class="n">nFeatures</span><span class="p">,</span><span class="n">fScaleFactor</span><span class="p">,</span><span class="n">nLevels</span><span class="p">,</span><span class="n">fIniThFAST</span><span class="p">,</span><span class="n">fMinThFAST</span><span class="p">);</span>
+<span class="c1">// 在单目初始化的时候，会用 mpIniORBextractor 来作为特征点提取器
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">sensor</span><span class="o">==</span><span class="n">System</span><span class="o">::</span><span class="n">MONOCULAR</span><span class="p">)</span>
+    <span class="n">mpIniORBextractor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">nFeatures</span><span class="p">,</span><span class="n">fScaleFactor</span><span class="p">,</span><span class="n">nLevels</span><span class="p">,</span><span class="n">fIniThFAST</span><span class="p">,</span><span class="n">fMinThFAST</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>注意在初始化 SLAM 系统的时候同时也初始化并运行了其他三个线程：局部建图线程、闭环检测线程和可视化线程，但<strong>跟踪线程只是初始化了暂时并没有运行</strong>。</li>
+</ul>
+</li>
+<li><strong>2. 进入跟踪线程</strong>
+<ul>
+<li>以 <code>mono_tum.cc</code> 为例，送入单张图片及其时间戳进入<strong>单目跟踪器接口</strong>：==<code>SLAM.TrackMonocular(im,tframe)</code>==
+<ul>
+<li>在 <code>TrackMonocular()</code> 函数中会检查模式：实时跟踪模式、定位模式、重置等；</li>
+<li>然后再次传递图像及其时间戳到 <code>Tracking::GrabImageMonocular()</code> 函数。</li>
+</ul>
+</li>
+<li>==<code>Tracking::GrabImageMonocular()</code>== 函数
+<ul>
+<li><strong>步骤一：</strong> 将图像转换为灰度图；</li>
+<li><strong>步骤二：</strong> <!-- raw HTML omitted --><strong>构造 Frame 帧</strong><!-- raw HTML omitted --> ==Frame::Frame()==（第一帧提取orb特征点数量较多,为后面帧的两倍）；</li>
+<li><strong>步骤三：</strong> 进入 <code>Track()</code> 开始跟踪。</li>
+</ul>
+</li>
+<li>返回的是当前帧的相机位姿。</li>
+</ul>
+</li>
+<li><strong>3. 开始跟踪：==Tracking::Track()== 跟踪线程主要实现函数</strong>
+<ul>
+<li><strong>步骤一：</strong> <strong>判断跟踪状态 mState</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">enum</span> <span class="nc">eTrackingState</span><span class="p">{</span>
+        <span class="n">SYSTEM_NOT_READY</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>        <span class="c1">// 系统没有准备好的状态,一般就是在启动后加载配置文件和词典文件时候的状态
+</span><span class="c1"></span>        <span class="n">NO_IMAGES_YET</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>            <span class="c1">// 当前无图像,图像复位过、或者第一次运行
+</span><span class="c1"></span>        <span class="n">NOT_INITIALIZED</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>          <span class="c1">// 有图像但是没有完成初始化
+</span><span class="c1"></span>        <span class="n">OK</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>                       <span class="c1">// 正常时候的工作状态
+</span><span class="c1"></span>        <span class="n">LOST</span><span class="o">=</span><span class="mi">3</span>                      <span class="c1">// 系统已经跟丢了的状态
+</span><span class="c1"></span>        <span class="p">};</span>
+<span class="c1">//跟踪状态
+</span><span class="c1"></span><span class="n">eTrackingState</span> <span class="n">mState</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><!-- raw HTML omitted --><strong>步骤二： 初始化</strong><!-- raw HTML omitted -->
+<ul>
+<li>A. <strong>单目初始化</strong>：==<code>Tracking::MonocularInitialization()</code>==（需要两帧）；</li>
+<li>B. <strong>双目/RGB-D 初始化</strong>：==<code>Tracking::StereoInitialization()</code>==（由于具有深度信息，直接生成MapPoints）。</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted --><strong>步骤三： 两两帧相机位姿估计</strong><!-- raw HTML omitted -->
+<ul>
+<li><strong>情形一： 实时 SLAM 模式</strong>：<code>mbOnlyTracking = false</code>
+<ul>
+<li><strong>情形 1：</strong> 如果<strong>初始化成功</strong> mState==OK
+<ul>
+<li><strong>步骤 1：</strong>  先检查并更新上一帧：==<code>CheckReplacedInLastFrame()</code>==</li>
+<li><strong>步骤 2 情形 ①：</strong> 如果当前运动模型为空或刚完成重定位，则<strong>跟踪关键帧</strong>：==<code>TrackReferenceKeyFrame()</code>==</li>
+<li><strong>步骤 2 情形 ②：</strong> 如果有运动速度，则使用<strong>恒速运动模型</strong>（跟踪上一帧）：==<code> TrackWithMotionModel()</code>==
+<ul>
+<li>如果恒速运动跟踪失败，则再考虑跟踪参考帧：<code>TrackReferenceKeyFrame()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>情形 2：</strong> 如果<strong>初始化不成功</strong>，则只能重定位：==<code>Relocalization()</code>==</li>
+</ul>
+</li>
+<li><strong>情形二： 定位模式</strong>：<code>mbOnlyTracking = true</code>
+<ul>
+<li><strong>情形 1：</strong> 如果<strong>跟丢了</strong>：<code>mState==LOST</code>，只能进行重定位：<code>bOK = Relocalization();</code>；</li>
+<li><strong>情形 2：</strong> 如果<strong>没有跟丢</strong>
+<ul>
+<li><strong>情形 ①：</strong> 如果跟踪了较多的地图点 <code>mbVO=false</code>
+<ul>
+<li>情形 A： 如果有运动速度，则使用<strong>恒速运动模型</strong>：<code>bOK = TrackWithMotionModel();</code></li>
+<li>情形 B： 如果当前运动模型为空或刚完成重定位，则<strong>跟踪关键帧</strong>：<code>bOK = TrackReferenceKeyFrame();</code></li>
+</ul>
+</li>
+<li><strong>情形 ②：</strong> 如果跟踪地图点较少（少于 10 ）
+<ul>
+<li>步骤 ①： 如果有运动速度，则使用<strong>恒速运动模型</strong>：<code>bOK = TrackWithMotionModel();</code></li>
+<li>步骤 ②： 同时使用<strong>重定位</strong>得到当前帧的位姿</li>
+<li>步骤 ③： 两者只要有一个成功了，则认为跟踪成功，并且<strong>重定位与跟踪，更相信重定位</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted -->**步骤四：  局部地图跟踪（小回环优化）**<!-- raw HTML omitted -->
+<ul>
+<li>==<code>TrackLocalMap()</code>==</li>
+<li>局部地图 local map：包括当前帧、当前帧的MapPoints、当前关键帧与其它关键帧共视关系；</li>
+<li><strong>局部地图的更新</strong>：更新关键帧和地图点，更新运动模型，清除当前帧中不好的点；</li>
+<li><strong>通过两帧之间的匹配得到初始位姿之后，现在对局部地图进行跟踪，搜索地图点，获得局部地图与当前帧的匹配，得到更多的匹配，最小化冲投影误差优化当前帧的位姿</strong>；</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted --><strong>步骤五：  生成关键帧</strong><!-- raw HTML omitted -->
+<ul>
+<li>步骤 1：判断<strong>是否生成关键帧</strong>：==<code>bool Tracking::NeedNewKeyFrame()</code>==；
+<ul>
+<li><strong>生成关键帧条件</strong> : 很⻓时间没有插入关键帧，局部地图空闲，跟踪快要跟丢，跟踪地图的 <code>MapPoints</code> 地图点比例比较少；</li>
+</ul>
+</li>
+<li>步骤 2：创建<strong>新的关键帧</strong>：==<code>void Tracking::CreateNewKeyFrame()</code>==。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="02-两种工作模式">0.2 两种工作模式</h3>
+<p> 在 Pangolin 可视化界面可以选择两种工作模式</p>
+<ul>
+<li><!-- raw HTML omitted --><strong>同时定位与建图模式</strong><!-- raw HTML omitted -->：<code>mbOnlyTracking = false</code>
+<ul>
+<li>在<strong>跟踪</strong>线程的同时有<strong>局部建图</strong>和<strong>回环检测</strong>。</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted --><strong>仅跟踪模式</strong><!-- raw HTML omitted -->：<code>mbOnlyTracking = true</code>
+<ul>
+<li>不插入新的关键帧，不添加新的地图点，局部地图线程不工作，而且回环检测线程也不会工作，<strong>只跟踪地图中现有的地图点</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="03-五种跟踪状态">0.3 五种跟踪状态</h3>
+<ul>
+<li><strong>SYSTEM_NOT_READY</strong>
+<ul>
+<li>系统没有准备好的状态，一般就是在启动后加载配置文件和词典文件时候的状态；</li>
+</ul>
+</li>
+<li><strong>NO_IMAGES_YET</strong>
+<ul>
+<li>当前无图像，图像复位过、或者第一次运行；</li>
+<li>当等待到了新的一帧，将线程状态改变为 NOT_INITIALIZED。</li>
+</ul>
+</li>
+<li><strong>NOT_INITIALIZED</strong>
+<ul>
+<li>有图像但是跟踪线程没有完成初始化的状态；</li>
+<li>单目相机至少需要两帧来初始化，第一帧建立初始化器，设定该帧作为初始化参考帧。第二帧作为匹配帧，通过这两帧之间进行匹配，进而通过单应性矩阵和基础矩阵计算两帧之间的位姿以及匹配点的深度信息。初始化成功之后初始化地图。</li>
+<li>双目或 RGB-D 相机只需要一帧，设置初始帧位姿，并初始化地图。</li>
+</ul>
+</li>
+<li><strong>OK</strong>
+<ul>
+<li>经过初始化的系统追踪线程就转为 OK 状态，在没有丢帧或者是复位的情况下系统将一直处于 OK 状态；</li>
+<li>处于OK状态的系统就可以进行位姿估计，地图点追踪。</li>
+</ul>
+</li>
+<li><strong>LOST</strong>
+<ul>
+<li>跟踪失败，需要进行重定位。</li>
+</ul>
+</li>
+</ul>
+<h3 id="04-三种跟踪模式">0.4 三种跟踪模式</h3>
+<p>跟踪线程用了三种模式进行跟踪, 分别是</p>
+<ul>
+<li><!-- raw HTML omitted -->① <strong>运动模型跟踪 TrackWithMotionModel()<strong><!-- raw HTML omitted --> <br>
+  假设物体处于匀速运动，那么可以</strong>用上一帧的位姿和速度来估计当前帧的位姿</strong>。上一帧的速度可以通过前面几帧的位
+姿计算得到。这个模型<strong>适用于运动速度和方向比较一致,没有大转动的情形下</strong>,比如匀速运动的汽⻋、机器人、人
+等。而对于运动比较随意的目标,当然就会失效了。此时就要用到下面两个模型。</li>
+<li><!-- raw HTML omitted -->② <strong>参考关键帧跟踪 TrackReferenceKeyFrame()<strong><!-- raw HTML omitted --> <br>
+  假如 motion model 已经失效,那么首先可以</strong>尝试和最近一个关键帧去做匹配( 匹配关键帧中的地图点)</strong> 。毕竟当前帧和上一个关键帧的距离还不是很远。作者利用了 bag of words ( BoW )来加速匹配。<strong>关键帧和当前帧均用字典单词线性向量表示</strong>，单词的描述子肯定比较相近 ，用单词的描述子进行匹配可以<strong>加速匹配</strong>。
+<ul>
+<li>首先,计算当前帧的 BoW，并设定初始位姿为上一帧的位姿；</li>
+<li>其次,根据位姿和 BoW 词典来寻找特征匹配(参⻅ ORB − SLAM (六)回环检测)；</li>
+<li>最后,利用匹配的特征优化位姿(参⻅ ORB − SLAM (五)优化)。</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted -->③ <strong>重定位跟踪 Relocalization()<strong><!-- raw HTML omitted --> <br>
+  假如当前帧与最近邻关键帧的匹配也失败了，意味着此时</strong>当前帧已经丢了</strong>,无法确定其真实位置。此时，只有去<strong>和所有关键帧匹配</strong>，看能否找到合适的位置。
+<ul>
+<li>首先,计算<strong>当前帧的 Bow 向量</strong>。</li>
+<li>其次，利用 BoW 词典选取若干关键帧作为备选(参⻅ ORB − SLAM (六)回环检测)；<strong>计算当前帧的字典单词线性表示向量和所有关键帧的字典单词线性表示向量之间的距离</strong>，选取部分距离短的候选关键帧</li>
+<li>然后，当前帧和候选关键帧分别进行<strong>描述匹配</strong>，寻找<strong>有足够多的特征点匹配的关键帧</strong>;</li>
+<li>最后,利用<strong>特征点匹配迭代求解位姿</strong>( RANSAC 框架下，因为相对位姿可能比较大,局外点会比较多)。</li>
+<li>如果有关键帧有足够多的内点,那么选取该关键帧优化出的位姿。</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted --><strong>选择跟踪模式的依据</strong><!-- raw HTML omitted -->
+<ul>
+<li><strong>A.</strong> <strong>优先选择通过恒速运动模型</strong>，从 LastFrame (上一普通帧)直接预测出(乘以一个固定的位姿变换矩阵)当前帧的姿态；</li>
+<li><strong>B.</strong> 如果是<strong>静止状态或者运动模型匹配失效</strong>(运用恒速模型后反投影发现 LastFrame 的地图点和 CurrentFrame 的特征点匹配很少)，则采用<strong>参考帧模型</strong>，通过<strong>增大参考帧的地图点反投影匹配范围</strong>，获取较多匹配后，计算当前位姿；</li>
+<li><strong>C.</strong> 若这两者均失败,即代表 tracking 失败, mState!=OK ,则<strong>在 KeyFrameDataBase 中用 Bow 搜索 CurrentFrame 的特征点匹配,进行全局重定位 GlobalRelocalization</strong> ,在 RANSAC 框架下使用 <strong>EPnP 求解当前位姿</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="05-局部地图跟踪">0.5 局部地图跟踪</h3>
+<p>  前面三种<strong>跟踪模型都是为了获取相机位姿一个粗略的初值</strong>，后面会通过<strong>跟踪局部地图 TrackLocalMap 对位姿进行 Bundle Adjustment (捆集调整)，进一步优化位姿</strong>。 <br>
+  一旦我们通过上面三种模型获取了初始的相机位姿和初始的特征匹配，就可以<strong>将完整的地图投影到当前帧中去搜索更多的匹配</strong>。但是投影完整的地图，在 large scale 的场景中是很耗计算而且也没有必要的，因此,这里<strong>使用了局部地图 LocalMap 来进行投影匹配</strong>。</p>
+<ul>
+<li><strong>LocalMap 包含：</strong>
+<ul>
+<li>与当前帧相连的关键帧 K1，以及与 K1 相连的关键帧 K2 (<strong>一级二级相连关键帧</strong>)；</li>
+<li>K1 、K2 对应的<strong>地图点</strong>；</li>
+<li><strong>参考关键帧</strong> Kf 。</li>
+</ul>
+</li>
+<li><strong>匹配过程：</strong>
+<ul>
+<li>局部地图点<strong>筛选</strong>
+<ul>
+<li>① 抛弃<strong>投影范围超出相机画面的</strong>；</li>
+<li>② 抛弃观测视⻆和地图点<strong>平均观测方向相差 60° 以上的</strong>；</li>
+<li>③ 抛弃特征点的尺度和地图点的<strong>尺度</strong>(通过高斯金字塔层数表示)<strong>不匹配的</strong>；</li>
+</ul>
+</li>
+<li>计算<strong>当前帧中特征点的尺度</strong>；</li>
+<li>将地图点的描述子和当前帧 ORB 特征的<strong>描述子匹配</strong>，需要根据地图点尺度在初始位姿获取的粗略投影位置附近搜索；</li>
+<li>根据<strong>所有匹配点进行 PoseOptimization 优化</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="1-构造帧">1. 构造帧</h2>
+<p>这部分其实是在进入 Track() 之前进行的，最主要的是进行 ORB 特征提取。</p>
+<h3 id="11-创建特征提取器">1.1 创建特征提取器</h3>
+<ul>
+<li>在构造帧之间，初始化跟踪线程的时候，<strong>创建了三个特征提取器</strong>
+<ul>
+<li>tracking 过程都会用到 <code>mpORBextractorLeft</code> 作为特征点提取器，在单目初始化的时候，会用 <code>mpIniORBextractor</code> 来作为特征点提取器，两者的区别是<strong>后者比前者最多提出的点数多一倍</strong>。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// tracking过程都会用到 mpORBextractorLeft 作为特征点提取器
+</span><span class="c1"></span>    <span class="n">mpORBextractorLeft</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span>  <span class="n">nFeatures</span><span class="p">,</span>      <span class="cm">/* 每一帧提取的特征点数 1000 */</span>
+                                            <span class="n">fScaleFactor</span><span class="p">,</span>   <span class="cm">/* 图像建立金字塔时的变化尺度 1.2 */</span>
+                                            <span class="n">nLevels</span><span class="p">,</span>        <span class="cm">/* 尺度金字塔的层数 8 */</span>
+                                            <span class="n">fIniThFAST</span><span class="p">,</span>     <span class="cm">/* 提取fast特征点的默认阈值 20 */</span>
+                                            <span class="n">fMinThFAST</span><span class="p">);</span>    <span class="cm">/* 如果默认阈值提取不出足够fast特征点，则使用最小阈值 8 */</span>
+<span class="c1">// 如果是双目，tracking 过程中还会用用到 mpORBextractorRight 作为右目特征点提取器
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">sensor</span><span class="o">==</span><span class="n">System</span><span class="o">::</span><span class="n">STEREO</span><span class="p">)</span>
+    <span class="n">mpORBextractorRight</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span><span class="n">nFeatures</span><span class="p">,</span><span class="n">fScaleFactor</span><span class="p">,</span><span class="n">nLevels</span><span class="p">,</span><span class="n">fIniThFAST</span><span class="p">,</span><span class="n">fMinThFAST</span><span class="p">);</span>
+<span class="c1">// 在单目初始化的时候，会用 mpIniORBextractor 来作为特征点提取器
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">sensor</span><span class="o">==</span><span class="n">System</span><span class="o">::</span><span class="n">MONOCULAR</span><span class="p">)</span>
+    <span class="n">mpIniORBextractor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">nFeatures</span><span class="p">,</span><span class="n">fScaleFactor</span><span class="p">,</span><span class="n">nLevels</span><span class="p">,</span><span class="n">fIniThFAST</span><span class="p">,</span><span class="n">fMinThFAST</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>==<code>ORBextractor::ORBextractor()</code>== 构造函数</strong> <br>
+  构造函数位于 <code>ORBextractor.cc</code> 中，传入每一帧提取的特征点数量 nFeatures（1000），高斯金字塔每层之间的缩放尺度 fScaleFactor（1.2），高斯金字塔的层数 nLevels（8），Fast 角点提取时的阈值 fIniThFAST（20）和 fMinThFAST（8）。
+<ul>
+<li><strong>①</strong> 首先计算<strong>每一层相对于原始图像的缩放比例</strong>，存储在 <code>mvScaleFactor</code> 中，同时计算了其平方 <code>mvLevelSigma2</code>，其倒数 <code>mvInvScaleFactor</code> 及其平方的倒数 <code>mvInvLevelSigma2</code>；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nlevels</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// 累乘计算得到缩放系数
+</span><span class="c1"></span>    <span class="n">mvScaleFactor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScaleFactor</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">scaleFactor</span><span class="p">;</span>
+    <span class="c1">// 每层图像相对于初始图像缩放因子的平方.
+</span><span class="c1"></span>    <span class="n">mvLevelSigma2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">mvScaleFactor</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">mvScaleFactor</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>②</strong> 然后<strong>分配各层图像应取的特征点数量</strong>，保证每层的特征点数量是均匀的，用到<strong>等比数列进行分配</strong>，将每层的特征点数存放在 <code>std::vector&lt;int&gt; mnFeaturesPerLevel</code> 中；
+<ul>
+<li>注意：第零层的特征点数是 <code>nfeatures×(1-1/scaleFactor)/(1-(1/scaleFactor)^nlevels)</code>，然后下一层是上一层点数的 <code>1/scaleFactor</code> 倍，以此类推，最后一层兜底；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// STEP 将每层的特征点数量进行均匀控制
+</span><span class="c1"></span><span class="kt">float</span> <span class="n">nDesiredFeaturesPerScale</span> <span class="o">=</span> <span class="n">nfeatures</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">factor</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">pow</span><span class="p">((</span><span class="kt">double</span><span class="p">)</span><span class="n">factor</span><span class="p">,</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">nlevels</span><span class="p">));</span>
+<span class="c1">// STEP 开始逐层计算要分配的特征点个数，顶层图像除外（看循环后面）
+</span><span class="c1"></span><span class="k">for</span><span class="p">(</span> <span class="kt">int</span> <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">level</span> <span class="o">&lt;</span> <span class="n">nlevels</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">level</span><span class="o">++</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// 分配 cvRound : 返回个参数最接近的整数值
+</span><span class="c1"></span>    <span class="n">mnFeaturesPerLevel</span><span class="p">[</span><span class="n">level</span><span class="p">]</span> <span class="o">=</span> <span class="n">cvRound</span><span class="p">(</span><span class="n">nDesiredFeaturesPerScale</span><span class="p">);</span>
+    <span class="c1">// 累计
+</span><span class="c1"></span>    <span class="n">sumFeatures</span> <span class="o">+=</span> <span class="n">mnFeaturesPerLevel</span><span class="p">[</span><span class="n">level</span><span class="p">];</span>
+    <span class="c1">// 乘缩放系数
+</span><span class="c1"></span>    <span class="n">nDesiredFeaturesPerScale</span> <span class="o">*=</span> <span class="n">factor</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>③</strong> 再<strong>复制训练的模板</strong> <code>std::vector&lt;cv::Point&gt; pattern</code>，用于后面<strong>计算描述子的随机采样点集合</strong>；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">pattern0</span><span class="p">,</span> <span class="n">pattern0</span> <span class="o">+</span> <span class="n">npoints</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">back_inserter</span><span class="p">(</span><span class="n">pattern</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>④</strong> 最后通过求 x 坐标对应在半径为 HALF_PATCH_SIZE（15, 使用灰度质心法计算特征点的方向信息时，图像块的半径）的圆上的 y 坐标，<strong>标出了一个圆形区域用来求特征点方向</strong>；
+<ul>
+<li>代码中 umax 存储的是 u 坐标绝对值的最大值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="12-frame-构造函数构造图像帧">1.2 Frame() 构造函数构造图像帧</h3>
+<p>  ==Frame::Frame()== 函数传入图像，时间戳，特征点提取器，字典，相机内参矩阵等参数来构造图像帧。首先把要构造金字塔的相关参数给 Frame 类中的跟金字塔相关的元素，然后提取 ORB 特征。（以下为<strong>单目帧</strong>构造过程）</p>
+<ul>
+<li><strong>步骤一：</strong> 读取传入的特征提取器的相关参数，然后进入 ==<code>Frame::ExtractORB(int flag, const cv::Mat &amp;im)</code>== 进行 <strong>ORB 特征提取</strong>，这一步实际上调用了重载函数操作符 ==<code>ORBextractor::operator()</code>==；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="p">(</span><span class="o">*</span><span class="n">mpORBextractorLeft</span><span class="p">)(</span><span class="n">im</span><span class="p">,</span>	        <span class="c1">// 待提取特征点的图像
+</span><span class="c1"></span>                      <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span>	<span class="c1">// TODO 
+</span><span class="c1"></span>                      <span class="n">mvKeys</span><span class="p">,</span>	<span class="c1">// 输出变量，用于保存提取后的特征点
+</span><span class="c1"></span>                      <span class="n">mDescriptors</span><span class="p">);</span><span class="c1">// 输出变量，用于保存特征点的描述子
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>步骤 1：</strong> <strong>构建图像金字塔</strong> ==<code>ORBextractor::ComputePyramid(cv::Mat image)</code>==
+<ul>
+<li>该函数对传入的图像构造 nlevels 层的金字塔，<code>mvImagePyramid[level]</code> 存储金字塔第 level 层的图像，它是用 <code>resize()</code> 函数得到大小为 <code>level-1</code> 层图像的 <code>scale</code>倍的线性插值后的图像；</li>
+<li>为了方便做卷积计算，用 opencv 提供的 <code>copyMakeBorder()</code> 函数来做边界填充。</li>
+</ul>
+</li>
+<li><strong>步骤 2：</strong> 计算金字塔每层的兴趣点，找到 <strong>FAST关键点</strong> ==<code>ORBextractor::ComputeKeyPointsOctTree(allKeypoints)</code>==
+<ul>
+<li><strong>步骤 ①：</strong> 依次对金字塔每层图像进行操作，首先在图像四周<strong>去掉</strong>长度为 EDGE_THRESHOLD-3 个单位的像素点的<strong>边界</strong>；</li>
+<li><strong>步骤 ②：</strong> 对去掉边界的<strong>图像网格化</strong>，每个窗口的大小为 W=30 个像素的正方形；</li>
+<li><strong>步骤 ③：</strong> 对每个<strong>图像块进行 FAST 角点提取</strong>；
+<ul>
+<li>前面网格化的目的是为了使得每个网格都有特征，从而使得特征点在图像上的分布相对均匀点；</li>
+<li>如果存在有的窗口中提取的特征点数为 0，则降低阈值 minThFAST 继续提取；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">FAST</span><span class="p">(</span><span class="n">mvImagePyramid</span><span class="p">[</span><span class="n">level</span><span class="p">].</span><span class="n">rowRange</span><span class="p">(</span><span class="n">iniY</span><span class="p">,</span><span class="n">maxY</span><span class="p">).</span><span class="n">colRange</span><span class="p">(</span><span class="n">iniX</span><span class="p">,</span><span class="n">maxX</span><span class="p">),</span>	<span class="c1">// 待检测的图像，这里就是当前遍历到的【图像块】
+</span><span class="c1"></span>    <span class="n">vKeysCell</span><span class="p">,</span>	<span class="c1">// 存储角点位置的容器
+</span><span class="c1"></span>    <span class="n">iniThFAST</span><span class="p">,</span>	<span class="c1">// 检测阈值
+</span><span class="c1"></span>    <span class="nb">true</span><span class="p">);</span>		<span class="c1">// 使能非极大值抑制
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>然后对提取出了的关键点 vKeysCell 换算出其位于 level 层的被裁掉边界的图像中的位置，并将每个窗口中的<strong>关键点存入 vToDistributeKeys 容器中，暂时保存着第 level 层图像的关键点</strong>；</li>
+</ul>
+</li>
+<li><strong>步骤 ④：</strong> 将每层的 vToDistributeKeys 送入到 ==<code>ORBextractor::DistributeOctTree()</code>== 中进行<strong>关键点剔除和平分配</strong>
+<ul>
+<li><strong>步骤 A：</strong> 确定四叉树有几个<strong>初始节点</strong>，每个初始节点的 x 方向有多少个像素
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="kt">int</span> <span class="n">nIni</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">maxX</span><span class="o">-</span><span class="n">minX</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">maxY</span><span class="o">-</span><span class="n">minY</span><span class="p">));</span>
+<span class="k">const</span> <span class="kt">float</span> <span class="n">hX</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">maxX</span><span class="o">-</span><span class="n">minX</span><span class="p">)</span><span class="o">/</span><span class="n">nIni</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 B：</strong> 将<strong>关键点分配</strong>到子提取器节点 vector&lt;ExtractorNode*&gt; vpIniNodes 中；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span><span class="p">(</span><span class="n">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">vToDistributeKeys</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// 获取这个关键点对象
+</span><span class="c1"></span>    <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">KeyPoint</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="o">=</span> <span class="n">vToDistributeKeys</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="c1">// 按点的横轴位置，分配给属于那个图像区域的提取器节点（最初的提取器节点）
+</span><span class="c1"></span>    <span class="n">vpIniNodes</span><span class="p">[</span><span class="n">kp</span><span class="p">.</span><span class="n">pt</span><span class="p">.</span><span class="n">x</span><span class="o">/</span><span class="n">hX</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">vKeys</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">kp</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 C：</strong> 当<strong>节点分配到的关键点的个数为 1 时就不再进行分裂</strong>，当节点没有分配到关键点时就删除该节点；</li>
+<li><strong>步骤 D：</strong> 再<strong>根据兴趣点分布,利用四叉树方法对图像进行划分区域</strong>，当 bFinish 的值为 true 时就不再进行区域划分；
+<ul>
+<li>首先对目前的区域进行划分，把每次划分得到的有关键点的子区域设为新的节点，将 nToExpand 参数加 1，并插入到节点列表的前边，删除掉其父节点；只要新节点中的关键点的个数超过一个，就继续划分，继续插入列表前面，继续删除父节点，<strong>直到划分的子区域中的关键点的个数是一个</strong>，然后迭代器加以移动到下一个节点，继续划分区域；</li>
+<li>当划分的区域即<strong>节点的个数大于关键点的个数</strong>或者分裂过程没有增加节点的个数时就将 bFinish 的值设为 true，不再进行划分；</li>
+<li>如果以上条件没有满足，但是满足 ((int)lNodes.size()+nToExpand * 3)&gt;N，表示再分一次即将结束，所以开始按照特征点的数量对节点进行排序，特征点数多的节点优先划分，直到节点数量满足；</li>
+<li>vSizeAndPointerToNode 是前面分裂出来的子节点（n1, n2, n3, n4）中可以分裂的节点。按照它们特征点的排序，先从特征点多的开始分裂，分裂的结果继续存储在 lNodes 中；每分裂一个节点都会进行一次判断，如果 lNodes 中的节点数量大于所需要的特征点数量，退出整个 while(!bFinish) 循环，如果进行了一次分裂，并没有增加节点数量，退出整个 while(!bFinish) 循环；</li>
+<li><strong>取出每一个节点(每个区域)对应的最大响应点，即我们确定的特征点</strong>。</li>
+</ul>
+</li>
+<li>总结：因为经过 FAST 提取出的关键点有很多，当划分的子区域一旦大于 mnFeaturesPerLevel[level] 根据nfeatures 算出的每一个 level 层最多的特征点数的时候就不再进行区域划分了，所以<strong>每个区域内(节点)的关键点数会很多，取出响应值最大的那个就是我们想要的特征点</strong>；这个函数的意义就是<strong>根据mnFeaturesPerLevel，即该层的兴趣点数,对特征点进行剔除，根据 Harris 角点的 score 进行排序，保留正确的</strong>。</li>
+<li>经过以上步骤，我们提出来 level 层在无边界图像中的特征点，并给特征点条件边界补偿及尺度信息。</li>
+</ul>
+</li>
+<li><strong>步骤 ⑤：</strong> 分层<strong>计算关键点的方向</strong> ==<code>computeOrientation()</code>==，具体方向计算在 ==<code>IC_Angle()</code>== 函数中
+<ul>
+<li>为了使得提取的特征点具有旋转不变性，需要计算每个特征点的方向；方法是计算<strong>以特征点为中心</strong>，<strong>以像素为权值的圆形区域上的重心</strong>，以<strong>中心和重心的连线作为该特征点的方向</strong>。</li>
+<li>可参考十四讲中 ORB 特征的介绍。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"> <span class="cm">/* @param[in] image     要进行操作的原图像（块）
+</span><span class="cm">  * @param[in] pt        要计算特征点方向的特征点的坐标
+</span><span class="cm">  * @param[in] u_max     图像块的每一行的u轴坐标边界（1/4）
+</span><span class="cm">  * @return float        角度，弧度制
+</span><span class="cm">  */</span>
+<span class="k">static</span> <span class="kt">float</span> <span class="n">IC_Angle</span><span class="p">(</span>  <span class="k">const</span> <span class="n">Mat</span><span class="o">&amp;</span> <span class="n">image</span><span class="p">,</span>
+                        <span class="n">Point2f</span> <span class="n">pt</span><span class="p">,</span>
+                        <span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">u_max</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤 3：</strong> <strong>描述子计算</strong>：==<code>computeDescriptors()</code>== 函数中调用 ==<code>computeOrbDescriptor()</code>== 函数具体实现
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cm">/**
+</span><span class="cm"> * @brief 计算ORB特征点的描述子
+</span><span class="cm"> * @param[in] kpt       特征点对象
+</span><span class="cm"> * @param[in] img       提取出特征点的图像
+</span><span class="cm"> * @param[in] pattern   随机采样点集
+</span><span class="cm"> * @param[out] desc     用作输出变量，保存计算好的描述子，长度为32*8bit
+</span><span class="cm"> */</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="n">computeOrbDescriptor</span><span class="p">(</span><span class="k">const</span> <span class="n">KeyPoint</span><span class="o">&amp;</span> <span class="n">kpt</span><span class="p">,</span>	<span class="c1">//特征点对象
+</span><span class="c1"></span>                                 <span class="k">const</span> <span class="n">Mat</span><span class="o">&amp;</span> <span class="n">img</span><span class="p">,</span> 	<span class="c1">//提取出特征点的图像
+</span><span class="c1"></span>                                 <span class="k">const</span> <span class="n">Point</span><span class="o">*</span> <span class="n">pattern</span><span class="p">,</span>	<span class="c1">//随机采样点集
+</span><span class="c1"></span>                                 <span class="n">uchar</span><span class="o">*</span> <span class="n">desc</span><span class="p">)</span>		<span class="c1">//用作输出变量，保存计算好的描述子
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>ORB 使用 BRIEF 作为特征描述子，原始的 BRIEF 描述子不具有方向信息，这里就是<strong>通过加入了特征点的方向来计算描述子</strong>，称之为 Steer BRIEF 描述子使其具有较好的<strong>旋转不变特性</strong>；</li>
+<li>在计算的时候需要将这里选取的随机点点集 pattern 的 x 轴方向旋转到特征点的方向，并获得随机点集中某个 idx 所对应的点的灰度；</li>
+<li>brief 描述子由 32 * 8 位组成，其中每一位是来自于<strong>两个像素点灰度的直接比较</strong>，所以每比较出 8bit 结果，需要 16 个随机点（这也就是为什么 pattern 需要+=16）；</li>
+<li>通过对随机点像素灰度的比较，得出 BRIEF 描述子，一共是 32 * 8 = 256 位。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤二：</strong> 检查是否成功提取了本帧的特征点，如果<strong>没有提取到有效的特征则放弃本帧</strong>；</li>
+<li><strong>步骤三：</strong> 对提取的<strong>特征点进行畸变矫正</strong> ==<code>Frame::UndistortKeyPoints()</code>==；
+<ul>
+<li>调用 opencv 提供的 <code>cv::undistortPoints</code> 进行畸变矫正</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> <strong>初始化本帧的地图点</strong>，先默认所有的地图点均为内点
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 初始化存储地图点句柄的vector
+</span><span class="c1"></span><span class="n">mvpMapPoints</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+<span class="c1">// 开始认为默认的地图点均为inlier
+</span><span class="c1"></span><span class="n">mvbOutlier</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="nb">false</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤五：</strong> 判断是否需要进行进行<strong>特殊初始化</strong>,这个过程一般是在第一帧或者是重定位之后进行;</li>
+<li><strong>步骤六：</strong> 将<strong>特征点分配到图像网格</strong>中 ==<code>Frame::AssignFeaturesToGrid()</code>==；
+<ul>
+<li>先创建一个 <code>std::vector&lt;std::size_t&gt; mGrid[FRAME_GRID_COLS][FRAME_GRID_ROWS]</code> 空间存储的是每个图像网格内特征点的 id；</li>
+<li>从类的成员变量中获取<strong>已经去畸变后的特征点</strong>的每一个特征点
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">KeyPoint</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="o">=</span> <span class="n">mvKeysUn</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>并利用 ==<code>Frame::PosInGrid()</code>== 找到该特征点所处的网格，输出为指定的图像特征点所在的图像网格的横纵 id（其实就是图像<strong>网格的坐标</strong>）</li>
+</ul>
+</li>
+<li>根据上一步返回的网格坐标，将该特征点分配到网格中
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">if</span><span class="p">(</span><span class="n">PosInGrid</span><span class="p">(</span><span class="n">kp</span><span class="p">,</span><span class="n">nGridPosX</span><span class="p">,</span><span class="n">nGridPosY</span><span class="p">))</span>
+    <span class="n">mGrid</span><span class="p">[</span><span class="n">nGridPosX</span><span class="p">][</span><span class="n">nGridPosY</span><span class="p">].</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-初始化">2. 初始化</h2>
+<p>  在前面构造完 Frame 图像帧之后即进入到 <strong>Track() 函数，开始真正开始跟踪线程</strong>，<strong>第一步就是判断是否进行了初始化</strong>，分为<strong>单目初始化和双目初始化</strong>的情况。</p>
+<h3 id="21-单目初始化">2.1 单目初始化</h3>
+<p>  单目初始化通过<strong>并行地计算基础矩阵 F 和单应矩阵 H</strong> ，恢复出最开始<strong>两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图</strong>。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">同时计算两个模型：    
+用于平面场景的单应性矩阵 H（4对 3d-2d点对，线性方程组，奇异值分解）    
+用于非平面场景的基础矩阵 F（8对 3d-2d点对，线性方程组，奇异值分解）    
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>步骤一：</strong> 创建<strong>单目初始器</strong>并获取<strong>第一帧图像</strong>（未创建初始器）
+<ul>
+<li>步骤 1：获取第一帧，用 mInitialFrame 表示<strong>第一帧（初始帧）</strong>， mLastFrame 表示上一帧，并对第一帧进行特征提取，<strong>要求特征点数必须大于 100</strong>，<code>mvbPrevMatched</code> 用于存储第一帧中的所有特征点；</li>
+<li>步骤 2：==Initializer::Initializer()== 创建初始器，获取相机内参、参考帧的特征点，初始化估计误差和最大的 RANSAC 迭代次数:；</li>
+<li>用<code>mvIniMatches</code> 表示两帧之间的匹配标志，先填充为 -1 ，也就是均没有匹配。</li>
+</ul>
+</li>
+<li><strong>步骤二：</strong> 获取单目初始化的<strong>第二帧</strong>（单目初始化器已经被创建）
+<ul>
+<li>要求这一帧的特征点数也要大于 100 ，如果小于 100 个，则删除单目初始器 Initializer ，回到步骤一重新创建；</li>
+<li>也就是<strong>只有连续两帧的特征点个数都大于100时，才能继续进行初始化过程</strong>。</li>
+<li>NOTE：步骤一二比较的特征点都是<strong>未经畸变矫正的点</strong> <code>mCurrentFrame.mvKeys</code>。</li>
+</ul>
+</li>
+<li><strong>步骤三：</strong> 在 mInitialFrame 与 mCurrentFrame 中找<strong>匹配的特征点对</strong>
+<ul>
+<li>创建特征匹配器并利用 ==<code>ORBmatcher::SearchForInitialization()</code>== 函数进行<strong>金字塔分层块匹配搜索匹配点对</strong>，返回匹配的数目；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 创建特征匹配器.
+</span><span class="c1"></span><span class="n">ORBmatcher</span> <span class="nf">matcher</span><span class="p">(</span> <span class="mf">0.9</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">// 第一个参数：最佳匹配与次佳匹配的比值，默认为 0.6；第二个参数：是否检查特征点的方向.
+</span><span class="c1">// 针对单目初始化的时候,进行特征点的匹配
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">nmatches</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">.</span><span class="n">SearchForInitialization</span><span class="p">(</span> <span class="n">mInitialFrame</span><span class="p">,</span> <span class="n">mCurrentFrame</span><span class="p">,</span> <span class="c1">// 初始化时的参考帧和当前帧
+</span><span class="c1"></span>                                                <span class="n">mvbPrevMatched</span><span class="p">,</span>               <span class="c1">// 在初始化参考帧中提取得到的特征点
+</span><span class="c1"></span>                                                <span class="n">mvIniMatches</span><span class="p">,</span>                 <span class="c1">// 匹配标志
+</span><span class="c1"></span>                                                <span class="mi">100</span><span class="p">);</span>                         <span class="c1">// 搜索窗口的大小
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>调用 ==<code>ORBmatcher::DescriptorDistance()</code>== 函数<strong>比较两帧之间的描述子距离</strong>，确保距离小于 ORBmatcher::TH_LOW = 50；</li>
+</ul>
+</li>
+<li>SearchForInitialization() 的功能：根据可能<strong>匹配特征点的描述子计算距离</strong>，确定最佳匹配；另外如果<strong>考虑特征点的方向</strong>，则将第一帧中的特征的方向角度减去对应第二帧的特征的方向角度，将值划分为直方图，则会在 0 度和 360 度左右对应的组距比较大，这样就可以对其它<strong>相差太大的角度可以进行剔除</strong>；</li>
+<li>函数<strong>返回的匹配数 nmatches</strong> 小于 100，则回到步骤一，重新初始化，若<strong>大于 100，则进行后续初始化</strong>。</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> ==<code>Initializer::Initialize()</code>== 并行计算 H 模型或 F 模型进行<strong>单目初始化</strong>，得到<strong>两帧间相对运动、初始MapPoints</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpInitializer</span><span class="o">-&gt;</span><span class="n">Initialize</span><span class="p">(</span>  <span class="n">mCurrentFrame</span><span class="p">,</span>      <span class="c1">// 当前帧
+</span><span class="c1"></span>                            <span class="n">mvIniMatches</span><span class="p">,</span>       <span class="c1">// 当前帧和参考帧的特征点的匹配标志
+</span><span class="c1"></span>                            <span class="n">Rcw</span><span class="p">,</span> <span class="n">tcw</span><span class="p">,</span>           <span class="c1">// 初始化得到的相机的位姿
+</span><span class="c1"></span>                            <span class="n">mvIniP3D</span><span class="p">,</span>           <span class="c1">// 进行三角化得到的空间点集合
+</span><span class="c1"></span>                            <span class="n">vbTriangulated</span><span class="p">))</span>    <span class="c1">// 以及对应于mvIniMatches来讲,其中哪些点被三角化了
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>步骤 1：筛选出匹配的点对，<code>mvIniMatches</code> 存储匹配标志，将标志 &gt;= 0 的点索引关系保存到 mvMatches12
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">if</span><span class="p">(</span><span class="n">vMatches12</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">mvMatches12</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">make_pair</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">vMatches12</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
+    <span class="n">mvbMatched1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 2：在所有匹配特征点对中随机选择 <strong>8 对匹配特征点为一组</strong>，共选择 <code>Initializer::mMaxIterations</code> 组，其中 mMaxIterations 是最大的 RANSAC迭代次数，在初始化初始器的时候赋值为 200；
+<ul>
+<li>产生的点对保存在 mvSets 中，用于<strong>保存每次迭代时所使用的向量，保存八对点进行单应矩阵和基础矩阵估计</strong>。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mvSets</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="o">&gt;</span><span class="p">(</span>  <span class="n">mMaxIterations</span><span class="p">,</span>		<span class="c1">// 最大的RANSAC迭代次数 200
+</span><span class="c1"></span>                                    <span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">0</span><span class="p">));</span>	<span class="c1">// 
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li>步骤 3：<strong>多线程计算基础矩阵和单应矩阵</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 计算 homography 矩阵并打分.
+</span><span class="c1"></span><span class="kr">thread</span> <span class="nf">threadH</span><span class="p">(</span> <span class="o">&amp;</span><span class="n">Initializer</span><span class="o">::</span><span class="n">FindHomography</span><span class="p">,</span>	<span class="c1">// 计算单应矩阵的函数
+</span><span class="c1"></span>                <span class="k">this</span><span class="p">,</span>				<span class="c1">//NOTE 由于主函数为类的成员函数，所以第一个参数就应该是当前对象的this指针
+</span><span class="c1"></span>                <span class="n">ref</span><span class="p">(</span><span class="n">vbMatchesInliersH</span><span class="p">),</span> 	<span class="c1">//输出，特征点对的 Inlier 标记
+</span><span class="c1"></span>                <span class="n">ref</span><span class="p">(</span><span class="n">SH</span><span class="p">),</span> 			<span class="c1">//输出，计算的单应矩阵的 RANSAC 评分
+</span><span class="c1"></span>                <span class="n">ref</span><span class="p">(</span><span class="n">H</span><span class="p">));</span>			<span class="c1">//输出，计算的单应矩阵结果
+</span><span class="c1">// 计算 fundamental 矩阵并打分.
+</span><span class="c1"></span><span class="kr">thread</span> <span class="nf">threadF</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Initializer</span><span class="o">::</span><span class="n">FindFundamental</span><span class="p">,</span><span class="k">this</span><span class="p">,</span><span class="n">ref</span><span class="p">(</span><span class="n">vbMatchesInliersF</span><span class="p">),</span> <span class="n">ref</span><span class="p">(</span><span class="n">SF</span><span class="p">),</span> <span class="n">ref</span><span class="p">(</span><span class="n">F</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>线程一：计算<strong>单应矩阵</strong>及其得分 ==<code>Initializer::FindHomography()</code>==
+<ul>
+<li>步骤 ①：利用 ==<code>Initializer::Normalize()</code>== 函数<strong>归一化特征点的尺度</strong>，固定场景尺度；</li>
+<li>步骤 ②：利用 ==<code>Initializer::ComputeH21()</code>== 函数<strong>八点法计算 homography 矩阵</strong>；</li>
+<li>步骤 ③：利用 ==<code>Initializer::CheckHomography()</code>== 函数求取 <strong>利用重投影误差为 RANSAC 的结果评分</strong>；</li>
+<li>步骤 ④：记录最大的得分。</li>
+</ul>
+</li>
+<li>线程二：计算<strong>本质矩阵</strong>及其得分 ==<code>Initializer::FindFundamental()</code>==
+<ul>
+<li>步骤 ①：利用 ==<code>Initializer::Normalize()</code>== 函数<strong>归一化特征点的尺度</strong>，固定场景尺度；</li>
+<li>步骤 ②：利用 ==<code>Initializer::ComputeF21()</code>== 函数<strong>八点法计算 fundamental 矩阵</strong>；</li>
+<li>步骤 ③：利用 ==<code>Initializer::CheckFundamental()</code>== 函数求取 <strong>利用重投影误差为 RANSAC 的结果评分</strong>；</li>
+<li>步骤 ④：记录最大的得分。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>步骤 4：计算两个矩阵的得分比，判断选择哪个模型,判断谁的评分占比更多一些，注意不是简单的评分大，而是看评分的占比。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="n">RH</span> <span class="o">=</span> <span class="n">SH</span><span class="o">/</span><span class="p">(</span><span class="n">SH</span><span class="o">+</span><span class="n">SF</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 5：从选择的 <strong>F 矩阵或 H 矩阵中恢复当前帧相对于第一帧的位姿 R,t</strong>完成初始化；
+<ul>
+<li>情形一： RH &gt; 0.40，偏向于平面，从单应矩阵恢复 ==<code>Initializer::ReconstructH()</code>==；</li>
+<li>情形二： RF &gt; 0.60，偏向于非平面，从基础矩阵恢复 ==<code>Initializer::ReconstructF()</code>==。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤五：</strong> 删除无法三角化的匹配点，其中 <code>mvIniMatches</code> 是两帧之间特征点的匹配标志，<code>vbTriangulated</code> 是其对应的三角化标志。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span><span class="p">(</span><span class="n">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">iend</span> <span class="o">=</span> <span class="n">mvIniMatches</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">iend</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">mvIniMatches</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">vbTriangulated</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="p">{</span>
+        <span class="n">mvIniMatches</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">nmatches</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤六：</strong> 设置<strong>初始两帧的世界坐标位姿</strong>
+<ul>
+<li><strong>初始帧的位姿设置为单位矩阵</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mInitialFrame</span><span class="p">.</span><span class="n">SetPose</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">::</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">CV_32F</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>当前帧（第二帧）的位姿有前面<strong>矩阵恢复出的 R,t 构造</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 由Rcw和tcw构造Tcw,并赋值给mTcw，mTcw为世界坐标系到该帧的变换矩阵
+</span><span class="c1"></span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">Tcw</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">::</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">CV_32F</span><span class="p">);</span>
+<span class="n">Rcw</span><span class="p">.</span><span class="n">copyTo</span><span class="p">(</span><span class="n">Tcw</span><span class="p">.</span><span class="n">rowRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">).</span><span class="n">colRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span>
+<span class="n">tcw</span><span class="p">.</span><span class="n">copyTo</span><span class="p">(</span><span class="n">Tcw</span><span class="p">.</span><span class="n">rowRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">).</span><span class="n">col</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+<span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">SetPose</span><span class="p">(</span><span class="n">Tcw</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤七：</strong> ==<code>Tracking::CreateInitialMapMonocular()</code>== 将三角化得到的点包装成<strong>地图点 MapPoints</strong>，<strong>创建初始地图</strong>，使用最小化重投影误差 BA 进行地图优化，优化位姿和地图点；
+<ul>
+<li><strong>步骤 1：</strong> <strong>创建初始关键帧</strong>，认为单目初始化时候的参考帧和当前帧都是关键帧 ==<code>KeyFrame::KeyFrame()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">KeyFrame</span><span class="o">*</span> <span class="n">pKFini</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyFrame</span><span class="p">(</span><span class="n">mInitialFrame</span><span class="p">,</span> <span class="n">mpMap</span><span class="p">,</span> <span class="n">mpKeyFrameDB</span><span class="p">);</span>
+<span class="n">KeyFrame</span><span class="o">*</span> <span class="n">pKFcur</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyFrame</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">,</span> <span class="n">mpMap</span><span class="p">,</span> <span class="n">mpKeyFrameDB</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 2：</strong> 将初始化的两帧关键帧的<strong>描述子转换成 BoW</strong> ==<code>Frame::ComputeBoW()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pKFini</span><span class="o">-&gt;</span><span class="n">ComputeBoW</span><span class="p">();</span>
+<span class="n">pKFcur</span><span class="o">-&gt;</span><span class="n">ComputeBoW</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 3：</strong> <strong>将关键帧插入到地图</strong>，凡是关键帧都需要插入到地图 ==<code>Map::AddKeyFrame(KeyFrame *pKF)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">AddKeyFrame</span><span class="p">(</span><span class="n">pKFini</span><span class="p">);</span>
+<span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">AddKeyFrame</span><span class="p">(</span><span class="n">pKFcur</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 4：</strong> <strong>将 3D 点包装成 MapPoints</strong>
+<ul>
+<li>步骤 ①：<strong>构造地图点</strong> ==<code>MapPoint::MapPoint()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">MapPoint</span><span class="o">*</span> <span class="n">pMP</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapPoint</span><span class="p">(</span><span class="n">worldPos</span><span class="p">,</span>  <span class="c1">// 3D 点的世界坐标.
+</span><span class="c1"></span>                             <span class="n">pKFcur</span><span class="p">,</span>    <span class="c1">// 对应的关键帧.
+</span><span class="c1"></span>                             <span class="n">mpMap</span><span class="p">);</span>    <span class="c1">// 地图.
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ②：<strong>添加地图点到关键帧</strong> ==<code>KeyFrame::AddMapPoint(MapPoint *pMP, const size_t &amp;idx)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pKFini</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pMP</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>                 <span class="c1">// 第一个参数是地图点，第二个参数是地图点在关键帧中的索引.
+</span><span class="c1"></span><span class="n">pKFcur</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pMP</span><span class="p">,</span><span class="n">mvIniMatches</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ③：记录关键帧的哪个特征点能观察到该地图点； ==<code>MapPoint::AddObservation(KeyFrame* pKF, size_t idx)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pMP</span><span class="o">-&gt;</span><span class="n">AddObservation</span><span class="p">(</span><span class="n">pKFini</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+<span class="n">pMP</span><span class="o">-&gt;</span><span class="n">AddObservation</span><span class="p">(</span><span class="n">pKFcur</span><span class="p">,</span><span class="n">mvIniMatches</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ④：从众多观测到该 MapPoint 的特征点中挑选区分度最高的描述子 ==<code>MapPoint::ComputeDistinctiveDescriptors()</code>==</li>
+<li>步骤 ⑤：更新该 MapPoint 平均观测方向以及观测距离的范围 ==<code>MapPoint::UpdateNormalAndDepth()</code>==</li>
+<li>步骤 ⑥：<strong>在地图中添加该 MapPoint</strong>  ==<code>AddMapPoint(MapPoint *pMP)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pMP</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤 5：</strong> <strong>更新关键帧间的连接关系</strong> ==<code>KeyFrame::UpdateConnections()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pKFini</span><span class="o">-&gt;</span><span class="n">UpdateConnections</span><span class="p">();</span>
+<span class="n">pKFcur</span><span class="o">-&gt;</span><span class="n">UpdateConnections</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>在 3D 点和关键帧之间建立边，每个边有一个权重，边的<strong>权重是该关键帧与当前帧公共 3D 点的个数</strong></li>
+</ul>
+</li>
+<li><strong>步骤 6：</strong> <strong>BA 优化</strong> ==<code>Optimizer::GlobalBundleAdjustemnt()</code>==</li>
+<li><strong>步骤 7：</strong> 将 MapPoints 的中值深度归一化到1，并归一化两帧之间变换；</li>
+<li><strong>步骤 8：</strong> 更新状态量，包括关键帧、地图点信息，更新地图绘制器。</li>
+</ul>
+</li>
+<li>单目初始化结束。</li>
+</ul>
+<h3 id="22-双目rgb-d-初始化">2.2 双目/RGB-D 初始化</h3>
+<p>  <strong>双目相机通过视差获取深度，RGB-D 相机直接获取深度信息</strong>，得到 3D 点，创建地图点并初始化地图。</p>
+<ul>
+<li><strong>步骤一：</strong> 要求当前帧的<strong>特征点数大于 500</strong> 再进行下面的初始化步骤；</li>
+<li><strong>步骤二：</strong> 设置当前帧的<strong>初始位姿为单位矩阵</strong>，T = [I 0]，世界坐标系 ；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">SetPose</span><span class="p">(</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">::</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">CV_32F</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤三：</strong> 将当前初始化帧构造为<strong>初始关键帧</strong>， ==<code>KeyFrame::KeyFrame()</code>== 完成<strong>关键帧对象的初始化</strong>，包括设置<strong>关键帧的 ID，位姿，将普通帧的格点关键点</strong>数量（加速匹配）统计赋值给关键帧（加速匹配）
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">KeyFrame</span><span class="o">*</span> <span class="n">pKFini</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyFrame</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">,</span> <span class="n">mpMap</span><span class="p">,</span> <span class="n">mpKeyFrameDB</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤四：</strong> 将初始<strong>关键帧添加到全局地图中</strong> ==<code>Map::AddKeyFrame(KeyFrame *pKF)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">AddKeyFrame</span><span class="p">(</span><span class="n">pKFini</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤五：</strong> 为每个特征点<strong>构造地图点</strong>
+<ul>
+<li>步骤 1：首先要求<strong>深度</strong> <code>float z = mCurrentFrame.mvDepth[i]</code> <strong>为正</strong>（RGB-D 相机直接获取，双目在构造帧时根据视差计算），然后通过<strong>反投影</strong> ==<code>KeyFrame::UnprojectStereo()</code>== 得到该<strong>特征点世界坐标系的 3D 坐标</strong>；</li>
+<li>步骤 2：将该 <strong>3D 点构造成地图点</strong> ==<code>MapPoint::MapPoint()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">MapPoint</span><span class="o">*</span> <span class="n">pNewMP</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapPoint</span><span class="p">(</span><span class="n">x3D</span><span class="p">,</span><span class="n">pKFini</span><span class="p">,</span><span class="n">mpMap</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 3：为该 MapPoint <strong>添加属性</strong>，同<strong>单目初始化步骤四中的步骤 ③ ④ ⑤</strong>；</li>
+<li>步骤 4：<strong>在地图中添加该 MapPoint</strong>  ==<code>AddMapPoint(MapPoint *pMP)</code>==；</li>
+<li>步骤 5：记录关键帧的哪个特征点能观察到该地图点； ==<code>MapPoint::AddObservation(KeyFrame* pKF, size_t idx)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pKFini</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pNewMP</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 6：将该 MapPoint <strong>添加到当前帧的 mvpMapPoints 中</strong>，为当前 Frame 的特征点与 MapPoint 之间建立索引.
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">pNewMP</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤六：</strong> 将该初始<strong>关键帧添加到局部地图</strong>中
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpLocalMapper</span><span class="o">-&gt;</span><span class="n">InsertKeyFrame</span><span class="p">(</span><span class="n">pKFini</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤七：</strong> 更新状态量
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 当前帧变上一帧（变为上一个普通帧和关键帧）.
+</span><span class="c1"></span><span class="n">mLastFrame</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">);</span>
+<span class="n">mnLastKeyFrameId</span> <span class="o">=</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mnId</span><span class="p">;</span>
+<span class="n">mpLastKeyFrame</span> <span class="o">=</span> <span class="n">pKFini</span><span class="p">;</span>
+
+<span class="c1">// 添加到局部地图帧集合.
+</span><span class="c1"></span><span class="n">mvpLocalKeyFrames</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pKFini</span><span class="p">);</span>
+
+<span class="c1">// 局部地图中添加所有特征点.
+</span><span class="c1"></span><span class="n">mvpLocalMapPoints</span> <span class="o">=</span> <span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">GetAllMapPoints</span><span class="p">();</span>
+
+<span class="c1">// 更新参考帧.
+</span><span class="c1"></span><span class="n">mpReferenceKF</span> <span class="o">=</span> <span class="n">pKFini</span><span class="p">;</span>
+<span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mpReferenceKF</span> <span class="o">=</span> <span class="n">pKFini</span><span class="p">;</span>
+
+<span class="c1">// 把当前（最新的）局部 MapPoints 作为地图参考地图点 ReferenceMapPoints
+</span><span class="c1">// ReferenceMapPoints 是 DrawMapPoints 函数画图的时候用的
+</span><span class="c1"></span><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">SetReferenceMapPoints</span><span class="p">(</span><span class="n">mvpLocalMapPoints</span><span class="p">);</span>
+<span class="c1">// 地图关键帧
+</span><span class="c1"></span><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">mvpKeyFrameOrigins</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pKFini</span><span class="p">);</span>
+
+<span class="c1">// 更新可视化线程地图绘制器.
+</span><span class="c1"></span><span class="n">mpMapDrawer</span><span class="o">-&gt;</span><span class="n">SetCurrentCameraPose</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mTcw</span><span class="p">);</span>
+
+<span class="c1">// 更新追踪状态.
+</span><span class="c1"></span><span class="n">mState</span> <span class="o">=</span> <span class="n">OK</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>双目/RGB-D 初始化结束。</li>
+</ul>
+<hr>
+<h2 id="3-帧间位姿估计">3. 帧间位姿估计</h2>
+<ul>
+<li>在前面完成<strong>初始化之后就开始正常两帧之间的跟踪与位姿估计</strong>了，首先需要判断跟踪的模式是 <strong>SLAM 模式还是仅定位模式</strong>，再根据不同的状态选择<strong>恒速运动模型</strong>、<strong>跟踪参考关键帧模型</strong>还是<strong>重定位模型</strong>；</li>
+<li>在 SLAM 模式下，如果初始化成功了，先<strong>检查上一帧地图点的替换情况</strong>（因为两两帧之间的跟踪需要用到上一帧的信息），然后再根据不同的状态选择跟踪模式。
+<ul>
+<li>==<code>Tracking::CheckReplacedInLastFrame()</code>== 函数检查替换情况，函数内再调用 ==<code>MapPoint* MapPoint::GetReplaced()</code>== 函数<strong>返回替换的地图点</strong> <code>MapPoint* mpReplaced</code>
+<ul>
+<li>实际上地图点替换发生在<strong>闭环</strong>的时候 ==<code>MapPoint::Replace(MapPoint* pMP)</code>== <strong>局部线程可能会对地图点进行替换</strong>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="31-跟踪参考关键帧模型">3.1 跟踪参考关键帧模型</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">if</span><span class="p">(</span><span class="n">mVelocity</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">||</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mnId</span> <span class="o">&lt;</span> <span class="n">mnLastRelocFrameId</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">bOK</span> <span class="o">=</span> <span class="n">TrackReferenceKeyFrame</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>==<code>bool Tracking::TrackReferenceKeyFrame()</code>==</li>
+<li>采用<strong>跟踪参考关键帧模型的条件</strong>：
+<ul>
+<li>相机<strong>没有运动</strong>（运动速度 mVelocity 为空）；</li>
+<li>或者<strong>刚完成重定位</strong>：mCurrentFrame.mnId &lt; mnLastRelocFrameId+2；</li>
+<li>否则会有限考虑运动模型，但<strong>恒速运动模式下匹配到的特征点较少时</strong>又会选择关键帧模型。</li>
+</ul>
+</li>
+<li>基本思想：在以上条件下<strong>尝试和最近一个关键帧 mpReferenceKF 去做特征匹配</strong>，匹配过程中使用 <strong>BOW 向量的正向索引进行加速</strong>
+<ul>
+<li>首先,计算当前帧的 BoW ,并设定初始位姿为上一帧的位姿；</li>
+<li>其次,根据两帧的 BoW 特征向量同属于一个 node 下来加速搜索匹配点对；</li>
+<li>最后,利用匹配的特征优化位姿。</li>
+</ul>
+</li>
+<li><strong>步骤一：</strong> 计算<strong>当前帧特征描述子的词袋向量</strong> ==<code>Frame::ComputeBoW()</code>== （ComputeBoW() 在 Frame 类和 KeyFrame 类中都有）
+<ul>
+<li><code>ComputeBoW()</code> 函数的思想
+<ul>
+<li>将帧中的特征描述子可以用 BOW 词袋向量 <code>mBowVec</code> 来表示，<strong>词袋向量是一个 map ，元素是视觉词汇和权重</strong>；</li>
+<li>用 BOW 向量来代替特征描述子的好处是可以<strong>用词袋向量的正向索引来加速后面的特征匹配过程</strong>；</li>
+<li>正向索引 <code>mFeatVec</code> 是用来储存该图像<strong>生成 BoW 向量时曾经到达过的第 m 层上节点的编号</strong>，以及<strong>路过这个节点的特征的编号</strong>，意义在于当对两幅图像做涉及到特征点的匹配计算时,可以利用“<strong>属于同一单词索引的特征更有可能匹配</strong>”的设定规则来加速匹配；<strong>正向索引实际上也是一个 map</strong>, 元素是<strong>节点 ID 和路过这个节点的特征的编号的 vector</strong>。</li>
+</ul>
+</li>
+<li><strong>步骤 1：</strong> 当当前帧的词袋 <code>DBoW2::BowVector mBowVec</code> 为空时，将当前帧以 opencv 存储的 <strong>Mat 类型描述子转换为 std::vector<a href="cv::Mat">cv::Mat</a> 类型的向量</strong>格式 ==<code>Converter::toDescriptorVector</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">vector</span><span class="o">&lt;</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">&gt;</span> <span class="n">vCurrentDesc</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">::</span><span class="n">toDescriptorVector</span><span class="p">(</span><span class="n">mDescriptors</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>本质上就是将 cv:Mat 转换成 std:vector
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="n">j</span> <span class="o">&lt;</span> <span class="n">Descriptors</span><span class="p">.</span><span class="n">rows</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>// 从描述子这个矩阵中抽取出来存到向量中
+vDesc.push_back(Descriptors.row(j));
+```</p>
+</li>
+<li><strong>步骤 2：</strong> 将特征点的<strong>描述子向量转换成当前帧的词袋向量</strong>，利用 DoW 库提供的 ==<code>transform</code>== 函数
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpORBvocabulary</span><span class="o">-&gt;</span><span class="n">transform</span><span class="p">(</span> <span class="n">vCurrentDesc</span><span class="p">,</span>	<span class="c1">// 当前的描述子vector
+</span><span class="c1"></span>                            <span class="n">mBowVec</span><span class="p">,</span>		<span class="c1">// 输出，词袋向量
+</span><span class="c1"></span>                            <span class="n">mFeatVec</span><span class="p">,</span>		<span class="c1">// 输出，保存有特征点的正向索引 vector
+</span><span class="c1"></span>                            <span class="mi">4</span><span class="p">);</span>			<span class="c1">// 计算正向索引时，储存到达第四层的节点编号
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤二：</strong> 将<strong>当前帧与参考关键帧</strong> mpReferenceKF 进行特征匹配，使用<strong>正向索引加速，计算匹配的特征数量</strong> ==<code>ORBmatcher::SearchByBoW()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">nmatches</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">.</span><span class="n">SearchByBoW</span><span class="p">(</span> <span class="n">mpReferenceKF</span><span class="p">,</span>          <span class="c1">// 参考关键帧
+</span><span class="c1"></span>                                    <span class="n">mCurrentFrame</span><span class="p">,</span>          <span class="c1">// 当前帧
+</span><span class="c1"></span>                                    <span class="n">vpMapPointMatches</span><span class="p">);</span>     <span class="c1">// 存储匹配关系
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>函数介绍：
+<ul>
+<li>参考关键帧与当前帧的<strong>特征匹配</strong>，利用正向索引进行加速, 原理是“属于同一单词索引的特征更有可能匹配”；</li>
+<li>这个函数重载函数, 一个是匹配关键帧和普通帧（也就是这里使用的匹配），另一个是匹配关键帧和关键帧（闭环检测）；</li>
+<li>函数的第三个参数 <code>vpMapPointMatches</code> 用于保存<strong>当前帧 F 中关键点匹配到的地图点 MapPoints</strong>，NULL表示未匹配；</li>
+<li>匹配前需要有一个 ORBmatcher 类对象的初始化过程 <code>ORBmatcher matcher(0.7,true);</code>，初始化过程需要传入两个参数, 一个是一个阈值, 表示<strong>匹配距离最短的距离小于次短距离的 70%</strong> ; 另一个是表示<strong>特征匹配是否检测特征点的方向是否一致</strong>；</li>
+</ul>
+</li>
+<li><strong>步骤 1：</strong> 对<strong>参考关键帧 KF</strong> 的每个特征点，遍历当前<strong>普通帧 F</strong> 中经过与之<strong>同一 node 的特征</strong> <code>KFit-&gt;first == Fit-&gt;first</code>；</li>
+<li><strong>步骤 2：</strong> <strong>求取两帧描述子的距离</strong>
+<ul>
+<li>步骤 ①：遍历 <strong>KF 中属于该 node 的特征点</strong>，匹配时跳过 KF 中地图点是坏点或没有地图点的特征点，然后取出该特征对应的描述子：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">MapPoint</span><span class="o">*</span> <span class="n">pMP</span> <span class="o">=</span> <span class="n">vpMapPointsKF</span><span class="p">[</span><span class="n">realIdxKF</span><span class="p">];</span> <span class="c1">// 取出 KF 中该特征对应的MapPoint
+</span><span class="c1">// 剔除
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">pMP</span><span class="p">)</span>
+    <span class="k">continue</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="n">pMP</span><span class="o">-&gt;</span><span class="n">isBad</span><span class="p">())</span>
+    <span class="k">continue</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="o">&amp;</span><span class="n">dKF</span><span class="o">=</span> <span class="n">pKF</span><span class="o">-&gt;</span><span class="n">mDescriptors</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">realIdxKF</span><span class="p">);</span> <span class="c1">// 取出 KF 中该特征对应的描述子
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ②：遍历 <strong>F 中属于该 node 的特征点</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="o">&amp;</span><span class="n">dF</span> <span class="o">=</span> <span class="n">F</span><span class="p">.</span><span class="n">mDescriptors</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">realIdxF</span><span class="p">);</span> 
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ③：<strong>计算 orb 特征描述子距离</strong> ==<code>ORBmatcher::DescriptorDistance()</code>==，保存最小的、次小的距离，和最小距离对应的 F 特征点的 ID
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="kt">int</span> <span class="n">dist</span> <span class="o">=</span>  <span class="n">DescriptorDistance</span><span class="p">(</span><span class="n">dKF</span><span class="p">,</span><span class="n">dF</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤 3：</strong> 根据<strong>距离阈值</strong>、最佳匹配比次佳<strong>匹配的比例阈值</strong>和<strong>方向</strong>投票<strong>剔除误匹配</strong>，将 <strong>F 匹配的特征点对应的 KF 的地图点</strong>保存到 <code>vpMapPointMatches </code>，用于后面<strong>向 F 添加地图点</strong>；
+<ul>
+<li>距离阈值指的是: 特征描述子之间的最小距离要小于设定的阈值；</li>
+<li>比例阈值指的是: 特征描述子的最小距离要比次最小距离的一定倍数要小；</li>
+<li>角度投票指的是: 在特征匹配的时候，如果图像发生了旋转，那么特征点旋转方向应该一致, 所以可以根据这个原理计算特征点的旋转方向，统计方向偏差直方图，频率最高的三个保留，其他范围内的匹配点剔除。</li>
+</ul>
+</li>
+<li>步骤 4：返回匹配的点对数，正向索引匹配结束。</li>
+<li>补充：保证参考关键帧和当前普通帧的<strong>正向索引的迭代器指向同一个 node 和其特征</strong>的方式
+<ul>
+<li>首先如果两个迭代器指向相同，则两个迭代器迭代的时候正常各自加一，否则，则使用迭代器的 STL 函数 <code>lower_bound()</code> 使二者保持同步；</li>
+<li><code>lower_bound()</code> 在 first 和 last 中的前闭后开区间进行二分查找，返回大于或等于 val 的第一个元素位置，如果所有元素都小于 val,则返回 last 的位置，且 last 的位置是越界的。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤三：</strong> 如果<strong>匹配特征数量少于 15 个</strong>，返回 false，跟踪失败，否则进行下面流程。</li>
+<li><strong>步骤四：</strong> 使用<strong>上一帧 mLastFrame 的位姿作为初始位姿</strong>，根据特征匹配情况进行<strong>当前帧位姿估计</strong>，利用卡方检验剔除外点进行<strong>优化</strong> ==<code>Optimizer::PoseOptimization(&amp;mCurrentFrame)</code>==。</li>
+<li><strong>步骤五：</strong> <strong>剔除外点对应的地图点</strong>，统计内点对应的地图点中<strong>有观测帧的地图点数量</strong>。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 如果对应到的某个特征点是外点
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvbOutlier</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="p">{</span>
+    <span class="c1">// 清除它在当前帧中存在过的痕迹
+</span><span class="c1"></span>    <span class="n">MapPoint</span><span class="o">*</span> <span class="n">pMP</span> <span class="o">=</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvbOutlier</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+    <span class="n">pMP</span><span class="o">-&gt;</span><span class="n">mbTrackInView</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="n">pMP</span><span class="o">-&gt;</span><span class="n">mnLastFrameSeen</span> <span class="o">=</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mnId</span><span class="p">;</span>
+    <span class="n">nmatches</span><span class="o">--</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-&gt;</span><span class="n">Observations</span><span class="p">()</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nmatchesMap</span><span class="o">++</span><span class="p">;</span>  <span class="c1">// 内点中有观测帧的地图点数量
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤七：</strong> 如果<strong>内点中有观测帧的地图点数量大于等于 10</strong>， 返回 true，跟踪成功。</li>
+<li>跟踪参考帧模型完成，估计并优化了当前帧位姿（步骤四），更新了地图。</li>
+</ul>
+<h3 id="32-恒速运动模型">3.2 恒速运动模型</h3>
+<p>  在 SLAM 模式下，<strong>如果不是没有运动速度或刚完成重定位则会优先尝试恒速运动模型</strong>，当匹配的特征点较少时再选择关键帧模式；这个模型是假设物体处于匀速运动，例如匀速运动的汽车、机器人、行人等，就可以<strong>用上一帧的位姿和速度来估计当前帧的位姿</strong>，恒速运动模型实现函数为 ==<code>Tracking::TrackWithMotionModel()</code>==，<strong>匹配是通过投影来与上一帧看到的地图点匹配</strong>，使用的是 ==<code>matcher.SearchByProjection()</code>== 。</p>
+<ul>
+<li><strong>基本思想：</strong>
+<ul>
+<li>使用匀速模型估计的位姿，<strong>将 LastFrame 中临时地图点反投影到当前帧图像像素坐标上</strong>，和当前帧的关键点落在同一个格子内的做描述子匹配搜索可以加快匹配，在投影点附近根据描述子距离进行匹配(需要 &gt;20 对匹配，否则匀速模型跟踪失败，运动变化太大时会出现这种情况)；</li>
+<li>然后以<strong>运动模型预测的位姿为初值</strong>，优化当前位姿，优化完成后再剔除外点，若<strong>剩余的匹配依然 &gt;=10 对</strong>，则跟踪成功，否则跟踪失败，需要 Relocalization。</li>
+</ul>
+</li>
+<li><strong>步骤一：</strong> 创建 ORB <strong>特征提取器</strong>，最小距离 &lt; 0.9 倍次小距离才匹配成功：<code>ORBmatcher matcher(0.9,true);</code>；</li>
+<li><strong>步骤二：</strong> 更新上一帧位姿 ==<code>Tracking::UpdateLastFrame()</code>==
+<ul>
+<li><strong>步骤 1：</strong> 计算<strong>上一帧的位姿</strong>，上一帧位姿 = <strong>上一帧到其参考帧位姿</strong> * <strong>其参考帧到世界坐标系(系统第一帧)位姿</strong>
+<ul>
+<li>步骤 ①： 获取<strong>上一帧的参考帧到世界坐标系的位姿</strong> Trw：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">KeyFrame</span><span class="o">*</span> <span class="n">pRef</span> <span class="o">=</span> <span class="n">mLastFrame</span><span class="p">.</span><span class="n">mpReferenceKF</span><span class="p">;</span><span class="c1">// 上一帧的参考帧.
+</span><span class="c1"></span><span class="n">Trw</span> <span class="o">=</span> <span class="n">pRef</span><span class="o">-&gt;</span><span class="n">GetPose</span><span class="p">();</span><span class="c1">// Trw 上一帧的参考帧的位姿.
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ②： <strong>上一帧的参考帧</strong> <code>mLastFrame.mpReferenceKF</code> <strong>到上一帧</strong> <code>mLastFrame</code> 的变换 Tlr 存储为 <code>mlRelativeFramePoses</code> 的最后一个元素：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">Tlr</span> <span class="o">=</span> <span class="n">mlRelativeFramePoses</span><span class="p">.</span><span class="n">back</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>步骤 ③： 得到<strong>上一帧的位姿</strong>：Tlw = Tlr * Trw
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mLastFrame</span><span class="p">.</span><span class="n">SetPose</span><span class="p">(</span><span class="n">Tlr</span><span class="o">*</span><span class="n">pRef</span><span class="o">-&gt;</span><span class="n">GetPose</span><span class="p">());</span> <span class="c1">// Tlr*Trw = Tlw l:last r:reference w:world
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤 2：</strong> 在上一帧非关键帧的情况下，对于双目和 RGB-D 相机<strong>为上一帧临时生成新的地图点</strong>；因为跟踪过程中需要将上一帧的 MapPoints 投影到当前帧可以缩小匹配范围，加快当前帧与上一帧进行特征点匹配；但这些临时添加的 MapPoints <strong>不加入到 Map 中，在 tracking 的最后会删除</strong>。
+<ul>
+<li>步骤 ①：得到上一帧有深度值的点 <code>vector&lt;pair&lt;float,int&gt; &gt; vDepthIdx;</code>，其中第一个元素是某个点的深度，第二个元素是对应的特征点 id；</li>
+<li>步骤 ②：按照<strong>深度值从小到大</strong>排序：<code>sort(vDepthIdx.begin(),vDepthIdx.end());</code>；</li>
+<li>步骤 ③：按照排序，对那些<strong>没有对应地图点的特征点</strong>或者创建了地图点之后没有被观测到的地图点<strong>创建前 100 个临时地图点</strong> <code>mlpTemporalPoints.push_back(pNewMP);</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤三：</strong> <strong>初始化当前帧的位姿，运动速度 × 上一帧的位姿</strong> <code>mCurrentFrame.SetPose(mVelocity * mLastFrame.mTcw);</code>，同时清空当前帧的地图点；
+<ul>
+<li>其中上一帧的位姿 <code>mLastFrame.mTcw</code> 由步骤二得到；</li>
+<li><strong>运动速度由上一次的跟踪/初始化成功之后得到</strong> <code>mVelocity = mCurrentFrame.mTcw * LastTwc;</code> 也就是上一帧和上一帧的参考帧之间的相对运动 Tcl。</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> 根据匀速运动模型对上一帧的地图点进行跟踪，<strong>在当前帧和上一帧之间搜索匹配点</strong> ==<code>ORBmatcher::SearchByProjection()</code>== 根据上一帧特征点对应的3D点投影的位置和网格搜索缩小特征点匹配范围
+<ul>
+<li>SearchByProjection() 函数思想：通过投影，对上一帧的特征点进行跟踪，将上一帧的 MapPoints 投影到当前帧(根据速度模型可以估计当前帧的 Tcw)，依次<strong>遍历参考帧的 pMapPoints，计算出该 3D 点在当前帧的投影位置</strong>，设定一个<strong>以该点为中心的正方形区域</strong>内的所有特征点，<strong>获得该 3D 点的描述子和这些特征点的描述子之间的距离（单目为 7，否则为 15），找到距离最小的那个特征点</strong>，就是<strong>该 3D 点在当前帧匹配到的特征点</strong>，返回<strong>成功匹配的数量</strong>。</li>
+<li><strong>步骤 1：</strong> 遍历上一帧的地图点，将<strong>上一帧的地图点投影到当前帧</strong>的像素坐标系
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 获取上一帧地图点的世界坐标和相机坐标.
+</span><span class="c1"></span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">x3Dw</span> <span class="o">=</span> <span class="n">pMP</span><span class="o">-&gt;</span><span class="n">GetWorldPos</span><span class="p">();</span>
+<span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">x3Dc</span> <span class="o">=</span> <span class="n">Rcw</span><span class="o">*</span><span class="n">x3Dw</span><span class="o">+</span><span class="n">tcw</span><span class="p">;</span>
+<span class="c1">// 上一帧特征点的 3D 坐标
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">float</span> <span class="n">xc</span> <span class="o">=</span> <span class="n">x3Dc</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="k">const</span> <span class="kt">float</span> <span class="n">yc</span> <span class="o">=</span> <span class="n">x3Dc</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="k">const</span> <span class="kt">float</span> <span class="n">invzc</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">x3Dc</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>  
+<span class="c1">// 利用当前帧的位姿将其投影到当前帧.
+</span><span class="c1"></span><span class="kt">float</span> <span class="n">u</span> <span class="o">=</span> <span class="n">CurrentFrame</span><span class="p">.</span><span class="n">fx</span> <span class="o">*</span> <span class="n">xc</span> <span class="o">*</span> <span class="n">invzc</span> <span class="o">+</span> <span class="n">CurrentFrame</span><span class="p">.</span><span class="n">cx</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">v</span> <span class="o">=</span> <span class="n">CurrentFrame</span><span class="p">.</span><span class="n">fy</span> <span class="o">*</span> <span class="n">yc</span> <span class="o">*</span> <span class="n">invzc</span> <span class="o">+</span> <span class="n">CurrentFrame</span><span class="p">.</span><span class="n">cy</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 2：</strong> 搜索在投影的位置<strong>附近区域的匹配点集合</strong>
+<ul>
+<li>判断当前运动是向前还是向后
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="kt">bool</span> <span class="n">bForward</span> <span class="o">=</span> <span class="n">tlc</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;</span><span class="n">CurrentFrame</span><span class="p">.</span><span class="n">mb</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">bMono</span><span class="p">;</span> <span class="c1">// 非单目情况，如果Z大于基线，则表示前进
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">bool</span> <span class="n">bBackward</span> <span class="o">=</span> <span class="o">-</span><span class="n">tlc</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;</span><span class="n">CurrentFrame</span><span class="p">.</span><span class="n">mb</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">bMono</span><span class="p">;</span> <span class="c1">// 非单目情况，如果Z小于基线，则表示前进
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>确定一个搜索区域，并利用 ==<code>Frame::GetFeaturesInArea()</code>== 函数获取这个<strong>区域网格中的地图点集合</strong> <code>vector&lt;size_t&gt; vIndices2;</code>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// BRIEF 找到在 以x,y为中心,边长为2r的方形内且在[minLevel, maxLevel]的特征点
+</span><span class="c1"></span><span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">Frame</span><span class="o">::</span><span class="n">GetFeaturesInArea</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">float</span> <span class="o">&amp;</span><span class="n">y</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">float</span> <span class="o">&amp;</span><span class="n">r</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">int</span> <span class="n">minLevel</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">int</span> <span class="n">maxLevel</span><span class="p">)</span> <span class="k">const</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤 3：</strong> 计算<strong>当前点与候选匹配集合点的描述子距离</strong>，获得<strong>最近距离的最佳匹配</strong>，但是也要满足距离 &lt;ORBdist；
+<ul>
+<li>如果该特征点已经有对应的 MapPoint 了,则退出该次循环；</li>
+<li>双目和rgbd的情况，需要保证右图的点也在搜索半径以内；</li>
+<li>==<code>ORBmatcher::DescriptorDistance()</code>== 计算描述子距离。</li>
+</ul>
+</li>
+<li><strong>步骤 4：</strong> 根据距离阈值、比例阈值、方向投票<strong>剔除误匹配</strong>。</li>
+</ul>
+</li>
+<li><strong>步骤五：</strong> 如果上一步搜索到的<strong>匹配点数少于 20</strong> 则将半径扩大一倍来搜索，如果还是少于 20 ，则认为<strong>恒速运动模型跟踪失败</strong>。</li>
+<li><strong>步骤六：</strong> 使用匹配点对对当前帧的位姿进行 <strong>G2O 图优化</strong> ==<code>Optimizer::PoseOptimization(Frame *pFrame)</code>== ，仅优化单个普通帧的位姿，地图点不优化。</li>
+<li><strong>步骤七：</strong> <strong>剔除外点对应的地图点</strong>，统计内点对应的地图点中<strong>有观测帧的地图点数量</strong>（与关键帧模式一样）。</li>
+<li><strong>步骤八：</strong> 如果<strong>内点中有观测帧的地图点数量大于等于 10</strong>， 返回 true，跟踪成功。</li>
+<li>恒速运动模型跟踪完成。</li>
+</ul>
+<h3 id="33-重定位">3.3 重定位</h3>
+<p>  假如<strong>恒速运动模型跟踪失败</strong>，与<strong>相邻关键帧匹配也失败</strong>，则认为当前帧已丢失，需要进行<strong>重定位</strong>，通过词袋向量<strong>搜索关键帧数据库</strong>中与之对应的关键帧进行匹配跟踪。重定位实现函数在 ==<code>Tracking::Relocalization()</code>== 中。</p>
+<ul>
+<li><strong>基本思想</strong>
+<ul>
+<li>位置丢失之后，使用当前帧的 <strong>BoW 特征向量在关键帧数据库中匹配最相近的关键帧</strong>，从而求出当前帧位姿；</li>
+<li>由于此时没有好的初始位姿信息，需要使<strong>用传统的 3D-2D 匹配点的 EPnP 算法来求解出一个初始位姿</strong>，之后再使用最小化重投影误差来优化更新位姿。</li>
+</ul>
+</li>
+<li><strong>步骤一：</strong> 计算当前帧特征点的 BoW 词袋向量 ==<code>Frame::ComputeBoW()</code>==，参考 3.1 节跟踪参考帧模型的步骤一；</li>
+<li><strong>步骤二：</strong> <strong>在关键帧数据库中找到与当前帧相似的候选关键帧集合</strong>，词典单词线性表示向量距离较近的一些关键帧；
+<ul>
+<li><strong>步骤 1：</strong> 遍历当前帧词袋的所有 word，并搜索关键帧数据库中与之<strong>存在公共单词的关键帧</strong> <code>list&lt;KeyFrame*&gt; lKFsSharingWords</code>；</li>
+<li><strong>步骤2：</strong> 统计所有闭环候选帧中与当前帧具有<strong>共同单词最多的单词数</strong>，并以它的 0.8 倍作为阈值 <code>minCommonWords</code>；</li>
+<li><strong>步骤3：</strong> 遍历所有闭环候选帧，挑选出共有单词数大于阈值 <code>minCommonWords</code> 且<strong>单词匹配度</strong>大于 minScore 的关键帧，将匹配度和关键帧存入 <code>list&lt;pair&lt;float,KeyFrame*&gt; &gt; lScoreAndMatch</code>；</li>
+<li><strong>步骤4：</strong> 计算<strong>候选帧组得分</strong>，得到最高组得分 <code>bestAccScore</code> ，并以此此得分的 0.75 倍作为阈值<code>minScoreToRetain</code>；
+<ul>
+<li>单单计算当前帧和某一关键帧的相似性是不够的，这里将与关键帧相连（权值最高，共视程度最高）的前十个关键帧归为一组，计算累计得分；</li>
+<li>具体而言：lScoreAndMatch 中每一个 KeyFrame 都把<strong>与自己共视程度较高的帧归为一组</strong>，每一组会计算组得分并记录该组分数最高的 KeyFrame，记录于 lAccScoreAndMatch；</li>
+</ul>
+</li>
+<li><strong>步骤5：</strong> 得到<strong>组得分大于阈值的，组内得分最高的关键帧</strong>作为重定位的候选关键帧。</li>
+</ul>
+</li>
+<li><strong>步骤三：</strong> 进行 ORB <strong>特征匹配</strong>，BoW 加速搜索，要求匹配点数大于 15；
+<ul>
+<li><strong>步骤 1：</strong> 创建 ORB特征点匹配器 最小距离 &lt; 0.75 倍的次小距离则匹配成功：<code>ORBmatcher matcher(0.75,true)</code>；</li>
+<li><strong>步骤 2：</strong> 对<strong>当前帧和候选关键帧进行 BoW 搜索</strong>，<code>SearchByBoW(pKF,mCurrentFrame,vvpMapPointMatches[i])</code>，参考 3.1 节的步骤二 。</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> 使用 <strong>EPnP 算法估计位姿</strong>
+<ul>
+<li>对当前帧和候选帧<strong>创建 PnPsolver 位姿变换求解器</strong> <code>PnPsolver* pSolver = new PnPsolver(mCurrentFrame,vvpMapPointMatches[i]);</code></li>
+<li><strong>迭代求解位姿</strong>过程在 ==<code>PnPsolver::iterate()</code>== 函数中进行，返回当前帧位姿；</li>
+<li>这里会结合 Ransac 随采样序列一致性算法，来提高求解的鲁棒性。</li>
+</ul>
+</li>
+<li><strong>步骤五：</strong> 得到当前帧的初始位姿之后，使用最小化冲投影误差 BA 算法来优化位姿 ==<code>Optimizer::PoseOptimization()</code>==；</li>
+<li><strong>步骤六：</strong> 如果上一步优化之后返回内点较少，会把<strong>参考关键中还没有在当前帧有 2d 匹配的点反投影到当前帧下</strong>，再次搜索 2d 匹配点，实现函数在 ==<code>ORBmatcher::SearchByProjection</code>== 中，具体参考 3.2 节的步骤四。</li>
+<li><strong>步骤七：</strong> 如果内点数量大于 50，则重定位成功。</li>
+</ul>
+<hr>
+<h2 id="4-局部地图跟踪">4. 局部地图跟踪</h2>
+<p>  帧间位姿估计的<strong>三种模型是为了获取当前帧的一个位姿初值</strong>，在前面三种模式每次<strong>跟踪成功之后还需要跟踪局部地图</strong>，进行 <strong>BA 优化</strong>。实现函数在 ==<code>Tracking::TrackLocalMap()</code>== 中。</p>
+<ul>
+<li><strong>基本思想：</strong>
+<ul>
+<li>上面完成初始位姿的跟踪后，需要使用<strong>局部地图(参考帧的一二级共视帧组成)</strong> 来进行<strong>局部地图优化</strong>，来提高鲁棒性；</li>
+<li>局部地图中与当前帧<strong>有公共点</strong>的关键帧序列成为<strong>一级相关帧 K1</strong>；</li>
+<li>与一级相关帧K1有共视地图点的关键帧序列成为<strong>二级相关帧K2</strong>；</li>
+<li>把局部地图中的局部地图点，<strong>投影到当前帧上</strong>，如果在当前帧的视野内进行<strong>位姿优化</strong>。</li>
+</ul>
+</li>
+<li><strong>步骤一：</strong> 对<strong>局部地图进行更新</strong> ==<code>Tracking::UpdateLocalMap()</code>== ，更新局部关键帧 mvpLocalKeyFrames 和局部地图点 mvpLocalMapPoints；
+<ul>
+<li><strong>步骤 1：</strong> 通过局部地图点<strong>设置参考地图点</strong> ==<code>Map::SetReferenceMapPoints()</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">SetReferenceMapPoints</span><span class="p">(</span><span class="n">mvpLocalMapPoints</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 2：</strong> <strong>更新局部关键帧</strong> ==<code>Tracking::UpdateLocalKeyFrames()</code>==，生成对应当前帧的<strong>局部地图(小图)</strong>
+<ul>
+<li>原则：始终<strong>限制局部关键帧(小图中关键帧的数量)数量不超过 80</strong>；</li>
+<li><strong>步骤 ①：</strong> 遍历当前帧的所有 MapPoints，记录所有能观测到这些点的关键帧；</li>
+<li><strong>步骤 ②：</strong> 对上面的关键帧进行筛选，保存为<strong>局部关键帧序列</strong>，筛选策略：
+<ul>
+<li><strong>策略 A：</strong> 能<strong>观测到当前帧 MapPoints 的关键帧</strong>作为局部关键帧；</li>
+<li><strong>策略 B：</strong> 与策略 A 得到的局部关键帧<strong>共视程度很高的关键帧</strong>作为局部关键帧；
+<ul>
+<li><strong>策略 B.1：</strong> 最佳共视的 10 帧，如果共视帧不足10帧,那么就返回所有具有共视关系的关键帧；</li>
+<li><strong>策略 B.2：</strong> 这些帧的子关键帧；</li>
+<li><strong>策略 B.3：</strong> 这些帧的父关键帧。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤 ③：</strong> 更新<strong>当前帧的参考关键帧</strong>，与自己<strong>共视程度最高</strong>的关键帧作为参考关键帧。</li>
+</ul>
+</li>
+<li><strong>步骤 3：</strong> <strong>更新局部地图点</strong> ==<code>Tracking::UpdateLocalPoints()</code>==，所有<strong>局部关键帧包含的地图点</strong>构成局部地图点；
+<ul>
+<li><strong>步骤 ①：</strong> 清空局部地图点；</li>
+<li><strong>步骤 ②：</strong> 将局部关键帧的 MapPoints 添加到 mvpLocalMapPoints；</li>
+<li><strong>步骤 ③：</strong> 同时设置地图点更新标志，来<strong>避免重复添加</strong>出现在多帧上的地图点。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤二：</strong> 在局部地图中<strong>对当前帧搜索匹配点对</strong>，实现函数在 ==<code>Tracking::SearchLocalPoints()</code>== 中
+<ul>
+<li><strong>步骤 1：</strong> 遍历当前帧的特征点，如果已经有相应的 3D 地图点,则进行标记，不需要进行重投影匹配，并且标记已经被遍历过；</li>
+<li><strong>步骤 2：</strong> 遍历局部地图的所有地图点，如果没有被遍历过，<strong>把地图点反投影到当前帧下，保留在当前帧视野内的地图点</strong>；</li>
+<li><strong>步骤 3：</strong> 根据反投影后的2d位置，设置一个半径为 th 的范围进行<strong>搜索匹配点</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">matcher</span><span class="p">.</span><span class="n">SearchByProjection</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">,</span><span class="n">mvpLocalMapPoints</span><span class="p">,</span><span class="n">th</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+<li><strong>步骤三：</strong> 更新局部所有 MapPoints 后对位姿再次<strong>优化</strong> ==<code>Optimizer::PoseOptimization()</code>==；</li>
+<li><strong>步骤四：</strong> 更新地图点状态；</li>
+<li><strong>步骤五：</strong> 如果刚刚进行过<strong>重定位则需要内点匹配点对数大于 50</strong> 才认为跟踪成功，正常情况下，找到的内点匹配点对数大于 30 算成功。</li>
+</ul>
+<hr>
+<h2 id="5-关键帧生成">5. 关键帧生成</h2>
+<h3 id="51-关键帧生成条件判断">5.1 关键帧生成条件判断</h3>
+<p>  在<strong>跟踪成功之后</strong>（三种跟踪模式和地图跟踪成功之后）<strong>判断是否需要创建关键帧</strong>，判断函数在 ==<code>Tracking::NeedNewKeyFrame()</code>== 中</p>
+<ul>
+<li><strong>步骤一：</strong> 系统模式判断，如果<strong>仅仅需要跟踪定位</strong>，不需要建图，那么<strong>不需要新建关键帧</strong>；</li>
+<li><strong>步骤二：</strong> 根据地图中关键帧的数量设置一些参数(系统一开始关键帧少的时候，可以放宽一些条件，多创建一些关键帧)；</li>
+<li><strong>步骤三：</strong> 如果<strong>很长时间（1s）没有插入关键帧</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="kt">bool</span> <span class="n">c1a</span> <span class="o">=</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mnId</span> <span class="o">&gt;=</span> <span class="n">mnLastKeyFrameId</span><span class="o">+</span><span class="n">mMaxFrames</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤四：</strong> 查询局部地图管理器<strong>是否繁忙</strong>，<strong>localMapper 处于空闲状态</strong>,才有生成关键帧的基本条件
+<ul>
+<li>==<code>LocalMapping::AcceptKeyFrames()</code>==</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">bool</span> <span class="n">bLocalMappingIdle</span> <span class="o">=</span> <span class="n">mpLocalMapper</span><span class="o">-&gt;</span><span class="n">AcceptKeyFrames</span><span class="p">();</span>
+<span class="k">const</span> <span class="kt">bool</span> <span class="n">c1b</span> <span class="o">=</span> <span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mnId</span><span class="o">&gt;=</span><span class="n">mnLastKeyFrameId</span><span class="o">+</span><span class="n">mMinFrames</span> <span class="o">&amp;&amp;</span> <span class="n">bLocalMappingIdle</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤五：</strong> <strong>当前帧跟踪到点数量比较少</strong>，tracking 质量较弱
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 跟踪要跪的节奏，0.25和0.3是一个比较低的阈值
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">bool</span> <span class="n">c1c</span> <span class="o">=</span>  <span class="n">mSensor</span><span class="o">!=</span><span class="n">System</span><span class="o">::</span><span class="n">MONOCULAR</span> <span class="o">&amp;&amp;</span>         <span class="c1">//只有在双目的时候才成立
+</span><span class="c1"></span>                <span class="p">(</span><span class="n">mnMatchesInliers</span><span class="o">&lt;</span><span class="n">nRefMatches</span><span class="o">*</span><span class="mf">0.25</span> <span class="o">||</span>   <span class="c1">//和地图点匹配的数目非常少
+</span><span class="c1"></span>                  <span class="n">ratioMap</span><span class="o">&lt;</span><span class="mf">0.3f</span><span class="p">)</span> <span class="p">;</span>                      <span class="c1">//地图点跟踪成功的比例非常小,要挂了
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤六：</strong> 上面条件成立之前必须当<strong>当前帧与之前参考帧（最近的一个关键帧）重复度不是太高</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp">    <span class="c1">// 阈值比c1c要高，与之前参考帧（最近的一个关键帧）重复度不是太高
+</span><span class="c1"></span><span class="k">const</span> <span class="kt">bool</span> <span class="n">c2</span> <span class="o">=</span> <span class="p">((</span><span class="n">mnMatchesInliers</span><span class="o">&lt;</span><span class="n">nRefMatches</span><span class="o">*</span><span class="n">thRefRatio</span> <span class="o">||</span>  <span class="c1">// 总的来说,还是参考关键帧观测到的地图点的数目太少,少于给定的阈值
+</span><span class="c1"></span>                    <span class="n">ratioMap</span><span class="o">&lt;</span><span class="n">thMapRatio</span><span class="p">)</span> <span class="o">&amp;&amp;</span>                   <span class="c1">// 追踪到的地图点的数目比例太少,少于阈值
+</span><span class="c1"></span>                <span class="n">mnMatchesInliers</span><span class="o">&gt;</span><span class="mi">15</span><span class="p">);</span>                         <span class="c1">//匹配到的内点太少
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤七：</strong> 决策<strong>是否需要插入关键帧</strong>：<code>(c1a || c1b || c1c) &amp;&amp; c2</code>
+<ul>
+<li>当<strong>局部地图不繁忙时可以直接插入关键帧</strong>，返回 true；</li>
+<li>tracking 插入关键帧不是直接插入，而且先插入到 mlNewKeyFrames 中，然后 localmapper 再逐个 pop 出来插入到 mspKeyFrames 中，所以<strong>队列里不能阻塞太多关键帧，队列中少于 3 个时可以插入，否则返回 false</strong>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="52-创建关键帧">5.2 创建关键帧</h3>
+<p>  当<strong>上一步返回 true 时，说明可以创建新的关键帧</strong>，创建关键帧具体在 ==<code>Tracking::CreateNewKeyFrame()</code>== 中实现。</p>
+<ul>
+<li><strong>步骤一：</strong> 在保证局部建图器开启的情况下<strong>将当前帧构造为关键帧</strong>；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">KeyFrame</span><span class="o">*</span> <span class="n">pKF</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyFrame</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">,</span><span class="n">mpMap</span><span class="p">,</span><span class="n">mpKeyFrameDB</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤二：</strong> 将<strong>当前关键帧</strong>设置为<strong>当前帧的参考关键帧</strong>；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 在UpdateLocalKeyFrames函数中会将与当前关键帧共视程度最高的关键帧设定为当前帧的参考关键帧
+</span><span class="c1"></span><span class="n">mpReferenceKF</span> <span class="o">=</span> <span class="n">pKF</span><span class="p">;</span>
+<span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mpReferenceKF</span> <span class="o">=</span> <span class="n">pKF</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤三：</strong> 对于双目或 rgbd 摄像头，<strong>为当前帧生成新的 MapPoints</strong>
+<ul>
+<li><strong>步骤1：</strong> 得到当前帧深度小于阈值的特征点；</li>
+<li><strong>步骤2：</strong> 按照深度从小到大排序；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">sort</span><span class="p">(</span><span class="n">vDepthIdx</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="n">vDepthIdx</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤3：</strong> 将距离比较近的点包<strong>装成 MapPoints</strong>，以下添加属性的操作是<strong>每次创建 MapPoint 后都要做</strong>的：
+<ul>
+<li><strong>步骤 ①：</strong> 地图点关联关键帧
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pNewMP</span><span class="o">-&gt;</span><span class="n">AddObservation</span><span class="p">(</span><span class="n">pKF</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 ②：</strong> 关键帧关联地图点
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pKF</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pNewMP</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 ③：</strong> 地图点更新最优区别性的描述子
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pNewMP</span><span class="o">-&gt;</span><span class="n">ComputeDistinctiveDescriptors</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 ④：</strong> 地图点更新深度
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pNewMP</span><span class="o">-&gt;</span><span class="n">UpdateNormalAndDepth</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 ⑤：</strong> 地图添加地图点
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pNewMP</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> <strong>将关键帧加入到待处理队列 <code>mlNewKeyFrames</code> 中</strong>供局部建图线程处理 ==<code>LocalMapping::InsertKeyFrame(KeyFrame *pKF)</code>==
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">InsertKeyFrame</span><span class="p">(</span><span class="n">KeyFrame</span> <span class="o">*</span><span class="n">pKF</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mMutexNewKFs</span><span class="p">);</span>
+    <span class="c1">// 将关键帧插入到列表中
+</span><span class="c1"></span>    <span class="n">mlNewKeyFrames</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pKF</span><span class="p">);</span>
+    <span class="n">mbAbortBA</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<h2 id="6-信息维护与线程同步">6. 信息维护与线程同步</h2>
+<ul>
+<li>地图包含的信息：关键帧、地图点</li>
+<li>更新地图绘制器
+<ul>
+<li>初始化的帧在更新了地图点和关键帧之后更新绘制器 mpMapDrawer-&gt;SetCurrentCameraPose(pKFcur-&gt;GetPose())；</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="r参考资料">【R】参考资料</h2>
+<ul>
+<li>[1] <a href="">吴博师兄 ppt 及注释代码</a></li>
+<li>[1] <a href="">张维智师兄笔记</a></li>
+<li>[2] <a href="https://blog.csdn.net/u012936940/article/details/82120601">ORBSLAM2学习之Tracking线程</a></li>
+<li>[3] <a href="https://blog.csdn.net/qq_30356613/article/details/80586872">一起学ORBSLAM2（4）tracking主线程</a></li>
+<li>[4] <a href="https://www.cnblogs.com/wall-e2/p/8057448.html">orb_slam代码解析(2)Tracking线程</a>（特征提取部分的主要参考）</li>
+<li>[5] <a href="https://blog.csdn.net/weixin_38358435/article/details/81489339">ORB-SLAM2代码整理&ndash;tracking线程</a></li>
+<li>[6] <a href="https://blog.csdn.net/sinat_41328554/article/details/83146989">ORB-SLAM2（二）跟踪线程Tracking.cpp</a></li>
+<li>[7] <a href="https://blog.csdn.net/u010128736/article/details/53339311">ORB-SLAM2详解（四）跟踪</a></li>
+<li>[8] <a href="https://github.com/Ewenwan/MVision/blob/master/vSLAM/%E5%8D%95%E7%9B%AEslam%E5%9F%BA%E7%A1%80.md">ORB-SLAM2 ORB特征点法SLAM</a>（单目初始化主要参考）</li>
+<li>[9] <a href="http://www.fengbing.net/2016/04/23/%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%AE%9E%E7%8E%B0slam3-%E5%88%9D%E5%A7%8B%E4%BD%8D%E5%A7%BF%E4%BC%B0%E8%AE%A11/">一步步实现slam3-初始位置估计1</a></li>
+<li>[10] <a href="https://blog.csdn.net/weixin_39373577/article/details/85957889">ORBmatcher类</a></li>
+</ul>
+<hr>
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li><del>单目初始化时计算单应矩阵和基础矩阵，求其得分，三角化，分解出位姿部分的代码；</del></li>
+<li>恢复出位姿之后初始化地图部分、BA 优化的代码还有点乱。</li>
+<li>跟踪参考帧时、跟踪运动模型确定了当前帧的初始位姿之后的位姿优化 PoseOptimization，<a href="https://github.com/Ewenwan/MVision/blob/master/vSLAM/oRB_SLAM2/readme.md#a-trackingtrackwithmotionmodel-%E8%B7%9F%E8%B8%AA%E4%B8%8A%E4%B8%80%E5%B8%A7%E6%A8%A1%E5%BC%8F%E4%B8%A4%E5%B8%A7%E7%9B%B8%E5%B7%AE%E4%B8%8D%E5%A4%A7%E5%AF%B9%E5%BA%94%E4%BD%8D%E7%BD%AE%E5%8C%BA%E5%9F%9F%E9%A2%86%E5%9F%9F%E5%8D%8A%E5%BE%84%E6%90%9C%E7%B4%A2%E5%8C%B9%E9%85%8D%E7%82%B9%E5%AF%B9">参考</a></li>
+<li>采用运动模型时，先计算上一帧的位姿，通过 Tlw = Tlr * Trw 来计算，难道上一步不是直接返回的上一帧的位姿吗？还是里程计的相对位姿变换？</li>
+<li>pnp 求解过程补充。</li>
+</ul>
+<hr>
+<blockquote>
+<p>2019.04.27     <br>
+<a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a></p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-05-07-nonparametric-pose-graph/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 使用非参数位姿图的物体 SLAM</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-04-06-privacy-preserving/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😀 ORB-SLAM2 代码解读（二）：闭环检测线程 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="0. 闭环检测线程介绍 通过检测闭环来消除 SLAM 系统的累计误差是比较直接且有效的方式，在局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 mlploopKeyFrameQueue 队列" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-05-30-orb-slam2-loop/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😀 ORB-SLAM2 代码解读（二）：闭环检测线程" />
+<meta property="og:description" content="0. 闭环检测线程介绍 通过检测闭环来消除 SLAM 系统的累计误差是比较直接且有效的方式，在局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 mlploopKeyFrameQueue 队列" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-05-30-orb-slam2-loop/" />
+<meta property="article:published_time" content="2019-05-30T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-05-30T00:00:00+08:00" />
+<meta itemprop="name" content=" 😀 ORB-SLAM2 代码解读（二）：闭环检测线程">
+<meta itemprop="description" content="0. 闭环检测线程介绍 通过检测闭环来消除 SLAM 系统的累计误差是比较直接且有效的方式，在局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 mlploopKeyFrameQueue 队列">
+<meta itemprop="datePublished" content="2019-05-30T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-30T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="3558">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😀 ORB-SLAM2 代码解读（二）：闭环检测线程"/>
+<meta name="twitter:description" content="0. 闭环检测线程介绍 通过检测闭环来消除 SLAM 系统的累计误差是比较直接且有效的方式，在局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 mlploopKeyFrameQueue 队列"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😀 ORB-SLAM2 代码解读（二）：闭环检测线程</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-30 </span>
+        <div class="post-category">
+            <a href="/categories/orb-slam2/"> ORB-SLAM2 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            </div>
+          <span class="more-meta"> 约 3558 字 </span>
+          <span class="more-meta"> 预计阅读 8 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-闭环检测线程介绍">0. 闭环检测线程介绍</a>
+      <ul>
+        <li><a href="#01-闭环检测线程创建与运行">0.1 闭环检测线程创建与运行</a></li>
+      </ul>
+    </li>
+    <li><a href="#1-闭环检测">1. 闭环检测</a></li>
+    <li><a href="#2-相似变换">2. 相似变换</a></li>
+    <li><a href="#3-闭环矫正全局-ba">3. 闭环矫正全局 BA</a></li>
+    <li><a href="#r参考资料">【R】参考资料</a></li>
+    <li><a href="#q问题">【Q】问题</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="0-闭环检测线程介绍">0. 闭环检测线程介绍</h2>
+<p>  通过检测闭环来消除 SLAM 系统的<strong>累计误差</strong>是比较直接且有效的方式，在<strong>局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 <code>mlploopKeyFrameQueue</code> 队列中送到闭环检测线程</strong>，进行<strong>闭环检测（BoW 二进制词典匹配检测，通过 Sim3 算法计算相似变换）</strong>，发现闭环之后进行<strong>闭环矫正（闭环融合和图优化）</strong>。</p>
+<h3 id="01-闭环检测线程创建与运行">0.1 闭环检测线程创建与运行</h3>
+<ul>
+<li>闭环检测线程的<strong>创建与运行</strong>在初始化 SLAM 系统时
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpLoopCloser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LoopClosing</span><span class="p">(</span> <span class="n">mpMap</span><span class="p">,</span>                      <span class="c1">//地图
+</span><span class="c1"></span>                                <span class="n">mpKeyFrameDatabase</span><span class="p">,</span>         <span class="c1">//关键帧数据库
+</span><span class="c1"></span>                                <span class="n">mpVocabulary</span><span class="p">,</span>                <span class="c1">//ORB字典
+</span><span class="c1"></span>                                <span class="n">mSensor</span><span class="o">!=</span><span class="n">MONOCULAR</span><span class="p">);</span>        <span class="c1">//当前的传感器是否是单目
+</span><span class="c1"></span><span class="n">mptLoopClosing</span> <span class="o">=</span> <span class="k">new</span> <span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ORB_SLAM2</span><span class="o">::</span><span class="n">LoopClosing</span><span class="o">::</span><span class="n">Run</span><span class="p">,</span>	<span class="c1">//线程的主函数
+</span><span class="c1"></span>                <span class="n">mpLoopCloser</span><span class="p">);</span>			<span class="c1">//该函数的参数
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>闭环检测线程<strong>并行</strong>地运行在 ==<code>LoopClosing::Run()</code>== 函数中
+<ul>
+<li><strong>步骤一：</strong> 判断闭环检测队列 <strong>mlpLoopKeyFrameQueue 中的关键帧是否为空</strong> ==<code>LoopClosing::InsertKeyFrame(KeyFrame *pKF)</code>==；</li>
+<li><strong>步骤二：</strong> 进行<strong>闭环检测</strong> ==<code>LoopClosing::DetectLoop()</code>==；</li>
+<li><strong>步骤三：</strong> 计算闭环处两帧的<strong>相似变换</strong> ==<code>LoopClosing::ComputeSim3()</code>==；</li>
+<li><strong>步骤四：</strong> 进行<strong>闭环矫正</strong>，全局 BA 优化 ==<code>LoopClosing::CorrectLoop()</code>==。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="1-闭环检测">1. 闭环检测</h2>
+<p>  闭环检测在函数 ==<code>LoopClosing::DetectLoop()</code>== 中实现。</p>
+<ul>
+<li><strong>步骤一：</strong> 从 <code>mlpLoopKeyFrameQueue</code> 队列中<strong>取出一个关键帧</strong>，使用互斥锁，保证<strong>不与局部建图线程送入关键帧冲突</strong>，并且在未处理完成之前<strong>将关键帧的属性设置为不可移除</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="p">{</span>
+    <span class="c1">// 从队列中取出一个关键帧
+</span><span class="c1"></span>    <span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mMutexLoopQueue</span><span class="p">);</span>
+    <span class="n">mpCurrentKF</span> <span class="o">=</span> <span class="n">mlpLoopKeyFrameQueue</span><span class="p">.</span><span class="n">front</span><span class="p">();</span>
+    <span class="n">mlpLoopKeyFrameQueue</span><span class="p">.</span><span class="n">pop_front</span><span class="p">();</span>
+    <span class="c1">// Avoid that a keyframe can be erased while it is being process by this thread
+</span><span class="c1"></span>    <span class="n">mpCurrentKF</span><span class="o">-&gt;</span><span class="n">SetNotErase</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤二：</strong> 如果距离上次闭环没多久（小于10帧），或者 map 中关键帧总共还没有 10 帧，则<strong>不进行闭环检测</strong></li>
+<li><strong>步骤三：</strong> 遍历所有共视关键帧，计算<strong>当前关键帧与每个共视关键帧的 bow 相似度得分</strong>，并得到<strong>最低得分 minScore</strong>，这是一个阈值，<strong>如果得分比这个最低得分还要低的话，那么就是说肯定不会成为闭环关键帧</strong>；</li>
+<li><strong>步骤四：</strong> 在所有关键帧中<strong>找出闭环备选帧</strong>，在函数 ==<code>KeyFrameDatabase::DetectLoopCandidates</code>== 中进行；
+<ul>
+<li><strong>步骤 1：</strong> 找出<strong>和当前帧具有公共单词的所有关键帧</strong>（不包括与当前帧链接的关键帧）;</li>
+<li><strong>步骤 2：</strong> 统计所有<strong>闭环候选帧中与当前帧具有共同单词最多的单词数</strong>，并以这个<strong>最多单词数的 0.8 倍作为一个阈值 minCommonWords</strong>；</li>
+<li><strong>步骤 3：</strong> 遍历所有闭环候选帧，挑选出<strong>共有单词数大于 minCommonWords</strong> 且单词匹<strong>配度大于 minScore</strong> 的关键帧存入 <code>list&lt;pair&lt;float,KeyFrame*&gt; &gt; lScoreAndMatch;</code>；</li>
+<li><strong>步骤 4：</strong> 单单计算当前帧和某一关键帧的相似性是不够的，这里<strong>将与关键帧相连（权值最高，共视程度最高）的前十个关键帧归为一组</strong>，计算累计得分，选出最高的组得分，然后以此的0.75 倍作为阈值 minScoreToRetain，得分<strong>大于这个阈值的组，作为得分较高的组</strong>；</li>
+<li><strong>步骤 5：</strong> 只返回累计这些<strong>得分较高的组中分数最高的关键帧</strong>，完成<strong>闭环候选帧的获取</strong>。</li>
+</ul>
+</li>
+<li><strong>步骤五：</strong> 在候选帧中检测具有<strong>连续性的候选帧</strong>
+<ul>
+<li>思想：每次在上一步的数据库查询操作里<strong>找到了候选关键帧之后</strong>，基本上找到的候选关键帧就是我们所要找的闭环关键帧，但是为了<strong>防止错误进行闭环检测</strong>，非常有必要再进行一次<strong>连续性检测</strong>，连续性检测的意思就是，<strong>是否在三个当前的关键帧内都同时发现了某一个闭环候选帧的话</strong>，那么就表明当前的 SLAM 系统已经闭环;</li>
+<li><strong>步骤 1：</strong> 每个<strong>候选帧</strong>将与自己相连的关键帧构成一个<strong>子候选组</strong> spCandidateGroup；</li>
+<li><strong>步骤 2：</strong> 检测“子候选组”中每一个关键帧是否存在于“连续组”，如果存在nCurrentConsistency++；</li>
+<li><strong>步骤 3：</strong> 如果 nCurrentConsistency 大于等于3，那么该<strong>子候选组代表的候选帧</strong>存在<strong>连续性</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-相似变换">2. 相似变换</h2>
+<p>  闭环检测在函数 ==<code>LoopClosing::ComputeSim3()</code>== 中实现。</p>
+<ul>
+<li><strong>步骤一：</strong> 从上一步闭环检测筛选处的<strong>闭环候选帧中逐帧取出</strong>
+<ul>
+<li><strong>步骤 1：</strong> 将当前取出的闭环候选帧<strong>设置为不可移除</strong>，防止在 LocalMapping 线程中 KeyFrameCulling 函数将此关键帧作为冗余帧剔除；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">KeyFrame</span><span class="o">*</span> <span class="n">pKF</span> <span class="o">=</span> <span class="n">mvpEnoughConsistentCandidates</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="n">pKF</span><span class="o">-&gt;</span><span class="n">SetNotErase</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 2：</strong> 将<strong>当前关键帧与闭环候选关键帧进行匹配</strong>，通过 <strong>bow 加速</strong>得到 mpCurrentKF 与 pKF 之间的匹配特征点，vvpMapPointMatches 是匹配特征点对应的 MapPoints
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">nmatches</span> <span class="o">=</span> <span class="n">matcher</span><span class="p">.</span><span class="n">SearchByBoW</span><span class="p">(</span><span class="n">mpCurrentKF</span><span class="p">,</span><span class="n">pKF</span><span class="p">,</span><span class="n">vvpMapPointMatches</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果匹配数少于 20 则跳过；</li>
+<li>否则，则<strong>通过匹配点对构造 Sim3 求解器</strong> Sim3Solver::Sim3Solver() 将上一步得到的匹配的mappoint对，表达成各自坐标系下的空间点，并变化为像平面下的坐标，并设置 Ransac 参数；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// STEP 构造Sim3求解器
+</span><span class="c1">// 如果mbFixScale为true，则是6DoFf优化（双目 RGBD），如果是false，则是7DoF优化（单目）
+</span><span class="c1"></span><span class="n">Sim3Solver</span><span class="o">*</span> <span class="n">pSolver</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Sim3Solver</span><span class="p">(</span><span class="n">mpCurrentKF</span><span class="p">,</span><span class="n">pKF</span><span class="p">,</span><span class="n">vvpMapPointMatches</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">mbFixScale</span><span class="p">);</span>
+<span class="n">pSolver</span><span class="o">-&gt;</span><span class="n">SetRansacParameters</span><span class="p">(</span><span class="mf">0.99</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">300</span><span class="p">);</span><span class="c1">// 至少20个inliers 300次迭代
+</span><span class="c1"></span><span class="n">vpSim3Solvers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pSolver</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤二：</strong> 迭代上一步筛选出的闭环候选关键帧，用相似变换求解器<strong>求解闭环候选帧到当前关键帧的相似变换</strong>，在函数 ==<code>Sim3Solver::iterate()</code>== 中进行，最多迭代 5 次，返回的是两帧之间的 Sim3 变换（T12）。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 对步骤2中有较好的匹配的关键帧求取Sim3变换
+</span><span class="c1"></span><span class="n">Sim3Solver</span><span class="o">*</span> <span class="n">pSolver</span> <span class="o">=</span> <span class="n">vpSim3Solvers</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="c1">// 最多迭代5次，返回的Scm是候选帧pKF到当前帧mpCurrentKF的Sim3变换（T12）
+</span><span class="c1"></span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">Scm</span>  <span class="o">=</span> <span class="n">pSolver</span><span class="o">-&gt;</span><span class="n">iterate</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="n">bNoMore</span><span class="p">,</span><span class="n">vbInliers</span><span class="p">,</span><span class="n">nInliers</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>步骤 1：</strong> 当函数的迭代次数不超过 5 次或总迭代次数不超过 300 次，就<strong>任意取三组点</strong>，然后<strong>根据两组匹配的 3D 点，计算之间的 Sim3 变换</strong>，求解过程在 ==<code>Sim3Solver::ComputeSim3()</code>== 函数中进行；</li>
+<li><strong>步骤 2：</strong> 通过相似变换得到的变换矩阵进行投影，<strong>检查内点</strong>，在函数 ==<code>Sim3Solver::CheckInliers()</code>== 中实现；</li>
+</ul>
+</li>
+<li><strong>步骤三：</strong> 通过步骤二求取的 Sim3 变换引导关键帧匹配<strong>弥补步骤一中的漏匹配</strong>，在函数 ==<code>ORBmatcher::SearchBySim3()</code>== 中进行；
+<ul>
+<li>查找更多的匹配（成功的闭环匹配需要满足足够多的匹配特征点数，之前使用 <strong>SearchByBoW() 进行特征点匹配时会有漏匹配</strong>）,通过 Sim3 变换，确定 pKF1 的特征点在 pKF2 中的大致区域，同理，确定 pKF2 的特征点在 pKF1 中的大致区域，在该区域内<strong>通过描述子进行匹配捕获 pKF1 和 pKF2 之前漏匹配的特征点</strong>，如果成功对上了，则认为是互相匹配上了，更新匹配vpMapPointMatches。</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> 进行 <strong>Sim3 优化</strong>，只要有一个候选帧通过 Sim3 的求解与优化，就跳出停止对其它候选帧的判断，在函数 ==<code>Optimizer::OptimizeSim3()</code>== 中进行；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="kt">int</span> <span class="n">nInliers</span> <span class="o">=</span> <span class="n">Optimizer</span><span class="o">::</span><span class="n">OptimizeSim3</span><span class="p">(</span><span class="n">mpCurrentKF</span><span class="p">,</span> <span class="n">pKF</span><span class="p">,</span> <span class="n">vpMapPointMatches</span><span class="p">,</span> <span class="n">gScm</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">mbFixScale</span><span class="p">);</span><span class="c1">// 卡方chi2检验阈值
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果 mbFixScale 为 true，则是 6DoFf 优化（双目 RGBD），如果是 <strong>false，则是 7DoF 优化（单目</strong>），<strong>优化 mpCurrentKF 与 pKF 对应的 MapPoints 间的 Sim3</strong>，得到优化后的量gScm；</li>
+<li>如果优化后，通过卡方检验的<strong>内点数超过 20</strong> 的话，那么 <strong>mpMatchedKF 就是最终闭环检测出来与当前帧形成闭环的关键帧</strong>，得到从世界坐标系到该候选帧的 Sim3 变换，Scale=1， 得到g2o 优化后<strong>从世界坐标系到当前帧的 Sim3 变换</strong>；</li>
+<li>只要<strong>有一个</strong>候选帧通过Sim3的求解与优化，就跳出<strong>停止对其它候选帧的判断</strong>；</li>
+<li>如果<strong>没有一个</strong>闭环匹配候选帧通过Sim3的求解与优化，<strong>清空</strong> mvpEnoughConsistentCandidates；</li>
+</ul>
+</li>
+<li><strong>步骤五：</strong> 取出<strong>闭环匹配上关键帧的相连关键帧</strong>，得到它们的<strong>地图点 MapPoints</strong> 放入 mvpLoopMapPoints；</li>
+<li><strong>步骤六：</strong> 将闭环匹配上关键帧以及相连关键帧的，地图点 MapPoints <strong>投影到当前关键帧进行投影匹配为当前帧查找更多的匹配</strong>，实现在 ==<code>ORBmatcher::SearchByProjection()</code>== 函数中；</li>
+<li><strong>步骤七：</strong> 统计当前帧与检测出的所有闭环关键帧的 <strong>MapPoints 匹配点数</strong>；
+<ul>
+<li>如果<strong>大于 40 则匹配成功</strong>，清空候选关键帧队列；</li>
+<li>否则跳过该关键帧。</li>
+</ul>
+</li>
+<li>至此完成了对闭环候选帧的选取。</li>
+</ul>
+<hr>
+<h2 id="3-闭环矫正全局-ba">3. 闭环矫正全局 BA</h2>
+<p>  闭环矫正在函数 ==<code>LoopClosing::CorrectLoop()</code>== 中实现。</p>
+<ul>
+<li><strong>步骤一：</strong> 请求<strong>局部地图停止</strong>，防止局部地图线程中 InsertKeyFrame 函数插入新的关键帧；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpLocalMapper</span><span class="o">-&gt;</span><span class="n">RequestStop</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤二：</strong> 根据共视关系<strong>更新当前帧与其它关键帧之间的连接</strong>，在函数 ==<code>KeyFrame::UpdateConnections()</code>== 中更新；</li>
+<li><strong>步骤三：</strong> 通过位姿传播，得到 Sim3 <strong>优化后与当前帧相连的关键帧的位姿</strong>，以及它们的 MapPoints；
+<ul>
+<li><strong>步骤 1：</strong> 通过位姿传播，得到 Sim3 调整后其它与当前帧相连关键帧的位姿（只是<strong>得到</strong>，还没有修正）；</li>
+<li><strong>步骤 2：</strong> 上一步得到调整相连帧位姿后，<strong>修正</strong>这些关键帧的 MapPoints；</li>
+<li><strong>步骤 3：</strong> 将 Sim3 <strong>转换为 SE3</strong>，根据更新的 Sim3，更新关键帧的位姿；</li>
+<li><strong>步骤 4：</strong> 根据<strong>共视关系更新</strong>当前帧与其它关键帧之间的连接；</li>
+</ul>
+</li>
+<li><strong>步骤四：</strong> 检查当前帧的 MapPoints 与闭环匹配帧的 MapPoints 是否存在冲突，<strong>对冲突的 MapPoints进行替换或填补</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">if</span><span class="p">(</span><span class="n">pCurMP</span><span class="p">)</span><span class="c1">// 如果有重复的MapPoint（当前帧和匹配帧各有一个），则用匹配帧的代替现有的
+</span><span class="c1"></span>    <span class="n">pCurMP</span><span class="o">-&gt;</span><span class="n">Replace</span><span class="p">(</span><span class="n">pLoopMP</span><span class="p">);</span>
+<span class="k">else</span><span class="c1">// 如果当前帧没有该MapPoint，则直接添加
+</span><span class="c1"></span><span class="p">{</span>
+    <span class="n">mpCurrentKF</span><span class="o">-&gt;</span><span class="n">AddMapPoint</span><span class="p">(</span><span class="n">pLoopMP</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+    <span class="n">pLoopMP</span><span class="o">-&gt;</span><span class="n">AddObservation</span><span class="p">(</span><span class="n">mpCurrentKF</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+    <span class="n">pLoopMP</span><span class="o">-&gt;</span><span class="n">ComputeDistinctiveDescriptors</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤五：</strong> 通过<strong>将闭环时相连关键帧的 mvpLoopMapPoints 投影到这些关键帧中</strong>，进行 MapPoints 检查与替换，在函数 ==<code>LoopClosing::SearchAndFuse()</code>==  中实现；
+<ul>
+<li>遍历闭环相连的关键帧，将闭环相连帧的 MapPoints 坐标变换到当前帧坐标系，然后投影，<strong>检查冲突并融合</strong>，在函数 ==<code>ORBmatcher::Fuse()</code>== 中实现;</li>
+</ul>
+</li>
+<li><strong>步骤六：</strong> 更新当前关键帧之间的共视相连关系，得到因<strong>闭环时 MapPoints 融合而新得到的连接关系</strong></li>
+<li><strong>步骤七：</strong> 进行 <strong>Essential Graph 优化</strong>，LoopConnections 是形成闭环后新生成的连接关系，不包括下一步中当前帧与闭环匹配帧之间的连接关系，优化在函数 ==<code>Optimizer::OptimizeEssentialGraph()</code>== 中进行；</li>
+<li>步骤八：添加当前帧与闭环匹配帧之间的边（这个连接关系不优化）
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMatchedKF</span><span class="o">-&gt;</span><span class="n">AddLoopEdge</span><span class="p">(</span><span class="n">mpCurrentKF</span><span class="p">);</span>
+<span class="n">mpCurrentKF</span><span class="o">-&gt;</span><span class="n">AddLoopEdge</span><span class="p">(</span><span class="n">mpMatchedKF</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤九：</strong> 新建一个线程用于<strong>全局 BA 优化</strong>，在函数 ==<code>LoopClosing::RunGlobalBundleAdjustment()</code>== 中进入；</li>
+</ul>
+<hr>
+<h2 id="r参考资料">【R】参考资料</h2>
+<ul>
+<li><a href="https://blog.csdn.net/u010128736/article/details/53409199">ORB-SLAM2详解（六）闭环检测</a></li>
+<li><a href="https://blog.csdn.net/chishuideyu/article/details/76165461">ORBSlam2学习研究(Code analysis)-ORBSlam2中的闭环检测和后端优化LoopClosing</a></li>
+<li><a href="https://www.cnblogs.com/wall-e2/p/8686859.html">orb_slam代码解析(4)LocalClosing线程</a></li>
+</ul>
+<hr>
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li><code>ORBmatcher::SearchForTriangulation()</code> 函数判断两帧之间点是否满足极限约束，没有详细展开；</li>
+<li><code>ORBmatcher::Fuse()</code> 相邻关键帧之间的特征点融合没有展开，后续补上；</li>
+<li><code>Sim3Solver::ComputeSim3()</code> sim3 求解的代码对照论文公式，没展开；</li>
+<li><code>Optimizer::OptimizeSim3()</code> sim3 优化没有展开，待补；</li>
+<li><code>Optimizer::OptimizeEssentialGraph</code> 闭环矫正时的 Essential Graph 优化，没展开；</li>
+<li><code>Optimizer::GlobalBundleAdjustemnt()</code> 全局 BA 优化；</li>
+</ul>
+<hr>
+<blockquote>
+<p>2019.05.30     <br>
+<a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a></p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-06-06-plane-reconstruction/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-05-30-orb-slam2-mapping/">
+            <span class="next-text nav-default"> 😀 ORB-SLAM2 代码解读（二）：局部建图线程</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

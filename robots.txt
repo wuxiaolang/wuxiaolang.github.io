@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://wuxiaolang.github.io/sitemap.xml
+Sitemap: https://wuyanmin.coding.me/sitemap.xml

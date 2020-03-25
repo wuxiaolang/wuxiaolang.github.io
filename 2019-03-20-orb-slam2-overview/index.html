@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="注：本文从 mono_tum.cc 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。 ORB-SLAM2 从 mono_tum.cc 开" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-03-20-orb-slam2-overview/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统" />
+<meta property="og:description" content="注：本文从 mono_tum.cc 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。 ORB-SLAM2 从 mono_tum.cc 开" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-03-20-orb-slam2-overview/" />
+<meta property="article:published_time" content="2019-03-20T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-03-20T00:00:00+08:00" />
+<meta itemprop="name" content=" 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统">
+<meta itemprop="description" content="注：本文从 mono_tum.cc 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。 ORB-SLAM2 从 mono_tum.cc 开">
+<meta itemprop="datePublished" content="2019-03-20T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-03-20T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="4100">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统"/>
+<meta name="twitter:description" content="注：本文从 mono_tum.cc 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。 ORB-SLAM2 从 mono_tum.cc 开"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-03-20 </span>
+        <div class="post-category">
+            <a href="/categories/orb-slam2/"> ORB-SLAM2 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            </div>
+          <span class="more-meta"> 约 4100 字 </span>
+          <span class="more-meta"> 预计阅读 9 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-加载图像">1. 加载图像</a></li>
+    <li><a href="#2-初始化-slam-系统">2. 初始化 SLAM 系统</a>
+      <ul>
+        <li><a href="#21-相机相关">2.1 相机相关</a></li>
+        <li><a href="#22-加载-orb-词典">2.2 加载 ORB 词典</a></li>
+        <li><a href="#23-创建关键帧数据集-mpkeyframedatabase">2.3 创建关键帧数据集 <code>mpKeyFrameDatabase</code></a></li>
+        <li><a href="#24-创建地图类的对象-mpmap">2.4 创建地图类的对象 <code>mpMap</code></a></li>
+        <li><a href="#25-创建创建帧绘制器-mpframedrawer-和地图绘制器-mpmapdrawer">2.5 创建创建帧绘制器 <code>mpFrameDrawer</code> 和地图绘制器 <code>mpMapDrawer</code></a></li>
+        <li><a href="#26-初始化跟踪线程-mptracker">2.6 初始化跟踪线程 <code>mpTracker</code></a></li>
+        <li><a href="#27-初始化局部建图线程并运行">2.7 初始化局部建图线程并运行</a></li>
+        <li><a href="#28-初始化闭环线程并运行">2.8 初始化闭环线程并运行.</a></li>
+        <li><a href="#29-初始化可视化线程并运行">2.9 初始化可视化线程并运行.</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-主循环逐帧处理">3. 主循环逐帧处理</a>
+      <ul>
+        <li><a href="#31-读取每一帧图像及其时间戳">3.1 读取每一帧图像及其时间戳</a></li>
+        <li><a href="#32-跟踪单目图像">3.2 跟踪单目图像</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-关闭线程统计时间保存轨迹">4. 关闭线程，统计时间，保存轨迹</a>
+      <ul>
+        <li><a href="#41-保存相机轨迹">4.1 保存相机轨迹</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>注：本文从 <code>mono_tum.cc</code> 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。</p>
+<h1 id="orb-slam2-从-mono_tumcc-开始分析">ORB-SLAM2 从 mono_tum.cc 开始分析</h1>
+<h2 id="1-加载图像">1. 加载图像</h2>
+<ul>
+<li>输入<strong>数据集路径</strong> <code>vector&lt;string&gt; vstrImageFilenames = /dataset/rgbd_dataset_freiburg1_xyz;</code></li>
+<li>读取包含数据集中图像名的 <strong>txt 文件</strong> <code>string strFile = string(argv[3])+&quot;/rgb.txt&quot;;</code></li>
+<li>加载图像 <code>LoadImages(strFile, vstrImageFilenames, vTimestamps);</code>
+<ul>
+<li><strong>加载图像函数</strong> <code>LoadImages()</code>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LoadImages</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">strFile</span><span class="p">,</span> 
+                <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">vstrImageFilenames</span><span class="p">,</span> 
+                <span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">vTimestamps</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>获取每帧图像的<strong>文件名</strong> <code>vector&lt;string&gt; vstrImageFilenames;</code> 和<strong>时间戳</strong> <code>vector&lt;double&gt; vTimestamps;</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-初始化-slam-系统">2. 初始化 SLAM 系统</h2>
+<ul>
+<li>通过 System 类的<strong>构造函数初始化一个 SLAM 系统</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">ORB_SLAM2</span><span class="o">::</span><span class="n">System</span> <span class="n">SLAM</span><span class="p">(</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
+                        <span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> 
+                        <span class="n">ORB_SLAM2</span><span class="o">::</span><span class="n">System</span><span class="o">::</span><span class="n">MONOCULAR</span><span class="p">,</span> 
+                        <span class="nb">true</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>构造函数位于 <code>System.cc</code></strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">System</span><span class="o">::</span><span class="n">System</span><span class="p">(</span> <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">strVocFile</span><span class="p">,</span>      <span class="cm">/* ORB 词典路径 */</span>
+                <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">strSettingsFile</span><span class="p">,</span> <span class="cm">/* 配置文件路径 */</span>
+                <span class="k">const</span> <span class="n">eSensor</span> <span class="n">sensor</span><span class="p">,</span>          <span class="cm">/* 传感器类型 */</span>
+                <span class="k">const</span> <span class="kt">bool</span> <span class="n">bUseViewer</span><span class="p">)</span>  <span class="o">:</span>   <span class="n">mSensor</span><span class="p">(</span><span class="n">sensor</span><span class="p">),</span>                      <span class="cm">/* 初始化传感器的类型 */</span>
+                                            <span class="n">mpViewer</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Viewer</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)),</span> <span class="cm">/* 视图类 Viewer 的对象 */</span>
+                                            <span class="n">mbReset</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span>                       <span class="cm">/* 复位标志 ，否 */</span>
+                                            <span class="n">mbActivateLocalizationMode</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span>    <span class="cm">/* 模式转换标志位 ，无 */</span>
+                                            <span class="n">mbDeactivateLocalizationMode</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span>   <span class="cm">/* 模式转换标志位 ，无 */</span>
+<span class="p">{</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="21-相机相关">2.1 相机相关</h3>
+<ul>
+<li>相机传感器类型：<code>mSensor==MONOCULAR</code>；</li>
+<li>读取相机配置文件路径：<code>cv::FileStorage fsSettings(strSettingsFile.c_str(), cv::FileStorage::READ);</code>。</li>
+</ul>
+<h3 id="22-加载-orb-词典">2.2 加载 ORB 词典</h3>
+<ul>
+<li>创建一个词典对象：<code>mpVocabulary = new ORBVocabulary();</code></li>
+<li><strong>加载 ORB 词典</strong>：<code>mpVocabulary-&gt;loadFromBinaryFile(strVocFile);</code>
+<ul>
+<li><code>loadFromBinaryFile() </code> 函数位于 <code>~/ORB_SLAM2/Thirdparty/DBoW2/DBoW2/TemplatedVocabulary.h</code> 中
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">TDescriptor</span><span class="p">,</span> <span class="k">class</span> <span class="nc">F</span><span class="o">&gt;</span>
+<span class="kt">bool</span> <span class="n">TemplatedVocabulary</span><span class="o">&lt;</span><span class="n">TDescriptor</span><span class="p">,</span><span class="n">F</span><span class="o">&gt;::</span><span class="n">loadFromBinaryFile</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">filename</span><span class="p">)</span> 
+<span class="p">{}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h3 id="23-创建关键帧数据集-mpkeyframedatabase">2.3 创建关键帧数据集 <code>mpKeyFrameDatabase</code></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpKeyFrameDatabase</span> <span class="o">=</span> <span class="k">new</span> <span class="n">KeyFrameDatabase</span><span class="p">(</span><span class="o">*</span><span class="n">mpVocabulary</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="24-创建地图类的对象-mpmap">2.4 创建地图类的对象 <code>mpMap</code></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Map</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="25-创建创建帧绘制器-mpframedrawer-和地图绘制器-mpmapdrawer">2.5 创建创建帧绘制器 <code>mpFrameDrawer</code> 和地图绘制器 <code>mpMapDrawer</code></h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpFrameDrawer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FrameDrawer</span><span class="p">(</span><span class="n">mpMap</span><span class="p">);</span>
+<span class="n">mpMapDrawer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapDrawer</span><span class="p">(</span><span class="n">mpMap</span><span class="p">,</span> <span class="n">strSettingsFile</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="26-初始化跟踪线程-mptracker">2.6 初始化跟踪线程 <code>mpTracker</code></h3>
+<p>位于 <code>Tracking.cc</code> 文件中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">Tracking</span><span class="o">::</span><span class="n">Tracking</span><span class="p">(</span> <span class="n">System</span> <span class="o">*</span><span class="n">pSys</span><span class="p">,</span>                 <span class="cm">/* 指针 */</span>
+                    <span class="n">ORBVocabulary</span><span class="o">*</span> <span class="n">pVoc</span><span class="p">,</span>          <span class="cm">/* 字典 */</span>
+                    <span class="n">FrameDrawer</span> <span class="o">*</span><span class="n">pFrameDrawer</span><span class="p">,</span>    <span class="cm">/* 帧绘制器 */</span>
+                    <span class="n">MapDrawer</span> <span class="o">*</span><span class="n">pMapDrawer</span><span class="p">,</span>        <span class="cm">/* 地图绘制器 */</span>
+                    <span class="n">Map</span> <span class="o">*</span><span class="n">pMap</span><span class="p">,</span>                    <span class="cm">/* 地图 */</span>
+                    <span class="n">KeyFrameDatabase</span><span class="o">*</span> <span class="n">pKFDB</span><span class="p">,</span>      <span class="cm">/* 关键帧 */</span>
+                    <span class="k">const</span> <span class="n">string</span> <span class="o">&amp;</span><span class="n">strSettingPath</span><span class="p">,</span> <span class="cm">/* 配置文件 */</span>
+                    <span class="k">const</span> <span class="kt">int</span> <span class="n">sensor</span><span class="p">)</span><span class="o">:</span>            <span class="cm">/* 传感器类型 */</span>
+                        <span class="n">mState</span><span class="p">(</span><span class="n">NO_IMAGES_YET</span><span class="p">),</span>                          <span class="c1">// 当前系统还没有准备好.
+</span><span class="c1"></span>                        <span class="n">mSensor</span><span class="p">(</span><span class="n">sensor</span><span class="p">),</span> 
+                        <span class="n">mbOnlyTracking</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span> 
+                        <span class="n">mbVO</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span> 
+                        <span class="n">mpORBVocabulary</span><span class="p">(</span><span class="n">pVoc</span><span class="p">),</span>
+                        <span class="n">mpKeyFrameDB</span><span class="p">(</span><span class="n">pKFDB</span><span class="p">),</span> 
+                        <span class="n">mpInitializer</span><span class="p">(</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">Initializer</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)),</span> 
+                        <span class="n">mpSystem</span><span class="p">(</span><span class="n">pSys</span><span class="p">),</span> 
+                        <span class="n">mpViewer</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span>
+                        <span class="n">mpFrameDrawer</span><span class="p">(</span><span class="n">pFrameDrawer</span><span class="p">),</span> 
+                        <span class="n">mpMapDrawer</span><span class="p">(</span><span class="n">pMapDrawer</span><span class="p">),</span> 
+                        <span class="n">mpMap</span><span class="p">(</span><span class="n">pMap</span><span class="p">),</span> 
+                        <span class="n">mnLastRelocFrameId</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="261-读取配置文件">2.6.1 读取配置文件</h4>
+<ul>
+<li>① 构造<strong>相机内参矩阵</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">//     |fx  0   cx|
+</span><span class="c1">// K = |0   fy  cy|
+</span><span class="c1">//     |0   0   1 |
+</span><span class="c1">// 构造相机内参矩阵.
+</span><span class="c1"></span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">K</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">::</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">CV_32F</span><span class="p">);</span>
+<span class="n">K</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">fx</span><span class="p">;</span>
+<span class="n">K</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">fy</span><span class="p">;</span>
+<span class="n">K</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="n">cx</span><span class="p">;</span>
+<span class="n">K</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="n">cy</span><span class="p">;</span>
+<span class="n">K</span><span class="p">.</span><span class="n">copyTo</span><span class="p">(</span><span class="n">mK</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>② 图像<strong>矫正系数</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">// [k1 k2 p1 p2 k3]
+</span><span class="c1"></span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">DistCoef</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">CV_32F</span><span class="p">);</span>
+<span class="n">DistCoef</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;Camera.k1&#34;</span><span class="p">];</span>
+<span class="n">DistCoef</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;Camera.k2&#34;</span><span class="p">];</span>
+<span class="n">DistCoef</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;Camera.p1&#34;</span><span class="p">];</span>
+<span class="n">DistCoef</span><span class="p">.</span><span class="n">at</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;Camera.p2&#34;</span><span class="p">];</span>
+<span class="k">const</span> <span class="kt">float</span> <span class="n">k3</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;Camera.k3&#34;</span><span class="p">];</span>
+<span class="n">DistCoef</span><span class="p">.</span><span class="n">copyTo</span><span class="p">(</span><span class="n">mDistCoef</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>③ 提取 ORB 特征的相关参数</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">int</span> <span class="n">nFeatures</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;ORBextractor.nFeatures&#34;</span><span class="p">];</span>        <span class="c1">// 每一帧提取的特征点数 1000.
+</span><span class="c1"></span><span class="kt">float</span> <span class="n">fScaleFactor</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;ORBextractor.scaleFactor&#34;</span><span class="p">];</span> <span class="c1">// 图像建立金字塔时的变化尺度 1.2.
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">nLevels</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;ORBextractor.nLevels&#34;</span><span class="p">];</span>            <span class="c1">// 尺度金字塔的层数 8.
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">fIniThFAST</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;ORBextractor.iniThFAST&#34;</span><span class="p">];</span>       <span class="c1">// 提取fast特征点的默认阈值 20.
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">fMinThFAST</span> <span class="o">=</span> <span class="n">fSettings</span><span class="p">[</span><span class="s">&#34;ORBextractor.minThFAST&#34;</span><span class="p">];</span>       <span class="c1">// 如果默认阈值提取不出足够fast特征点，则使用最小阈值 8.
+</span></code></pre></td></tr></table>
+</div>
+</div><h4 id="262-创建特征点提取器">2.6.2 创建特征点提取器</h4>
+<ul>
+<li>创建 <strong>ORB 特征点提取器</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpORBextractorLeft</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span>  <span class="n">nFeatures</span><span class="p">,</span>
+                                        <span class="n">fScaleFactor</span><span class="p">,</span>
+                                        <span class="n">nLevels</span><span class="p">,</span>
+                                        <span class="n">fIniThFAST</span><span class="p">,</span>
+                                        <span class="n">fMinThFAST</span><span class="p">);</span>
+<span class="c1">// 在单目初始化的时候，会用 mpIniORBextractor 来作为特征点提取器.
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">sensor</span><span class="o">==</span><span class="n">System</span><span class="o">::</span><span class="n">MONOCULAR</span><span class="p">)</span>
+   <span class="n">mpIniORBextractor</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span>   <span class="mi">2</span><span class="o">*</span><span class="n">nFeatures</span><span class="p">,</span>
+                                           <span class="n">fScaleFactor</span><span class="p">,</span>
+                                           <span class="n">nLevels</span><span class="p">,</span>
+                                           <span class="n">fIniThFAST</span><span class="p">,</span>
+                                           <span class="n">fMinThFAST</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>ORBextractor 构造函数：位于 <code>ORBextractor.cc</code> 中</li>
+</ul>
+<h3 id="27-初始化局部建图线程并运行">2.7 初始化局部建图线程并运行</h3>
+<h4 id="271-初始化局部建图线程">2.7.1 初始化局部建图线程</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpLocalMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LocalMapping</span><span class="p">(</span><span class="n">mpMap</span><span class="p">,</span> <span class="n">mSensor</span> <span class="o">==</span> <span class="n">MONOCULAR</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>LocalMapping</code> 构造函数位于 <code>LocalMapping.cc</code> 中</li>
+</ul>
+<h4 id="272-运行局部建图线程">2.7.2 运行局部建图线程</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mptLocalMapping</span> <span class="o">=</span> <span class="k">new</span> <span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ORB_SLAM2</span><span class="o">::</span><span class="n">LocalMapping</span><span class="o">::</span><span class="n">Run</span><span class="p">,</span><span class="n">mpLocalMapper</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>ORB_SLAM2::LocalMapping::Run</code> 位于 <code>LocalMapping.cc</code> 中</li>
+<li><code>bool LocalMapping::CheckNewKeyFrames()</code> 函数检查关键帧列表是否为空，然后执行以下步骤</li>
+</ul>
+<h5 id="2721-插入关键帧到地图中">2.7.2.1 插入关键帧到地图中</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">ProcessNewKeyFrame</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+<h5 id="2722-剔除上一步引入的不合格的地图点">2.7.2.2 剔除上一步引入的不合格的地图点</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">MapPointCulling</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+<h5 id="2723-与相邻帧三角化恢复一些地图点">2.7.2.3 与相邻帧三角化恢复一些地图点</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">CreateNewMapPoints</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+<h5 id="2724-检查并融合相邻帧的公共特征点">2.7.2.4 检查并融合相邻帧的公共特征点</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">SearchInNeighbors</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+<h5 id="2725-执行局部-ba-httpsgithubcomwuxiaolangpictures_share_linkblobmastermarkstarpngrawtrue">2.7.2.5 执行局部 BA <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></h5>
+<ul>
+<li>局部 BA 位于 <code>src/Optimizer.cc</code> 文件中</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="k">if</span><span class="p">(</span><span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">KeyFramesInMap</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span>
+     <span class="n">Optimizer</span><span class="o">::</span><span class="n">LocalBundleAdjustment</span><span class="p">(</span><span class="n">mpCurrentKeyFrame</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">mbAbortBA</span><span class="p">,</span> <span class="n">mpMap</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+<h5 id="2726-剔除冗余关键帧">2.7.2.6 剔除冗余关键帧</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">KeyFrameCulling</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="2727-将当前帧加入到闭环检测队列">2.7.2.7 将当前帧加入到闭环检测队列</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpLoopCloser</span><span class="o">-&gt;</span><span class="n">InsertKeyFrame</span><span class="p">(</span><span class="n">mpCurrentKeyFrame</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LocalMapping</span><span class="o">::</span><span class="n">InsertKeyFrame</span><span class="p">(</span><span class="n">KeyFrame</span> <span class="o">*</span><span class="n">pKF</span><span class="p">){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="28-初始化闭环线程并运行">2.8 初始化闭环线程并运行.</h3>
+<h4 id="281-初始化闭环检测线程">2.8.1 初始化闭环检测线程</h4>
+<ul>
+<li><code>LoopClosing</code> 构造函数位于 <code>LoopClosing.cc</code> 文件中</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpLoopCloser</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LoopClosing</span><span class="p">(</span> <span class="n">mpMap</span><span class="p">,</span>              <span class="cm">/* 地图 */</span>
+                                <span class="n">mpKeyFrameDatabase</span><span class="p">,</span> <span class="cm">/* 关键帧 */</span>
+                                <span class="n">mpVocabulary</span><span class="p">,</span>       <span class="cm">/* 字典 */</span>
+                                <span class="n">mSensor</span><span class="o">!=</span><span class="n">MONOCULAR</span><span class="p">);</span><span class="cm">/* 传感器类型 */</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="282-运行闭环检测线程">2.8.2 运行闭环检测线程</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mptLoopClosing</span> <span class="o">=</span> <span class="k">new</span> <span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ORB_SLAM2</span><span class="o">::</span><span class="n">LoopClosing</span><span class="o">::</span><span class="n">Run</span><span class="p">,</span> <span class="n">mpLoopCloser</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>ORB_SLAM2::LoopClosing::Run()</code> 位于 <code>LoopClosing.cc</code> 文件中</li>
+</ul>
+<h5 id="2821-闭环">2.8.2.1 闭环</h5>
+<ul>
+<li>① 闭环检测 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt="">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">bool</span> <span class="n">LoopClosing</span><span class="o">::</span><span class="n">DetectLoop</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li>② sim3 计算
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">bool</span> <span class="n">LoopClosing</span><span class="o">::</span><span class="n">ComputeSim3</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li>③ 执行闭环优化 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt="">
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">LoopClosing</span><span class="o">::</span><span class="n">CorrectLoop</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="29-初始化可视化线程并运行">2.9 初始化可视化线程并运行.</h3>
+<h4 id="291-初始化可视化线程">2.9.1 初始化可视化线程</h4>
+<ul>
+<li><code>Viewer</code> 构造函数位于 <code>Viewer.cc</code> 文件中</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpViewer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Viewer</span><span class="p">(</span>  <span class="k">this</span><span class="p">,</span> 
+                        <span class="n">mpFrameDrawer</span><span class="p">,</span>              <span class="cm">/* 帧绘制器 */</span>
+                        <span class="n">mpMapDrawer</span><span class="p">,</span>                <span class="cm">/* 地图绘制器 */</span>
+                        <span class="n">mpTracker</span><span class="p">,</span>                  <span class="cm">/* 跟踪线程跟踪器 */</span>
+                        <span class="n">strSettingsFile</span><span class="p">);</span>           <span class="cm">/* 配置文件 */</span>
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="292-运行可视化线程">2.9.2 运行可视化线程</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mptViewer</span> <span class="o">=</span> <span class="k">new</span> <span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Viewer</span><span class="o">::</span><span class="n">Run</span><span class="p">,</span> <span class="n">mpViewer</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><code>Viewer::Run()</code> 位于 <code>Viewer.cc</code> 文件中</li>
+</ul>
+<h5 id="2921-pangolin-参数设置">2.9.2.1 Pangolin 参数设置</h5>
+<ul>
+<li>TODO</li>
+</ul>
+<h5 id="2922-获得相机位姿">2.9.2.2 获得相机位姿</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpMapDrawer</span><span class="o">-&gt;</span><span class="n">GetCurrentOpenGLCameraMatrix</span><span class="p">(</span><span class="n">Twc</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="2923-根据相机位姿调整视角">2.9.2.3 根据相机位姿调整视角</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">s_cam</span><span class="p">.</span><span class="n">Follow</span><span class="p">(</span><span class="n">Twc</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="2924-在线-slam-模式或定位模式">2.9.2.4 在线 SLAM 模式或定位模式</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpSystem</span><span class="o">-&gt;</span><span class="n">ActivateLocalizationMode</span><span class="p">();</span>
+<span class="n">mpSystem</span><span class="o">-&gt;</span><span class="n">DeactivateLocalizationMode</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>TODO</li>
+</ul>
+<h5 id="2925-绘制">2.9.2.5 绘制</h5>
+<ul>
+<li>绘制当前相机</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">MapDrawer</span><span class="o">::</span><span class="n">DrawCurrentCamera</span><span class="p">(</span><span class="n">pangolin</span><span class="o">::</span><span class="n">OpenGlMatrix</span> <span class="o">&amp;</span><span class="n">Twc</span><span class="p">){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>绘制关键帧</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">MapDrawer</span><span class="o">::</span><span class="n">DrawCurrentCamera</span><span class="p">(</span><span class="n">pangolin</span><span class="o">::</span><span class="n">OpenGlMatrix</span> <span class="o">&amp;</span><span class="n">Twc</span><span class="p">){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>绘制地图点</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">MapDrawer</span><span class="o">::</span><span class="n">DrawMapPoints</span><span class="p">(){}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="2926-opencv-显示特征提取视图">2.9.2.6 OpenCV 显示特征提取视图</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">im</span> <span class="o">=</span> <span class="n">mpFrameDrawer</span><span class="o">-&gt;</span><span class="n">DrawFrame</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>函数 <code>cv::Mat FrameDrawer::DrawFrame(){}</code> 位于 <code>FrameDrawer.cc</code> 文件中
+<ul>
+<li>TODO</li>
+</ul>
+</li>
+</ul>
+<h5 id="2927-复位响应">2.9.2.7 复位响应</h5>
+<hr>
+<h2 id="3-主循环逐帧处理">3. 主循环逐帧处理</h2>
+<h3 id="31-读取每一帧图像及其时间戳">3.1 读取每一帧图像及其时间戳</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">im</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">imread</span><span class="p">(</span><span class="n">string</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="s">&#34;/&#34;</span> <span class="o">+</span> <span class="n">vstrImageFilenames</span><span class="p">[</span><span class="n">ni</span><span class="p">],</span> <span class="n">CV_LOAD_IMAGE_UNCHANGED</span><span class="p">);</span>
+<span class="kt">double</span> <span class="n">tframe</span> <span class="o">=</span> <span class="n">vTimestamps</span><span class="p">[</span><span class="n">ni</span><span class="p">];</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="32-跟踪单目图像">3.2 跟踪单目图像</h3>
+<ul>
+<li><code>cv::Mat System::TrackMonocular(const cv::Mat &amp;im, const double &amp;timestamp)</code>
+<ul>
+<li>输入：图像和时间戳</li>
+<li>返回：相机位姿（关键帧的相机位姿，KeyFrame.h）</li>
+</ul>
+</li>
+</ul>
+<h4 id="321-检查模式变换检测">3.2.1 检查模式变换检测</h4>
+<ul>
+<li>可视化窗口上的勾选框不变化的时候不会进行检测，若有变化，则会执行一次（执行完又恢复原标志位）
+<ul>
+<li>激活定位模式：mbActivateLocalizationMode</li>
+<li>取消激活定位模式：mbDeactivateLocalizationMode</li>
+</ul>
+</li>
+<li>检查是否重置 mbReset
+<ul>
+<li><code>void Tracking::Reset()</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="323-开始运动估计">3.2.3 开始运动估计</h4>
+<ul>
+<li><code>Tracking::GrabImageMonocular</code> 函数，返回当前帧位姿</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">Tracking</span><span class="o">::</span><span class="n">GrabImageMonocular</span><span class="p">(</span>   <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="o">&amp;</span><span class="n">im</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">double</span> <span class="o">&amp;</span><span class="n">timestamp</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="3231-将输入图像转化为灰度图">3.2.3.1 将输入图像转化为灰度图</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cvtColor</span><span class="p">(</span><span class="n">mImGray</span><span class="p">,</span><span class="n">mImGray</span><span class="p">,</span><span class="n">CV_RGB2GRAY</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="3232-构造帧-httpsgithubcomwuxiaolangpictures_share_linkblobmastermarkstarpngrawtrue">3.2.3.2 构造帧 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></h5>
+<ul>
+<li>在<strong>没有图像时或者没有初始化时</strong>采用 <code>mpIniORBextractor</code> 特征提取器（特征点数量是初始化之后的两倍）</li>
+<li>初始化之后采用 <code>mpORBextractorLeft</code> 特征提取器（数量为 1000 ）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpORBextractorLeft</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ORBextractor</span><span class="p">(</span>  <span class="n">nFeatures</span><span class="p">,</span>
+                                        <span class="n">fScaleFactor</span><span class="p">,</span>
+                                        <span class="n">nLevels</span><span class="p">,</span>
+                                        <span class="n">fIniThFAST</span><span class="p">,</span>
+                                        <span class="n">fMinThFAST</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>构造当前帧</strong>（在 Frame.cc 中）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mCurrentFrame</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span>  <span class="n">mImGray</span><span class="p">,</span>            <span class="cm">/* 灰度图 */</span>
+                        <span class="n">timestamp</span><span class="p">,</span>          <span class="cm">/* 时间戳 */</span>
+                        <span class="n">mpIniORBextractor</span><span class="p">,</span>  <span class="cm">/* 单目初始化 mpIniORBextractor 提取特征*/</span>
+                        <span class="n">mpORBVocabulary</span><span class="p">,</span>    <span class="cm">/* 词典 */</span>
+                        <span class="n">mK</span><span class="p">,</span>                 <span class="cm">/* 相机内参矩阵 */</span>
+                        <span class="n">mDistCoef</span><span class="p">,</span>          <span class="cm">/* 相机的去畸变参数 */</span>
+                        <span class="n">mbf</span><span class="p">,</span>                <span class="cm">/* 相机基线*相机焦距 */</span>
+                        <span class="n">mThDepth</span><span class="p">);</span>          <span class="cm">/* 内外点区分深度阈值 */</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-计算图像金字塔的参数">① 计算图像金字塔的参数</h6>
+<h6 id="-提取特征点-httpsgithubcomwuxiaolangpictures_share_linkblobmastermarkstarpngrawtrue">② 提取特征点 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></h6>
+<ul>
+<li>输入灰度图；</li>
+<li>输出：提取的特征点 <code>std::vector&lt;cv::KeyPoint&gt; mvKeys</code> 和特征点的描述子 <code>cv::Mat mDescriptors</code>（每一行与一个特征点关联）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">void</span> <span class="n">Frame</span><span class="o">::</span><span class="n">ExtractORB</span><span class="p">(</span><span class="kt">int</span> <span class="n">flag</span><span class="p">,</span> <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="o">&amp;</span><span class="n">im</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">//std::cout &lt;&lt; &#34;wu 提取特征点啦 &#34; &lt;&lt; std::endl;
+</span><span class="c1"></span>    <span class="c1">// 判断是左图还是右图.
+</span><span class="c1"></span>    <span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// 左图的话就套使用左图指定的特征点提取器，并将提取结果保存到对应的变量中
+</span><span class="c1"></span>		<span class="c1">// 其实这里的提取器句柄就是一个函数指针...或者说,是运算符更加合适
+</span><span class="c1"></span>        <span class="p">(</span><span class="o">*</span><span class="n">mpORBextractorLeft</span><span class="p">)(</span>  <span class="n">im</span><span class="p">,</span>             <span class="cm">/* 目标图像 */</span>
+                                <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span>      
+                                <span class="n">mvKeys</span><span class="p">,</span>         <span class="cm">/* 输出变量，用于保存提取后的特征点 */</span>
+                                <span class="n">mDescriptors</span><span class="p">);</span>  <span class="cm">/* 输出变量，用于保存特征点的描述子 */</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+        <span class="p">(</span><span class="o">*</span><span class="n">mpORBextractorRight</span><span class="p">)(</span><span class="n">im</span><span class="p">,</span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span><span class="n">mvKeysRight</span><span class="p">,</span><span class="n">mDescriptorsRight</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-对提取的特征点进行矫正">③ 对提取的特征点进行矫正</h6>
+<ul>
+<li>函数 <code>void Frame::UndistortKeyPoints()</code>，</li>
+<li>输入原始特征点 <code>std::vector&lt;cv::KeyPoint&gt; mvKeys</code></li>
+<li>输出经过畸变处理后的特征点 <code>std::vector&lt;cv::KeyPoint&gt; mvKeysUn</code>
+<ul>
+<li>判断是否经过了矫正，已经矫正了的话直接将 mvKeys 赋给 mvKeysUn</li>
+<li>若没有经过矫正，首先将特征点的坐标保存到一个矩阵中 <code>cv::Mat mat(N, 2,CV_32F);</code></li>
+<li>将矩阵调整为 2 通道，以便 opencv 畸变函数处理 <code>mat = mat.reshape(2);</code></li>
+<li>调用 OpenCVC 函数去畸变矫正
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">undistortPoints</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span>        <span class="cm">/* 输入的特征点坐标 */</span>
+                    <span class="n">mat</span><span class="p">,</span>        <span class="cm">/* 输出的特征点坐标，也就是校正后的特征点坐标， NOTICE 并且看起来会自动写入到通道二里面啊 */</span>
+                    <span class="n">mK</span><span class="p">,</span>         <span class="cm">/* 相机的内参数矩阵 */</span>
+                    <span class="n">mDistCoef</span><span class="p">,</span>  <span class="cm">/* 保存相机畸变参数的变量 */</span>
+                    <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="p">(),</span>  <span class="cm">/* 一个空的cv::Mat()类型，对应为函数原型中的R */</span>
+                    <span class="n">mK</span><span class="p">);</span>        <span class="cm">/* 相机的内参数矩阵，对应为函数原型中的P */</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>将存储坐标的矩阵调整会一个通道 <code>调整回只有一个通道</code></li>
+<li>将得到的去畸变的点的坐标存储在mvKeysUn 中。</li>
+</ul>
+</li>
+</ul>
+<h6 id="-初始化本帧地图点">④ 初始化本帧地图点</h6>
+<ul>
+<li><code>MapPoint</code> 是一个地图点，<code>mvpMapPoints</code> 是与的关键点关联的地图点容器</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mvpMapPoints</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>先默认<strong>所有的点都是内点</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mvbOutlier</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="nb">false</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-计算畸变矫正的图像边界">⑤ 计算畸变矫正的图像边界</h6>
+<ul>
+<li>需要将检测到的特征尽可能的均匀化，后面将特征划分到图像对应的网格中，便于下一步的匹配。但是由于图像失真，存在畸变，转换之后的图像边界信息发生了变化；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="c1">// 畸变矫正之后的图像边界
+</span><span class="c1"></span><span class="n">ComputeImageBounds</span><span class="p">(</span><span class="n">imGray</span><span class="p">);</span>
+
+<span class="c1">// 这个变量表示一个图像像素列相当于多少个图像网格列.
+</span><span class="c1">// mnMax(Min)X(Y) 是畸变矫正以后的边界
+</span><span class="c1"></span><span class="n">mfGridElementWidthInv</span><span class="o">=</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">FRAME_GRID_COLS</span><span class="p">)</span><span class="o">/</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mnMaxX</span><span class="o">-</span><span class="n">mnMinX</span><span class="p">);</span>
+<span class="c1">// 这个也是一样，不过代表是图像网格行.
+</span><span class="c1"></span><span class="n">mfGridElementHeightInv</span><span class="o">=</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">FRAME_GRID_ROWS</span><span class="p">)</span><span class="o">/</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mnMaxY</span><span class="o">-</span><span class="n">mnMinY</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-计算立体匹配的-baseline">⑥ 计算立体匹配的 baseline</h6>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mb</span> <span class="o">=</span> <span class="n">mbf</span><span class="o">/</span><span class="n">fx</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-将特征点分配到图像网格中-httpsgithubcomwuxiaolangpictures_share_linkblobmastermarkstarpngrawtrue">⑦ 将特征点分配到图像网格中 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></h6>
+<ul>
+<li>实现函数：<code>void Frame::AssignFeaturesToGrid()</code>，将关键点分布到 64 * 48 分割而成的网格中,为了<strong>加速匹配和均匀化关键点分布</strong>
+<ul>
+<li>为图像中<strong>每个网格预分配空间</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">FRAME_GRID_COLS</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">FRAME_GRID_ROWS</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">mGrid</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">].</span><span class="n">reserve</span><span class="p">(</span><span class="n">nReserve</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><code>bool Frame::PosInGrid()</code> 函数返回<strong>特征点所在的网格</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="kt">bool</span> <span class="n">Frame</span><span class="o">::</span><span class="n">PosInGrid</span><span class="p">(</span>  <span class="k">const</span> <span class="n">cv</span><span class="o">::</span><span class="n">KeyPoint</span> <span class="o">&amp;</span><span class="n">kp</span><span class="p">,</span>     <span class="cm">/* 输入，指定的特征点 */</span>
+                        <span class="kt">int</span> <span class="o">&amp;</span><span class="n">posX</span><span class="p">,</span>                  <span class="cm">/* 输出：指定的图像特征点所在的图像网格的横纵id（其实就是图像网格的坐标） */</span>
+                        <span class="kt">int</span> <span class="o">&amp;</span><span class="n">posY</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>将特征点分配到对应的网格中</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mGrid</span><span class="p">[</span><span class="n">nGridPosX</span><span class="p">][</span><span class="n">nGridPosY</span><span class="p">].</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<h4 id="3233-开始跟踪-track">3.2.3.3 开始跟踪 <code>Track()</code></h4>
+<h5 id="32331-初始化">3.2.3.3.1 初始化</h5>
+<ul>
+<li>单目初始化：<code>void Tracking::MonocularInitialization()</code>，并行地<strong>计算基础矩阵和单应性矩阵</strong>，选取其中一个模型，恢复出<strong>最开始两帧之间的相对姿态</strong>以及点云得到初始两帧的匹配、相对运动、初始MapPoints；</li>
+</ul>
+<h5 id="32332-跟踪">3.2.3.3.2 跟踪</h5>
+<h6 id="-在线-slam-模式">① 在线 SLAM 模式</h6>
+<ul>
+<li>如果<strong>初始化正常</strong>
+<ul>
+<li>检查并更新上一帧被替换的地图点 <code>void Tracking::CheckReplacedInLastFrame()</code>；</li>
+<li>如果跟丢了或者重定位之后，通过 <strong>BoW 的方式在参考帧</strong>中找当前帧特征点的<strong>匹配点</strong> <code>bool Tracking::TrackReferenceKeyFrame()</code>； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></li>
+<li>如果正常跟踪，通过<strong>投影的方式在参考帧</strong>中找当前帧特征点的<strong>匹配点</strong> <code>bool Tracking::TrackWithMotionModel()</code>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></li>
+</ul>
+</li>
+<li>如果初始化不正常
+<ul>
+<li>只能<strong>重定位</strong>了 <code>bool Tracking::Relocalization()</code></li>
+</ul>
+</li>
+</ul>
+<h6 id="-定位模式只进行跟踪不进行建图">② 定位模式（只进行跟踪，不进行建图）</h6>
+<ul>
+<li>如果<strong>跟丢了，则进行重定位</strong>；</li>
+<li>如果当前帧<strong>有足够多的地图点</strong>
+<ul>
+<li>如果有足够的运动，则通过<strong>运动模型来跟踪</strong> <code>bool Tracking::TrackWithMotionModel()</code>；</li>
+<li>如果不满足恒速运动模型，则<strong>通过关键帧来定</strong>位  <code>bool Tracking::TrackReferenceKeyFrame()</code>；</li>
+</ul>
+</li>
+<li>如果当前帧<strong>没有足够的地图点</strong>
+<ul>
+<li>当运动模型非空的时候,根据运动模型计算位姿；</li>
+<li>使用重定位的方法来得到当前帧的位姿；
+<ul>
+<li>如果重定位没有成功，但是跟踪成功了：增加地图点的观测次数</li>
+<li>如果重定位成功了，则正常运行（<strong>定位与跟踪，更相信重定位</strong>）.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h6 id="-帧间匹配成功后对-local-map-进行跟踪-httpsgithubcomwuxiaolangpictures_share_linkblobmastermarkstarpngrawtrue">③ 帧间匹配成功后对 local map 进行跟踪 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></h6>
+<ul>
+<li>帧间匹配得到初始的姿态后，现在<strong>对 local map 进行跟踪</strong>得到<strong>更多的匹配</strong> <code>bool Tracking::TrackLocalMap()</code>
+<ul>
+<li>更新局部地图，包括局部关键帧和关键点</li>
+<li>对局部 MapPoints 进行投影匹配</li>
+<li>根据匹配对估计当前帧的姿态</li>
+<li>根据姿态剔除误匹配</li>
+</ul>
+</li>
+<li>更新地图</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mpFrameDrawer</span><span class="o">-&gt;</span><span class="n">Update</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-更新恒速模型">④ 更新恒速模型</h6>
+<ul>
+<li>这里的速度矩阵存储的具体内容是当前帧的位姿乘以上一帧的位姿；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">LastTwc</span> <span class="o">=</span> <span class="n">cv</span><span class="o">::</span><span class="n">Mat</span><span class="o">::</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">CV_32F</span><span class="p">);</span>
+<span class="c1">// 这个是转换成为了相机相对世界坐标系的旋转?
+</span><span class="c1"></span><span class="n">mLastFrame</span><span class="p">.</span><span class="n">GetRotationInverse</span><span class="p">().</span><span class="n">copyTo</span><span class="p">(</span><span class="n">LastTwc</span><span class="p">.</span><span class="n">rowRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">).</span><span class="n">colRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">));</span>
+<span class="n">mLastFrame</span><span class="p">.</span><span class="n">GetCameraCenter</span><span class="p">().</span><span class="n">copyTo</span><span class="p">(</span><span class="n">LastTwc</span><span class="p">.</span><span class="n">rowRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">).</span><span class="n">col</span><span class="p">(</span><span class="mi">3</span><span class="p">));</span>
+<span class="c1">// 这里的速度矩阵存储的具体内容是当前帧的位姿乘以上一帧的位姿.
+</span><span class="c1"></span><span class="n">mVelocity</span> <span class="o">=</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mTcw</span><span class="o">*</span><span class="n">LastTwc</span><span class="p">;</span>     <span class="c1">// 其实就是 Tcl
+</span></code></pre></td></tr></table>
+</div>
+</div><h6 id="-clean-vo-matches">⑤ Clean VO matches</h6>
+<ul>
+<li>清除 UpdateLastFrame 中为当前帧临时添加的 MapPoints</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvbOutlier</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h6 id="-delete-temporal-mappoints">⑥ Delete temporal MapPoints</h6>
+<ul>
+<li><strong>上一步只是在当前帧中将这些 MapPoints 剔除</strong>，这里从 MapPoints <strong>数据库中删除</strong></li>
+</ul>
+<h6 id="-检查并插入关键帧-httpsgithubcomwuxiaolangpictures_share_linkblobmastermarkstarpngrawtrue">⑦ 检查并插入关键帧 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/mark/star.png?raw=true" alt=""></h6>
+<ul>
+<li><code>bool Tracking::NeedNewKeyFrame()</code> 判断当前帧是否为关键帧；</li>
+<li><code>void Tracking::CreateNewKeyFrame()</code> 创建新的关键帧；</li>
+</ul>
+<h6 id="-剔除外点">⑧ 剔除外点</h6>
+<ul>
+<li>删除那些<strong>在 bundle adjustment 中检测为 outlier 的 3D map 点</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">N</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+     <span class="c1">// 这里第一个条件还要执行判断是因为, 前面的操作中可能删除了其中的地图点.
+</span><span class="c1"></span>     <span class="k">if</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvbOutlier</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+           <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mvpMapPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h5 id="32333-保存位姿信息">3.2.3.3.3 保存位姿信息</h5>
+<ul>
+<li>这里的关键帧存储的位姿,表示的也是从参考关键帧的相机坐标系到世界坐标系的变换.</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">Tcr</span> <span class="o">=</span> <span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mTcw</span><span class="o">*</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mpReferenceKF</span><span class="o">-&gt;</span><span class="n">GetPoseInverse</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="4-关闭线程统计时间保存轨迹">4. 关闭线程，统计时间，保存轨迹</h2>
+<ul>
+<li>关闭所有线程</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">SLAM</span><span class="p">.</span><span class="n">Shutdown</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>统计跟踪时间</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">sort</span><span class="p">(</span><span class="n">vTimesTrack</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="n">vTimesTrack</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="kt">float</span> <span class="n">totaltime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">ni</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">ni</span><span class="o">&lt;</span><span class="n">nImages</span><span class="p">;</span> <span class="n">ni</span><span class="o">++</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">totaltime</span><span class="o">+=</span><span class="n">vTimesTrack</span><span class="p">[</span><span class="n">ni</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="41-保存相机轨迹">4.1 保存相机轨迹</h3>
+<ul>
+<li>实现函数 <code>void System::SaveKeyFrameTrajectoryTUM(const string &amp;filename)</code>
+<ul>
+<li>获取每个关键帧的旋转（并转化为四元数表示）和平移
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c++" data-lang="c++"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">R</span> <span class="o">=</span> <span class="n">pKF</span><span class="o">-&gt;</span><span class="n">GetRotation</span><span class="p">().</span><span class="n">t</span><span class="p">();</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">q</span> <span class="o">=</span> <span class="n">Converter</span><span class="o">::</span><span class="n">toQuaternion</span><span class="p">(</span><span class="n">R</span><span class="p">);</span>
+<span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">t</span> <span class="o">=</span> <span class="n">pKF</span><span class="o">-&gt;</span><span class="n">GetCameraCenter</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>至此，整个流程执行结束了。</p>
+<hr>
+<blockquote>
+<p>2019.03.20     <br>
+wuyanminmaxgmail.com</p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-04-01-skim/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">2019 年 4 月论文泛读（17 篇）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-03-14-learnable-line/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 视觉 SLAM 的可学习线段描述符</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

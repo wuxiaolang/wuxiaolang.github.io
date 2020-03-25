@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20） - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" Learning SLAM &amp;amp; Others	多视角立体重建的条件单视图外形生成 代码开源 Pointflownet：从点云学习刚体运动估计的表示 代码开源 三维点云的无监督稳定兴趣点检测 代码开源 基于图的视觉惯性导航的封闭式预积分方法 代码开源 事件相机
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-05-27-skim3/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）" />
+<meta property="og:description" content="
+Learning SLAM &amp; Others		
+多视角立体重建的条件单视图外形生成 代码开源    Pointflownet：从点云学习刚体运动估计的表示 代码开源    		
+三维点云的无监督稳定兴趣点检测 代码开源    基于图的视觉惯性导航的封闭式预积分方法 代码开源    事件相机
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-05-27-skim3/" />
+<meta property="article:published_time" content="2019-05-27T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-05-27T00:00:00+08:00" />
+<meta itemprop="name" content="2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）">
+<meta itemprop="description" content="
+Learning SLAM &amp; Others		
+多视角立体重建的条件单视图外形生成 代码开源    Pointflownet：从点云学习刚体运动估计的表示 代码开源    		
+三维点云的无监督稳定兴趣点检测 代码开源    基于图的视觉惯性导航的封闭式预积分方法 代码开源    事件相机
+">
+<meta itemprop="datePublished" content="2019-05-27T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-27T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="4835">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）"/>
+<meta name="twitter:description" content="
+Learning SLAM &amp; Others		
+多视角立体重建的条件单视图外形生成 代码开源    Pointflownet：从点云学习刚体运动估计的表示 代码开源    		
+三维点云的无监督稳定兴趣点检测 代码开源    基于图的视觉惯性导航的封闭式预积分方法 代码开源    事件相机
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-27 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            </div>
+          <span class="more-meta"> 约 4835 字 </span>
+          <span class="more-meta"> 预计阅读 10 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#三-learning-slam">三、 Learning SLAM</a>
+      <ul>
+        <li><a href="#25-gn-net高斯牛顿损失的深度直接法-slam">25. GN-Net：高斯牛顿损失的深度直接法 SLAM</a></li>
+        <li><a href="#26-directshape视觉车辆姿态形状估计的形状先验光度对准">26. DirectShape：视觉车辆姿态形状估计的形状先验光度对准</a></li>
+        <li><a href="#27-2d3d-matchnet学习匹配-2d-图像和-3d-点云的关键点">27. 2D3D-MatchNet：学习匹配 2D 图像和 3D 点云的关键点</a></li>
+        <li><a href="#28-多视角立体重建的条件单视图外形生成">28. 多视角立体重建的条件单视图外形生成</a></li>
+        <li><a href="#29-pointflownet从点云学习刚体运动估计的表示">29. Pointflownet：从点云学习刚体运动估计的表示</a></li>
+        <li><a href="#30-为深度视觉测距选择记忆和细化位姿">30. 为深度视觉测距选择记忆和细化位姿</a></li>
+      </ul>
+    </li>
+    <li><a href="#四-learning-others">四、 learning others</a></li>
+    <li><a href="#五-event">五、 event</a></li>
+    <li><a href="#六传感器融合">六、传感器融合</a></li>
+    <li><a href="#七others">七、Others</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>Learning SLAM &amp; Others</strong>		
+多视角立体重建的条件<strong>单视图外形生成</strong> 代码开源    Pointflownet：从点云学习<strong>刚体运动估计</strong>的表示 代码开源    		
+三维点云的无监督稳定<strong>兴趣点检测</strong> 代码开源    基于图的视觉惯性导航的<strong>封闭式预积分</strong>方法 代码开源    事件相机</p>
+</blockquote>
+<h2 id="三-learning-slam">三、 Learning SLAM</h2>
+<h3 id="25-gn-net高斯牛顿损失的深度直接法-slam">25. GN-Net：高斯牛顿损失的深度直接法 SLAM</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[25]</strong> von Stumberg L, Wenzel P, Khan Q, et al. <a href="https://arxiv.org/pdf/1904.11932.pdf"><strong>GN-Net: The Gauss-Newton Loss for Deep Direct SLAM</strong></a>[J]. arXiv preprint arXiv:1904.11932, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->GN-Net：高斯牛顿损失的深度直接法 SLAM <!-- raw HTML omitted --></li>
+<li>慕尼黑工业大学   <a href="https://scholar.google.com/citations?user=jBgFEukAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要">摘要</h4>
+<ul>
+<li>直接法 SLAM 在里程计任务中表现出很好的性能，然而，它们仍然受到动态的光照、天气变化以及大型基线上的不良初始化的影响；</li>
+<li>为了减轻这两种影响，我们提出了一种方法，<strong>为每个像素提供深度视觉描述符作为 SLAM 系统的输入</strong>；</li>
+<li>在这项工作中，我们介绍了 GN-Net：一个用<strong>新颖的 Gauss-Newton 损失优化的网络</strong>，用于<strong>训练深度特征</strong>，它被设计为最大化 Gauss-Newton 算法内正确像素相应的概率；
+<ul>
+<li>与 SLAM 的方法中通常使用的<strong>单通道灰度图像相比</strong>，这会使具有更大聚类的特征重新产生；</li>
+<li>我们的网络可以<strong>通过不同图像之间的 groundtruth 像素对应进行训练</strong>，这些对应可以通过仿真数据或任何最先进的 SLAM 算法生成；</li>
+</ul>
+</li>
+<li>我们证明了我们的方法对于错误的初始化，在白天的光线变化和天气变化中更加强大，从而超越了最先进的直接和非直接方法；</li>
+<li>此外，我们发布了我们称之为<strong>重定位跟踪的评估基准</strong>，它是使用 <strong>CARLA 模拟器</strong>以及从 Oxford RobotCar 数据集中获取的序列创建的，基准数据集将很快将会公开。</li>
+</ul>
+<h4 id="主要贡献">主要贡献</h4>
+<ul>
+<li>我们<strong>基于直接图像对齐的特性推导出高斯-牛顿损失公式</strong>，并证明它提高了对大基线和照明/天气变化的鲁棒性；</li>
+<li>实验评估表明，GN-Net 在<!-- raw HTML omitted --><strong>重定位跟踪任务上优于最先进的直接和非直接 SLAM 方法</strong><!-- raw HTML omitted -->；</li>
+<li>我们利用 Carla 模拟器 <!-- raw HTML omitted -->[9]<!-- raw HTML omitted --> 以及牛津机器人车数据集 <!-- raw HTML omitted -->[22]<!-- raw HTML omitted --> 中的序列，创建了一个<strong>新的评估基准</strong>，该基准具有 groundtruth 真值姿态，用于我们所提出的照明、天气等变化条件下的<strong>重新定位跟踪</strong>。</li>
+</ul>
+<h4 id="实验">实验</h4>
+<ul>
+<li>DSO
+<ul>
+<li>每当有帧的<strong>重新定位候选对象时</strong>，我们确保系统创建相应的关键帧，该候选系统使用粗略跟踪系统进行跟踪，<strong>粗略跟踪系统在金字塔方案中执行直接图像对齐</strong>；</li>
+<li>我们使用标识作为初始化，而不需要对姿势进行任何其他随机猜测。</li>
+</ul>
+</li>
+<li>GN-Net (Ours)
+<ul>
+<li>与 DSO 一样，但对于<strong>重定位</strong>跟踪，我们<strong>将灰度图像替换为由我们 GN-NET 在特征金字塔的所有层上创建的特征</strong>；</li>
+<li>使用第 3 节中描述的高斯-牛顿损耗公式对网络进行训练。</li>
+</ul>
+</li>
+<li>ORB-SLAM2
+<ul>
+<li>对于<strong>重定位</strong>跟踪，我们使用标准的基于特征的 2 帧位姿优化，也用于帧到关键帧的跟踪；</li>
+<li>我们还尝试了在 ORB-SLAM 中实施的用于重新定位的 RANSAC 方案，但总体效果较差。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="26-directshape视觉车辆姿态形状估计的形状先验光度对准">26. DirectShape：视觉车辆姿态形状估计的形状先验光度对准</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[26]</strong> Wang R, Yang N, Stueckler J, et al. <a href="https://arxiv.org/pdf/1904.10097.pdf"><strong>DirectShape: Photometric Alignment of Shape Priors for Visual Vehicle Pose and Shape Estimation</strong></a>[J]. arXiv preprint arXiv:1904.10097, 2019.
+<ul>
+<li><!-- raw HTML omitted -->DirectShape：视觉车辆姿态形状估计的形状先验光度对准<!-- raw HTML omitted --></li>
+<li>慕尼黑工业大学   <a href="https://scholar.google.com/citations?user=buN3yw8AAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-1">摘要</h4>
+<ul>
+<li>从图像中理解三维场景是机器人、增强现实和自动驾驶场景中遇到的一个具有挑战性的问题；</li>
+<li>本文提出了一种新的方法，从道路场景的<strong>双目图像中共同推断出车辆的三维刚体姿态和形状</strong>；</li>
+<li>不同于<strong>以往的工作依赖于形状的几何对齐与稠密的双目重建</strong>，我们的方法直接工作在图像上，通过 <strong>3D 形状先验</strong>与双目图像的组合<strong>光度和轮廓对齐</strong>，有效地推断形状和姿势；</li>
+<li>我们使用一个<strong>形状先验表示汽车在一个低维线性嵌入的体积符号距离函数（VSDF）</strong>，为了有效地测量这两个对齐项的一致性，我们提出了一种<strong>自适应稀疏点选择</strong>方案；</li>
+<li>在实验中，我们证明了我们的方法在姿态估计和形状重建方面优于最先进的方法，该方法<strong>使用稠密双目重建的几何对齐</strong>；</li>
+<li>该方法作为一种细化方法，也可以<strong>提高基于深度的三维目标检测方法的性能</strong>，我们证明了我们的方法大大提高了近期的几个检测方法的准确性。</li>
+<li><!-- raw HTML omitted --><strong>总结</strong>：这篇文章<strong>主要是做位姿和轮廓优化</strong>，首先从现有的系统中得到一个<strong>粗略的物体位姿和轮廓</strong>，然后<strong>通过轮廓对齐残差和光度一致性残差</strong>来<strong>优化</strong>这个位姿和轮廓<!-- raw HTML omitted -->。</li>
+</ul>
+<h4 id="主要贡献-1">主要贡献</h4>
+<ul>
+<li>提出一种用于<strong>联合 3D 姿态和形状估计的新方法</strong>，其直接<strong>在图像空间中工作</strong>并且提供<strong>优于使用几何公式进行对准</strong>的最先进方法的性能；</li>
+<li>彻底推导出<strong>完全可微的优化框架</strong>，该框架在图像空间和基于 SDF 的 3D 形状嵌入之间运行；</li>
+<li>我们的方法可以<strong>与最先进的基于学习的方法一起应用</strong>，并在很大程度上提高所有测试方法的性能。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="27-2d3d-matchnet学习匹配-2d-图像和-3d-点云的关键点">27. 2D3D-MatchNet：学习匹配 2D 图像和 3D 点云的关键点</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[27]</strong> Feng M, Hu S, Ang M, et al. <a href="https://arxiv.org/pdf/1904.09742.pdf"><strong>2D3D-MatchNet: Learning to Match Keypoints Across 2D Image and 3D Point Cloud</strong></a>[J]. arXiv preprint arXiv:1904.09742, 2019.
+<ul>
+<li><!-- raw HTML omitted -->2D3D-MatchNet：学习匹配 2D 图像和 3D 点云的关键点<!-- raw HTML omitted --></li>
+<li>新加坡国立大学计算机视觉和机器人感知（CVRP）实验室</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-2">摘要</h4>
+<ul>
+<li>从 <strong>3D 传感器生成的大规模点云</strong>比基于二维图像的点云更准确，然而，由于<strong>二维-三维图像点云对应的困难</strong>，在<strong>视觉位姿估计</strong>中很少使用;</li>
+<li>在本文中，我们提出了 <strong>2D3D-MatchNet</strong>&ndash;一种端到端深度网络架构，分别<strong>从图像和点云共同学习 2D 和 3D 关键点的描述符</strong>；
+<ul>
+<li>因此，我们能够<strong>直接匹配</strong>并建立来自查询<strong>图像和 3D 点云参考地图的 2D-3D 对应</strong>，以进行视觉姿态估计；</li>
+</ul>
+</li>
+<li>我们使用牛津机器人汽车数据集创建牛津 2D-3D 数据集，其中包括 groundtruth 相机姿势和 2D-3D 图像到点云对应，用于训练和测试深层网络，实验结果验证了我们的方法的可行性。</li>
+</ul>
+<h4 id="主要贡献-2">主要贡献</h4>
+<ul>
+<li>第一个提出<strong>深度学习方法来学习描述符</strong>的人，这些描述符允许<strong>直接匹配 2D 图像和 3D 点云的关键点</strong>；</li>
+<li>我们的方法使得<strong>激光</strong>雷达的使用可以为视觉姿态估计建立更准确的 <strong>3D 参考图</strong>；</li>
+<li>创建了一个数据集，其中包含大量 <strong>2D-3D 图像块到 3D 点云体对应</strong>，可用于训练和验证网络。</li>
+</ul>
+<h4 id="实现方法">实现方法</h4>
+<ul>
+<li>2D3D-MatchNet 是一个<strong>类似于三联体的深度网络</strong>，共同学习给定图像块和本地点云之间的相似性；</li>
+<li>网络分为三个分支，一个用于<strong>学习 2D 图像关键点的描述符</strong>，另外两个具有共享权重，<strong>学习 3D 点云关键点的描述符</strong>；</li>
+<li>网络输入：
+<ul>
+<li>① 以 2D 图像关键点为中心的<strong>图像块</strong>；</li>
+<li>② 以 3D 关键点为中心的固定半径球内的<strong>点云局部体素</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="28-多视角立体重建的条件单视图外形生成">28. 多视角立体重建的条件单视图外形生成</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[28]</strong> Wei Y, Liu S, Zhao W, et al. <a href="https://arxiv.org/pdf/1904.06699.pdf"><strong>Conditional Single-view Shape Generation for Multi-view Stereo Reconstruction</strong></a>[J]. arXiv preprint arXiv:1904.06699, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->多视角立体重建的条件单视图外形生成<!-- raw HTML omitted --></li>
+<li>清华大学   <a href="https://github.com/weiyithu/OptimizeMVS"><strong>代码开源</strong></a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-3">摘要</h4>
+<ul>
+<li>在本文中，我们提出了一种新的<strong>基于图像的形状生成</strong>的方法；</li>
+<li>大多数现有的基于深度学习的<strong>形状重建方法采用单视图确定性模型</strong>，其有时不足以确定单个 groundtruth 形状，因为后部被<strong>遮挡</strong>；</li>
+<li>在这项工作中，我们<strong>首先引入一个条件生成网络来模拟单视图重建的不确定性</strong>；
+<ul>
+<li>然后，我们<strong>将多视图重建的任务制定为取每个单个图像上的预测形状空间的交集</strong>；</li>
+<li>我们设计了新的不同指导，包括<strong>前向约束，多样性约束和一致性损失</strong>，以实现有效的<strong>单视图条件生成和多视图合成</strong>；</li>
+</ul>
+</li>
+<li>实验结果表明，我们提出的方法优于三维重建测试误差方面的最新方法，并证明了它<strong>对现实世界数据的泛化能力</strong>。</li>
+</ul>
+<h4 id="实现方法-1">实现方法</h4>
+<ul>
+<li>首先是<strong>单视图训练通道</strong>，送入单个图像和一组随机输入，得到图像<strong>采样</strong>，然后部分件的前向约束和多样性约束一起使用，以使模型能够更多地<strong>关注前部</strong>，同时保持生成多样性；</li>
+<li>利用不同的随机输入，本文的条件生成模型可以<strong>从每个视图生成多个形状</strong>；</li>
+<li>最后<strong>一致性损</strong>用于<strong>合成所条件生成模型</strong>以获得最终的预测。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="29-pointflownet从点云学习刚体运动估计的表示">29. Pointflownet：从点云学习刚体运动估计的表示</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[29]</strong> Behl A, Paschalidou D, Donné S, et al. <a href="http://ww.cvlibs.net/publications/Behl2019CVPR.pdf"><strong>Pointflownet: Learning representations for rigid motion estimation from point clouds</strong></a>[C]. <strong>CVPR 2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->Pointflownet：从点云学习刚体运动估计的表示<!-- raw HTML omitted --></li>
+<li>图宾根大学   即将<a href="https://github.com/aseembehl/pointflownet">开源代码</a>（还未放出）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-4">摘要</h4>
+<ul>
+<li>尽管在基于图像的 3D 场景流估计方面取得了重大进展，但是这些方法的性能尚未达到许多应用所要求的准确度；</li>
+<li>同时，这些应用<strong>通常不限于基于图像的估计</strong>：激光扫描仪提供了传统相机的替代品，例如在自动驾驶汽车的背景下，因为它们直接产生 3D 点云；</li>
+<li>在本文中，我们建议使用深度神经网络<strong>从这种非结构化点云估计 3D 运动</strong>，在单个前向传递中，我们的模型<strong>共同预测 3D 场景流以及场景中物体的 3D 边界框和刚体运动</strong>；</li>
+<li>虽然从非结构化点云估计3D场景流的前景是有希望的，但它也是一项具有挑战性的任务，<strong>传统的刚体运动全局表示方法不允许神经网络进行推理，并提出了一种平移等变表示</strong>方法来解决这一问题；</li>
+<li>为了训练我们的深层网络，需要一个大型数据集，因此，我们<strong>使用虚拟物体增强 KITTI 的实际扫描，真实地建模遮挡和模拟传感器噪声</strong>，与经典的和基于学习的技术进行了彻底的比较，突出了该方法的鲁棒性。</li>
+</ul>
+<h4 id="主要贡献-3">主要贡献</h4>
+<ul>
+<li>提出了一种基于自驾驶汽车的<strong>非结构化激光雷达数据联合三维场景流、刚体运动预测和三维目标检测的端到端</strong>可训练模型；</li>
+<li>结果表明，<strong>全局表示方法不适用于刚体运动预测</strong>，并提出了一种<strong>局部平移等变</strong>表示方法来解决这一问题；</li>
+<li>使用<strong>虚拟汽车来扩充 KITTI 数据集</strong>，考虑到遮挡和模拟传感器噪声，以提供更多(真实的)训练数据。</li>
+</ul>
+<hr>
+<h3 id="30-为深度视觉测距选择记忆和细化位姿">30. 为深度视觉测距选择记忆和细化位姿</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[30]</strong> Xue F, Wang X, Li S, et al. <a href="https://arxiv.org/pdf/1904.01892.pdf"><strong>Beyond Tracking: Selecting Memory and Refining Poses for Deep Visual Odometry</strong></a>[J]. arXiv preprint arXiv:1904.01892, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->为深度视觉测距选择记忆和细化位姿<!-- raw HTML omitted --></li>
+<li>北京大学</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-5">摘要</h4>
+<ul>
+<li>以往的基于学习的视觉里程计(VO)方法大多将 <strong>VO 作为一个纯跟踪问题</strong>，相反，我们通过<strong>合并另外两个称为存储（Memory）和细化（Refining）的组件来呈现 VO 框架</strong>；
+<ul>
+<li>Memory 组件通过采用自适应和有效的选择策略来<strong>保存全局信息</strong>，通过采用<strong>时空注意机制提取特征</strong>；</li>
+<li>细化组件通过存储在 Memory 中的上下文<strong>改进了以前的结果</strong>；</li>
+</ul>
+</li>
+<li>在 KITTI 和 tumrgbd 基准数据集上的实验表明，我们的方法在很大程度上优于目前最先进的基于学习的方法，并与经典的单目 VO 方法产生了竞争结果，特别地，我们的模型在<strong>低纹理区域和突变运动</strong>等经典 VO 算法容易失败的具有挑战性的场景中取得了优异的性能。</li>
+</ul>
+<h4 id="主要贡献-4">主要贡献</h4>
+<ul>
+<li>我们提出了一个新颖的端到端 VO 框架，包括 Tracking，Memory 和 Refining 组件；</li>
+<li>Memory 组件采用<strong>适应性和有效的策略来保存累积的信息</strong>；</li>
+<li>Refining 组件采用<strong>时空关注机制来提炼有价值的特征</strong>。</li>
+</ul>
+<hr>
+<h2 id="四-learning-others">四、 learning others</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[31]</strong> Hou J, Dai A, Nießner M. <a href="https://arxiv.org/pdf/1904.12012.pdf"><strong>3D-SIC: 3D Semantic Instance Completion for RGB-D Scans</strong></a>[J]. arXiv preprint arXiv:1904.12012, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->RGB-D扫描的 3D 语义实例<!-- raw HTML omitted --></li>
+<li>慕尼黑工业大学</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[32]</strong> Phalak A, Chen Z, Yi D, et al. <a href="https://arxiv.org/pdf/1904.11595.pdf"><strong>DeepPerimeter: Indoor Boundary Estimation from Posed Monocular Sequences</strong></a>[J]. arXiv preprint arXiv:1904.11595, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->DeepPerimeter：单目序列室内边界估计<!-- raw HTML omitted --></li>
+<li>Magic Leap   <a href="https://scholar.google.com/citations?user=ji6BSBoAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[33]</strong> Yang Z, Liu S, Hu H, et al. <a href="https://arxiv.org/pdf/1904.11490.pdf"><strong>RepPoints: Point Set Representation for Object Detection</strong></a>[J]. arXiv preprint arXiv:1904.11490, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->RepPoints：目标检测的点集表示<!-- raw HTML omitted --></li>
+<li>北京大学</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[34]</strong> Jiang S, Xu T, Li J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/8684952/authors#authors"><strong>Foreground Feature Enhancement for Object Detection</strong></a>[J]. IEEE Access, 2019, 7: 49223-49231.
+<ul>
+<li><!-- raw HTML omitted -->目标检测的前景特征增强<!-- raw HTML omitted --></li>
+<li>北京理工大学</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[35]</strong> Zakharov S, Shugurov I, Ilic S. <a href=""><strong>DPOD: 6D Pose Object Detector and Refiner</strong></a>[J]. <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->DPOD:6 自由度物体姿态检测与细化<!-- raw HTML omitted --></li>
+<li>慕尼黑工业大学，西门子</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[36]</strong> Liu C, Yang Z, Xu F, et al. <a href="https://www.sciencedirect.com/science/article/pii/S0097849319300329"><strong>Image Generation from Bounding Box-represented Semantic Labels</strong></a>[J]. Computers &amp; Graphics, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->从边界框表示的语义标签中生成图像<!-- raw HTML omitted --></li>
+<li>清华大学   Computers &amp; Graphics 中科院四区，JCR Q3， IF 1.352</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[37]</strong> Qiu Z, Yan F, Zhuang Y, et al. <a href="https://ieeexplore.ieee.org/abstract/document/8620277"><strong>Outdoor Semantic Segmentation for UGVs Based on CNN and Fully Connected CRFs</strong></a>[J]. IEEE Sensors Journal, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->基于 CNN 和全连通 CRF 的 UGV 室外语义分割<!-- raw HTML omitted --></li>
+<li>大连理工大学   <a href="https://pan.baidu.com/s/1AofGdJwUSUcsMwgm9IMC-Q#list/path=%2F">点云处理代码</a>   中科院三区，JCR Q2，IF 2.698</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[38]</strong> Ma X, Wang Z, Li H, et al. <a href="https://arxiv.org/pdf/1903.11444.pdf"><strong>Accurate Monocular 3D Object Detection via Color-Embedded 3D Reconstruction for Autonomous Driving</strong></a>[J]. arXiv preprint arXiv:1903.11444, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->用于自动驾驶的彩色嵌入式三维重建精准单目三维物体检测<!-- raw HTML omitted --></li>
+<li>大连理工大学</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[39]</strong> Sindagi V A, Zhou Y, Tuzel O. <a href="https://arxiv.org/pdf/1904.01649.pdf"><strong>MVX-Net: Multimodal VoxelNet for 3D Object Detection</strong></a>[J]. arXiv preprint arXiv:1904.01649, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->用于<strong>三维物体检测</strong>的多模态 VoxelNet<!-- raw HTML omitted --></li>
+<li>美国约翰斯·霍普金斯大学   <a href="http://www.vishwanathsindagi.com/">个人主页</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[40]</strong> Li J, Lee G H. <a href="https://arxiv.org/pdf/1904.00229.pdf"><strong>USIP: Unsupervised Stable Interest Point Detection from 3D Point Clouds</strong></a>[J]. arXiv preprint arXiv:1904.00229, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->三维点云的无监督稳定兴趣点检测<!-- raw HTML omitted --></li>
+<li>新加坡国立大学   即将<a href="https://github.com/lijx10/USIP">开源代码</a>（还未放出）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="五-event">五、 event</h2>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[41]</strong> Scheerlinck C, Rebecq H, Stoffregen T, et al. <a href="https://arxiv.org/pdf/1904.10772.pdf"><strong>CED: Color event camera dataset</strong></a>[J]. arXiv preprint arXiv:1904.10772, <strong>CVPRW 2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->彩色<strong>事件相机</strong><!-- raw HTML omitted --></li>
+<li>苏黎世大学   <a href="http://rpg.ifi.uzh.ch/CED.html">项目主页</a>   <a href="https://scholar.google.com/citations?user=zveWLBkAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+<li>基于事件的视觉研究：<a href="https://arxiv.org/pdf/1904.08405.pdf">Event-based Vision: A Survey</a>. CVPR 2019</li>
+<li><a href="https://arxiv.org/pdf/1904.07235.pdf">Focus is all you need: Loss functions for event-based vision</a>. 2019</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[42]</strong> Stoffregen T, Gallego G, Drummond T, et al. <a href="https://arxiv.org/pdf/1904.01293.pdf"><strong>Event-based motion segmentation by motion compensation</strong></a>[J]. arXiv preprint arXiv:1904.01293, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->基于<strong>事件</strong>的运动补偿运动分割<!-- raw HTML omitted --></li>
+<li>澳大利亚机器人视觉中心，苏黎世大学</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="六传感器融合">六、传感器融合</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[43]</strong> Xiao Y, Ruan X, Chai J, et al. <a href="https://www.mdpi.com/1424-8220/19/7/1624/htm"><strong>Online IMU Self-Calibration for Visual-Inertial Systems</strong></a>[J]. Sensors, <strong>2019</strong>, 19(7): 1624.
+<ul>
+<li><!-- raw HTML omitted -->视觉惯性系统 <strong>IMU 在线标定</strong><!-- raw HTML omitted --></li>
+<li>北京工业大学   Sensors 开源期刊</li>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <strong>[44]</strong> Eckenhoff K, Geneva P, Huang G. <a href="http://sage.cnpereading.com/paragraph/article/10.1177/0278364919835021"><strong>Closed-form preintegration methods for graph-based visual–inertial navigation</strong></a>[J]. The International Journal of Robotics Research, 2018.
+<ul>
+<li><!-- raw HTML omitted -->基于图的视觉惯性导航的<strong>封闭式预积分</strong>方法<!-- raw HTML omitted --></li>
+<li>特拉华大学   <a href="https://github.com/rpng/cpi">代码开源</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[45]</strong> Joshi B, Rahman S, Kalaitzakis M, et al. <a href="https://arxiv.org/pdf/1904.02215.pdf"><strong>Experimental Comparison of Open Source Visual-Inertial-Based State Estimation Algorithms in the Underwater Domain</strong></a>[J]. arXiv preprint arXiv:1904.02215, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->开源视觉惯导 SLAM 在水下的状态估计比较<!-- raw HTML omitted --></li>
+<li>美国南卡罗来纳大学哥伦比亚分校   <a href="https://scholar.google.com/citations?user=Izlp7JsAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[46]</strong> Xia L, Meng Q, Chi D, et al. <a href="https://www.mdpi.com/1424-8220/19/9/2004/htm"><strong>An Optimized Tightly-Coupled VIO Design on the Basis of the Fused Point and Line Features for Patrol Robot Navigation</strong></a>[J]. Sensors, <strong>2019</strong>, 19(9): 2004.
+<ul>
+<li><!-- raw HTML omitted -->基于点线特征融合的巡检机器人紧耦合的 VIO <!-- raw HTML omitted --></li>
+<li>东北电力大学   Sensors 开源期刊</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[47]</strong> Ye H, Chen Y, Liu M. <a href="https://arxiv.org/pdf/1904.06993.pdf"><strong>Tightly Coupled 3D Lidar Inertial Odometry and Mapping</strong></a>[J]. arXiv preprint arXiv:1904.06993, 2019.
+<ul>
+<li><!-- raw HTML omitted -->紧耦合的<strong>激光惯性</strong>里程计与建图<!-- raw HTML omitted --></li>
+<li>香港科技大学   <a href="https://scholar.google.com/citations?user=CdV5LfQAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+<li><a href="https://arxiv.org/pdf/1809.06065.pdf">Focal loss in 3d object detection</a> [J]IEEE Robotics and Automation Letters 4 (2), 1263-1270, <strong>2019</strong>.</li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[48]</strong> Usenko V, Demmel N, Schubert D, et al. <a href="https://arxiv.org/pdf/1904.06504.pdf"><strong>Visual-Inertial Mapping with Non-Linear Factor Recovery</strong></a>[J]. arXiv preprint arXiv:1904.06504, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->具有非线性因子恢复的<strong>视觉-惯导建图</strong><!-- raw HTML omitted --></li>
+<li>慕尼黑工业大学   <a href="https://scholar.google.com/citations?user=APTNKjoAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <strong>[49]</strong> Qiu X, Zhang H, Fu W, et al. <a href="https://www.mdpi.com/1424-8220/19/8/1941/htm"><strong>Monocular Visual-Inertial Odometry with an Unbiased Linear System Model and Robust Feature Tracking Front-End</strong></a>[J]. Sensors, <strong>2019</strong>, 19(8): 1941.
+<ul>
+<li><!-- raw HTML omitted -->具有无偏差线性模型和前端鲁棒特征跟踪的<strong>单目视觉惯导里程计</strong><!-- raw HTML omitted --></li>
+<li>多伦多大学   <a href="https://scholar.google.com/citations?user=lSlo1RgAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a>   Sensors 开源期刊</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="七others">七、Others</h2>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[50]</strong> Liu Y, Knoll A, Chen G. <a href="https://arxiv.org/pdf/1904.12717.pdf"><strong>A New Method for Atlanta World Frame Estimation</strong></a>[J]. arXiv preprint arXiv:1904.12717, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->亚特兰大世界框架估计的一种新方法<!-- raw HTML omitted --></li>
+<li>慕尼黑工业大学</li>
+</ul>
+</li>
+<li><input checked="" disabled="" type="checkbox"> <strong>[51]</strong> Zhao Y, Qi J, Zhang R. <a href="https://arxiv.org/pdf/1904.11128.pdf"><strong>CBHE: Corner-based Building Height Estimation for Complex Street Scene Images</strong></a>[J]. arXiv preprint arXiv:1904.11128, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->基于角点的复杂街景图像<strong>建筑物高度估计</strong><!-- raw HTML omitted --></li>
+<li>墨尔本大学</li>
+</ul>
+</li>
+</ul>
+<hr>
+<blockquote>
+<p><a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a> <br>
+2019.05.27</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-05-28-orb-slam2-viewer/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😀 ORB-SLAM2 代码解读（二）：可视化线程</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-05-25-skim2/">
+            <span class="next-text nav-default">2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 基于图像隐私保护的定位
+Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. Privacy Preserving Image-Based Localization[J] 2019.
+作者：苏黎世联邦理工、微软，作者主页，工程地址， 实验室主页：计算机视觉与几何课题组
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-04-06-privacy-preserving/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位" />
+<meta property="og:description" content="
+基于图像隐私保护的定位
+Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. Privacy Preserving Image-Based Localization[J] 2019.
+作者：苏黎世联邦理工、微软，作者主页，工程地址， 实验室主页：计算机视觉与几何课题组
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-04-06-privacy-preserving/" />
+<meta property="article:published_time" content="2019-04-06T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-04-06T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位">
+<meta itemprop="description" content="
+基于图像隐私保护的定位
+Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. Privacy Preserving Image-Based Localization[J] 2019.
+作者：苏黎世联邦理工、微软，作者主页，工程地址， 实验室主页：计算机视觉与几何课题组
+">
+<meta itemprop="datePublished" content="2019-04-06T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-04-06T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="10211">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位"/>
+<meta name="twitter:description" content="
+基于图像隐私保护的定位
+Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. Privacy Preserving Image-Based Localization[J] 2019.
+作者：苏黎世联邦理工、微软，作者主页，工程地址， 实验室主页：计算机视觉与几何课题组
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-06 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 10211 字 </span>
+          <span class="more-meta"> 预计阅读 21 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>基于图像隐私保护的定位</strong><br />
+Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. <a href="https://arxiv.org/pdf/1903.05572.pdf"><strong>Privacy Preserving Image-Based Localization</strong></a>[J] <strong>2019</strong>.<br />
+<strong>作者</strong>：<strong>苏黎世</strong>联邦理工、微软，<a href="http://people.inf.ethz.ch/sppablo/">作者主页</a>，<a href="https://www.cvg.ethz.ch/research/secon/">工程地址</a>， 实验室主页：<a href="https://www.cvg.ethz.ch/publications/">计算机视觉与几何课题组</a></p>
+</blockquote>
+<blockquote>
+<p>其他文章：<br />
+Speciale P, Pani Paudel D, Oswald M R, et al. <strong>Consensus maximization with linear matrix inequality constraints</strong>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>CVPR 2017</strong>: 4941-4949.<br />
+最大化线性矩阵不等式约束 [<a href="https://www.cvg.ethz.ch/research/conmax/paper/PSpeciale2017CVPR.pdf">PDF</a>] [<a href="https://www.cvg.ethz.ch/research/conmax/paper/PSpeciale2017CVPR_code_sample.tar.gz">Code</a>] [<a href="https://www.youtube.com/watch?v=yV1wXknpG1U">Video</a>] [<a href="https://www.cvg.ethz.ch/research/conmax">Project Page</a>]</p>
+</blockquote>
+<p><font size = 4 font face = times></p>
+<h1 id="privacy-preserving-image-based-localization">Privacy Preserving Image-Based Localization</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>在基于图像的定位应用中如何保护场景隐私？</li>
+<li>图像隐私保护首次的 3D 视觉和几何定位问题中的提出，而非识别问题；</li>
+<li>如何利用线云来表达点云？</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>思想：
+<ul>
+<li>在地图表示中混淆场景的几何形状，其中每个 <strong>3D 点被提升到具有随机方向但通过原始 3D 点的 3D 线</strong>，仅存储 3D 点的 <strong>3D 线和相关联的特征描述符</strong>，而丢弃原始 3D 点位置;</li>
+<li>将线定义在 Pl̈ucker 坐标中，由于方向是随机选择的，并且由于叉积是秩不足的操作，<strong>原始的 3D 点位置不能从其提升的 3D 线中恢复</strong>。</li>
+</ul></li>
+<li>方法：
+<ul>
+<li>首先利用传统特征匹配的方法获取图像上的 2D 观测与空间中的 3D 点之间的对应关系；</li>
+<li>然后将 3D 点提升为通过该点的一条 3D 线，且对于上面的对应关系必须满足观测点落在 3D 线的投影上的几何约束；</li>
+<li>相机 - 2D 观测 - 3D 点构成一条相机光束， <strong>3D 线本身也可以理解为是另外一个相机的光束</strong>，两个相机的光束均通过了该 3D 点，也就是两条线的交点；</li>
+<li>从而基于 3D 线云的相机位姿估计可以转换成通用相机之间的相对位姿估计。</li>
+</ul></li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>通过将 3D 点云转换成 3D 线云<strong>达到了场景信息保密的效果</strong>，并且反演模型<strong>无法进行恢复 3D 点云</strong>；</li>
+<li>研究了单视图和多视图在有无重力方向、有无场景尺度的八种情况下传统点-点的方式和隐私保护的点-线方法的性能：
+<ul>
+<li>在准确率上，传统方法更准确（两个几何约束），但<strong>一个几何约束的点-线方式也与传统方法差距不大</strong>；</li>
+<li>在速度上，<strong>点-线方式更慢</strong>；</li>
+<li>在重投影误差上，点-线方式更小；</li>
+<li>在鲁棒性上，<strong>传统方式更稳定</strong>。</li>
+</ul></li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>由于点-线方式的限制，<strong>除了实现了点云信息保护之外，其他精度、速度和鲁棒性都有下降</strong>；</li>
+<li>原因一个是<strong>线的表示更复杂</strong>，其次<strong>几何约束关系更少导致准确性降低</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>基于图像的定位是许多 AR / MR 和自主机器人系统的关键技术；</li>
+<li>目前的定位系统依赖于<strong>场景的三维点云</strong>的长期存储来实现相机姿态估计，但这些数据<strong>透露了潜在的敏感场景信息</strong>；
+<ul>
+<li>这会带来显着的隐私风险，特别是对于许多应用程序而言，3D 建图是用户可能不完全了解的后台进程；</li>
+</ul></li>
+<li>我们提出以下问题：<font color = red><strong>如何避免披露有关捕获的 3D 场景的机密信息，并允许可靠的相机姿态估计</strong></font></li>
+<li>本文提出了第一个<strong>能够保护隐私</strong>的基于图像的定位；</li>
+<li>方法的关键思想是<font color = red><strong>将地图表示从 3D 点云提升到 3D 线云</strong></font>；</li>
+<li>这种新的表示<strong>模糊了基本的几何场景，同时提供了足够的几何约束</strong>，保证鲁棒和稳定的 6 自由度相机姿态估计。</li>
+</ul>
+<hr />
+<h2 id="简介">1.简介</h2>
+<ul>
+<li><font color = red><strong>背景</strong></font>：<strong>通过图像计算相机姿势来定位场景内的设备</strong>是计算机视觉中的基本问题，在机器人 <sup><strong>[16,19,64]</strong></sup>，增强/混合现实 <sup><strong>[36,46]</strong></sup>，以及运动恢复结构（SfM） <sup><strong>[25,60,62]</strong></sup>等应用中具有高度相关性；
+<ul>
+<li>很明显，基于图像的定位最常见的方法是基于结构 <sup><strong>[19,33,46,58]</strong></sup>并通过首先<strong>将图像的局部二维特征匹配到场景的三维点云模型</strong>来解决这个问题；</li>
+<li>然后使用<font color =red><strong>从匹配的 2D-3D 点相关性得出的几何约束来估计相机姿势</strong>，因此，传统的基于图像的定位方法因此<strong>需要持久存储 3D 点云</strong></font>。</li>
+</ul></li>
+<li><font color = red><strong>问题</strong></font>：诸如 Google ARCore <sup><strong>[5]</strong></sup> 和 Apple ARKit <sup><strong>[7]</strong></sup> 等 AR 平台的普及，可穿戴 AR 设备，如 Microsoft Hololens <sup><strong>[31]</strong></sup> 、Microsoft 的 Azure 空间锚定（ASA） <sup><strong>[11]</strong></sup> 、Google 的视觉定位系统（VPS） <sup><strong>[79]</strong></sup> 以及 6DAI 的地图平台 <sup><strong>[1]</strong></sup> 的发布表明，<strong>对基于图像的定位服务的需求日益增长</strong>，这些服务使 AR/MR 和机器人技术的空间持久性得以实现；
+<ul>
+<li>即便在今天，HoloLens，MagicLeap1 或 iRobot Roomba 等设备也不断将其 3D 环境映射到操作系统，这是一个用户经常无意识到的后台进程，越来越多的 <strong>3D 环境地图将存储在设备上或云中</strong>，然后与其他客户共享；</li>
+<li>即使源图像通常在建图后被丢弃，人们也可以基于<font color =red><strong>对 3D 点云轻松推断出场景布局和潜在机密物体</strong></font>的存在（如图 1 a 所示）；</li>
+<li>此外，<strong>从局部特征重建图像</strong>的方法 <sup><strong>[18,50]</strong></sup> 使得<strong>从点云恢复可重现的精确场景图像</strong>成为可能（如图 1 b 所示）；</li>
+<li>目前为止，<strong>在基于图像的服务中通常忽略了隐私保护</strong>，但随着技术更广泛的使用，信息更广泛地被收集，这是一个值得思考的问题，近期在 AR/MR 社区中也出现了关于图像隐私信息保护的讨论 <sup><strong>[48,54,78]</strong></sup> 。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig1.PNG?raw=true" title="1" width="850" />
+</center></li>
+</ul></li>
+<li><font color = red><strong>三种情形</strong></font>：一般来说，我们预测<strong>三种情况会影响用户的隐私</strong>：
+<ul>
+<li>① 首先，如果<strong>场景本身是保密的</strong>（例如，工厂中的工人或家中的人），那么使用基于点云的定位服务存储地图本身就存在风险；
+<ul>
+<li>在安全地存储地图的可信服务器上执行定位可以解决隐私问题，但即使这样，仍然存在未经授权的访问风险；</li>
+</ul></li>
+<li>② 在第二种情况下，场景本身不是保密的，而是<strong>存在秘密物体或信息</strong>（例如，车间中的硬件原型或家中的一些私人细节）；
+<ul>
+<li>仍然希望在相同的环境中启用持久定位，而不存在通过场景的 3D 地图泄漏秘密信息的风险；</li>
+</ul></li>
+<li>③ 第三种情况涉及需要在客户端设备上定位的低延迟和脱机应用程序，这需要在<strong>授权用户之间共享 3D 地图</strong>，显然，与其他用户分发 3D 地图也会危及隐私。</li>
+</ul></li>
+<li><font color = red><strong>理论</strong></font>：为了解决这些隐私问题，本文引入了一个新的研究方向，称之为<strong>基于图像隐私保护的定位</strong>（如图 1 c）
+<ul>
+<li>目的是<font color = red><strong>以保密的方式对 3D 地图进行编码（从而防止提取敏感信息），同时保持执行稳健和准确的相机姿态估计的能力</strong></font>；</li>
+<li>据我们所知，我们是<strong>第一个</strong>提出解决这个新问题的工作。</li>
+</ul></li>
+<li><font color = red><strong>思想</strong></font>：本解决方案的关键思想是在新颖的<font color =red><strong>地图表示中混淆场景的几何形状</strong>，其中<strong>每个 3D 点被提升到具有随机方向但通过原始 3D 点的 3D 线</strong></font>；
+<ul>
+<li>仅存储 3D 点的 <strong>3D 线和相关联的特征描述符，而丢弃原始 3D 点位置</strong>；</li>
+<li>将这种地图称为 3D 线云（参见图 2），<font color =red><strong>3D 线云表示隐藏了基础几何场景，并阻止了敏感信息的提取</strong></font>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig2.PNG?raw=true" title="2" width="600" />
+</center></li>
+</ul></li>
+<li><font color = red><strong>具体实现方法</strong></font>：为了在 3D 线云中定位图像，我们首先利用传统的特征匹配方法 <sup><strong>[33,58]</strong></sup> 来获得<strong>局部 2D 图像特征与地图中 3D 特征之间的对应关系</strong>；
+<ul>
+<li>每个对应关系都提供了一个几何约束，即<font color = red><strong>二维图像观测点必须位于其对应的三维线的图像投影上</strong></font>；</li>
+<li>基于这种约束，基于 <strong>3D 线云的绝对相机姿态估计</strong>问题需要<strong>一组相机光线与其在地图上对应的 3D 线相交</strong>；</li>
+<li>为了利用这一概念来保护隐私，我们展示了 <strong>3D 线云可以被解释为通用相机</strong>（也即这条 3D 线也可以认为是另一个相机对该 3D 点产生的光束）；</li>
+<li>因此，<strong>3D 线云的绝对相机位姿估计归结为解决通用相对或绝对姿态问题</strong>，这意味着我们可以重新利用现有算法 <sup><strong>[30,39,42,67-69]</strong></sup> 来解决我们的任务。</li>
+</ul></li>
+<li><font color = red><strong>实验</strong></font>：在本文中，我们研究了我们方法的几种变体，首先考虑输入是<strong>单个图像</strong>的情况，然后将该概念概括为<strong>共同定位多个图像</strong>的情况；
+<ul>
+<li>我们还介绍了我们的场景定位方法的几个特殊方法，其中<strong>已知场景的垂直方向或尺度</strong>；</li>
+<li>这些特殊化在实际应用中特别有价值，并强调了与我们方法的高度相关性。</li>
+</ul></li>
+<li><font color = red><strong>主要贡献</strong></font>：
+<ul>
+<li>① 介绍了<strong>基于隐私保护图像的定位问题</strong>，并为其提出了首个解决方案；</li>
+<li>② 提出了一种基于<strong>将 3D 点提升到 3D 线的新颖 3D 地图表示</strong>形式，其保留足够的几何约束以用于姿势估计而不暴露所映射场景的 3D 几何信息；</li>
+<li>③ <font color = red>提出了用于<strong>计算相机姿态的最小解算器</strong>，给出了图像中的 <strong>2D 点与地图中的 3D 线之间的对应关系</strong></font>；</li>
+<li>④ 研究了单视图和多视图在有无重力方向、有无场景尺度的八种情况。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<h3 id="基于图像的定位问题">2.1 基于图像的定位问题</h3>
+<ul>
+<li>基于图像的定位的最新进展产生了一些方法，这些方法现在对<strong>场景外观和照明的变化</strong> <sup><strong>[4,61]</strong></sup> 和<strong>大规模的缩放</strong> <sup><strong>[43,56,58,83]</strong></sup> 具有相当的鲁棒性，并且具有<strong>压缩的地图表示</strong> <sup><strong>[15,21]</strong></sup> ，适用于<strong>实时计算和移动设备</strong> <sup><strong>[8,33,35,43–45,57,76]</strong></sup>；
+<ul>
+<li>基于<strong>图像检索</strong> <sup><strong>[34,66]</strong></sup> 的传统定位方法和<strong>基于学习</strong> <sup><strong>[12,35,80,81]</strong></sup> 的方法具有不需要显式存储 3D 地图的优点；</li>
+<li>然而，<strong>模型反演</strong>技术 <sup><strong>[47]</strong></sup> 即使对这些方法也存在隐私风险；</li>
+<li>此外，它们通常不够准确 <sup><strong>[59,80]</strong></sup> ，<strong>无法实现持久性 AR 和机器人应用</strong>。</li>
+</ul></li>
+<li>总的来说，据我们所知，目前没有关于基于图像隐私保护的定位或其他 3D <strong>视觉任务中隐私感知方法的工作</strong>。</li>
+</ul>
+<h3 id="隐私感知识别">2.2 隐私感知识别</h3>
+<ul>
+<li>自从文献 [9,10] 设计了一个<strong>安全的人脸检测系统</strong>以来，<strong>隐私意识物体识别和生物识别技术</strong>已经在视觉中进行了研究；
+<ul>
+<li>其他应用包括图像检索 [65]，人脸识别 [22] ，视频监控 [74] ， 生物特征验证 [75] ，匿名人脸视频中的活动识别 [53、55] 以及第一视角视频中的计算机屏幕检测 [40]。</li>
+</ul></li>
+<li>最近的一系列工作是从<strong>私有或加密数据集中学习数据驱动模型</strong>[2,27,82];
+<ul>
+<li><font color =red><strong>计算机视觉中隐私保护的所有相关工作都集中在识别问题上，而我们的第一个关注于几何视觉</strong></font>；</li>
+<li>虽然我们的工作旨在保持场景几何的机密性，但也值得探索机密特性，然而，这超出了本文的范围。</li>
+</ul></li>
+</ul>
+<h3 id="隐私保护数据集">2.3 隐私保护数据集</h3>
+<ul>
+<li>文献 [17] 已经研究了隐私保护技术，用于查询数据而不泄漏辅助信息；
+<ul>
+<li>差异隐私 [20] 和 kanonymity [71] 已经应用于位置隐私问题 [3,6,26] ；</li>
+<li>从私有数据集学习数据驱动模型也受到关注 [2,27,82] ；</li>
+<li>然而，<strong>现有技术不适用于几何视觉问题，例如基于图像的定位</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="通用相机位姿估计">2.4 通用相机位姿估计</h3>
+<ul>
+<li>我们在论文中提出的一个重要的观点是：<font color =red><strong>基于3D 线云的隐私保护相机位姿估计与通用相机有着密切的关系</strong></font>；
+<ul>
+<li><font color =red>文献 [28] 提出<strong>通用相机理论</strong>之后，文献 [51] <strong>从三维线的 Pl̈ucker 表示推导出通用极线约束</strong></font>；</li>
+<li>文献 [67] 提出了<strong>通用相对位姿问题的第一个最小解算器</strong>，而针对各种通用位姿问题提出了许多其他解算器 [13, 14, 23, 37, 38, 41, 42, 49, 68–70, 72, 77]</li>
+</ul></li>
+<li><strong>通用相机</strong>主要用于对<strong>刚性多相机设备进行建模</strong>，或用于处理具有已知外部特性的<strong>多组校准相机</strong> <sup><strong>[68-70]</strong></sup> ；
+<ul>
+<li>在这些设置中，<strong>通用相机通常具有少量针孔摄像机，每个图像具有若干观察值</strong>；</li>
+<li>相比之下，我们的 <font color =red><strong>3D 线云可以被看作是一个普通的相机，每个三维线有一个针孔相机（和一个观测）</strong></font>；</li>
+<li>虽然现有的通用位姿求解器容易退化，但我们<strong>通过选择具有随机方向的直线</strong>来避免这个问题；</li>
+<li>这不仅增强了隐私，而且使问题得到更好的处理。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实现方法">3. 实现方法</h2>
+<ul>
+<li>本节中，描述了我们<strong>提出的基于图像隐私保护定位的解决方案</strong>，为了联系上下文
+<ul>
+<li>我们<strong>首先为单个摄像机介绍这个问题的传统方法</strong>，然后介绍我们的隐私保护方法后面的关键概念；</li>
+<li>然后，描述了这些概念的扩展，以<strong>共同定位多个摄像机</strong>；</li>
+<li>最后，我们讨论了几个特殊情况的实际解决方案，其中<strong>重力方向</strong>是已知的，或者我们可以获得具有已知或未知尺度<strong>场景的局部重建</strong>；</li>
+<li>在我们的描述中，我们关注我们<strong>方法背后的高层次直觉</strong>，并让读者参考相关文献，了解解决各种情况所需的基本算法的详细信息。</li>
+</ul></li>
+</ul>
+<h3 id="传统相机位姿估计">3.1 传统相机位姿估计</h3>
+<ul>
+<li>我们遵循传统的<strong>基于结构的视觉定位方法</strong> <sup><strong>[33，58]</strong></sup>，其中场<strong>景地图由三维点云</strong>表示，其通常使用 <strong>SFM</strong> <sup><strong>[60]</strong></sup> 从图像中<strong>重建</strong>；
+<ul>
+<li>要在重建场景中<strong>定位</strong>具有已知内在参数的针孔<strong>相机</strong>，可以从<strong>图像</strong>中的标准化<strong>二维观测</strong> <span class="math inline">\(x \in \mathbb{R}^{2}\)</span> 和<strong>地图中的三维点</strong> <span class="math inline">\(X \in \mathbb{R}^{3}\)</span> 之间的对应关系来<strong>估计其绝对位姿</strong> <span class="math inline">\(P = \left [ R,T\right ],R \in SO(3),T \in \mathbb{R}^{3}\)</span>；</li>
+<li>为了建立 2D-3D 对应关系，分类方法是使用<strong>从 2D 图像特征到 3D 点特征的直接或间接匹配</strong> <sup><strong>[33，58]</strong></sup>；</li>
+<li><font color = red><strong>每个 2D-3D 点对应提供两个几何约束</strong>，用于<strong>绝对相机姿势估计</strong></font>，其形式为公式（1）；</li>
+<li><strong>至少需要三对 2D-3D 对应点</strong>来估计相机位姿 P 中的 <strong>6 自由度</strong>的未知数；</li>
+<li>通常，<font color = red><strong>这个问题被称为 pnP 问题，在小问题称为 p3P</strong></font>；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f1.PNG?raw=true" title="f1" width="400" />
+</center></li>
+</ul></li>
+<li>由于<strong>匹配</strong>过程不完善并导致 2D-3D 对应集合中<strong>存在异常值</strong>，标准程序中会使用<strong>鲁棒算法，如 RANSAC</strong>，结合有效的<strong>最小求解器公式（1）</strong>来计算<strong>初始位姿</strong>；
+<ul>
+<li>随后，再通过<font color = red><strong>求解非线性最小二乘问题（公式 2）来细化该估计</strong></font>；</li>
+<li>其基于用于图像观测的<strong>高斯误差模型</strong> <span class="math inline">\(x \sim \mathcal{N}\left ( 0,\sigma _{x} \right )\)</span> 给出<strong>最大似然估计</strong>；</li>
+<li>这种方法已被广泛使用 <sup><strong>[33,45,46,58,83]</strong></sup>，可在大型场景中实现高效、准确的基于图像的定位。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f2.PNG?raw=true" title="f2" width="400" />
+</center></li>
+</ul></li>
+<li>然而，它需要<strong>以三维点云的形式了解场景几何图形</strong>，因此这种方法固有地<strong>揭示了场景的几何图形</strong>；
+<ul>
+<li>在接下来的部分中，我们将介绍我们的新颖的定位方法，以克服此隐私限制。</li>
+</ul></li>
+</ul>
+<h3 id="隐私保护的相机位姿估计">3.2 隐私保护的相机位姿估计</h3>
+<ul>
+<li>我们实现隐私保护定位的方法背后的核心思想是以<strong>隐藏有关底层场景的信息的方式混淆地图的几何形状</strong>，同时又不会失去在场景中相机定位的能力；
+<ul>
+<li>为了隐藏 3D 几何点云，我们将每个 <strong>3D 点云</strong> <span class="math inline">\(X\)</span> <strong>提升为 3D 线</strong> <span class="math inline">\(L\)</span> ，其具有一个通过点 <span class="math inline">\(X\)</span> 的<strong>随机方向</strong> <span class="math inline">\(v\in \mathbb{R}^{3}\)</span>；</li>
+<li>定义<font color = red><strong>在 Pl̈ucker 坐标中的 3D 线 <span class="math inline">\(L\)</span></strong></font> 为：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f3.PNG?raw=true" title="f3" width="400" />
+</center></li>
+</ul></li>
+<li>重要的是，<font color = red>由于方向 <span class="math inline">\(v\)</span> 是<strong>随机</strong>选择的，并且由于叉积是<strong>秩不足</strong>的操作，原始的 <strong>3D 点位置 <span class="math inline">\(X\)</span> 不能从其提升的 3D 线 <span class="math inline">\(L\)</span> 中恢复</strong></font>；
+<ul>
+<li>我们只知道 <span class="math inline">\(L\)</span> 在某处<strong>经过</strong> <span class="math inline">\(X\)</span> 并且这也适用于图像中它们各自的 <strong>2D 投影</strong> <span class="math inline">\(l\)</span> 和 <span class="math inline">\(x\)</span> ；</li>
+<li>形式上，<strong>如果 2D 图像观察 <span class="math inline">\(x\)</span> 满足公式（4）的几何约束，则其通过投影的 2D 线 <span class="math inline">\(l\)</span></strong> ；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f4.PNG?raw=true" title="f4" width="600" />
+</center></li>
+</ul></li>
+<li>使用以上的约束估计<strong>相机绝对位姿需要至少 6 对 2D-3D 线对应来求解 <span class="math inline">\(P\)</span> 中的 6 个自由度的未知数</strong>；
+<ul>
+<li>与传统点对方法不同，<strong>传统方法提供了两个约束，因此只需要 3 对点对来求解</strong>；</li>
+<li>类似于传统的 pnP 和 p3P问题，我们<font color =red><strong>将一般问题表示为 pnL ，将最小问题表示为 p6L</strong></font>；</li>
+<li>几何上，<font color =red><strong>求解 pnL 问题</strong>相当于旋转并平移由 2D 点 <span class="math inline">\(x\)</span> 定义的且通过相机针孔的光束，<strong>使光束与对应的 3D 直线在地图上相交</strong></font>（如图 3 所示）</li>
+<li>注意，这是广义相对姿势问题的特殊化 <sup><strong>[67]</strong></sup> ，其中第一个广义相机中的光线代表已知的地图 3D 线，第二个广义相机的光线表示我们要定位的针孔相机的二维图像观测；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig3.PNG?raw=true" title="fig3" width="600" />
+</center></li>
+</ul></li>
+<li>我们将这一概念嵌入到传统的定位方案中，通过使用 RANSAC 和文献 [67] 提出的<strong>最小解算器来求解方程（4），对初始姿态 P 进行可靠估计</strong>；
+<ul>
+<li>然后，我们通过<font color =red><strong>最小化观察到的二维点和投影的三维线之间的几何距离，非线性地优化初始姿势</strong></font>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f6.PNG?raw=true" title="f6" width="400" />
+</center></li>
+</ul></li>
+<li>在本节中推导出<strong>单个相机初始位姿估计</strong>的理论之后，接下来概括了我们对<strong>多个图像的联合定位的方法以及已知重力方向的特殊情况</strong>。</li>
+</ul>
+<h4 id="推广到多相机">3.2.1 推广到多相机</h4>
+<ul>
+<li>虽然现有的定位方法通常只考虑单个图像，但许多设备（如头戴式显示器，机器人或车辆）都配备了<strong>多个刚性摄像头</strong>，这些摄像头已经过校准；
+<ul>
+<li>通过利用<strong>组合视野</strong>来检索更多 2D-3D 相关匹配并通过<strong>减少</strong>未知姿势参数的数量来增加估计问题的<strong>冗余度</strong>，将多个摄像机联合为定位带来了巨大的好处；</li>
+<li>此外，目前许多移动设备都具有内置的 SLAM 功能，可以利用与多相机系统相同的简化功能，<strong>将本地相机轨迹视为多幅图像的外部校准</strong>。</li>
+</ul></li>
+<li><font color =red>多个摄像机的联合定位与单个摄像机的情况不同，主要在于如何<strong>参数化问题</strong></font>；
+<ul>
+<li>而不是为每个相机确定单独的位姿 <span class="math inline">\(P\in SE(3)\)</span>，我们<font color =red><strong>将位姿重新参数化为公式（7）中的 P</strong></font>；</li>
+<li>注意：如果已知 <span class="math inline">\(P_{c}\)</span> 相对于地图中 3D 点 <span class="math inline">\(X\)</span> 的<strong>相对比例</strong>，可以消除比例因子 <span class="math inline">\(s_{m}\in R^{+}\)</span> 并将 <span class="math inline">\(P_{m}\)</span> <strong>3D 相似变换减少到 3D 刚性变换</strong>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f7.PNG?raw=true" title="f7" width="450" />
+</center></li>
+</ul></li>
+<li>在文献中，这个问题被称为<strong>广义绝对位姿问题</strong> <sup><strong>[30,49]</strong></sup> ，它类似于传统问题并且不隐藏 3D 点云。
+<ul>
+<li>在大多数实际应用中，可以假设比例 <span class="math inline">\(s_{m} = 1\)</span> ，因为<strong>多摄像头设置通常校准为公制比例</strong>，并且由于大多数 SLAM 系统<strong>从集成惯性测量中恢复比例</strong>；</li>
+<li>因此在下文中，我们最初<strong>将我们的工作限制于 <span class="math inline">\(P_{m}\in SE(3)\)</span> 的刚性变换</strong>；</li>
+<li>我们将这个问题的解决方案称为<font color =red><strong>一般情况下的 m-pnP 和最小情况下的 m-p3P 问题</strong></font>；</li>
+<li>然而，对于更一般的情况 <span class="math inline">\(P_{m}\in Sim(3)\)</span> 也存在有效的解决方案 <sup><strong>[70,77]</strong></sup></li>
+</ul></li>
+<li>在隐私保护设置中，<strong>对多个图像的概括再次归结为解决广义相对姿势问题</strong> <sup><strong>[67]</strong></sup> ；
+<ul>
+<li>然而，<strong>第二个广义相机的光线来自多个</strong>而不是单个针孔相机的 2D 图像观察；</li>
+<li>我们<font color =red>将隐私保护设置中的通用解决方案称为<strong>一般的 m-pnL 和最小情况下的 m-p6L</strong></font>。</li>
+</ul></li>
+</ul>
+<h4 id="已知结构的位姿估计">3.2.2 已知结构的位姿估计</h4>
+<ul>
+<li>到目前为止，我们已经讨论了一种直接<strong>从 2D 图像观察光束估计相机姿态</strong>的方法；
+<ul>
+<li>然而，在许多情况下，可以获得图像<strong>观测</strong> <span class="math inline">\(x\)</span> 的深度 <span class="math inline">\(\lambda\)</span> ，之后，相对于<strong>相机的 3D 位置</strong>被计算为 <span class="math inline">\(X=\lambda \bar{x}\)</span>；</li>
+<li>可以通过产生 RGB-D 图像的有源深度相机或通过<strong>多视图三角测量</strong>来提取这样的 3D 数据；</li>
+<li>在传统的定位问题中，可以使用<font color =red><strong>公式（8）的约束最佳地对齐两个相应 3D 点集的变换来直接估计相机位姿</strong></font>；</li>
+<li>为了在最小的情况下解决这个方程，我们只需要 <strong>3D 刚性变化 P 的三对对应关系</strong>即可；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f8.PNG?raw=true" title="f8" width="370" />
+</center></li>
+</ul></li>
+<li><strong>公式（8）通常以最小二乘方式求解</strong>，并且以这种形式具有直接且计算上有效的解决方案；
+<ul>
+<li>在一般和最小情况下，我们<font color =red><strong>分别将其称之为 $m-PnP+$ 和 $m-P3P+$ 问题</strong></font>。</li>
+</ul></li>
+<li>同样，也可以在我们的隐私保护应用程序中利用本地 3D 点 <span class="math inline">\(\tilde{X}\)</span>；
+<ul>
+<li>不是为了解决广义相对位姿问题，找到地图的 3D 线与相机光线之间的交点；</li>
+<li>而是<font color =red>试图找到一个位姿，使得地图的 3D 线 <span class="math inline">\(L\)</span> 通过 3D 点 <span class="math inline">\(\tilde{X}\)</span></font>，满足公式（9）的几何约束。</li>
+<li>其中 <span class="math inline">\(\alpha\)</span> 是 3D 线 <span class="math inline">\(L\)</span> 的随机原点 <span class="math inline">\(v\times w\)</span> 到 3D 点 <span class="math inline">\(X\)</span> 的未知距离。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f9.PNG?raw=true" title="f9" width="400" />
+</center></li>
+</ul></li>
+<li>通过反转上式相机位姿和地图 3D 点的角色，这个问题在几何上等同于广义绝对姿势问题，即我们可以重新调整 m-pnP 以解决未知姿势 P；
+<ul>
+<li>因此，与解决 m-p6L 所需的六个对应关系相比，我们<strong>现在只需要至少三对 3D 点 - 3D 线对应关系</strong>（如图 4 所示）；</li>
+<li>注意，在 RANSAC 中，需要较少的点来解决最小问题是有利的，它在采样点的数量上具有指数级的运行时复杂性；</li>
+<li>相较于文献 [30] 的 m-p6L ，公式（9）也更有效；</li>
+<li>我们将<font color =red><strong>此问题称为一般的 $m-PnL+$ 和最小情况下的 $m-P3L+$</strong></font>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig4.PNG?raw=true" title="fig4" width="550" />
+</center></li>
+</ul></li>
+</ul>
+<h4 id="拓展到未知尺度情形">3.2.3 拓展到未知尺度情形</h4>
+<ul>
+<li>上一节中描述的方法可能<strong>对不准确的 3D 点位置 <span class="math inline">\(X\)</span> 和 <span class="math inline">\(\tilde{X}\)</span> 敏感</strong>；
+<ul>
+<li>这是有问题的，即使两个 3D 点云仅有略微不同的尺度，例如，由于 SLAM 的漂移或多相机系统轻微的误校准参数引起的；</li>
+<li>相比之下，<strong>pnP 和 pnL 使用的约束不太容易受到这个问题的影响</strong>；</li>
+<li>这是因为基于图像的定位中，<font color = red>用于三角化 <span class="math inline">\(X\)</span> 和 <span class="math inline">\(\tilde{X}\)</span> 的视角是相似的，并且深度 <span class="math inline">\(\lambda\)</span> 中的不确定性 <span class="math inline">\(\sigma _{\lambda }\)</span> 通常大于图像空间中的不确定性 <span class="math inline">\(\mathbf{\sigma _{x}}\)</span> </font>。</li>
+</ul></li>
+<li>为了克服这个问题，在执行基于结构的对齐时，通常更好地是<strong>使用 <span class="math inline">\(s\in R^{+}\)</span> 估计 3D 相似变换 <span class="math inline">\(sP\)</span> ，而不是 3D 刚体变换</strong>；
+<ul>
+<li>此时公式（8）的约束变成如下公式（10）；</li>
+<li>公式（9）的约束变成公式（11）
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/f10+f11.PNG?raw=true" title="f10+f11" width="400" />
+</center></li>
+</ul></li>
+<li>现在我们需要至少 4 对对应来估计 7 自由度的 3D 相似性；
+<ul>
+<li>注意对于公式（10）文献 [73] 有一个比较简单有效的方法，我们称之为 <span class="math inline">\(m - PnP + \lambda + s\)</span>；</li>
+<li>在隐私保护设置中计算 3D 刚性变换问题恰好是最小的，也即，现在我们<strong>需要第四对对应关系来利用公式（11）的约束估计附加的尺度参数</strong>;</li>
+<li>这相当于是广义的绝对位姿和尺度问题 <sup><strong>[70]</strong></sup>，其中相机和地图的角色再次颠倒过来；</li>
+<li>我们将<font color =red>一般问题称为： <span class="math inline">\(m - PnL + \lambda + s\)</span>，最小问题称为： <span class="math inline">\(m - P4L + \lambda + s\)</span></font>。</li>
+</ul></li>
+</ul>
+<h4 id="已知重力的特殊化">3.2.4 已知重力的特殊化</h4>
+<ul>
+<li>通常，相机的<strong>参考系和 3D 地图中的重力方向</strong>的估计可以是可以利用的，例如来自<strong>惯性测量或消失点检测</strong>；
+<ul>
+<li>通过将两个参考帧预对准到<strong>垂直方向，我们可以将旋转姿态参数的数量从三个减少到一个</strong>，这样 <span class="math inline">\(R\in SO(3)\)</span>；</li>
+<li>这种旋转参数化<strong>简化了几何约束</strong>，并为这些问题提供了更有效和数值稳定的解决方案；</li>
+<li>此外，最小情况下需要更少的点，从而使 RANSAC 运行时更好；</li>
+<li>我们为所有描述的问题<strong>实施已知的重力设置，并用后缀 + u 表示</strong>；</li>
+<li>表 1 中展示了<strong>所有问题</strong>的概述。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/tab1.PNG?raw=true" title="tab1" width="800" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实验评估">4. 实验评估</h2>
+<ul>
+<li>为了证明我们的方法具有很高的实用性，我们对<strong>真实数据</strong>进行了大量的实验；
+<ul>
+<li>我们通过比较使用<strong>三维线云的隐私保护方法</strong>和使用<strong>三维点云的传统方法</strong>，从输入的准确性/召回性和鲁棒性方面评估了<strong>位姿估计的性能</strong>；</li>
+<li>在下面，我们首先描述实验设置，然后再展示结果。 ### 4.1 实验设置</li>
+</ul></li>
+</ul>
+<h4 id="数据集">4.1.1 数据集</h4>
+<ul>
+<li>我们使用<strong>混合手机和微软 Hololens 的研究模式</strong>收集了 15 个复杂室内和室外场景的真实数据集（如图 5）；
+<ul>
+<li>为了逼真地模拟基于图像的定位场景，我们捕获了<strong>用于重构场景的 3D 点云的地图图像</strong>，并从用于<strong>评估定位的显著不同的视点查询图像</strong>；</li>
+<li>对于<strong>稀疏场景重建和摄像机校准</strong>，我们将所有记录的（地图和查询）图像输入 COLMAP SfM 通道 <sup><strong>[60,63]</strong></sup>，以获得高质量的摄像机校准；
+<ul>
+<li>所获得的<strong>查询图像的相机位姿作为用于评估的 ground-truth</strong> 的 <span class="math inline">\(\hat{R}\)</span> 和 <span class="math inline">\(\hat{T}\)</span> ；</li>
+<li>然后，<strong>将所有查询图像及其相应的三维点从获得的重建中小心地删除，以准备用于定位的三维地图</strong>；</li>
+<li>在此之后，我们使用固定的相机姿势执行另一个 <strong>BA</strong>，以仅在给定地图图像的情况下<strong>优化剩余的 3D 点</strong>；</li>
+</ul></li>
+<li>这些步骤是<strong>为查询图像重建精确的 ground-truth 位姿</strong>，并确保用于定位的逼真 3D 地图，其中我们仅给出地图图像；</li>
+<li>在整个数据集中，我们捕获了 375 个单图像和 402 个多图像查询图像；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig5.PNG?raw=true" title="fig5" width="800" />
+</center></li>
+</ul></li>
+</ul>
+<h4 id="protocol">4.1.2 Protocol</h4>
+<ul>
+<li>为了<strong>建立 2D-3D 对应</strong>，我们在 SfM 通道的默认设置下<strong>使用 SIFT 特征直接匹配</strong>；
+<ul>
+<li>在<strong>单图像场景</strong>中，我们分别处理每个查询图像，而对于<strong>多图像场景</strong>，我们将相机流中的几个连续图像分组为一个通用相机；</li>
+<li>在评估具有已知结构的多图像情况和位姿估计时，我们<strong>使用 SFM 仅从查询图像中重建 3D 点 <span class="math inline">\(\tilde{X}\)</span> 和相机位姿 <span class="math inline">\(P_{c}\)</span></strong> ；</li>
+<li>为了进行公平比较，<strong>所有方法都使用完全相同的 2D - 3D 对应关系、阈值和 RANSAC</strong> <sup><strong>[24]</strong></sup> 来实现，详见补充资料。</li>
+</ul></li>
+</ul>
+<h4 id="metrics">4.1.3 Metrics</h4>
+<ul>
+<li>在本文的评估中，将<strong>旋转误差和平移误差</strong>定义为以下形式
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/error.PNG?raw=true" title="error" width="300" />
+</center></li>
+<li>同时还计算了关于位姿估计的<strong>点 - 点，点 - 线</strong>（公式 2 和 6）的<strong>平均反投影误差</strong>；</li>
+</ul>
+<h4 id="methods">4.1.4 Methods</h4>
+<ul>
+<li>如表 1 中所示，我们提出了 <strong>8 种隐私保护结果与传统位姿估计器对应的 8 种变体</strong>进行比较；
+<ul>
+<li><font color = red><strong>使用标准 RANSAC 和几何约束的最小求解器计算所有方法的初始姿态估计</strong></font>；</li>
+<li>我们还使用了<strong>基于 RANSAC 内点的公式（2）（6）的 Levenberg-Marquardt 算法优化，比较了初始位姿的非线性优化</strong>（后缀 + ref）的结果。</li>
+</ul></li>
+</ul>
+<h3 id="结果">4.2 结果</h3>
+<h4 id="accuracy-and-recall">4.2.1 Accuracy and Recall</h4>
+<ul>
+<li><strong>准确性/召回曲线</strong>在图 6 中给出，并且<strong>重投影误差</strong>在表 2 中给出；
+<ul>
+<li>如预期的那样，<font color = red><strong>传统方法可以实现更好的准确/召回，因为他们的解决方案利用两个约束(公式 1)进行姿态估计</strong></font>；</li>
+<li>令人惊讶的是，<strong>即使我们只使用一个几何约束（公式 4），它也非常接近传统方法所取得的结果</strong>；</li>
+<li>此外，结合有关<strong>结构、重力和尺度的已知信息</strong>可进一步改进所有方法的结果。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig6.PNG?raw=true" title="fig6" width="900" />
+</center>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/tab2.PNG?raw=true" title="tab2" width="900" />
+</center></li>
+</ul></li>
+</ul>
+<h4 id="runtime">4.2.2 Runtime</h4>
+<ul>
+<li>表 2 展示了所需 RANSAC 迭代的平均数，inlier 比例，最小求解器中生成的解，以及估计单个最小问题解所需的时间；
+<ul>
+<li>结果表明，<font color = red>虽然我们的方法比传统方法慢，它提供了适合实际实时应用的运行时间</font>；</li>
+<li>特别是<font color = red><strong>具有已知结构和重力的特殊解算器可达到与传统方法相提并论的时间</strong></font>；</li>
+<li>我们对所有方法使用相同的 RANSAC 阈值，但实际上，<strong>对于隐私保护方法，可以选择较小的阈值</strong>，因为<strong>点到线总是小于点对点重投影错误</strong>；</li>
+<li>由于特征匹配中的错误，这可能<strong>更容易包括沿线的一些额外异常值</strong>，导致我们的方法 inlier 比率略高，见表 2。</li>
+</ul></li>
+</ul>
+<h4 id="robustness">4.2.3 Robustness</h4>
+<ul>
+<li>我们研究了关于<strong>点云密度和图像噪声的鲁棒性</strong>；
+<ul>
+<li>在图 7 中，我们证明了即使只保留已经稀疏的 SfM 点云的每 20 个点也可以进行可靠的姿态估计</li>
+<li>图 8 显示了我们和传统方法在不同噪声 <span class="math inline">\(\mathbf{\sigma _{x}}\)</span> 下对图像观测的相似行为。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190406/fig7+fig8.PNG?raw=true" title="fig7+fig8" width="900" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="讨论">5. 讨论</h2>
+<ul>
+<li>现在隐私风险在多大程度上得到解决，并强调未来工作的方向；</li>
+</ul>
+<h3 id="定位期间显示了什么">5.1 定位期间显示了什么？</h3>
+<ul>
+<li>当图像在场景中成功定位时，位姿估计的内点通过相机光线与相应的 3D 线的交点显示秘密的 3D 点；
+<ul>
+<li>乍一看，这似乎是一个隐私问题，但<strong>实际上只有图像中可见的对象被显示，而地图的其余部分或任何机密对象仍保密</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="永恒且单一的线云转换">5.2 永恒且单一的线云转换</h3>
+<ul>
+<li><strong>提升变换必须只执行一次，并且对于一个场景是永久的</strong>；
+<ul>
+<li>否则，保留由不同提升变换产生的线云的多个副本的对手<strong>可以通过交叉相应的 3D 线来容易地恢复秘密 3D 点</strong>；</li>
+</ul></li>
+</ul>
+<h3 id="紧凑的表示">5.3 紧凑的表示</h3>
+<ul>
+<li>比公式（3）中的 Plücker 线更紧凑的表达方式是选择一组有限的线方向
+<ul>
+<li>例如，256 以适合一个字节，<strong>并将线的位置编码为通过原点并与方向正交的平面的交点</strong>，这将内存使用减少到 2 个浮点和 1 个字节，即<strong>甚至小于 3 个浮点来编码一个三维点</strong>；</li>
+</ul></li>
+</ul>
+<h3 id="线云攻击">5.4 线云攻击</h3>
+<ul>
+<li>从提升的三维线表示中恢复单个三维点的位置是一个不适定反演问题（见公式 3），但是<strong>分析 3D 线云的密度，有可能恢复有关场景结构的信息</strong>；
+<ul>
+<li>虽然三维线云在使基础场景几何图形不可理解方面看起来很有效，但它<strong>实际上取决于场景中三维点的采样密度</strong>（详见补充材料）；</li>
+<li>在实践中，我们认为我们的方法对于此类攻击通常是相当健壮的，<strong>因为基于图像的定位通常使用稀疏的 SFM 点云</strong>；</li>
+<li>此外，如图 7 中线云稀疏化也是一种有效的防御机制；</li>
+<li>然而，关于<strong>防止反演的更深入的理论分析是未来研究的重点</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">6. 总结</h2>
+<ul>
+<li>本文介绍了一种新的研究方向，称为<strong>隐私保护图像定位</strong>；</li>
+<li>通过这项工作，我们率先解决与 <strong>3D 点云模型的持久存储</strong>相关的潜在隐私问题，这是 AR 和机器人技术中广泛应用所要求的；</li>
+<li>我们提出的<strong>使用机密三维线云地图的想法隐藏了场景的几何结构</strong>，同时<strong>保持了基于标准特征匹配方法执行基于图像定位的能力</strong>；</li>
+</ul>
+<hr />
+<h2 id="r-参考文献">【R】 参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[19]</strong> R. Dube, D. Dugas, E. Stumm, J. I. Nieto, R. Siegwart, and´ C. Cadena. <a href="https://arxiv.org/abs/1609.07720"><strong>Segmatch: Segment based loop-closure for 3D point clouds</strong></a>. In International Conference on Robotics and Automation (<strong>ICRA</strong>), <strong>2017</strong>.<br />
+<font color = gray> <strong>Segmatch：基于 3D 点云分割的闭环检测</strong>，<a href="https://github.com/ethz-asl/segmap"><strong>代码开源</strong></a> </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[28]</strong> Grossberg M D, Nayar S K. <a href="https://ieeexplore.ieee.org/abstract/document/937611"><strong>A general imaging model and a method for finding its parameters</strong></a>[C]//Proceedings Eighth IEEE International Conference on Computer Vision. <strong>ICCV</strong> <strong>2001</strong>. IEEE, 2001, 2: 108-115.<br />
+<font color = gray> 通用相机模型的首次提出</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[30]</strong> Lee G H, Li B, Pollefeys M, et al. <a href="https://inf.ethz.ch/personal/marc.pollefeys/pubs/LeeISRR13.pdf"><strong>Minimal solutions for pose estimation of a multi-camera system</strong></a>[M]//Robotics Research. Springer, Cham, <strong>2016</strong>: 521-538.<br />
+<font color = gray> 广义绝对位姿问题 ，用于多相机系统姿态估计的最小解决方案 </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[45]</strong> Lim H, Sinha S N, Cohen M F, et al. <a href="https://pdfs.semanticscholar.org/f201/50bd79e912fb1b9620322b4d75e6dd596a75.pdf"><strong>Real-time monocular image-based 6-DoF localization</strong></a>[J]. The International Journal of Robotics Research, 2015, 34(4-5): 476-492.<br />
+<font color = gray> 基于单目图像的 6 自由度实时定位 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[46]</strong> Lynen S, Sattler T, Bosse M, et al. <a href="https://www.researchgate.net/profile/Marc_Pollefeys/publication/281094777_Get_Out_of_My_Lab_Large-scale_Real-Time_Visual-Inertial_Localization/links/565629df08ae4988a7b36e51.pdf"><strong>Get Out of My Lab: Large-scale, Real-Time Visual-Inertial Localization</strong></a>[C]//Robotics: Science and Systems(<strong>RSS</strong>). <strong>2015</strong>.<br />
+<font color = gray> <strong>Google Project Tango：大规模实时 VI 定位</strong>，<a href="https://www.youtube.com/watch?v=WPglKLi3PVQ"><strong>演示视频</strong></a> </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[51]</strong> Pless R. <a href="https://ieeexplore.ieee.org/abstract/document/1211520"><strong>Using many cameras as one</strong></a>[C]//2003 IEEE Computer Society Conference on Computer Vision and Pattern Recognition, 2003. Proceedings. IEEE, <strong>2003</strong>, 2: II-587.<br />
+<font color = gray> 从三维线的 Pl̈ucker 表示推导出通用极线约束， Pl̈ucker 坐标系 </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[52]</strong> Raguram R, Chum O, Pollefeys M, et al. <a href="https://ieeexplore.ieee.org/abstract/document/6365642/"><strong>USAC: a universal framework for random sample consensus</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, 2013, 35(8): 2022-2038.<br />
+<font color = gray> RANSAC 算法剔除异常值 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[60]</strong> Schonberger J L, Frahm J M. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Schonberger_Structure-From-Motion_Revisited_CVPR_2016_paper.pdf"><strong>Structure-from-motion revisited</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2016</strong>: 4104-4113.<br />
+<font color = gray> <strong>本文所依托的 SFM 框架，微软，开源：<a href="https://github.com/colmap/colmap">[Code]</a> ，<a href="https://demuc.de/">作者主页</a></strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[67]</strong> HenrikStewénius M O, Aström K, Nistér D. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.846.4946&amp;rep=rep1&amp;type=pdf"><strong>Solutions to minimal generalized relative pose problems</strong></a>[J]. <strong>2005</strong>.<br />
+<font color = gray> 最小化广义相对姿势问题的解决方案 </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[70]</strong> Sweeney C, Fragoso V, Höllerer T, et al. <a href="http://www.cs.ucsb.edu/~holl/pubs/Sweeney-2014-ECCV.pdf"><strong>gdls: A scalable solution to the generalized pose and scale problem</strong></a>[C]//European Conference on Computer Vision. Springer, Cham, <strong>2014</strong>: 16-31.<br />
+<font color = gray> 广义位姿和尺度问题的可扩展解决方案 </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[76]</strong> Ventura J, Arth C, Reitmayr G, et al. <a href="https://ieeexplore.ieee.org/abstract/document/6777443/"><strong>Global localization from monocular slam on a mobile phone</strong></a>[J]. IEEE transactions on visualization and computer graphics, 2014, 20(4): 531-539.<br />
+<font color = gray> 手机端单目 SLAM 的全局定位 </font></li>
+</ul>
+<hr />
+<h2 id="q-问题">【Q】 问题</h2>
+<ul>
+<li>generalized：广义？通用？</li>
+<li>公式（3）中线 L ∈ P^5？不是 6 自由度吗？</li>
+<li>第一个广义相机中的光线代表已知的地图 3D 线，第二个广义相机的光线表示我们要定位的针孔相机的二维图像观测？</li>
+<li>第四章中查询图像（query images）是指什么图像？？相当于测试定位的图像？</li>
+</ul>
+<hr />
+<h2 id="t-思考">【T】 思考</h2>
+<ul>
+<li>三维欧几里得空间中线可以有两种表述方式，在 Struct VIO 中使用两个平面的交线来表示，在本文中使用两个点的连线来表示；</li>
+<li>传统方法两个几何约束（公式 1）：要求 x,y 坐标都尽可能地重合，隐私保护方法一个几何约束（公式 4），仅需要点落在直线上即可，不必确定在哪个位置，最后的效果如图 6 ，传统方法准确率更高，但一个约束的准确率也接近，是否可以考虑<strong>为公式 4 多添加一个几何约束</strong>？</li>
+<li>表 2 的 RANSAC 统计显示
+<ul>
+<li>传统方法速度更快，但当<strong>重力或结构已知</strong>的情况下点-线方法也差不多；</li>
+<li>点-线可以选择较小的 RANSAC 阈值，因为<strong>点到线总是小于点对点重投影错误</strong>；</li>
+<li>需要考虑干扰的地方：由于特征匹配中的错误，这可能更容易包括沿线的一些额外异常值，导致点-线 inlier 比率略高；</li>
+</ul></li>
+</ul>
+<h2 id="n">【N】</h2>
+<ul>
+<li><a href="https://blog.csdn.net/weixin_38285131/article/details/74910046">CSDN：Pluecker coordinates普吕克坐标系</a>  <a href="https://en.wikipedia.org/wiki/Pl%C3%BCcker_coordinates">维基百科：Plücker coordinates</a></li>
+<li><a href="https://blog.csdn.net/hlxCSDN/article/details/86501813">普吕克坐标下的线特征观测模型</a></li>
+</ul>
+<hr />
+<blockquote>
+<p>2019.04.06<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">wuxiaolang</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-04-06
+        
+    </span>
+  </p>
+  
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content">MIT</span>
+  </p>
+</div>
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-04-27-orb-slam2-tracking/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😀 ORB-SLAM2 代码解读（二）：跟踪线程</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-04-01-skim/">
+            <span class="next-text nav-default">2019 年 4 月论文泛读（17 篇）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😀 ORB-SLAM2 代码解读（三）：单目初始化 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="单目初始化通过并行地计算基础矩阵 F 和单应矩阵 H ，恢复出最开始两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图，并对恢复的点云" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-06-17-orb-slam2-monocular-initialization/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😀 ORB-SLAM2 代码解读（三）：单目初始化" />
+<meta property="og:description" content="单目初始化通过并行地计算基础矩阵 F 和单应矩阵 H ，恢复出最开始两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图，并对恢复的点云" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-06-17-orb-slam2-monocular-initialization/" />
+<meta property="article:published_time" content="2019-06-17T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-06-17T00:00:00+08:00" />
+<meta itemprop="name" content=" 😀 ORB-SLAM2 代码解读（三）：单目初始化">
+<meta itemprop="description" content="单目初始化通过并行地计算基础矩阵 F 和单应矩阵 H ，恢复出最开始两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图，并对恢复的点云">
+<meta itemprop="datePublished" content="2019-06-17T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-06-17T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8138">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😀 ORB-SLAM2 代码解读（三）：单目初始化"/>
+<meta name="twitter:description" content="单目初始化通过并行地计算基础矩阵 F 和单应矩阵 H ，恢复出最开始两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图，并对恢复的点云"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😀 ORB-SLAM2 代码解读（三）：单目初始化</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-06-17 </span>
+        <div class="post-category">
+            <a href="/categories/orb-slam2/"> ORB-SLAM2 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            </div>
+          <span class="more-meta"> 约 8138 字 </span>
+          <span class="more-meta"> 预计阅读 17 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <p>  单目初始化通过<strong>并行地计算基础矩阵 F 和单应矩阵 H</strong> ，恢复出最开始<strong>两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图</strong>，并对恢复的点云和相机位姿做<strong>全局 BA</strong>。</p>
+<pre><code>同时计算两个模型：    
+用于平面场景的单应性矩阵 H（4对 3d-2d点对，线性方程组，奇异值分解）    
+用于非平面场景的基础矩阵 F（8对 3d-2d点对，线性方程组，奇异值分解）    </code></pre>
+<h2 id="算法流程">0. 算法流程</h2>
+<ul>
+<li><p><strong>步骤一：</strong> 创建<strong>单目初始器</strong>并获取<strong>第一帧图像</strong>（未创建初始器）</p>
+<ul>
+<li><strong>步骤 1：</strong> 对当前帧特征点数量进行判断，<strong>要求特征点数必须大于 100</strong>，满足则作为初始化的第一帧，用 <code>mInitialFrame</code> 表示<strong>第一帧（初始帧）</strong>， mLastFrame 表示上一帧，<code>mvbPrevMatched</code> 用于存储第一帧中的所有特征点；</li>
+<li><strong>步骤 2：</strong> ==Initializer::Initializer()== <strong>创建初始器</strong>，获取相机内参、参考帧的特征点，初始化估计误差和最大的 RANSAC 迭代次数:；</li>
+<li>用<code>mvIniMatches</code> 表示两帧之间的匹配标志，先填充为 -1 ，也就是均没有匹配。</li>
+</ul></li>
+<li><p><strong>步骤二：</strong> 获取单目初始化的<strong>第二帧</strong>（单目初始化器已经被创建）</p>
+<ul>
+<li>要求这一帧的特征点数也要大于 100 ，如果小于 100 个，则删除单目初始器 Initializer ，回到步骤一重新创建；</li>
+<li>也就是<font color = red><strong>只有连续两帧的特征点个数都大于100时，才能继续进行初始化过程</strong></font>。</li>
+<li>NOTE：步骤一二比较的特征点都是<strong>未经畸变矫正的点</strong> <code>mCurrentFrame.mvKeys</code>。</li>
+</ul></li>
+<li><p><strong>步骤三：</strong> 在 mInitialFrame 与 mCurrentFrame 中通过<font color = red>图像网格加速寻找<strong>匹配的特征点对</strong></font></p>
+<ul>
+<li>创建特征匹配器并利用 ==<code>ORBmatcher::SearchForInitialization()</code>== 函数进行<strong>金字塔分层块匹配搜索匹配点对</strong>，返回匹配的数目；</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">// 创建特征匹配器.</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>ORBmatcher matcher( <span class="fl">0.9</span>, <span class="kw">true</span>); <span class="co">// 第一个参数：最佳匹配与次佳匹配的比值，默认为 0.6；第二个参数：是否检查特征点的方向.</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">// 针对单目初始化的时候,进行特征点的匹配</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="dt">int</span> nmatches = matcher.SearchForInitialization( mInitialFrame, mCurrentFrame, <span class="co">// 初始化时的参考帧和当前帧</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>                                                mvbPrevMatched,               <span class="co">// 在初始化参考帧中提取得到的特征点</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>                                                mvIniMatches,                 <span class="co">// 匹配标志</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>                                                <span class="dv">100</span>);                         <span class="co">// 搜索窗口的大小</span></span></code></pre></div>
+<ul>
+<li>调用 ==<code>ORBmatcher::DescriptorDistance()</code>== 函数<strong>比较两帧之间的描述子距离</strong>，确保距离小于 ORBmatcher::TH_LOW = 50；</li>
+<li>SearchForInitialization() 的功能：根据可能<strong>匹配特征点的描述子计算距离</strong>，确定最佳匹配；另外如果<strong>考虑特征点的方向</strong>，则将第一帧中的特征的方向角度减去对应第二帧的特征的方向角度，将值划分为直方图，则会在 0 度和 360 度左右对应的组距比较大，这样就可以对其它<strong>相差太大的角度可以进行剔除</strong>；</li>
+<li>函数<strong>返回的匹配数 nmatches</strong> 小于 100，则回到步骤一，重新初始化，若<strong>大于 100，则进行后续初始化</strong>。</li>
+</ul></li>
+<li><p><strong>步骤四：</strong> ==<code>Initializer::Initialize()</code>== 并行计算 H 模型或 F 模型进行<strong>单目初始化</strong>，得到<strong>两帧间相对运动、初始MapPoints</strong></p>
+<blockquote>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1"></a>mpInitializer-&gt;Initialize(  mCurrentFrame,      <span class="co">// 当前帧</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>                           mvIniMatches,       <span class="co">// 当前帧和参考帧的特征点的匹配标志</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>                           Rcw, tcw,           <span class="co">// 初始化得到的相机的位姿</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>                           mvIniP3D,           <span class="co">// 进行三角化得到的空间点集合</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>                           vbTriangulated))    <span class="co">// 以及对应于mvIniMatches来讲,其中哪些点被三角化了</span></span></code></pre></div>
+</blockquote>
+<ul>
+<li><strong>步骤 1：</strong> 筛选出匹配的点对，<code>mvIniMatches</code> 存储匹配标志，将标志 &gt;= 0 的点索引关系保存到 mvMatches12</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a>    <span class="cf">if</span>(vMatches12[i]&gt;=<span class="dv">0</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    {</span>
+<span id="cb4-3"><a href="#cb4-3"></a>        mvMatches12.push_back(make_pair(i,vMatches12[i]));</span>
+<span id="cb4-4"><a href="#cb4-4"></a>        mvbMatched1[i]=<span class="kw">true</span>;</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    }</span></code></pre></div>
+<ul>
+<li><p><strong>步骤 2：</strong> 在所有匹配特征点对中随机选择 <strong>8 对匹配特征点为一组</strong>，共选择 <code>Initializer::mMaxIterations</code> 组，其中 mMaxIterations 是最大的 RANSAC迭代次数，在初始化初始器的时候赋值为 200；</p>
+<ul>
+<li>产生的点对保存在 mvSets 中，用于<strong>保存每次迭代时所使用的向量，保存八对点进行单应矩阵和基础矩阵估计</strong>（求解矩阵使用<font color = red><strong>八点法</strong></font>），迭代 mMaxIterations 次，每次迭代随机挑选 8 个点（不重复）</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a>    <span class="co">// 初始空间分配</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>    mvSets = vector&lt; vector&lt;<span class="dt">size_t</span>&gt; &gt;(  mMaxIterations,     <span class="co">// 最大的RANSAC迭代次数 200</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>                                        vector&lt;<span class="dt">size_t</span>&gt;(<span class="dv">8</span>,<span class="dv">0</span>));   <span class="co">// </span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>    mvSets[it][j] = idx;    <span class="co">// 第 it 次迭代中的第 j 个点.</span></span></code></pre></div></li>
+<li><p><strong>步骤 3：</strong> <strong>多线程计算基础矩阵和单应矩阵</strong></p>
+<blockquote>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a>   <span class="co">// 计算 homography 矩阵并打分.</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>   thread threadH( &amp;Initializer::FindHomography,  <span class="co">// 计算单应矩阵的函数</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>                   <span class="kw">this</span>,              <span class="co">//</span><span class="al">NOTE</span><span class="co"> 由于主函数为类的成员函数，所以第一个参数就应该是当前对象的this指针</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>                  ref(vbMatchesInliersH),     <span class="co">//输出，特征点对的 Inlier 标记</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>                   ref(SH),           <span class="co">//输出，计算的单应矩阵的 RANSAC 评分</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>                   ref(H));           <span class="co">//输出，计算的单应矩阵结果</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>   <span class="co">// 计算 fundamental 矩阵并打分.</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>   thread threadF(&amp;Initializer::FindFundamental,<span class="kw">this</span>,ref(vbMatchesInliersF), ref(SF), ref(F));</span></code></pre></div>
+</blockquote>
+<ul>
+<li><strong>线程一：</strong> 计算<strong>单应矩阵</strong>及其得分 ==<code>Initializer::FindHomography()</code>==
+<ul>
+<li>步骤 ①：利用 ==<code>Initializer::Normalize()</code>== 函数<strong>归一化特征点的尺度</strong>，固定场景尺度；</li>
+<li>步骤 ②：利用 ==<code>Initializer::ComputeH21()</code>== 函数<strong>八点法计算 homography 矩阵</strong>；</li>
+<li>步骤 ③：利用 ==<code>Initializer::CheckHomography()</code>== 函数求取 <strong>利用重投影误差为 RANSAC 的结果评分</strong>；</li>
+<li>步骤 ④：记录最大的得分。</li>
+</ul></li>
+<li><strong>线程二：</strong> 计算<strong>本质矩阵</strong>及其得分 ==<code>Initializer::FindFundamental()</code>==
+<ul>
+<li>步骤 ①：利用 ==<code>Initializer::Normalize()</code>== 函数<strong>归一化特征点的尺度</strong>，固定场景尺度；</li>
+<li>步骤 ②：利用 ==<code>Initializer::ComputeF21()</code>== 函数<strong>八点法计算 fundamental 矩阵</strong>；</li>
+<li>步骤 ③：利用 ==<code>Initializer::CheckFundamental()</code>== 函数求取 <strong>利用重投影误差为 RANSAC 的结果评分</strong>；</li>
+<li>步骤 ④：记录最大的得分。</li>
+</ul></li>
+</ul></li>
+<li><p><strong>步骤 4：</strong> 计算两个矩阵的得分比，判断选择哪个模型，判断谁的评分占比更多一些，注意不是简单的评分大，而是看评分的占比。</p></li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a>    <span class="dt">float</span> RH = SH/(SH+SF);</span></code></pre></div>
+<ul>
+<li><strong>步骤 5：</strong> 从选择的 <strong>F 矩阵或 H 矩阵中恢复当前帧相对于第一帧的位姿 R,t</strong>完成初始化；
+<ul>
+<li><strong>情形一：</strong> RH &gt; 0.40，偏向于平面，从<strong>单应矩阵</strong>恢复 ==<code>Initializer::ReconstructH()</code>==；</li>
+<li><strong>情形二：</strong> RF &gt; 0.60，偏向于非平面，从<strong>基础矩阵</strong>恢复 ==<code>Initializer::ReconstructF()</code>==。
+<ul>
+<li>步骤 ①：将基础矩阵转换成本质矩阵 E；</li>
+<li>步骤 ②：对本质矩阵进行分解，得到两个 R 和两个 t ==<code>Initializer::DecomposeE</code>==；</li>
+<li>步骤 ③：依次检查四组解情况下 3D 点在摄像头前方且投影误差小于阈值的 3D 点个数，==<code>Initializer::CheckRT()</code>==；
+<ul>
+<li><strong>步骤 A：</strong> 计算两帧下的<strong>投影矩阵</strong> P1，P2；</li>
+<li><strong>步骤 B：</strong> 2D 点和投影矩阵作为输入进行<strong>三角化恢复 3D 点</strong> ==<code>Initializer::Triangulate()</code>==</li>
+<li><strong>步骤 C：</strong> <strong>检验三角化的 3D 点</strong>是否符合要求
+<ul>
+<li><strong>检验一：</strong> 如果三角测量的结果中有一个是<strong>无穷大</strong>的就说明三角化失败；</li>
+<li><strong>检验二：</strong> 判断 3D 点是否在<strong>两个摄像头前方</strong>，<strong>视差角</strong>是否足够大；</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1"></a>    <span class="cf">if</span>(p3dC1.at&lt;<span class="dt">float</span>&gt;(<span class="dv">2</span>)&lt;=<span class="dv">0</span> &amp;&amp;     <span class="co">// 3D点深度为负</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>        cosParallax&lt;<span class="fl">0.99998</span>)    <span class="co">// 并且还要有一定的视差角，一般视差角比较小时重投影误差比较大</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>            <span class="cf">continue</span>;</span></code></pre></div>
+<ul>
+<li><strong>检验三：</strong> 计算空间点在参考帧和当前帧上的<strong>重投影误差</strong>，需要小于阈值</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a>    <span class="co">// </span><span class="al">NOTE</span><span class="co"> 计算3D点在第一个图像上的投影误差</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>    <span class="co">// 投影到参考帧图像上的点的坐标x,y</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>    <span class="dt">float</span> im1x, im1y;</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    <span class="co">// 这个使能空间点的z坐标的倒数</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>    <span class="dt">float</span> invZ1 = <span class="fl">1.0</span>/p3dC1.at&lt;<span class="dt">float</span>&gt;(<span class="dv">2</span>);</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    <span class="co">// 投影到参考帧图像上。因为参考帧下的相机坐标系和世界坐标系重合，因此这里就直接进行投影就可以了</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>    im1x = fx*p3dC1.at&lt;<span class="dt">float</span>&gt;(<span class="dv">0</span>)*invZ1+cx;</span>
+<span id="cb9-8"><a href="#cb9-8"></a>     im1y = fy*p3dC1.at&lt;<span class="dt">float</span>&gt;(<span class="dv">1</span>)*invZ1+cy;</span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a>    <span class="co">// 参考帧上的重投影误差，这个的确就是按照定义来的</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a>    <span class="dt">float</span> squareError1 = (im1x-kp1.pt.x)*(im1x-kp1.pt.x)+(im1y-kp1.pt.y)*(im1y-kp1.pt.y);</span>
+<span id="cb9-12"><a href="#cb9-12"></a>    <span class="co">// 重投影误差太大，跳过淘汰，一般视差角比较小时重投影误差比较大</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>     <span class="cf">if</span>(squareError1&gt;th2)</span>
+<span id="cb9-14"><a href="#cb9-14"></a>        <span class="cf">continue</span>;</span>
+<span id="cb9-15"><a href="#cb9-15"></a>     <span class="co">// 后面同样计算 3D 点在第二个图像上的投影误差，略</span></span></code></pre></div></li>
+<li><strong>步骤 D：</strong> 统计满足上面三个条件的 3D 点，被称为 goog 点，并将视差从小到大排序，记录第 50 小的视差值（若少于 50 则取最后一个）。</li>
+</ul></li>
+<li>步骤 ④：检查是否有足够大的视差角，<strong>选择视差角大于阈值,并且满足条件的 3D 点个数明显大于其它模型的一组 [R,t] 解作为结果</strong>。</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p><strong>步骤五：</strong> 删除无法三角化的匹配点，其中 <code>mvIniMatches</code> 是两帧之间特征点的匹配标志，<code>vbTriangulated</code> 是其对应的三角化标志。</p></li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1"></a>    <span class="cf">for</span>(<span class="dt">size_t</span> i=<span class="dv">0</span>, iend = mvIniMatches.size(); i&lt;iend;i++)</span>
+<span id="cb10-2"><a href="#cb10-2"></a>    {</span>
+<span id="cb10-3"><a href="#cb10-3"></a>        <span class="cf">if</span>(mvIniMatches[i]&gt;=<span class="dv">0</span> &amp;&amp; !vbTriangulated[i])</span>
+<span id="cb10-4"><a href="#cb10-4"></a>        {</span>
+<span id="cb10-5"><a href="#cb10-5"></a>            mvIniMatches[i]=-<span class="dv">1</span>;</span>
+<span id="cb10-6"><a href="#cb10-6"></a>            nmatches--;</span>
+<span id="cb10-7"><a href="#cb10-7"></a>        }</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    }</span></code></pre></div>
+<ul>
+<li><strong>步骤六：</strong> 设置<strong>初始两帧的世界坐标位姿</strong>
+<ul>
+<li><strong>初始帧的位姿设置为单位矩阵</strong></li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1"></a>    mInitialFrame.SetPose(cv::Mat::eye(<span class="dv">4</span>,<span class="dv">4</span>,CV_32F));</span></code></pre></div>
+<ul>
+<li>当前帧（第二帧）的位姿有前面<strong>矩阵恢复出的 R,t 构造</strong></li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1"></a>    <span class="co">// 由Rcw和tcw构造Tcw,并赋值给mTcw，mTcw为世界坐标系到该帧的变换矩阵</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>    cv::Mat Tcw = cv::Mat::eye(<span class="dv">4</span>,<span class="dv">4</span>,CV_32F);</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    Rcw.copyTo(Tcw.rowRange(<span class="dv">0</span>,<span class="dv">3</span>).colRange(<span class="dv">0</span>,<span class="dv">3</span>));</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    tcw.copyTo(Tcw.rowRange(<span class="dv">0</span>,<span class="dv">3</span>).col(<span class="dv">3</span>));</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    mCurrentFrame.SetPose(Tcw);</span></code></pre></div></li>
+<li><strong>步骤七：</strong> ==<code>Tracking::CreateInitialMapMonocular()</code>== 将三角化得到的点包装成<strong>地图点 MapPoints</strong>，<strong>创建初始地图</strong>，使用最小化重投影误差 BA 进行地图优化，优化位姿和地图点；
+<ul>
+<li><strong>步骤 1：</strong> <strong>创建初始关键帧</strong>，认为单目初始化时候的参考帧和当前帧都是关键帧 ==<code>KeyFrame::KeyFrame()</code>==</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb13-1"><a href="#cb13-1"></a>    KeyFrame* pKFini = <span class="kw">new</span> KeyFrame(mInitialFrame, mpMap, mpKeyFrameDB);</span>
+<span id="cb13-2"><a href="#cb13-2"></a>    KeyFrame* pKFcur = <span class="kw">new</span> KeyFrame(mCurrentFrame, mpMap, mpKeyFrameDB);</span></code></pre></div>
+<ul>
+<li><strong>步骤 2：</strong> 将初始化的两帧关键帧的<strong>描述子转换成 BoW</strong> ==<code>Frame::ComputeBoW()</code>==</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1"></a>    pKFini-&gt;ComputeBoW();</span>
+<span id="cb14-2"><a href="#cb14-2"></a>    pKFcur-&gt;ComputeBoW();</span></code></pre></div>
+<ul>
+<li><strong>步骤 3：</strong> <strong>将关键帧插入到地图</strong>，凡是关键帧都需要插入到地图 ==<code>Map::AddKeyFrame(KeyFrame *pKF)</code>==</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1"></a>    mpMap-&gt;AddKeyFrame(pKFini);</span>
+<span id="cb15-2"><a href="#cb15-2"></a>    mpMap-&gt;AddKeyFrame(pKFcur);</span></code></pre></div>
+<ul>
+<li><strong>步骤 4：</strong> <strong>将 3D 点包装成 MapPoints</strong>
+<ul>
+<li>步骤 ①：<strong>构造地图点</strong> ==<code>MapPoint::MapPoint()</code>==</li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a>    MapPoint* pMP = <span class="kw">new</span> MapPoint(worldPos,  <span class="co">// 3D 点的世界坐标.</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>                                 pKFcur,    <span class="co">// 对应的关键帧.</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>                                 mpMap);    <span class="co">// 地图.</span></span></code></pre></div>
+<ul>
+<li>步骤 ②：<strong>添加地图点到关键帧</strong> ==<code>KeyFrame::AddMapPoint(MapPoint *pMP, const size_t &amp;idx)</code>==</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1"></a>    pKFini-&gt;AddMapPoint(pMP,i);                 <span class="co">// 第一个参数是地图点，第二个参数是地图点在关键帧中的索引.</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a>    pKFcur-&gt;AddMapPoint(pMP,mvIniMatches[i]);</span></code></pre></div>
+<ul>
+<li>步骤 ③：记录关键帧的哪个特征点能观察到该地图点； ==<code>MapPoint::AddObservation(KeyFrame* pKF, size_t idx)</code>==</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb18-1"><a href="#cb18-1"></a>    pMP-&gt;AddObservation(pKFini,i);</span>
+<span id="cb18-2"><a href="#cb18-2"></a>    pMP-&gt;AddObservation(pKFcur,mvIniMatches[i]);</span></code></pre></div>
+<ul>
+<li>步骤 ④：从众多观测到该 MapPoint 的特征点中挑选区分度最高的描述子 ==<code>MapPoint::ComputeDistinctiveDescriptors()</code>==</li>
+<li>步骤 ⑤：更新该 MapPoint 平均观测方向以及观测距离的范围 ==<code>MapPoint::UpdateNormalAndDepth()</code>==</li>
+<li>步骤 ⑥：<strong>在地图中添加该 MapPoint</strong> ==<code>AddMapPoint(MapPoint *pMP)</code>==</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1"></a>    mpMap-&gt;AddMapPoint(pMP);</span></code></pre></div></li>
+<li><strong>步骤 5：</strong> <strong>更新关键帧间的连接关系</strong> ==<code>KeyFrame::UpdateConnections()</code>==
+<ul>
+<li>在 3D 点和关键帧之间建立边，每个边有一个权重，边的<strong>权重是该关键帧与当前帧公共 3D 点的个数</strong></li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb20-1"><a href="#cb20-1"></a>    pKFini-&gt;UpdateConnections();</span>
+<span id="cb20-2"><a href="#cb20-2"></a>     pKFcur-&gt;UpdateConnections();</span></code></pre></div></li>
+<li><strong>步骤 6：</strong> <strong>BA 优化</strong> ==<code>Optimizer::GlobalBundleAdjustemnt()</code>==</li>
+<li><strong>步骤 7：</strong> 将 MapPoints 的中值深度归一化到1，并归一化两帧之间变换；</li>
+<li><strong>步骤 8：</strong> 更新状态量，包括关键帧、地图点信息，更新地图绘制器。</li>
+</ul></li>
+<li>单目初始化结束。</li>
+</ul>
+<hr />
+<h2 id="初始两帧的特征匹配">1. 初始两帧的特征匹配</h2>
+<p>  对应于<strong>算法流程中的步骤三</strong>，参考：<a href="">ORB-SLAM2 初始化时两帧之间的特征匹配 SearchForInitialization()</a></p>
+<hr />
+<h2 id="fundamental-基本矩阵求解变换">2. Fundamental 基本矩阵求解变换</h2>
+<h3 id="归一化特征点坐标">2.1 归一化特征点坐标</h3>
+<blockquote>
+<p>  <strong>8 点法是计算基本矩阵最简单的方法</strong>。为了<strong>提高解的稳定性和精度</strong>，通常需要对输入的<strong>点集坐标进行归一化</strong>处理（吴博师兄在视频中提到好像是为了防止不同分辨率、尺度和坐标原点下的影响）。 + 在 <a href="http://www.robots.ox.ac.uk/~vgg/hzbook/index.html">MVG</a> 的估计一章中推荐<strong>各向同性归一化</strong>，<a href="https://github.com/opencv/opencv/blob/3.1.0/modules/calib3d/src/fundam.cpp#L548">OpenCV的8点算法</a>也是使用了各向同性，也就是<strong>使得各个点做平移缩放之后到坐标原点的均方根距离等于</strong> <span class="math inline">\(\sqrt 2\)</span>; + 各向同性归一化和<strong>非各向同性归一化</strong>在论文 <a href="https://mil.ufl.edu/nechyba/www/eel6562/course_materials/t9.3d_vision/hartley1997.pdf">In Defense of the Eight-Point Algorithm</a> 中有讨论，<strong>ORB-SLAM2 单目初始化 F 矩阵计算之前的归一化使用的是非各向同性归一化</strong>。（上面这段文字来自于<a href="https://blog.csdn.net/kokerf/article/details/72630863">许可师兄博客</a>）</p>
+</blockquote>
+<ul>
+<li><strong>步骤一：</strong> 求取所有 N 个特征点的<font color =red><strong>质心坐标</strong>（X, Y）</font> <span class="math display">\[
+  meanX = \frac{\sum_{N}^{i=0}u_{i}}{N},\quad meanY = \frac{\sum_{N}^{i=0}v_{i}}{N}
+  \]</span></li>
+<li><strong>步骤二：</strong> 计算所有点<font color =red><strong>相对于质心的平均距离</strong></font> <span class="math display">\[
+  meanDevX = \frac{\sum_{N}^{i=0}\left | u_{i}-meanX \right |}{N},\quad meanDevY = \frac{\sum_{N}^{i=0}\left | v_{i}-meanY \right |}{N}
+  \]</span>
+<ul>
+<li>并将平均距离的倒数作为<font color =red><strong>缩放尺度因子</strong></font> <span class="math display">\[
+  sX = \frac{1}{meanDevX} ,\quad sY = \frac{1}{meanDevY}
+  \]</span></li>
+</ul></li>
+<li><strong>步骤三：</strong> 对特征点的 x 和 y 坐标进行缩放，使得<font color =red><strong>一阶绝对矩为 1</strong></font>，以此作为<strong>归一化的结果</strong>坐标 <span class="math display">\[
+  x=x\cdot sX, \quad y = y \cdot  sY
+  \]</span></li>
+<li><strong>步骤四：</strong> 获得<font color =red><strong>归一化矩阵 T</strong></font>（由 x y 方向的缩放因子和归一化的特征点质心组成） <span class="math display">\[
+  T = \begin{bmatrix}
+  sX &amp;0  &amp; -meanX\cdot sX\\ 
+  0 &amp; sY &amp; -meanY\cdot sY\\ 
+  0 &amp; 0 &amp; 1
+  \end{bmatrix}
+  \]</span> <strong>关于一阶绝对矩</strong><br />
+  <strong>什么是矩？</strong> 在统计学中，矩表征随机量的分布。<br />
+  <strong>一阶矩是随机变量的期望</strong>，二阶矩是随机变量平方的期望。<br />
+  <strong>一阶绝对矩</strong>是只变量与均值差的绝对值的平均：</li>
+<li>如存在一个 N 维向量 <span class="math inline">\(u_{1},u_{2}\cdots u_{N}\)</span></li>
+<li>则其<strong>一阶矩</strong>为： <span class="math display">\[
+  \bar{u} = E\left ( u \right ) = \frac{\sum_{N}^{i=0}u}{N}
+  \]</span></li>
+<li>其<strong>一阶绝对矩</strong>为： <span class="math display">\[
+  \left | \bar{u} \right |=\frac{\sum_{N}^{i=0}\left | u_{i} - \bar{u}\right |}{N}
+  \]</span></li>
+<li>当一阶矩为 0 时，一阶绝对矩为 1，证明：<a href="https://zhuanlan.zhihu.com/p/47865144">令N维向量一阶矩为0,一阶绝对矩为1</a></li>
+</ul>
+<h3 id="对极几何模型">2.2 对极几何模型</h3>
+  对极几何（Epipolar Geometry）描述了同一场景在<strong>两幅图像之间的视觉几何关系</strong>；<br />
+
+<center>
+<img src="https://img-blog.csdn.net/20171116113840146" title="Epipolar Geometry" width="450" />
+</center>
+<ul>
+<li>假设空间中一个 <strong>3D 点 P</strong> 在第一帧中的坐标为：<span class="math inline">\(P=\left [ X,Y,Z \right ]^{T}\)</span>；</li>
+<li>该点投影到两帧图像中得到<strong>像素平面的两个 2D 点</strong> <span class="math inline">\(p_{1},p_{2}\)</span> ，根据相机模型，其与 3D 点之间存在如下对应关系：
+<ul>
+<li>其中 K 是相机内参，R,t 是两帧间的相机运动。 <span class="math display">\[
+  s_{1}p_{1}=KP,\quad s_{2}p_{2}=K\left ( RP+t \right )\qquad (1)
+  \]</span></li>
+<li>如果使用<strong>齐次坐标</strong>，也可以将上式写成在乘以非零常数（up to scale）下成立的形式： <span class="math display">\[
+  p_{1}=KP,\quad p_{2}=K\left ( RP+t \right )\qquad (2)
+  \]</span></li>
+</ul></li>
+<li>然后将两点的<strong>像素坐标</strong> <span class="math inline">\(p_{1},p_{2}\)</span> 转换到<strong>归一化坐标</strong>系 <span class="math inline">\(x_{1},x_{2}\)</span> 下 <span class="math display">\[
+  x_{1}=K^{-1}p_{1},\qquad x_{2}=K^{-1}p_{2} \qquad(3)
+  \]</span></li>
+<li>将公式（3）中的 <span class="math inline">\(p_{1},p_{2}\)</span> 用公式（2）代替，得到： <span class="math display">\[
+  x_{2}=Rx_{1}+t \qquad(4)
+  \]</span></li>
+<li>对公式（4）左右两边同时左乘 <span class="math inline">\(t^{\wedge }\)</span> 即左右两侧与 <span class="math inline">\(t\)</span> 做<strong>外积</strong> <span class="math display">\[
+  t^{\wedge }x_{2}=t^{\wedge }Rx_{1} \qquad(5)
+  \]</span></li>
+<li>再对公式（5）左右两侧同时左乘 <span class="math inline">\(x_{2}^{T}\)</span> <span class="math display">\[
+  x_{2}^{T}\cdot t^{\wedge }x_{2}=x_{2}^{T}\cdot t^{\wedge }Rx_{1} \qquad(6)
+  \]</span></li>
+<li>观察公式（5），<span class="math inline">\(t^{\wedge }x_{2}\)</span> 是 <span class="math inline">\(t\)</span> 和 <span class="math inline">\(x_{2}\)</span> 两个向量的外积，所以其与 <span class="math inline">\(t\)</span> 和 <span class="math inline">\(x_{2}\)</span> 均垂直，所以等式左边等于 0，所以公式（5）等价于： <span class="math display">\[
+  x_{2}^{T}\cdot t^{\wedge }R \cdot x_{1}=0 \qquad(7)
+  \]</span></li>
+<li>将公式（3）带入到公式（5）中有 <span class="math display">\[
+  p_{2}^{T}K^{-T} \cdot t^{\wedge }R \cdot K^{-1}p_{1} =0 \qquad(8)
+  \]</span>   上面的公式（8）称之为<strong>对极约束</strong>，其同时包含了旋转和平移，几何意义是 <span class="math inline">\(O_{1},p,O_{2}\)</span> 三点共面，将公式中间部分记作<strong>本质矩阵 E</strong>，也可以转换成<strong>基础矩阵 F</strong>：<br />
+<span class="math display">\[
+E =t^{\wedge }R, \quad F=K^{-T}EK^{-1}, \quad x_{2}^{T}Ex_{1}=p_{2}^{T}Fp_{1}=0 \qquad(9)
+\]</span></li>
+</ul>
+<h3 id="归一化八点法求解基本矩阵">2.3 归一化八点法求解基本矩阵</h3>
+<ul>
+<li>由上一节的公式（8）可知基础矩阵可以由下式表示，其中 <span class="math inline">\(p_{1},p_{2}\)</span> 是<strong>两帧中的一对匹配点</strong> <span class="math display">\[
+  p_{2}^{T}Fp_{1}=0 \qquad(10)
+  \]</span></li>
+<li>矩阵 F 是一个 3 * 3 的矩阵，由于其也是取决于尺度（up to scale）的，减去一个尺度，也就是只有 <strong>8 个自由度</strong>，一般把第 9 个量固定为 1，或者求一个 9 量的通解。由于<strong>每一对匹配点为公式（10）计算 F 系数提供了一个线性方程</strong>，现在 8 个未知量，也就需要 8 组匹配点来估计，这就是<strong>八点法</strong>。由于八点法只利用了 F 矩阵的线性性质，所以可以在线性代数框架下求解。 &gt; 事实上由于平移和旋转各有 3 个自由度，故 <span class="math inline">\(t^{\wedge }R\)</span> 共有 6 个自由度，但由于尺度等价性，<strong>实际上 F 只有 5 个自由度</strong>，也就是说只需要 5 对点即可以求解 F，<strong>但是由于 F 的内在性质是非线性性质的</strong>，在求解线性方程时会带来问题，所以一般采用八点法。</li>
+<li>假设点的坐标为 <span class="math inline">\(p_{1}=(x,y,1)^T,p_{2}=(x&#39;,y&#39;,1)^T\)</span>，则公式（10）可以写成 <span class="math display">\[
+  \begin{bmatrix}
+  x &amp; y &amp; 1
+  \end{bmatrix}
+  \begin{bmatrix}
+  f_{11} &amp; f_{12} &amp; f_{13}\\ 
+  f_{21} &amp; f_{22} &amp; f_{23}\\ 
+  f_{31} &amp; f_{32} &amp; f_{33}
+  \end{bmatrix}
+  \begin{bmatrix}
+  x&#39;\\ 
+  y&#39;\\ 
+  1
+  \end{bmatrix} =0 \qquad(11)
+  \]</span></li>
+<li>将上式展开之后有 <span class="math display">\[
+  x&#39;xf_{11}+x&#39;yf_{12}+x&#39;f_{13}+y&#39;xf_{21}+y&#39;yf_{22}+y&#39;f_{23}+xf_{31}+yf_{32}+f_{33}=0 \qquad(12)
+  \]</span></li>
+<li><strong>给定 n 对匹配点提供的 n 组线性方程</strong>，得到如下方程 <span class="math display">\[
+  A\mathbf f=\begin{bmatrix}
+  x_1&#39;x_1&amp;x_1&#39;y_1&amp;x_1&#39;&amp;y_1&#39;x_1&amp;y_1&#39;y_1&amp;y_1&#39;&amp;x_1&amp;y_1&amp;1\\
+  \vdots&amp;\vdots&amp;\vdots&amp;\vdots&amp;\vdots&amp;\vdots&amp;\vdots&amp;\vdots&amp;\vdots\\
+  x_n&#39;x_n&amp;x_n&#39;y_n&amp;x_n&#39;&amp;y_n&#39;x_n&amp;y_n&#39;y_n&amp;y_n&#39;&amp;x_n&amp;y_n&amp;1
+  \end{bmatrix}\mathbf f=\mathbf 0  \qquad(13)
+  \]</span></li>
+</ul>
+<blockquote>
+<ul>
+<li>对于上式，<strong>如果存在确定（非零）解，则系数矩阵A的秩最多是 8</strong>。由于 F 是齐次矩阵，所以如果矩阵 A 的秩为 8，则在差一个尺度因子的情况下解是唯一的，<strong>可以直接用线性算法解得</strong>。</li>
+<li>但如果<strong>由于点坐标存在噪声则矩阵 A 的秩可能大于8（也就是等于9，由于 A 是 n×9 的矩阵）</strong>。这时候就需要求<strong>最小二乘解</strong>，这里就可以<strong>用 SVD 来求解</strong>
+<ul>
+<li><strong>f 的解</strong>就是系数矩阵 A 最小奇异值对应的奇异向量，也就是 A 奇异值分解后 <span class="math inline">\(A=UDV^T\)</span> 中矩阵 V 的最后一列适量，这是在解矢量 f 在约束 <span class="math inline">\(\begin{Vmatrix}\mathbf f\end{Vmatrix}\)</span> 下取 <span class="math inline">\(\begin{Vmatrix}A\mathbf f\end{Vmatrix}\)</span> 最小的解；</li>
+<li>以上算法是解基本矩阵的基本方法，称为 <strong>8 点算法</strong>；</li>
+<li>但是由于基础矩阵一个重要的特点是奇异性，<strong>F 矩阵的秩为 2</strong>。如果基础矩阵是非奇异的，那么所计算的对极线将不重合。所以上述算法解得基础矩阵之后会增加一个<strong>奇异性约束</strong>。</li>
+<li>最简便的方法就是修正上述算法中求得的矩阵 F，设最终的解为 <span class="math inline">\(F&#39;\)</span>，另 <span class="math inline">\(detF&#39;=0\)</span> 下求得 Frobenius 范数（二范数）<span class="math inline">\(\begin{Vmatrix}F-F&#39;\end{Vmatrix}\)</span> 最小的 <span class="math inline">\(F&#39;\)</span>。这种方法的实现还是使用了 SVD 分解，若 <span class="math inline">\(A=UDV^T\)</span>，此时对角矩阵 <span class="math inline">\(D=diag(r,s,t)\)</span> 满足 <span class="math inline">\(r\ge s\ge t\)</span> ，则 <span class="math inline">\(F&#39;=Udiag(r,s,0)V^T\)</span> 最小化范数 <span class="math inline">\(\begin{Vmatrix}F-F&#39;\end{Vmatrix}\)</span> ，也就是最终的解。</li>
+</ul></li>
+<li>所以总结一下<strong>八点法的步骤</strong>：
+<ul>
+<li><strong>1.</strong> <strong>求线性解：</strong> 由系数矩阵 A 最小奇异值对应的奇异矢量 f 求的 F。</li>
+<li><strong>2.</strong> <strong>奇异性约束：</strong> 最小化 Frobenius 范数 <span class="math inline">\(\begin{Vmatrix}F-F&#39;\end{Vmatrix}\)</span> 的 <span class="math inline">\(F&#39;\)</span> 代替 <span class="math inline">\(F\)</span> 。</li>
+</ul></li>
+<li>这部分来自于<a href="https://blog.csdn.net/kokerf/article/details/72630863">许可师兄博客</a>，帮助理解八点法的原理。</li>
+<li>对于<strong>方程（13）的解</strong>就是对已知的<strong>矩阵 A 进行 SVD 分解</strong> <span class="math inline">\(A=U\Sigma V^{T}\)</span> 得到的<strong>矩阵 V 最右边一列的值 f</strong> 并转换成 3 × 3 的初步 F 矩阵。</li>
+</ul>
+</blockquote>
+<div class="sourceCode" id="cb21"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb21-1"><a href="#cb21-1"></a>    <span class="co">// 进行第一次奇异值分解,求解出基础矩阵, 使用 cv::SVDecomp() 函数</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>    cv::SVDecomp(   A,      <span class="co">// 输入，待进行奇异值分解的矩阵.</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a>                    w,      <span class="co">// 输出，奇异值矩阵.</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>                    u,      <span class="co">// 输出，矩阵 u.</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a>                    vt,     <span class="co">// 输出，矩阵 v 的转置.</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a>                    cv::SVD::MODIFY_A |         <span class="co">//输入，MODIFY_A是指允许计算函数可以修改待分解的矩阵，官方文档上说这样可以加快计算速度、节省内存</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a>            cv::SVD::FULL_UV);      <span class="co">//FULL_UV=把U和VT补充成单位正交方阵</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a>    <span class="co">// 得到 V 的最后一列 9 个量，转换成 3*3 的矩阵.</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a>    cv::Mat Fpre = vt.row(<span class="dv">8</span>).reshape(<span class="dv">0</span>, <span class="dv">3</span>); <span class="co">// v的最后一列</span></span></code></pre></div>
+<ul>
+<li>注意基础矩阵的定义中，由于左乘可一个 <span class="math inline">\(t^{\wedge }\)</span> ，这个矩阵由于是从三维向量拓展过来的因此他的秩为 2，所以<strong>正确的基础矩阵的秩序应当小于等于 2</strong>。另外如果这些匹配点都在一个平面上那就会出现 A 的秩小于 8 的情况，这时会出现多解，导致 F 矩阵可能是错误的。所以还需要对上一步初步求解出的 F 矩阵进行处理，由于基础矩阵的秩为 2，而我们不敢保证计算得到的这个结果的秩为2，所以需要通过<strong>第二次奇异值分解,来强制使其秩为 2</strong>，<font color= red><strong>将奇异值矩阵第三个奇异值设为 0，得到最后的基础矩阵</strong></font>： <span class="math display">\[
+  F&#39;=Udiag(r,s,0)V^T
+  \]</span></li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1"></a>    <span class="co">// 对初步得来的基础矩阵继续进行一次奇异值分解</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>    cv::SVDecomp(Fpre, w, u, vt, cv::SVD::MODIFY_A | cv::SVD::FULL_UV);</span>
+<span id="cb22-3"><a href="#cb22-3"></a>    <span class="co">// 强制将第三个奇异值设置为 0</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>    w.at&lt;<span class="dt">float</span>&gt;(<span class="dv">2</span>)=<span class="dv">0</span>; <span class="co">// 秩2约束，将第3个奇异值设为0</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>    <span class="co">// 重新组合好满足秩约束的基础矩阵，作为最终计算结果返回</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a>    <span class="cf">return</span>  u*cv::Mat::diag(w)*vt;</span></code></pre></div>
+<h3 id="计算矩阵得分">2.4 计算矩阵得分</h3>
+<p>  基础矩阵将<strong>点到极限的平方作为误差，计算卡方距离</strong>，注意这里有一个自由度，所以显著性检验使用的阈值也是选择的<strong>服从自由度为 1 的卡方分布的 0.95 的阈值</strong> 3.84。</p>
+<ul>
+<li>由于基础矩阵的形式 <span class="math inline">\(x_{2}^{T}Fx_{1}=0\)</span> 使它<strong>不能像单应矩阵那样经过求逆直接得到点</strong>，但可以<strong>得到一条线</strong>。</li>
+<li>假设参考帧 1 上点的坐标为 <span class="math inline">\([u_1,v_1,1]^{\text{T}}\)</span>，当前帧 2 上匹配的特征点坐标为 <span class="math inline">\([u_2,v_2,1]^{\text{T}}\)</span>，那么<strong>从当前帧到参考帧的重投影</strong>将产生一个直线 <span class="math inline">\(\mathbf{l}_2\)</span>：（也就是在参考帧 1 中相机的极线为 <span class="math inline">\(\mathbf{l}_2\)</span>，来自于 <span class="math inline">\(x_{2}^{T}\cdot Fx_{1}=0 \Rightarrow x_{1}^{T}\cdot F^{-1}x_{2}=0\Rightarrow x_{1}^{T}\cdot \mathbf{l}_2 =0\)</span>） <span class="math display">\[
+  \mathbf{l}_2= \begin{bmatrix} a_2\\b_2\\c_2 \end{bmatrix} =
+  \begin{bmatrix} f_1&amp;f_2&amp;f_3\\ f_4&amp;f_5&amp;f_6\\ f_7&amp;f_8&amp;f_9 \end{bmatrix}^{-1}
+  \begin{bmatrix} u_2\\v_2\\1 \end{bmatrix}
+  \]</span></li>
+<li>在理想状态下点 <span class="math inline">\([u_1,v_1,1]^{\text{T}}\)</span> 应该完全在直线 <span class="math inline">\(\mathbf{l}_2\)</span> 上，这里<font color =red><strong>重投影误差</strong>的定义就是：<strong>原真实的特征点坐标 <span class="math inline">\([u_1,v_1,1]^{\text{T}}\)</span> 到根据基础矩阵投影得到的直线 <span class="math inline">\(\mathbf{l}_2\)</span> 的距离</strong></font>：
+<ul>
+<li>如果假设距离服从均值为 0，方差为 1 个pixel 的正态分布，那么 <span class="math inline">\(Delta_{1\leftarrow2} ^2\)</span> 是服从 1 个自由度的 <span class="math inline">\(\chi ^{2}\)</span> 分布的，因此阈值取的是3.84。 <span class="math display">\[
+  Delta_{1\leftarrow2} ^2= \frac{(a_2u_1+b_2v_1+c_2)^2}{(a_2^2+b_2^2)}
+  \]</span></li>
+</ul></li>
+<li>同时，还需要将<strong>误差归一化</strong> <span class="math display">\[
+  e_{1\leftarrow2}^2=\frac{ \Delta_{1\leftarrow2} ^2}{\sigma^2}
+  \]</span></li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb23-1"><a href="#cb23-1"></a>    <span class="co">// l2=F21x1=(a2,b2,c2)</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>    <span class="co">// F21x1可以算出x1在图像中x2对应的线l</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a>    <span class="co">// 将参考帧中的特征点以给出的基础矩阵投影到当前帧上，下面的计算完完全全就是矩阵计算的展开</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a>    <span class="co">// 注意为了方便计算，这里投影所得到的向量的形式正好是一条2D直线，三个参数对应这直线方程的三个参数</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a>    <span class="at">const</span> <span class="dt">float</span> a2 = f11*u1+f12*v1+f13;</span>
+<span id="cb23-6"><a href="#cb23-6"></a>    <span class="at">const</span> <span class="dt">float</span> b2 = f21*u1+f22*v1+f23;</span>
+<span id="cb23-7"><a href="#cb23-7"></a>    <span class="at">const</span> <span class="dt">float</span> c2 = f31*u1+f32*v1+f33;</span>
+<span id="cb23-8"><a href="#cb23-8"></a>    <span class="co">// 理想状态下：x2应该在l这条线上:x2点乘l = 0 </span></span>
+<span id="cb23-9"><a href="#cb23-9"></a>    <span class="co">// 计算点到直线距离，这里是分子</span></span>
+<span id="cb23-10"><a href="#cb23-10"></a>    <span class="at">const</span> <span class="dt">float</span> num2 = a2*u2+b2*v2+c2;</span>
+<span id="cb23-11"><a href="#cb23-11"></a>    <span class="co">// 计算重投影误差，这里的重投影误差其实是这样子定义的</span></span>
+<span id="cb23-12"><a href="#cb23-12"></a>    <span class="co">// 注意这里计算的只有一个平方项</span></span>
+<span id="cb23-13"><a href="#cb23-13"></a>    <span class="at">const</span> <span class="dt">float</span> squareDist1 = num2*num2/(a2*a2+b2*b2); <span class="co">// 点到线的几何距离 的平方</span></span>
+<span id="cb23-14"><a href="#cb23-14"></a>    <span class="co">// 归一化误差</span></span>
+<span id="cb23-15"><a href="#cb23-15"></a>    <span class="at">const</span> <span class="dt">float</span> chiSquare1 = squareDist1*invSigmaSquare;</span></code></pre></div>
+<ul>
+<li>然后判断误差是否大于 3.841，如果大于则认为是外点，否则就对其误差进行累加对当前使用的基础矩阵的 RANSAC 评分。</li>
+<li>同理<strong>从参考帧到当前帧</strong>也进行一次这样的重投影误差计算，并对误差进行累加。</li>
+</ul>
+<h3 id="从-f-矩阵中恢复相机运动-r-t">2.5 从 F 矩阵中恢复相机运动 R, t</h3>
+<p>  从前面计算的<strong>基础矩阵中恢复出旋转和平移可以通过对本质矩阵 SVD 奇异值分解实现</strong>。 + 首先根据相机内参和基础矩阵<strong>计算本质矩阵 E</strong> <span class="math display">\[
+    \mathbf{E}=\mathbf{K}^{\text{T}}\mathbf{F}\mathbf{K}
+    \]</span> + 然后对本质矩阵进行<strong>奇异值分解</strong> <span class="math display">\[
+    \mathbf{E}=\mathbf{U}\mathbf{\Sigma}\mathbf{V}^{\text{T}}
+    \]</span> + 其中 U，V 是正交矩阵，<span class="math inline">\(\mathbf{\Sigma}\)</span> 为奇异值矩阵，根据本质矩阵的内在性质，有 <span class="math inline">\(\mathbf{\Sigma}=diag\left ( \sigma ,\sigma ,0 \right )\)</span> + 令 W 表示沿 Z 轴旋转 90° 得到的旋转矩阵 <span class="math display">\[
+        \mathbf{W}=\mathbf{R}_z(\frac{\pi}{2}) = \begin{bmatrix}
+        0 &amp;  -1&amp; 0\\ 
+        1 &amp; 0 &amp; 0\\ 
+        0 &amp; 0 &amp; 1
+        \end{bmatrix}
+        \]</span> + 对于任意一个 E，对它分解都能得到两个与之对应的 R 和 t ，所以<strong>一共存在 4 组 [R,t] 解</strong> <span class="math display">\[
+        \mathbf{E}=[\mathbf{R}|\mathbf{t}]= \left\{\begin{matrix}
+        \mathbf{R}_1=\mathbf{U}\mathbf{W}\mathbf{V}^{\text{T}}\\ 
+        \mathbf{R}_2=\mathbf{U}\mathbf{W}^{\text{T}}\mathbf{V}^{\text{T}}\\ 
+        \mathbf{t}_1=\mathbf{U}_3\\ 
+        \mathbf{t}_2=-\mathbf{U}_3
+        \end{matrix}\right.
+        \]</span> + <strong>如何选择正确的 [R,t]</strong> ：统计这四个模型中 <strong>3D 点在摄像头前方投影误差小于给定阈值的 3D 点个数</strong>和每个模型下较大的<strong>视差角</strong>，如果其中一个模型的视差角大于阈值，并且满足条件的3D点明显大于其他模型,那么这个模型就是<strong>最优的选择</strong>。</p>
+<h3 id="三角化-3d-点">2.6 三角化 3D 点</h3>
+<ul>
+<li>计算第一个相机的投影矩阵 <span class="math display">\[
+  P_{1} = K \ast T_{1}=K \ast \left [ I| 0 \right ]
+  \]</span>
+<ul>
+<li>并将第一个相机的光心作为<strong>世界坐标系坐标原点</strong> <span class="math inline">\(O_1\)</span></li>
+</ul>
+<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb24-1"><a href="#cb24-1"></a>    cv::Mat O1 = cv::Mat::zeros(<span class="dv">3</span>,<span class="dv">1</span>,CV_32F);</span></code></pre></div></li>
+<li>计算第二个相机的投影矩阵，其中 R，t 来自于前面的矩阵分解 <span class="math display">\[
+  P_{2} = K \ast T_{2}=K \ast \left [ R| t \right ]
+  \]</span>
+<ul>
+<li>将<strong>第二个相机的光心</strong>的位置表示为 <span class="math display">\[
+  \mathbf{O}_2=-R^{T}t
+  \]</span></li>
+</ul>
+<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1"></a>    cv::Mat O2 = -R.t()*t;</span></code></pre></div>
+<ul>
+<li>对于上面公式的解释：在 ORB_SLAM 里，位移向量 <span class="math inline">\(t_{cw}\)</span> 的方向是从下标左边到右边的，并且位于下标左边坐标系下， <span class="math inline">\(R_{cw}\)</span> 是从世界坐标系到相机坐标系的旋转， <span class="math inline">\(R^{T}\)</span> 表示 R 的逆旋转（旋转矩阵是正交矩阵，其转置等于其逆），首先我们把相机系下的 t 变换到世界坐标系下的平移，然后再加一个符号表示世界坐标系到相机坐标系的平移，就是相机光心的位置。</li>
+</ul></li>
+<li>假设 <strong>3D 点 X（齐次坐标）在两帧下的投影点为 <span class="math inline">\(x_1, x_2\)</span> ，存在如下对应关系</strong> <span class="math display">\[
+  x_1 = P_1 X, \quad x_2 = P_2 X
+  \]</span>
+<ul>
+<li>将其展开并写成齐次坐标形式 <span class="math display">\[
+  \begin{bmatrix}
+  u\\ 
+  v\\ 
+  1
+  \end{bmatrix} = \lambda \begin{bmatrix}
+  p1 &amp; p1 &amp; p3 &amp; p4\\
+  p5 &amp; p6 &amp; p7 &amp; p8\\ 
+  p9 &amp; p10 &amp; p11 &amp; p12
+  \end{bmatrix} \begin{bmatrix}
+  X\\ 
+  Y\\ 
+  Z\\ 
+  1
+  \end{bmatrix}
+  \]</span></li>
+<li>也可简写成 <span class="math display">\[
+  \begin{bmatrix}
+  u\\ 
+  v\\ 
+  1
+  \end{bmatrix} = \lambda \begin{bmatrix}
+  - &amp; P_0 &amp; -\\ 
+  - &amp; P_1 &amp; -\\ 
+  - &amp; P_2 &amp; -
+  \end{bmatrix} \begin{bmatrix}
+  -\\ 
+  X\\ 
+  -
+  \end{bmatrix}
+  \]</span></li>
+</ul></li>
+<li>对于上式，展开可以写成 <span class="math display">\[
+  \left\{\begin{matrix}
+  u = \lambda P_0X\\ 
+  v = \lambda P_1X\\ 
+  1 = \lambda P_2X
+  \end{matrix}\right.
+  \]</span>
+<ul>
+<li>对第一行等式左右两边均乘以 1（即第三行）得到 <span class="math inline">\(P_0 - uP_1 = 0\)</span>；</li>
+<li>对第二行等式左右两边均乘以 1（即第三行）得到 <span class="math inline">\(vP_2 - P_1= 0\)</span>；</li>
+<li>对第一行和第二行相互带入，得到 <span class="math inline">\(uP_1 - vP_0= 0\)</span>。</li>
+</ul></li>
+<li>由上面三个等式对一个点可以进行 DLT 求解 <span class="math display">\[
+  \begin{bmatrix}
+  vP_2 - P_1\\ 
+  P_0 - uP_1\\ 
+  uP_1 - vP_0
+  \end{bmatrix} X = \begin{bmatrix}
+  0\\ 
+  0\\ 
+  0
+  \end{bmatrix}
+  \]</span></li>
+<li><font color = red><strong>对于一对匹配点，可以构造一个四元一次正定方程组，求解出 3D 点 X</strong></font>
+<ul>
+<li>这里的 <span class="math inline">\(u_1,v_1\)</span> 是第一帧的特征点， <span class="math inline">\(P_{10}\)</span> 表示第一帧的投影矩阵的第一行 <span class="math display">\[
+  \begin{bmatrix}
+  v_1P_{12} - P_{11}\\ 
+  P_{10} - u_1P_{11}\\ 
+  v_2P_{22} - P_{21}\\ 
+  P_{20} - u_2P_{21}
+  \end{bmatrix} X = \begin{bmatrix}
+  0\\ 
+  0\\ 
+  0\\ 
+  0
+  \end{bmatrix}
+  \]</span></li>
+<li>在代码中求解时，<strong>将 X 前的系数矩阵记作 A，对其进行奇异值分解</strong>，<strong>分解的结果（X 的 3D 坐标）即矩阵 V 的最后一列</strong>（V 的转置的最后一行）</li>
+</ul>
+<div class="sourceCode" id="cb26"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb26-1"><a href="#cb26-1"></a>   <span class="dt">void</span> Initializer::Triangulate(</span>
+<span id="cb26-2"><a href="#cb26-2"></a>    <span class="at">const</span> cv::KeyPoint &amp;kp1,    <span class="co">// 特征点, in reference frame</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>    <span class="at">const</span> cv::KeyPoint &amp;kp2,    <span class="co">// 特征点, in current frame</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>    <span class="at">const</span> cv::Mat &amp;P1,          <span class="co">// 投影矩阵P1</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>    <span class="at">const</span> cv::Mat &amp;P2,          <span class="co">// 投影矩阵P2</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>    cv::Mat &amp;x3D)               <span class="co">// 三维点</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a>    {</span>
+<span id="cb26-8"><a href="#cb26-8"></a>        cv::Mat A(<span class="dv">4</span>,<span class="dv">4</span>,CV_32F);</span>
+<span id="cb26-9"><a href="#cb26-9"></a></span>
+<span id="cb26-10"><a href="#cb26-10"></a>        <span class="co">//构造参数矩阵A</span></span>
+<span id="cb26-11"><a href="#cb26-11"></a>        A.row(<span class="dv">0</span>) = kp1.pt.x*P1.row(<span class="dv">2</span>)-P1.row(<span class="dv">0</span>);</span>
+<span id="cb26-12"><a href="#cb26-12"></a>        A.row(<span class="dv">1</span>) = kp1.pt.y*P1.row(<span class="dv">2</span>)-P1.row(<span class="dv">1</span>);</span>
+<span id="cb26-13"><a href="#cb26-13"></a>        A.row(<span class="dv">2</span>) = kp2.pt.x*P2.row(<span class="dv">2</span>)-P2.row(<span class="dv">0</span>);</span>
+<span id="cb26-14"><a href="#cb26-14"></a>        A.row(<span class="dv">3</span>) = kp2.pt.y*P2.row(<span class="dv">2</span>)-P2.row(<span class="dv">1</span>);</span>
+<span id="cb26-15"><a href="#cb26-15"></a></span>
+<span id="cb26-16"><a href="#cb26-16"></a>        <span class="co">//奇异值分解的结果</span></span>
+<span id="cb26-17"><a href="#cb26-17"></a>        cv::Mat u,w,vt;</span>
+<span id="cb26-18"><a href="#cb26-18"></a></span>
+<span id="cb26-19"><a href="#cb26-19"></a>        <span class="co">//对系数矩阵A进行奇异值分解</span></span>
+<span id="cb26-20"><a href="#cb26-20"></a>        cv::SVD::compute(A,w,u,vt,cv::SVD::MODIFY_A| cv::SVD::FULL_UV);</span>
+<span id="cb26-21"><a href="#cb26-21"></a>        <span class="co">//根据前面的结论，奇异值分解右矩阵的最后一行其实就是解，原理类似于前面的求最小二乘解，四个未知数四个方程正好正定</span></span>
+<span id="cb26-22"><a href="#cb26-22"></a>        <span class="co">//别忘了我们更习惯用列向量来表示一个点的空间坐标</span></span>
+<span id="cb26-23"><a href="#cb26-23"></a>        x3D = vt.row(<span class="dv">3</span>).t();</span>
+<span id="cb26-24"><a href="#cb26-24"></a>        <span class="co">//为了符合齐次坐标的形式，使最后一维为1</span></span>
+<span id="cb26-25"><a href="#cb26-25"></a>        x3D = x3D.rowRange(<span class="dv">0</span>,<span class="dv">3</span>)/x3D.at&lt;<span class="dt">float</span>&gt;(<span class="dv">3</span>);</span>
+<span id="cb26-26"><a href="#cb26-26"></a>    }</span></code></pre></div>
+<hr /></li>
+</ul>
+<h2 id="homography-单应矩阵求解变换">3. Homography 单应矩阵求解变换</h2>
+<hr />
+<h2 id="全局-ba-优化">4. 全局 BA 优化</h2>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li>第二个相机的光心位置？</li>
+<li>算法流程中创建初始地图部分有遗漏，待补充。.</li>
+<li>H 矩阵分解待补充。</li>
+<li>全局 BA 优化放到优化部分中进行。</li>
+</ul>
+<hr />
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li>[1] <a href="https://github.com/wuxiaolang/self_commit_ORB-SLAM2/blob/master/ORB-SLAM2%E6%BA%90%E7%A0%81%E8%AF%A6%E8%A7%A3.pdf">吴博师兄 ppt</a></li>
+<li>[2] <a href="https://blog.csdn.net/kokerf/article/details/72630863">许可师兄博客：基本矩阵的基本解法之8点算法</a></li>
+<li>[3] <a href="https://blog.csdn.net/qq_30356613/article/details/80587649">一起学ORBSLAM2（5）ORBSLAM的单目视觉处理方式</a></li>
+<li>[4] <a href="https://zhuanlan.zhihu.com/p/61614421">[ORB-SLAM2]单目初始化</a></li>
+<li>[5] <a href="https://www.cnblogs.com/houkai/p/6661607.html">对极几何</a></li>
+<li>[6] <a href="https://blog.csdn.net/supersonic2023/article/details/55102132">本质矩阵</a></li>
+<li>[7] <a href="https://ewenwan.github.io/2018/06/Monocular_camera_slam_basic_concept/">万有文：单目SLAM基础知识</a></li>
+<li>[8] <a href="https://github.com/wuxiaolang/self_commit_ORB-SLAM2">ORB-SLAM2 注释代码</a></li>
+</ul>
+<hr />
+<blockquote>
+<p>2019.06.17<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-07-01-nonlinear-optimization/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">非线性优化之高斯牛顿法、L-M 算法</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-06-16-orb-slam2-features/">
+            <span class="next-text nav-default"> 😀 ORB-SLAM2 代码解读（三）：特征提取</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

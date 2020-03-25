@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>SLAM - 知不足而后进--wuxiaolang</title>
+  <title>SLAM - 吴言吴语</title>
   <meta name="renderer" content="webkit" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
@@ -16,14 +16,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="olOwOlo" /><meta name="description" content=" SLAM " /><meta name="keywords" content="Hugo, theme, even" />
+<meta name="author" content="olOwOlo" /><meta name="description" content="🌍 ORB-SLAM2 系列 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统 ORB-SLAM2 代码解读（二）：跟踪线程 ORB-SLAM2 代码解读（二）：可视化线程 ORB-SLAM2 代码解读（二）：局部建图线程 ORB-SLAM2 代码解读（二）" /><meta name="keywords" content="Hugo, theme, even" />
 
 
 
+<meta name="google-site-verification" content="UA-160646347-1" />
 
 
-
-<meta name="generator" content="Hugo 0.55.4 with even 4.0.0" />
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
 
 
 <link rel="canonical" href="https://wuyanmin.coding.me/slam/" />
@@ -34,31 +34,27 @@
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<link href="/dist/even.607dac3b.min.css" rel="stylesheet">
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
 <meta property="og:title" content="SLAM" />
-<meta property="og:description" content=" SLAM " />
+<meta property="og:description" content="🌍 ORB-SLAM2 系列 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统 ORB-SLAM2 代码解读（二）：跟踪线程 ORB-SLAM2 代码解读（二）：可视化线程 ORB-SLAM2 代码解读（二）：局部建图线程 ORB-SLAM2 代码解读（二）" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://wuyanmin.coding.me/slam/" />
-<meta property="article:published_time" content="2017-08-20T21:38:52&#43;08:00"/>
-<meta property="article:modified_time" content="2017-08-28T21:41:52&#43;08:00"/>
-
+<meta property="article:published_time" content="2017-08-20T21:38:52+08:00" />
+<meta property="article:modified_time" content="2017-08-28T21:41:52+08:00" />
 <meta itemprop="name" content="SLAM">
-<meta itemprop="description" content=" SLAM ">
-
-
+<meta itemprop="description" content="🌍 ORB-SLAM2 系列 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统 ORB-SLAM2 代码解读（二）：跟踪线程 ORB-SLAM2 代码解读（二）：可视化线程 ORB-SLAM2 代码解读（二）：局部建图线程 ORB-SLAM2 代码解读（二）">
 <meta itemprop="datePublished" content="2017-08-20T21:38:52&#43;08:00" />
 <meta itemprop="dateModified" content="2017-08-28T21:41:52&#43;08:00" />
-<meta itemprop="wordCount" content="1">
+<meta itemprop="wordCount" content="239">
 
 
 
-<meta itemprop="keywords" content="" />
-<meta name="twitter:card" content="summary"/>
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="SLAM"/>
-<meta name="twitter:description" content=" SLAM "/>
+<meta name="twitter:description" content="🌍 ORB-SLAM2 系列 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统 ORB-SLAM2 代码解读（二）：跟踪线程 ORB-SLAM2 代码解读（二）：可视化线程 ORB-SLAM2 代码解读（二）：局部建图线程 ORB-SLAM2 代码解读（二）"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -73,7 +69,7 @@
 <body>
   <div id="mobile-navbar" class="mobile-navbar">
   <div class="mobile-header-logo">
-    <a href="/" class="logo">五小郎的学习笔记</a>
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
   </div>
   <div class="mobile-navbar-icon">
     <span></span>
@@ -87,29 +83,21 @@
         <li class="mobile-menu-item">Home</li>
       </a><a href="/post/">
         <li class="mobile-menu-item">博客</li>
-      </a><a href="/tags/">
-        <li class="mobile-menu-item">标签</li>
       </a><a href="/categories/">
         <li class="mobile-menu-item">分类</li>
-      </a><a href="/about/">
-        <li class="mobile-menu-item">About</li>
       </a><a href="/slam/">
         <li class="mobile-menu-item">SLAM</li>
-      </a><a href="/ar/">
-        <li class="mobile-menu-item">AR</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
       </a><a href="/za/">
         <li class="mobile-menu-item"></li>
-      </a><a href="/za/">
-        <li class="mobile-menu-item">杂·记</li>
-      </a><a href="/test/">
-        <li class="mobile-menu-item">测试页面</li>
       </a>
   </ul>
 </nav>
   <div class="container" id="mobile-panel">
     <header id="header" class="header">
         <div class="logo-wrapper">
-  <a href="/" class="logo">五小郎的学习笔记</a>
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
 </div>
 
 <nav class="site-navbar">
@@ -119,21 +107,13 @@
       </li><li class="menu-item">
         <a class="menu-item-link" href="/post/">博客</a>
       </li><li class="menu-item">
-        <a class="menu-item-link" href="/tags/">标签</a>
-      </li><li class="menu-item">
         <a class="menu-item-link" href="/categories/">分类</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/about/">About</a>
       </li><li class="menu-item">
         <a class="menu-item-link" href="/slam/">SLAM</a>
       </li><li class="menu-item">
-        <a class="menu-item-link" href="/ar/">AR</a>
+        <a class="menu-item-link" href="/about/">About</a>
       </li><li class="menu-item">
         <a class="menu-item-link" href="/za/"></a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/za/">杂·记</a>
-      </li><li class="menu-item">
-        <a class="menu-item-link" href="/test/">测试页面</a>
       </li>
   </ul>
 </nav>
@@ -144,14 +124,43 @@
         <div id="content" class="content">
           <article class="post">
   <div class="post-content">
-    
-
-<h1 id="slam">SLAM</h1>
+    <h2 id="-orb-slam2-系列">🌍 ORB-SLAM2 系列</h2>
+<ul>
+<li><a href="https://www.wuxiaolang.cn/2019-03-20-orb-slam2-overview/">ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-04-27-orb-slam2-tracking/">ORB-SLAM2 代码解读（二）：跟踪线程</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-05-28-orb-slam2-viewer/">ORB-SLAM2 代码解读（二）：可视化线程</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-05-30-orb-slam2-mapping/">ORB-SLAM2 代码解读（二）：局部建图线程</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-05-30-orb-slam2-loop/">ORB-SLAM2 代码解读（二）：闭环检测线程</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-06-16-orb-slam2-features/">ORB-SLAM2 代码解读（三）：特征提取</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-06-17-orb-slam2-monocular-initialization/">ORB-SLAM2 代码解读（三）：单目初始化</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-07-03-orb-slam2-optimization1/">ORB-SLAM2 代码解读（三）：优化 1（概述）</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-07-05-orb-slam2-optimization2/">ORB-SLAM2 代码解读（三）：优化 2（详解 + g2o 使用）</a></li>
+</ul>
+<h2 id="-cube-slam-系列">🌎 Cube SLAM 系列</h2>
+<ul>
+<li>代码注释：<a href="https://github.com/wuxiaolang/Cube_SLAM_wu">Cube_SLAM_wu</a></li>
+<li>代码总结：<a href="https://www.wuxiaolang.cn/2019-02-22-cubeslam/">Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿 </a></li>
+<li>论文阅读：
+<ul>
+<li><a href="https://www.wuxiaolang.cn/2018-11-30-cubeslam/">CubeSLAM: Monocular 3D Object SLAM</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-01-06-object-plane-slam/">Monocular Object and Plane SLAM in Structured Environments</a></li>
+<li><a href="https://www.wuxiaolang.cn/2019-01-11-pup-up-slam/">Pop-up slam: Semantic monocular plane slam for low-texture environments</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="-其他">🌏 其他</h2>
+<ul>
+<li><a href="https://www.wuxiaolang.cn/2019-07-01-nonlinear-optimization/">非线性优化之高斯牛顿法、L-M 算法 </a></li>
+</ul>
 
   </div>
 </article>
         </div>
         
+
+  
+
+  
 
       </div>
     </main>
@@ -159,14 +168,8 @@
     <footer id="footer" class="footer">
       <div class="social-links">
       <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
-      <a href="http://localhost:1313" class="iconfont icon-twitter" title="twitter"></a>
-      <a href="http://localhost:1313" class="iconfont icon-facebook" title="facebook"></a>
-      <a href="http://localhost:1313" class="iconfont icon-linkedin" title="linkedin"></a>
-      <a href="http://localhost:1313" class="iconfont icon-google" title="google"></a>
       <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
-      <a href="http://localhost:1313" class="iconfont icon-weibo" title="weibo"></a>
-      <a href="http://localhost:1313" class="iconfont icon-zhihu" title="zhihu"></a>
-      <a href="http://localhost:1313" class="iconfont icon-douban" title="douban"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
   <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
 </div>
 
@@ -174,6 +177,7 @@
   
   
 
+  
   <div class="busuanzi-footer">
     
       
@@ -182,12 +186,12 @@
 
   <span class="copyright-year">
     &copy; 
-    2018 - 
-    2019
+    2019 - 
+    2020
     <span class="heart">
       <i class="iconfont icon-heart"></i>
     </span>
-    <span class="author">wuyanmin</span>
+    <span class="author">wu</span>
   </span>
 </div>
     </footer>
@@ -200,7 +204,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
-<script type="text/javascript" src="/dist/even.ece58db6.min.js"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
   <script type="text/javascript">
     window.MathJax = {
       tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
@@ -211,9 +215,32 @@
   </script>
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
 
-
-
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
 
 
 

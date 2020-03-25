@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😀 ORB-SLAM2 代码解读（二）：可视化线程 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="0. 可视化线程介绍 可视化线程用于显示 3D 地图绘制器和 2D 图像帧绘制器，还包括一些运行模式的开关，不涉及到具体的算法，只负责接受、传递和显示数据，不" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-05-28-orb-slam2-viewer/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😀 ORB-SLAM2 代码解读（二）：可视化线程" />
+<meta property="og:description" content="0. 可视化线程介绍 可视化线程用于显示 3D 地图绘制器和 2D 图像帧绘制器，还包括一些运行模式的开关，不涉及到具体的算法，只负责接受、传递和显示数据，不" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-05-28-orb-slam2-viewer/" />
+<meta property="article:published_time" content="2019-05-28T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-05-28T00:00:00+08:00" />
+<meta itemprop="name" content=" 😀 ORB-SLAM2 代码解读（二）：可视化线程">
+<meta itemprop="description" content="0. 可视化线程介绍 可视化线程用于显示 3D 地图绘制器和 2D 图像帧绘制器，还包括一些运行模式的开关，不涉及到具体的算法，只负责接受、传递和显示数据，不">
+<meta itemprop="datePublished" content="2019-05-28T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-28T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="2035">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😀 ORB-SLAM2 代码解读（二）：可视化线程"/>
+<meta name="twitter:description" content="0. 可视化线程介绍 可视化线程用于显示 3D 地图绘制器和 2D 图像帧绘制器，还包括一些运行模式的开关，不涉及到具体的算法，只负责接受、传递和显示数据，不"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😀 ORB-SLAM2 代码解读（二）：可视化线程</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-28 </span>
+        <div class="post-category">
+            <a href="/categories/orb-slam2/"> ORB-SLAM2 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            </div>
+          <span class="more-meta"> 约 2035 字 </span>
+          <span class="more-meta"> 预计阅读 5 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-可视化线程介绍">0. 可视化线程介绍</a></li>
+    <li><a href="#1-创建可视化线程">1 创建可视化线程</a></li>
+    <li><a href="#2-运行可视化线程">2 运行可视化线程</a></li>
+    <li><a href="#3-更新可视化内容">3. 更新可视化内容</a></li>
+    <li><a href="#q问题">【Q】问题</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="0-可视化线程介绍">0. 可视化线程介绍</h2>
+<p>   可视化线程用于<strong>显示 3D 地图绘制器</strong>和 <strong>2D 图像帧绘制器</strong>，还包括一些运行<strong>模式的开关</strong>，不涉及到具体的算法，只负责<strong>接受、传递和显示数据</strong>，不影响 SLAM 系统的运行，可以再初始化 SLAM 系统时选择开启或者关闭。但需要注意的是线程锁的问题，不严谨的数据共享可能会引起多线程的段错误。</p>
+<hr>
+<h2 id="1-创建可视化线程">1 创建可视化线程</h2>
+<ul>
+<li>可视化线程的<strong>创建和运行在初始化 SLAM 系统时</strong>进行
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 创建帧绘制器和地图绘制器
+</span><span class="c1"></span><span class="n">mpFrameDrawer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FrameDrawer</span><span class="p">(</span><span class="n">mpMap</span><span class="p">);</span>
+<span class="n">mpMapDrawer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MapDrawer</span><span class="p">(</span><span class="n">mpMap</span><span class="p">,</span> <span class="n">strSettingsFile</span><span class="p">);</span>
+<span class="c1">// 创建并运行可视化线程
+</span><span class="c1"></span><span class="k">if</span><span class="p">(</span><span class="n">bUseViewer</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// 新建viewer
+</span><span class="c1"></span>    <span class="n">mpViewer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Viewer</span><span class="p">(</span>  <span class="k">this</span><span class="p">,</span> 
+                            <span class="n">mpFrameDrawer</span><span class="p">,</span>	<span class="c1">//帧绘制器
+</span><span class="c1"></span>                            <span class="n">mpMapDrawer</span><span class="p">,</span>		<span class="c1">//地图绘制器
+</span><span class="c1"></span>                            <span class="n">mpTracker</span><span class="p">,</span>		<span class="c1">//追踪器
+</span><span class="c1"></span>                            <span class="n">strSettingsFile</span><span class="p">);</span>	<span class="c1">//配置文件的访问路径
+</span><span class="c1"></span>    <span class="c1">// 运行viewer线程
+</span><span class="c1"></span>    <span class="n">mptViewer</span> <span class="o">=</span> <span class="k">new</span> <span class="kr">thread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Viewer</span><span class="o">::</span><span class="n">Run</span><span class="p">,</span> <span class="n">mpViewer</span><span class="p">);</span>
+    <span class="c1">// 给运动追踪器设置其查看器
+</span><span class="c1"></span>    <span class="n">mpTracker</span><span class="o">-&gt;</span><span class="n">SetViewer</span><span class="p">(</span><span class="n">mpViewer</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>可视化线程构造函数</strong> ==<code>Viewer::Viewer()</code>==
+<ul>
+<li>用于初始化可视化线程，<strong>读取相机的配置参数</strong>，包括：
+<ul>
+<li>图像采集的帧率，计算出每帧的耗时 <code>double mT;</code></li>
+<li>读取图像的长款，默认值为 640 × 480；</li>
+<li>可视化视角和相机的焦距。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-运行可视化线程">2 运行可视化线程</h2>
+<ul>
+<li>可视化线程与系统其他线程并行运行在 ==<code>Viewer::Run()</code>== 函数中</li>
+<li><strong>步骤一：</strong> <strong>创建 pangolin 窗口</strong>并设置大小
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">pangolin</span><span class="o">::</span><span class="n">CreateWindowAndBind</span><span class="p">(</span><span class="s">&#34;ORB-SLAM2: Map Viewer&#34;</span><span class="p">,</span><span class="mi">1024</span><span class="p">,</span><span class="mi">768</span><span class="p">);</span>
+<span class="c1">// 启动深度测试，OpenGL只绘制最前面的一层，绘制时检查当前像素前面是否有别的像素，如果别的像素挡住了它，那它就不会绘制
+</span><span class="c1"></span><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_DEPTH_TEST</span><span class="p">);</span>
+<span class="c1">// 在OpenGL中使用颜色混合
+</span><span class="c1"></span><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_BLEND</span><span class="p">);</span>
+<span class="c1">// 选择混合选项
+</span><span class="c1"></span><span class="n">glBlendFunc</span><span class="p">(</span><span class="n">GL_SRC_ALPHA</span><span class="p">,</span> <span class="n">GL_ONE_MINUS_SRC_ALPHA</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤二：</strong> 创建<strong>按钮</strong>和选择框
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 新建按钮和选择框，第一个参数为按钮的名字，第二个为默认状态，第三个为是否有选择框
+</span><span class="c1"></span><span class="n">pangolin</span><span class="o">::</span><span class="n">CreatePanel</span><span class="p">(</span><span class="s">&#34;menu&#34;</span><span class="p">).</span><span class="n">SetBounds</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="n">pangolin</span><span class="o">::</span><span class="n">Attach</span><span class="o">::</span><span class="n">Pix</span><span class="p">(</span><span class="mi">175</span><span class="p">));</span>
+<span class="n">pangolin</span><span class="o">::</span><span class="n">Var</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">menuFollowCamera</span><span class="p">(</span><span class="s">&#34;menu.Follow Camera&#34;</span><span class="p">,</span><span class="nb">true</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">pangolin</span><span class="o">::</span><span class="n">Var</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">menuShowPoints</span><span class="p">(</span><span class="s">&#34;menu.Show Points&#34;</span><span class="p">,</span><span class="nb">true</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">pangolin</span><span class="o">::</span><span class="n">Var</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">menuShowKeyFrames</span><span class="p">(</span><span class="s">&#34;menu.Show KeyFrames&#34;</span><span class="p">,</span><span class="nb">true</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">pangolin</span><span class="o">::</span><span class="n">Var</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">menuShowGraph</span><span class="p">(</span><span class="s">&#34;menu.Show Graph&#34;</span><span class="p">,</span><span class="nb">true</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">pangolin</span><span class="o">::</span><span class="n">Var</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">menuLocalizationMode</span><span class="p">(</span><span class="s">&#34;menu.Localization Mode&#34;</span><span class="p">,</span><span class="nb">false</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">pangolin</span><span class="o">::</span><span class="n">Var</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">menuReset</span><span class="p">(</span><span class="s">&#34;menu.Reset&#34;</span><span class="p">,</span><span class="nb">false</span><span class="p">,</span><span class="nb">false</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤三：</strong> 设置 pangolin 相机的<strong>投影模型和观测方向</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 定义相机投影模型：ProjectionMatrix(w, h, fu, fv, u0, v0, zNear, zFar)
+</span><span class="c1">// 定义观测方位向量：观测点位置：(mViewpointX mViewpointY mViewpointZ)
+</span><span class="c1">//                观测目标位置：(0, 0, 0)
+</span><span class="c1">//                观测的方位向量：(0.0,-1.0, 0.0)
+</span><span class="c1"></span><span class="n">pangolin</span><span class="o">::</span><span class="n">OpenGlRenderState</span> <span class="n">s_cam</span><span class="p">(</span>
+            <span class="n">pangolin</span><span class="o">::</span><span class="n">ProjectionMatrix</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span><span class="mi">768</span><span class="p">,</span><span class="n">mViewpointF</span><span class="p">,</span><span class="n">mViewpointF</span><span class="p">,</span><span class="mi">512</span><span class="p">,</span><span class="mi">389</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mi">1000</span><span class="p">),</span>
+            <span class="n">pangolin</span><span class="o">::</span><span class="n">ModelViewLookAt</span><span class="p">(</span><span class="n">mViewpointX</span><span class="p">,</span><span class="n">mViewpointY</span><span class="p">,</span><span class="n">mViewpointZ</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤四：</strong> 定义显示<strong>面板大小</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 定义显示面板大小，orbslam中有左右两个面板，左边显示一些按钮，右边显示图形
+</span><span class="c1">// 前两个参数（0.0, 1.0）表明宽度和面板纵向宽度和窗口大小相同
+</span><span class="c1">// 中间两个参数（pangolin::Attach::Pix(175), 1.0）表明右边所有部分用于显示图形
+</span><span class="c1">// 最后一个参数（-1024.0f/768.0f）为显示长宽比
+</span><span class="c1"></span><span class="n">pangolin</span><span class="o">::</span><span class="n">View</span><span class="o">&amp;</span> <span class="n">d_cam</span> <span class="o">=</span> <span class="n">pangolin</span><span class="o">::</span><span class="n">CreateDisplay</span><span class="p">()</span>
+        <span class="p">.</span><span class="n">SetBounds</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">pangolin</span><span class="o">::</span><span class="n">Attach</span><span class="o">::</span><span class="n">Pix</span><span class="p">(</span><span class="mi">175</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1024.0f</span><span class="o">/</span><span class="mf">768.0f</span><span class="p">)</span>
+        <span class="p">.</span><span class="n">SetHandler</span><span class="p">(</span><span class="k">new</span> <span class="n">pangolin</span><span class="o">::</span><span class="n">Handler3D</span><span class="p">(</span><span class="n">s_cam</span><span class="p">));</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤五：更新绘制内容</strong>（详见下一节）</li>
+</ul>
+<hr>
+<h2 id="3-更新可视化内容">3. 更新可视化内容</h2>
+<ul>
+<li><strong>步骤一：</strong> 地图绘制器<strong>获取最新的相机位姿</strong>，在函数 ==<code>MapDrawer::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &amp;M)</code>== 中实现；
+<ul>
+<li><strong>检查地图绘制器的 <code>cv::Mat mCameraPose</code> 是否为空</strong>，若不为空，则将其转换为 <code>cv::Mat</code> 格式转换为 <code>pangolin::OpenGlMatrix &amp;M</code> 格式，否则则设置为单位矩阵；</li>
+<li>检查地图绘制器中的<strong>相机位姿</strong> <code>cv::Mat mCameraPose</code> 是通过 ==<code>MapDrawer::SetCurrentCameraPose(const cv::Mat &amp;Tcw)</code>== 函数<strong>从跟踪线程传递过来</strong>的，该函数在跟踪线程中有两个地方会<strong>更新</strong>：
+<ul>
+<li><strong>创建初始化地图时</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">mpMapDrawer</span><span class="o">-&gt;</span><span class="n">SetCurrentCameraPose</span><span class="p">(</span><span class="n">pKFcur</span><span class="o">-&gt;</span><span class="n">GetPose</span><span class="p">());</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>跟踪线程每次<strong>跟踪成功之后</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">if</span><span class="p">(</span><span class="n">bOK</span><span class="p">)</span>
+    <span class="n">mpMapDrawer</span><span class="o">-&gt;</span><span class="n">SetCurrentCameraPose</span><span class="p">(</span><span class="n">mCurrentFrame</span><span class="p">.</span><span class="n">mTcw</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤二：</strong> 根据可视化界面的按钮和相机位姿情况选择<strong>调整视角</strong>；</li>
+<li><strong>步骤三：</strong> 判断模式是否有边，<strong>定位模式还是 SLAM 模式</strong>；</li>
+<li><!-- raw HTML omitted --><strong>步骤四： 绘制 3D 地图</strong><!-- raw HTML omitted -->
+<ul>
+<li><strong>步骤 1：</strong> 根据相机位姿在 pangolin 界面中绘制<strong>相机框</strong>，在函数 ==<code>MapDrawer::DrawCurrentCamera(pangolin::OpenGlMatrix &amp;Twc)</code>== 中实现；
+<ul>
+<li>该步骤需要的参数是相机位姿，在步骤一中已获取；</li>
+</ul>
+</li>
+<li><strong>步骤 2：</strong> 在地图中绘制<strong>关键帧及其共视关系线</strong>，在函数 ==<code>MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph)</code>== 中实现；
+<ul>
+<li>该步骤需要<strong>获取地图的所有关键帧</strong>，通过函数 ==<code>vector&lt;KeyFrame*&gt; Map::GetAllKeyFrames()</code>== 来<strong>获取关键帧</strong> <code>mspKeyFrames</code>；
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 取出所有的关键帧
+</span><span class="c1"></span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">KeyFrame</span><span class="o">*&gt;</span> <span class="n">vpKFs</span> <span class="o">=</span> <span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">GetAllKeyFrames</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>关键帧 <code>mspKeyFrames</code> 通过函数 ==<code>Map::AddKeyFrame(KeyFrame *pKF)</code>== 来更新，该函数在三个地方被触发
+<ul>
+<li>①：单目相机创建初始地图时；</li>
+<li>②：双目和 RGBD 相机初始化时；</li>
+<li>③：局部建图线程处理待处理关键帧列表时 ==<code>LocalMapping::ProcessNewKeyFrame()</code>==</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤 3： 绘制地图点</strong>，在函数 ==<code>MapDrawer::DrawMapPoints()</code>== 中实现，<strong>局部地图点用红色</strong>表示，出局部地图点外的地图点用<strong>黑色</strong>表示；
+<ul>
+<li>该步骤需要用到两种地图点：所有地图点和局部地图点
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 取出所有的地图点
+</span><span class="c1"></span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span> <span class="o">&amp;</span><span class="n">vpMPs</span> <span class="o">=</span> <span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">GetAllMapPoints</span><span class="p">();</span>
+<span class="c1">// 取出mvpReferenceMapPoints，也即局部地图d点
+</span><span class="c1"></span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">MapPoint</span><span class="o">*&gt;</span> <span class="o">&amp;</span><span class="n">vpRefMPs</span> <span class="o">=</span> <span class="n">mpMap</span><span class="o">-&gt;</span><span class="n">GetReferenceMapPoints</span><span class="p">();</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>所有地图点</strong>通过函数 ==<code>Map::GetAllMapPoints()</code>== 获取 <code>mspMapPoints</code> ， <code>mspMapPoints</code> 的更新情况与步骤 2 的关键帧一样；</li>
+<li><strong>局部地图点</strong>在地图绘制器中通过函数 ==<code>Map::GetReferenceMapPoints()</code>== 来获取，局部地图点在地图中通过 ==<code>Map::SetReferenceMapPoints(const vector&lt;MapPoint *&gt; &amp;vpMPs)</code>== 来<strong>更新</strong>，该函数在三个地方被触发
+<ul>
+<li>①：单目相机创建初始地图时；</li>
+<li>②：双目和 RGBD 相机初始化时；</li>
+<li>③：==<code>Tracking::UpdateLocalMap()</code>== 函数中，也就是<strong>跟踪局部地图进行局部优化时</strong>；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>步骤 四： 绘制带有检测结果的 2D 图像帧</strong>，通过函数 ==<code>FrameDrawer::DrawFrame()</code>== 来绘制
+<ul>
+<li><!-- raw HTML omitted -->绘制时需要用到的参数信息需要在进入该函数时加互斥锁先获取，后面才可以放心使用，否则容易出现段错误<!-- raw HTML omitted -->。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// step 1：将成员变量赋值给局部变量（包括图像、状态、其它的提示）
+</span><span class="c1">//NOTICE 加互斥锁，避免与FrameDrawer::Update函数中图像拷贝发生冲突
+</span><span class="c1"></span><span class="p">{</span>
+    <span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">mMutex</span><span class="p">);</span>
+    <span class="n">state</span><span class="o">=</span><span class="n">mState</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">mState</span><span class="o">==</span><span class="n">Tracking</span><span class="o">::</span><span class="n">SYSTEM_NOT_READY</span><span class="p">)</span>
+    <span class="n">mState</span><span class="o">=</span><span class="n">Tracking</span><span class="o">::</span><span class="n">NO_IMAGES_YET</span><span class="p">;</span>
+
+    <span class="c1">// 这里使用copyTo进行深拷贝是因为后面会把单通道灰度图像转为3通道图像
+</span><span class="c1"></span>    <span class="n">mIm</span><span class="p">.</span><span class="n">copyTo</span><span class="p">(</span><span class="n">im</span><span class="p">);</span>
+
+    <span class="c1">// 没有初始化的时候
+</span><span class="c1"></span>     <span class="k">if</span><span class="p">(</span><span class="n">mState</span><span class="o">==</span><span class="n">Tracking</span><span class="o">::</span><span class="n">NOT_INITIALIZED</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">//获取当前帧\参考帧的特征点,并且得到他们的匹配关系
+</span><span class="c1"></span>        <span class="n">vCurrentKeys</span> <span class="o">=</span> <span class="n">mvCurrentKeys</span><span class="p">;</span> <span class="c1">// 当前帧的特征点.
+</span><span class="c1"></span>        <span class="n">vIniKeys</span> <span class="o">=</span> <span class="n">mvIniKeys</span><span class="p">;</span>         <span class="c1">// 参考帧的特征点.
+</span><span class="c1"></span>        <span class="n">vMatches</span> <span class="o">=</span> <span class="n">mvIniMatches</span><span class="p">;</span>      <span class="c1">// 之间的匹配关系.
+</span><span class="c1"></span>    <span class="p">}</span>
+    <span class="c1">// 初始化完成跟踪正常时
+</span><span class="c1"></span>    <span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">mState</span><span class="o">==</span><span class="n">Tracking</span><span class="o">::</span><span class="n">OK</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">vCurrentKeys</span> <span class="o">=</span> <span class="n">mvCurrentKeys</span><span class="p">;</span> <span class="c1">// 当前帧的特征点.
+</span><span class="c1"></span>        <span class="n">vbVO</span> <span class="o">=</span> <span class="n">mvbVO</span><span class="p">;</span>
+        <span class="n">vbMap</span> <span class="o">=</span> <span class="n">mvbMap</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="nf">if</span><span class="p">(</span><span class="n">mState</span><span class="o">==</span><span class="n">Tracking</span><span class="o">::</span><span class="n">LOST</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="c1">// 跟丢的时候就之获得当前帧的特征点就可以了
+</span><span class="c1"></span>        <span class="n">vCurrentKeys</span> <span class="o">=</span> <span class="n">mvCurrentKeys</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 五：</strong> 响应复位停止等请求。</li>
+</ul>
+<hr>
+<h2 id="q问题">【Q】问题</h2>
+<hr>
+<blockquote>
+<p>2019.05.28     <br>
+<a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a></p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-05-30-orb-slam2-mapping/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😀 ORB-SLAM2 代码解读（二）：局部建图线程</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-05-27-skim3/">
+            <span class="next-text nav-default">2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

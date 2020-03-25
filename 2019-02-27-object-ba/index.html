@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度
+Frost D, Prisacariu V, Murray D. Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment[J]. IEEE Transactions on Robotics, 2018, 34(3): 736-747.
+作者：Duncan Frost：牛津大学2017年博士毕业，好像是 PTAM 那个组的 谷歌学术
+期刊：IEEE Transactions on Robotics JCR 类别：ROBOTICS 排序：2/26 JCR分区：Q1 IF：4.684
+文章：作者 2016 年 Object-aware bundle adjustment for correcting monocular scale drift
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-02-27-object-ba/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度" />
+<meta property="og:description" content="
+使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度
+Frost D, Prisacariu V, Murray D. Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment[J]. IEEE Transactions on Robotics, 2018, 34(3): 736-747.
+作者：Duncan Frost：牛津大学2017年博士毕业，好像是 PTAM 那个组的  谷歌学术
+期刊：IEEE Transactions on Robotics  JCR 类别：ROBOTICS  排序：2/26   JCR分区：Q1   IF：4.684
+文章：作者 2016 年 Object-aware bundle adjustment for correcting monocular scale drift
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-02-27-object-ba/" />
+<meta property="article:published_time" content="2019-02-27T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-02-27T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度">
+<meta itemprop="description" content="
+使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度
+Frost D, Prisacariu V, Murray D. Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment[J]. IEEE Transactions on Robotics, 2018, 34(3): 736-747.
+作者：Duncan Frost：牛津大学2017年博士毕业，好像是 PTAM 那个组的  谷歌学术
+期刊：IEEE Transactions on Robotics  JCR 类别：ROBOTICS  排序：2/26   JCR分区：Q1   IF：4.684
+文章：作者 2016 年 Object-aware bundle adjustment for correcting monocular scale drift
+">
+<meta itemprop="datePublished" content="2019-02-27T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-02-27T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="13579">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度"/>
+<meta name="twitter:description" content="
+使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度
+Frost D, Prisacariu V, Murray D. Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment[J]. IEEE Transactions on Robotics, 2018, 34(3): 736-747.
+作者：Duncan Frost：牛津大学2017年博士毕业，好像是 PTAM 那个组的  谷歌学术
+期刊：IEEE Transactions on Robotics  JCR 类别：ROBOTICS  排序：2/26   JCR分区：Q1   IF：4.684
+文章：作者 2016 年 Object-aware bundle adjustment for correcting monocular scale drift
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-02-27 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 13579 字 </span>
+          <span class="more-meta"> 预计阅读 28 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</strong><br />
+Frost D, Prisacariu V, Murray D. <a href="https://ieeexplore.ieee.org/abstract/document/8353862"><strong>Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment</strong></a>[J]. IEEE Transactions on Robotics, <strong>2018</strong>, 34(3): 736-747.<br />
+<strong>作者</strong>：<strong>Duncan Frost</strong>：牛津大学2017年博士毕业，好像是 PTAM 那个组的  <a href="https://scholar.google.com/citations?user=P9l4zHIAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>谷歌学术</strong></a><br />
+<strong>期刊</strong>：IEEE Transactions on Robotics  JCR 类别：ROBOTICS  排序：2/26   JCR分区：Q1   IF：4.684<br />
+<strong>文章</strong>：作者 2016 年 <a href="https://ieeexplore.ieee.org/abstract/document/7487680/">Object-aware bundle adjustment for correcting monocular scale drift</a></p>
+</blockquote>
+<h1 id="recovering-stable-scale-in-monocular-slam-using-object-supplemented-bundle-adjustment">Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>如何在<strong>不使用恒定高度假设的情况下解决远距离、大规模的单目尺度漂移</strong>;</li>
+<li>如何同时保证地图的<strong>全局尺度一致</strong>性又<strong>减小累计的漂移</strong>。</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>之前错误的尝试还是仅仅使用的点之间的约束，只不过这些点在一个尺度范围内；本文新提出的方法<strong>使用物体作为路标进行约束</strong>，由于只用于校正尺度漂移，没必要构造复杂的物体模型和 6（甚至 9 ）自由度的表示，<strong>仅使用物体质心 + 半径（先验）的方式约束</strong>，将直接的测量（边界框的中心 + 边界框大小）与三维世界中的物体投影得到的（质心投影和物体宽高投影）作差，最小化。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>相较没有物体尺度约束的情况<strong>大大降低了尺度漂移</strong>，<strong>保证了地图的一致性</strong>；</li>
+<li>没有高度假设约束的情况下<strong>平均产生 20％ 的平移误差和 0.014°/m 的旋转误差</strong>；</li>
+<li>只要可以获得常规的物体观测，该方法就能够在整个轨迹上保持一致的尺度估计，<strong>在缺乏物体观察发生尺度漂移时，当重新引入物体时，漂移会迅速减少</strong>；</li>
+<li>本方案<strong>避免对物体方向的恢复</strong>，物体的 BA 结构与常规场景点的结构联合，导致<strong>计算复杂度没有增加</strong>并且计算成本仅适度增加。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li><strong>对比先进的方法没有优势</strong>，虽然说是没有使用高度假设；</li>
+<li>物体表示上，首先<strong>二维的表示不准确</strong>，可以考虑三维建模；其次就算使用二维，还是用的半径 1.2 m 表示尺寸，也有漏洞，Cube SLAM 里的 2D 方案使用约束为： w = 3.9 m；l = 1.6 m；h = 1.5 m；</li>
+<li>还是<strong>需要有先验知识（哪怕是粗略的）</strong>，应用场景比较受限，换个场景就需要新的尺寸约束，特<strong>别是多物体更要有不同的约束</strong>；</li>
+<li>BA 优化函数虽然是利用了点测量和物体测量来优化相机位姿，但是<strong>没有反过来促进目标检测</strong>（优化物体的位姿和尺寸），这是一个可以创新的点。</li>
+</ul></li>
+</ul>
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li><strong>问题</strong>：在不了解图像之间的<strong>绝对基线</strong>的情况下，来自<strong>单目 SLAM 的地图尺度</strong>会随着时间的推移产生巨<strong>大的漂移</strong>；</li>
+<li><font color = red><strong>方法</strong>：本文除了点测量之外还<strong>考虑利用物体检测来解决尺度模糊和漂移</strong>的问题；
+<ul>
+<li>通过<strong>对物体的大小进行预测</strong>，可以将<strong>尺度估计</strong>集成到 BA 约束中；</li>
+<li>当物体的观测可用时，<strong>在局部 BA 中 与相机位姿一起确定地图的尺度</strong>；</font></li>
+</ul></li>
+<li><strong>优势</strong>：本文方法<strong>没有</strong>严格限制，比如<strong>恒定的相机高度或平面道路假设</strong>；</li>
+<li><strong>实验</strong>：KITTI 数据集显示可以减少总长度为40 km 的远程室外序列的尺度漂移
+<ul>
+<li>由于<strong>知道物体的绝对尺度</strong>，因此可获得所有序列的<strong>度量精度</strong>（metric accuracy）；</li>
+<li>还对来自手持相机的视频片段进行<strong>定性评估</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><font color =red><strong>累计误差的产生</strong></font>：传感器测量对传感器位姿和场景结构的联合依赖性都是未知的，因此，当传感器远离起始位置时，SLAM 算法将会产生<strong>累积误差</strong>；
+<ul>
+<li>当使用来自 LiDAR，RGBD 或立体相机的<strong>方向和距离测量</strong>时，这对继续探测的能力几乎没有影响；</li>
+<li>当仅使用单个摄像机的<strong>方向测量</strong>时，<font color =red>误差与<strong>深度/速度缩放模糊度的漂移</strong>相混合</font>，并且可能完全使数据收集失效；
+<ul>
+<li>例如，基于关键帧的方法通常<strong>基于它们与最近邻的接近度来选择关键帧</strong>；</li>
+<li>如果速度估计太大，关键帧将创建得太快，如果太小，则根本不会创建关键帧；</li>
+</ul></li>
+<li>虽然所有的方法都能够在<strong>闭环时减少和重新分配累积的误差</strong> <sup><strong>[4-8]</strong></sup>，但是单目方法中的漂移太严重，以至于<strong>在地图中搜索之前观察到的地标是不可行的</strong>，尽管在使用<strong>几何和外观线索</strong> <sup><strong>[9]</strong></sup> 方面取得了进展。</li>
+</ul></li>
+<li><font color =red><strong>物体尺度矫正漂移</strong></font>：但是为什么人类只用一只眼的时候行走的时候也不会产生尺度漂移？一个关键的假设是，<strong>现实中物体大小短时间内在空间尺度上不会变化</strong>；
+<ul>
+<li>本文<strong>利用路标点和合适的物体表示</strong>，修改的 BA 可以<font color =red><strong>通过检测和跟踪已知大小分布的物体实例</strong>并将它们<strong>包括在地图内</strong>，来有效地<strong>减小尺度漂移</strong></font>；</li>
+<li>由于对尺度的持续估计在长距离中至关重要，本文倾向于<font color =red><strong>在局部调整中经常性地矫正漂移，而不是在全局优化中一次性的矫正漂移</strong></font>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关工作">2. 相关工作</h2>
+<ul>
+<li>近期对 SLAM 中的现有技术以及特别是单目 SLAM 的描述分别在文献 <strong>[11,12]</strong> 中有描述，这里<strong>本文只关注先前减小尺度不确定性的工作</strong>；
+<ul>
+<li>方法主要分为两类：使用来自<strong>附加传感器的信息</strong>，或者像本文一样<strong>对相机的环境进行假设</strong>。</li>
+</ul></li>
+<li><font color =red><strong>第一类：附加传感器信息</strong></font>
+<ul>
+<li>添加第二个相机（即<strong>双目</strong>）<sup><strong>[3,13]</strong></sup>，如果已知相机的基线，则立即消除尺度；</li>
+<li><strong>IMU</strong>，提供加速度和方向；
+<ul>
+<li>帧被聚集成时间窗口，每个窗口保持通过对加速度计的输出进行双重积分而获得的估计轨迹；</li>
+<li>文献 <strong>[15]</strong> 将 IMU 融入到 PTAM 中；</li>
+<li>文献 <strong>[17]</strong> 利用 EKF 组成视觉、IMU 和压力计；</li>
+<li>文献 <strong>[18]</strong> 使用 IMU 数据，完成位姿估计用于行人导航。</li>
+</ul></li>
+</ul></li>
+<li><font color =red><strong>第二类：对相机的环境进行假设</strong></font>
+<ul>
+<li>使用视觉里程计的车辆导航中的一个常见假设是<strong>摄像机处于地面以上的固定且已知的高度</strong><sup><strong>[19-22]</strong></sup>；
+<ul>
+<li><strong>通过检测地平面</strong>，校正地图的局部比例以确保相机高度保持在其已知值；</li>
+<li><strong>必须精确地确定平面</strong>：例如文献 <strong>[23]</strong> 通过跟踪可能在其上搁置的物体来检测它；如后面的实验所示，当这个假设成立时，这些受约束的方法表现优异，但不能以其他方式运作。</li>
+</ul></li>
+<li><strong>假设场景中包含离散的重复结构</strong>，文献 <strong>[24]</strong> 使用从图像测量的特征之间的距离来记录场景结构的描述符，当再次出现类似的特征图案时，可以校正尺度漂移，<strong>由于没有使用实际尺寸的先验知识，因此不能恢复绝对尺度</strong>；</li>
+</ul></li>
+<li><font color =red><strong>位姿图与 BA：</strong></font>文献 <strong>[25]</strong> 描述了一种能够识别尺度漂移的 SLAM 方法，虽然<strong>位姿图优化</strong> <sup><strong>[26,27]</strong></sup> 具有比完整 BA 低得多的计算复杂度，但它无法校正闭环上的尺度漂移；
+<ul>
+<li>通过在关键帧对之间施加相似性而不是刚体约束来弥补这一差距，当检测到闭环时，通过比较重叠结构来测量漂移；此信息被输入闭环约束的比例因子，该约束因子在优化后传播到闭环的其余部分；</li>
+<li>虽然该方法显示出对刚体姿势图优化的改进，但该方法是否优于完整 BA 的问题仍未得到解答。更重要的是，<strong>仅在闭环时校正比例，使其不适合开环摄像机轨迹</strong>。</li>
+</ul></li>
+<li><font color =red><strong>EKF 与 BA：</strong></font>文献 <strong>[28]</strong> 将尺度不变特征集 <sup><strong>[29]</strong></sup> 识别的<strong>平面物体</strong>合并到使用 monoSLAM 估计的地图中 <sup><strong>[30,31]</strong></sup> ,实时检测物体，估计并分解平面和相机之间的单应性，将物体的位置由 monoSLAM 的 EKF 结合；
+<ul>
+<li>由于每个对象实例的大小已知，该方法可以解决深度/速度缩放模糊度的问题；</li>
+<li>但尽管能够从对象测量设置全局尺度，但在 EKF 中校正尺度漂移被证明是不方便的，<strong>随后在地图中结合的物体测量值被发现与周围地标的比例越来越不一致</strong>，导致跟踪失败或拒绝物体检测；</li>
+<li>在后来的工作 <strong>[32]</strong> 中，他们<strong>使用了 BA 优化</strong>而不是 EKF，<strong>但是对象仅用作增强而不是用于缩放校正</strong>；</li>
+<li>文献 <strong>[33]</strong> 也使用了 EKF 并用完整的三维物体增强了它们的地图，但他们也<strong>考虑了特定的物体而不是某一类对象</strong>。</li>
+</ul></li>
+<li><font color =red><strong>利用物体约束改进地图一致性：</strong></font>
+<ul>
+<li>文献 <strong>[34]</strong> <strong>联合估算了 BA 约束中相机，点和矩形物体位置</strong>，他们的目标是<strong>提高批量处理 SFM 的精度</strong>；</li>
+<li>文献 <strong>[35]</strong> 有类似的目标，但采用<strong>增量 SLAM 框架</strong>（尽管在小环境中并使用 RGBD 图像），并建议<strong>与对象的特征数据库进行低级匹配，而不是使用对象检测器</strong>；</li>
+<li>以上两项工作<strong>都没有关注如何纠正长期 SLAM 轨迹的尺度</strong>；</li>
+<li>文献 <strong>[36]</strong> 建议将<strong>点云建模的物体添加到地图中</strong>，其中对象点之间的<strong>已知距离</strong>用于<strong>向 BA 中添加额外的几何约束</strong>并在地图中<strong>强制执行缩放</strong>；
+<ul>
+<li>由于该方法使用<strong>特定对象实例的库</strong>，因此其对更一般场景的适用性是不确定；</li>
+<li>虽然地图的全局尺度在精确度上是准确的，但也没有显示长期无<strong>漂移</strong>操作的结果；</li>
+<li>在下一节中，本文追求<strong>在路标点之间使用成对约束</strong>的想法，但发现它们对于避免实时系统中的尺度漂移是<strong>无效</strong>的。</li>
+</ul></li>
+<li>文献 <strong>[37]</strong> 使用<strong>单目方法生成密集的地图</strong>，后来使用<strong>嵌入低维潜在空间的三维形状先验进行细化</strong>，由于形状的尺度是已知的，因此可以设置地图的尺度；
+<ul>
+<li>然而，与 <strong>[36]</strong> 一样，该方法<strong>仅在一个小的局部地图而不是长距离数据中进行测试</strong>，并且不清楚物体<strong>是否能够校正漂移</strong>而不仅仅是设置全局尺度。</li>
+</ul></li>
+</ul></li>
+<li><font color =red><strong>本文方法：</strong></font><strong>借鉴物体补充地图的方法</strong>，优先对传感器<strong>位置施加某种形式的约束</strong>或使用额外的传感硬件；
+<ul>
+<li>为了<strong>避免依赖于特定的物体</strong>实例，将使用<strong>对象类</strong>（object classes），因为它们的普遍性和实际大小的低差异性，同时它们的<strong>尺寸分布事先确定</strong>，以提高长期准确性；</li>
+<li>还提出<strong>使用与在线场景兼容的最小对象表示</strong>和<strong>使用 BA 约束的相机定位</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="landmark-to-landmarkl2l-约束一种失败的表述">3. Landmark-to-Landmark(L2L) 约束：一种失败的表述</h2>
+<ul>
+<li><font color =red><strong>思想：</strong></font> <strong>物体的大小可以调节尺度</strong>，但并不能解释如何最好地<strong>将大小信息合并到 BA 中</strong>；
+<ul>
+<li>在文献 [36] 之后，我们首先测试了<font color =red><strong>物体提供一个度量精确的坐标系统</strong></font>的建议，在该坐标系统上可以<strong>计算出地标之间的预期距离</strong>。</li>
+</ul></li>
+<li><font color =red><strong>① 路标点重投影误差：</strong></font> 考虑在一组位姿为 <span class="math inline">\(\mathcal {T} = \lbrace {\texttt{T}}_{k}\rbrace,k = 1,\ldots,K\)</span> 的<strong>相机关键帧</strong>中观察到<strong>世界坐标系中的一组路标</strong> <span class="math inline">\(\mathcal {X} = \lbrace {\mathbf {X}}_{iw} \rbrace,i=1,\ldots,I\)</span>；
+<ul>
+<li>Vanilla BA 旨在寻找具有<strong>最小化总重投影误差</strong>的路标位置和相机位姿：图像测量和相机第 k 帧中路标 i 的预测投影之间<strong>残差的加权 2 范数</strong> <span class="math inline">\(\tilde{{\mathbf {x}}}_{ik} = ({\mathbf {x}}_{ik}-\hat{{\mathbf {x}}}({\mathbf {X}}_{iw},{\texttt{T}}_{k}))\)</span> ;</li>
+<li>假设误差通常以<strong>零均值和协方差</strong> <span class="math inline">\({\texttt{X}}_{ik}\)</span> <strong>分布</strong>，则 BA 提供相机位姿 <span class="math inline">\(\mathcal {X}\)</span> 和路标位姿 <span class="math inline">\(\mathcal {T}\)</span> 的<strong>最大似然估计</strong>：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/f1.PNG?raw=true" title="f1" width="500" />
+</center></li>
+</ul></li>
+<li><font color =red><strong>② 路标间的距离误差：</strong></font> 使用 L2L 约束要求<strong>路标</strong> <span class="math inline">\(i\)</span> 与 <span class="math inline">\(i^{\prime }\)</span> <strong>之间的距离</strong> <span class="math inline">\(d_{ii^{\prime }}\)</span> 从一些正态分布的先前已知平均值 <span class="math inline">\(\mu _{ii^{\prime }}\)</span> 和方差 <span class="math inline">\(\sigma ^2_{ii^{\prime }}\)</span> 得出；
+<ul>
+<li>对所有这些可用的约束进行求和得到代价函数： <span class="math display">\[
+  E_{\mathrm{constraint}} = \sum _{i,i^{\prime } \in \mathcal {X}} \frac{1}{\sigma ^2_{ii^{\prime }}}(d_{ii^{\prime }} - \mu _{ii^{\prime }})^2  \quad (2)
+  \]</span></li>
+</ul></li>
+<li><font color =red><strong>③ 联合进行 BA：</strong></font> 将公式(1) (2)的<strong>反投影误差和路标距离误差进行 BA 调整</strong>： <span class="math display">\[
+{\color{Blue} \lbrace \mathcal {X}, \mathcal {T}\rbrace ^\ast = {\arg\,\min}_{\lbrace \mathcal {X}, \mathcal {T}\rbrace } \left[ E_{\mathrm{reproj}} + \lambda E_{\mathrm{constraint}}\, \right] \quad(3)}
+\]</span></li>
+<li><font color =red><strong>举例：</strong></font>从图像获取 <strong>L2L 约束</strong>需要<strong>在关键帧中检测已知对象类的实例</strong>，比如图 1(a) 中人的实例；
+<ul>
+<li>基于部分的目标检测器（例如文献 [38]）在检测周围提供检边界框，并根据目标宽度和高度的预先计算分布，假设平面性（假设目标中路标点在一个竖直平面上），通过二维投影获得<strong>目标内路标之间的距离约束</strong>；</li>
+<li>例如，在图 1(a) 中，人类肩部和脚部之间的合理距离允许两个地标之间的距离计算为1.56m。</li>
+</ul></li>
+<li><font color =red><strong>实验结果：</strong></font> 该方法首先在已知真值（比如人的高度）的模拟中进行测试，在轨迹的末端（其中每个关键帧可获得一个约束），<strong>执行无约束和 L2L 约束的 BA</strong>；
+<ul>
+<li>图1（b）和（c）分别比较了每个关键帧的相机平移产生的开环轨迹和闭环轨迹的误差，<strong>这些约束显然减少了每个关键帧错误</strong>，使其在整个轨迹上保持大致恒定。</li>
+<li><font color =red><strong>总结：</strong> 意思就是将已知真值的物体路标作为一个尺度约束，物体上的路标点（同一帧）之间是有一个合适的距离的，比如最大不超过人的高度，将路标之间的距离按照公式（2）产生距离误差；物体之外的路标点没有尺度约束，随着时间的推移尺度会发生漂移（特别是在没有闭环的情况下），而物体内的路标点，不管在什么时刻，其路标点之间的距离均值还是稳定的，尺度也就没产生漂移。“物体提供一个度量精确的坐标系统”的意思就是相当于把物体当做一把大的尺子（假设都投影到尺子平面上，咦？要是是前景呢？？），不管第几帧，它上面的路标点始终逃不脱它的手掌。</font>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig1.PNG?raw=true" title="fig1" width="900" />
+</center></li>
+</ul></li>
+<li><font color =red><strong>问题：</strong></font> 尽管存在这样的约束，但 L2L 约束法则在改进的 PTAM 测试中<strong>存在两个问题</strong>：
+<ul>
+<li>首先，获得约束所需的<strong>平面假设过于严格</strong>；</li>
+<li>其次，更重要的是，在处理过程中一段时间内会出现的限制，以及在<strong>尺度漂移之后，无法恢复尺度</strong>；被约束受限的路标将快速移动以跟随它们，但是其位置的相应大的变化经常导致 BA <strong>忽略了将它们作为异常值剔除</strong>而不是重新缩放地图。</li>
+</ul></li>
+<li><font color =red> <strong>结论：</strong></font> 这些问题与文献 [28] 提到的类似，当将路标约束强加到 EKF SLAM 中时，两种结果都表明：
+<ul>
+<li><font color =red><strong>低水平的突然干预对指导优化的概率基础的破坏性太大</strong></font>，无论是通过卡尔曼滤波器递归还是通过 BA 的批量处理模式，两者都建议<font color =red><strong>避免将关于对象大小的有些粗略的信息直接转移到已经在地图中具有精细尺度的路标点上</strong></font>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="利用物体路标的-ba">4. 利用物体路标的 BA</h2>
+<ul>
+<li>第二节回顾了 SLAM 中引入的一些参数化的物体对象，包括从文献 [39] 的边界框表示到 <strong>[35] 和 [37] 中的三维表面模型</strong>；
+<ul>
+<li>虽然更复杂的模型允许准确的分割，并且可以在本地提高重建质量，但是它们施加了相当大的计算开销；</li>
+<li>即使是<strong>矩形边界框也需要保持完整的6自由度姿势</strong>，而 <strong>3D 表面模型需要正确地定位 2D 轮廓分割</strong>；</li>
+<li>虽然这样的重建效果在视觉上很震撼，但<font color =red><strong>如果唯一的目标是尺度校正，则不需要额外的复杂度</strong></font>，相反，在这里本文提出<strong>将物体和点表示为具有不同“范围”的通用地标</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="物体表示">4.1 物体表示</h3>
+<ul>
+<li><font color =red><strong>世界系：</strong></font>场景和图像中<strong>物体和点路标的组合表示</strong>如图 2 所示，两者都<strong>由最小的包围球体表示</strong>，并且具有<strong>单个附加尺寸参数，即球体的半径</strong>，将其称为范围 <span class="math inline">\(\epsilon\)</span>；因此，<strong>物体路标</strong> <span class="math inline">\(j\)</span> 在世界系中表示为（物体路标的<strong>质心+范围</strong>）： <span class="math display">\[
+{\color{Blue} {\mathbf {Q}}_{jw} = {\left[\begin{array}{c}{\mathbf {X}}_{jw}\\ \epsilon _j\end{array}\right]} \quad(4)}
+\]</span></li>
+<li><font color =red><strong>相机系：</strong></font>由于<strong>物体路标被认为是球形</strong>，因此坐标系之间的转换比较简单：<strong>范围是不变的</strong>，物体在世界系的表示<strong>转换到相机系</strong>中：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/f5.PNG?raw=true" title="f5" width="500" />
+</center>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig2.PNG?raw=true" title="fig2" width="500" />
+</center></li>
+<li><font color =red><strong>图像平面：</strong></font> 在相机第 k 帧下，物体路标投影到图像平面中用四维向量表示 <span class="math inline">\(\hat{{\mathbf {q}}}_{jk} = [u,v,w,h]_{jk}^\top\)</span>：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/f6+f7.PNG?raw=true" title="fig2" width="750" />
+</center></li>
+</ul>
+<h3 id="物体测量与数据关联">4.2 物体测量与数据关联</h3>
+<ul>
+<li>使用在创建时应用于每个新关键帧的检测器来<strong>对物体进行定位</strong>，其<strong>测量值</strong>从检测周围的<strong>边界框中获得</strong>，并以与物体重投影 <span class="math inline">\(\hat{{\mathbf {q}}}_{jk} = [u,v,w,h]_{jk}^\top\)</span> 相同的方式<strong>对路标进行参数化</strong>；</li>
+<li>为解决关键帧之间的<strong>数据关联</strong>，使用文献 <strong>[40]</strong> 和 <strong>[41]</strong> 中描述的方法。</li>
+</ul>
+<h3 id="object-bundle-adjustment">4.3 Object Bundle Adjustment</h3>
+<ul>
+<li><font color =red><strong>物体 BA：</strong></font> 如果<strong>物体测量服从协方差分布</strong> <span class="math inline">\({{\texttt Q}}_{jk}\)</span>，一个旨在找到最有可能的<strong>物体集合</strong> <span class="math inline">\(\mathcal {Q}= \lbrace {\mathbf {Q}}_{1w}\ldots, {\mathbf {Q}}_{Kw} \rbrace\)</span> 、<strong>路标点</strong> <span class="math inline">\(\mathcal {X}\)</span> 和<strong>关键帧</strong> <span class="math inline">\(\mathcal {T}\)</span> 的 <strong>BA 约束</strong>可以写成：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/f8.PNG?raw=true" title="f8" width="800" />
+</center></li>
+<li>还可以对上式进行简化，首先假设特定目标类的范围（半径），并将类的实例的半径固定为此值，由于<strong>只有物体在三维世界中的位置（质心）需要进行细化，且点路标的半径为 0</strong>，所以可以<strong>将路标点的位置 <span class="math inline">\(\mathcal {X}\)</span> 看做是 <span class="math inline">\(\mathcal {Q}\)</span> 的子集</strong>。</li>
+<li><font color =red><strong>世界系中半径分布：</strong></font> 点路标和物体路标的<strong>噪声协方差是相同的</strong>，实验表明可以将<strong>物体半径服从正态分布</strong> <span class="math inline">\(\mathcal {N}(\epsilon,\sigma _\epsilon ^2)\)</span>;</li>
+<li><font color =red><strong>图像平面高宽反投影分布：</strong></font> 根据公式 (7) ，物体<strong>半径的投影</strong>也大致服从正态分布，其中 <span class="math inline">\({\mathbf {f}} = 2 \langle Z^{-1}_{jk}\rangle {\left[\begin{array}{c}f_u\\ f_v \end{array}\right]} \quad(10)\)</span> （<strong>世界系中的半径是一个参数，投影的宽高有两个参数</strong>） <span class="math display">\[
+{\color{Blue} {\left[\begin{array}{c}\hat{w} \\ \hat{h} \end{array}\right]} \sim \mathcal {N} \left(\epsilon {\mathbf {f}}, \sigma _\epsilon ^2 {\mathbf {f}} {\mathbf {f}}^\top \right) \quad(9)}
+\]</span></li>
+<li><font color =red><strong>图像平面高宽测量分布：</strong></font> <strong>测量</strong>过程中服从 <span class="math inline">\({\sim }\mathcal {N}({\mathbf {0}}, {{\Sigma }}_{\texttt{box}})\)</span>，测得的宽度和高度分布为： <span class="math display">\[
+{\color{Blue} {\left[\begin{array}{c}w \\ {h} \end{array}\right]} \sim \mathcal {N} \left(\epsilon {\mathbf {f}}, [ \sigma _\epsilon ^2 {\mathbf {f}} {\mathbf {f}}^\top + {\Sigma}_{\texttt{box}} ] \right)  \quad(11)}
+\]</span></li>
+<li><font color =red><strong>物体测量协方差：</strong></font> 假设独立零均值，<strong>边界框中心的噪声方差</strong>为 <span class="math inline">\(\sigma _{x,y}^2\)</span>，<strong>物体和点路标的测量协方差</strong>可以写成公式（12）
+<ul>
+<li>其中，对于点路标，右下角的 2 * 2 矩阵（半径的分布）默认为 0，后续会考虑数值。 <span class="math display">\[
+{\color{Blue} {{\texttt Q}}_{jk} = {\left[\begin{array}{cc}{\left[\begin{array}{cc}\sigma _x^2 &amp; 0 \\ 0 &amp; \sigma _y^2 \end{array}\right]} &amp; {{\texttt 0}}^{2 \times 2} \\ {{\texttt 0}}^{2 \times 2} &amp; \sigma _\epsilon ^2{\mathbf {f}}{\mathbf {f}}^\top + {\Sigma}_{\texttt{box}} \end{array}\right]} \quad(12)}
+\]</span></li>
+</ul></li>
+<li>从而公式（8）的 <strong>BA 约束可以简化成</strong>： <span class="math display">\[
+{\color{Blue}\lbrace \mathcal {Q}, \mathcal {T}\rbrace ^\ast = {\arg\,\min}_{\lbrace \mathcal {Q}, \mathcal {T}\rbrace } \sum _{j \in \mathcal {Q}} \sum _{k \in \mathcal {T}} \tilde{{\mathbf {q}}}_{jk}^\top {{\texttt Q}}_{jk}^{-1}\tilde{{\mathbf {q}}}_{jk} \quad(13)}
+\]</span></li>
+<li>这种<strong>简化</strong>允许使用与一般 BA 相同的 <strong>Hessian 结构</strong>，虽然在测量残差中存在额外的参数处理操作，但<strong>主要的计算成本来自正规方程的求解</strong>，即仅使用路标进行 BA。</li>
+</ul>
+<hr />
+<h2 id="实现">5. 实现</h2>
+<ul>
+<li>点和对象地标的组合表示可以应用于任何<strong>稀疏的基于关键帧的 SLAM 系统</strong>，本文讨论了与<strong>长距离长时间操作</strong>至关重要的实施细节。</li>
+</ul>
+<h3 id="局部-ba">5.1 局部 BA</h3>
+<ul>
+<li>将全局 BA 应用于视频序列中的每个帧，在计算上很快就会不可行，相反，如图 3 所示，本文<strong>优化当前估计的相机位置周围的局部区域</strong>，达到与视频速率操作一致的长时间实时稳定的计算负荷；
+<ul>
+<li><font color =red><strong>当前中心相机帧</strong> <span class="math inline">\({{\texttt T}}_{\text {cam}}\)</span></font> 周围定义了 <strong>n（实验中取 n = 10） 个最近关键帧</strong>的<font color =red>局部集合 <span class="math inline">\(\mathcal {T}_{\text {local}}\)</span></font> ；</li>
+<li>需要细化的结构包括在<strong>当前需要优化的相机和周围的 local 序列相机中可见的点路标和物体路标</strong> <span class="math inline">\(\mathcal {Q}_{\text {local}}\)</span> ；</li>
+<li>为约束地图其他部分的局部 BA ，来自其他关键帧的的所有观察结果 <span class="math inline">\(\mathcal {Q}_{\text {local}}\)</span> 都包含在优化中；</li>
+<li>部分稳定的关键帧形成一组 <font color =red><span class="math inline">\(\mathcal {T}_{\text {fixed}}\)</span> 的位姿<strong>在优化期间保持固定</strong></font>；</li>
+<li><font color =red><strong>局部优化</strong></font>表示为：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/f14.PNG?raw=true" title="f14" width="650" />
+</center>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig3+fig4.PNG?raw=true" title="fig3" width="1000" />
+</center></li>
+</ul></li>
+<li>由于<strong>局部 BA</strong> 仅在当前中心相机帧周围的局部区域中运行（<font color =red><strong>仅优化 local 序列</strong></font>），因此<strong>无法将校正从 local 窗口传播到地图的其余部分</strong>；
+<ul>
+<li>如果在一段时间内由于<strong>没有观察到物体而产生尺度漂移</strong>，<font color =red>只有当<strong>再次看到物体时</strong>，才校正<strong>包含 local 序列中 n 个关键帧的位姿</strong>，并更新这部分的地图</font>；</li>
+</ul></li>
+</ul>
+<h3 id="降噪">5.2 降噪</h3>
+<ul>
+<li><font color =red><strong>误差源</strong></font>：实际物体测量受到许多<strong>误差源</strong>的影响：主要是物体检测中的<strong>误检测</strong>；图像中的<strong>大小和位置不准确</strong>；正确检测之间的<strong>不正确关联</strong>；最重要的是，在<strong>帧之间独立于传感器的运动</strong>。</li>
+<li><font color =red><strong>处理方案一</strong></font>：首先，与点路标不同，点路标对于摄像机跟踪至关重要，并且必须尽快定位，因此不需要立即使用物体测量；相反，本文在 BA 中使用它们之前，<font color =red><strong>要求物体需要有一定数量的观测次数</strong></font>，几个优势：
+<ul>
+<li>① 增加的测量确保仅<strong>使用具有精确定位的物体</strong>；</li>
+<li>② 只要<strong>被测量的次数低于某个阈值</strong>，则任何来自物体检测算法的<strong>误检都会被忽略</strong>；</li>
+<li>③ 除非它们位于摄像机前方并以相同的速度移动，否则<strong>移动的物体</strong>由于少于所需的测量次数而被<strong>忽略</strong>。
+<ul>
+<li>注意，物体以与摄像机相同的速度和方向移动相当于相机固定，然而，当有足够的路标测量不同意这种推断，并且相机确实在移动时，该物体将被稳健的估计器视为异常值。</li>
+</ul></li>
+</ul></li>
+<li><font color =red><strong>处理方案二</strong></font>：其次，为了减少<strong>不良物体测量或不良数据关联</strong>，<font color =red><strong>物体和点路标测量</strong>被包裹在 <strong>Tukey biweight 目标函数</strong></font> <sup><strong>[42]</strong></sup> 中，将公式（13）改写成 <span class="math display">\[
+{\color{Blue} \lbrace \mathcal {Q}, \mathcal {T}\rbrace ^\ast = {\arg\,\min}_{\lbrace \mathcal {Q}, \mathcal {T}\rbrace } \sum _{j \in \mathcal {Q}} \sum _{k \in \mathcal {T}} \mathrm{Obj}\left({|\tilde{{\mathbf {q}}}_{jk}|},{{{\texttt Q}}_{jk}},\sigma _T\right) \quad (15)}
+\]</span></li>
+<li>对上式考虑三种情况：
+<ul>
+<li>① 针对<strong>点路标</strong>，<span class="math inline">\(\sigma _T\)</span> 等于估计的<strong>点误差分布的标准差</strong>；</li>
+<li>② <font color = orange>针对 <span class="math inline">\(\tilde{{\mathbf {q}}}_{jk}\)</span> 中的<strong>边界框位置(质心位置)</strong><span class="math inline">\((x,y)_{jk}\)</span> ，<span class="math inline">\(\sigma _T\)</span> 被设置来适应物体检测固有的较低精度和尺度漂移还未被解决的不确定性；</font>
+<ul>
+<li>实验表明，在尺度稳定后，误差分布的标准差至少比标准误差高一个数量级（见图 12 a）；</li>
+</ul></li>
+<li>③ 针对<strong>边界框的大小</strong> <span class="math inline">\((w,h)_{jk}\)</span> ，实验发现最好<strong>关闭</strong>鲁棒的<strong>加权</strong>；
+<ul>
+<li><font color = orange>如果最近有较好地观察到物体，则测量值大致表现良好（见图 12 b）；</font></li>
+<li>否则，尺度漂移可能会导致物体在周围地图中显得不成比例地大或小；</li>
+<li>对于漂移校正，调整不必剔除这些测量。</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="结合跟踪与建图">5.3 结合跟踪与建图</h3>
+<ul>
+<li>在系统框架上，修改了 PTAM 的基本版本来使用本方案，如图 4 所示；</li>
+<li><font color =red><strong>跟踪线程</strong></font>：在初始化之后，相机位姿<strong>跟踪线程一直运行</strong>，使用<strong>简单的运动预测模型</strong>来辅助 FAST 角点与路标点投影的匹配，并迭代地使用<strong>重加权的最小二乘算法</strong>来优化位姿；
+<ul>
+<li>与 PTAM 一样，该方案<strong>使用 8 * 8 像素模板匹配特征</strong>，这些模板首先与搜索半径中其他像素块进行<strong>粗略的匹配</strong>，然后针对亚像素精度进行<strong>迭代细化</strong>。</li>
+</ul></li>
+<li><font color =red><strong>关键帧创建</strong></font>：除了<strong>测量与其他关键帧的距离</strong>之外，我们还监视<strong>当前相机估计估计值与最近关键帧之间的熵比</strong> <sup><strong>[2]</strong></sup> ，与距离度量不同，熵度量具有对尺度漂移的不变性；如果这两个任一测量标准大于阈值，则将当前帧选择为关键帧。</li>
+<li><font color =red><strong>添加路标到关键帧</strong></font>：<font color = orange>由于只有一部分路标用于跟踪，所以建图器<strong>首先搜索其他路标（未被用于跟踪的路标）的测量结果并将其添加到关键帧</strong>；</font>
+<ul>
+<li>使用 PTAM 的<strong>图像块匹配</strong>（patch matching ）算法找到<strong>与最近的相邻关键帧的一组极线匹配</strong>，同时新的 3D 地图点被三角化；</li>
+<li>然后将来自目标检测的边界框形式的所有物体测量添加到关键帧；</li>
+<li>如果之前没有看到某个对象，则可以立即从关键帧中的单个测量中对其进行定位（因为其投影是可逆的），但是，在测量次数超过第 5.2 节中讨论的阈值之前，不允许进行 BA 优化。</li>
+</ul></li>
+<li><font color =red><strong>关键帧进行 BA 优化并添加到建图线程</strong></font>：如果周围关键帧中有足够的物体测量值，则<strong>对 local 点路标和物体路标进行 BA 约束</strong>；如果没有找到物体，或者当前可见物体的测量值不足，则<strong>仅对局部点路标执行 BA</strong>。
+<ul>
+<li>使用包含 10 帧可用于优化的关键帧的窗口，优化大约需要150毫秒才能收敛，不会导致跟踪中断；</li>
+<li>然后将新的关键帧添加到建图器的队列中，该队列将关键帧添加到独立的建图线程中；</li>
+<li>最后，使用摄像机的当前位姿更新运动模型。</li>
+</ul></li>
+<li><font color =red><strong>总结流程</strong>：
+<ul>
+<li>首先通过 FAST 角点提取、图像块匹配和简单的运动更新模型进行<strong>跟踪</strong>；</li>
+<li>然后根据与最近邻关键帧的距离和熵关系<strong>确定关键帧</strong>；</li>
+<li>再将关键帧观察到的路标（用于跟踪的除外）<strong>添加到关键帧</strong>中（观测次数少的就算添加了也不进行 BA 优化），同时完成<strong>数据关联</strong>（是更新测量还是实例化一个新的物体）；</li>
+<li>最后对关键帧周围 local 序列进行<strong>局部 BA 优化</strong>，并将路标和相机位姿添加到<strong>地图</strong>中。</font></li>
+</ul></li>
+</ul>
+<h2 id="实验结果">6. 实验结果</h2>
+<ul>
+<li>该系统性能已经在 <strong>KITTI</strong> 街道场景数据集千米长室外序列，以及来自<strong>手持式手机摄像头的 100 米长室外序列</strong>上进行了评估。
+<ul>
+<li>图 5 中示其中一个序列的整体表现，图 5（a）展示了目标检测，图 5（b）显示了具有路标点和物体检测的关键帧，图 5（c）显示重建的地图；</li>
+<li>从图 5（c）以及后面的图 14（c）中可以明显看出，<font color =red><strong>物体标志的数量相较点路标的数量只是一小部分，典型比例了为0.1％</strong>；</font></li>
+<li><font color =red><strong>整体结构的改进源于物体稳定尺度，而不是他们增加了大量的测量</strong>。</font>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig5.PNG?raw=true" title="fig5" width="800" />
+</center></li>
+</ul></li>
+<li>本文方法能够处理多个任意对象类，或者说<strong>任何已知范围分布的对象类</strong>，但是在 KITTI 数据集上一般就使用汽车类；
+<ul>
+<li>使用文献 <strong>[40,41]</strong> 的检测跟踪算法<strong>获得关键帧中的物体检测和相应的数据关联标签</strong>，提出适合在街道环境中检测车辆的方法；</li>
+<li><font color =red><strong>汽车的范围设定在 = 1.2 m</strong></font>，这是欧洲流行的平均水平。</li>
+</ul></li>
+<li>本文<strong>开展以下实验</strong>：
+<ul>
+<li>① 将补充<strong>物体 BA</strong> 的性能与<strong>没有物体测量</strong>且没有缩放信息的性能进行比较；</li>
+<li>② 当部分序列中的<strong>物体很少时</strong>，评估所提出方法的性能；</li>
+<li>③ 检查<strong>物体观测数量与相机速度误差之间的关系</strong>；</li>
+<li>④ 通过使用来自 KITTI 数据集的 ground truth 相机姿态数据来<strong>验证尺寸分布和噪声模型</strong>；</li>
+<li>⑤ 在线工具用于比较本文方法与其他在 KITTI 数据上表现最佳的<strong>单目里程计</strong>方法的性能；</li>
+<li>⑥ 展示了用<strong>手持摄像机</strong>以不受约束的方式移动拍摄的视频序列的结果。</li>
+</ul></li>
+</ul>
+<h3 id="有无物体约束性能对比">6.1 有无物体约束性能对比</h3>
+<ul>
+<li>首先使用仅有点路标的 BA 优化，然后使用物体补充 BA。</li>
+<li><font color =red><strong>轨迹对比</strong></font>：图 6 显示了使用（a）仅点路标的 BA 和（b）本文提出的点和物体 BA 优化获得的结果轨迹的比较，两者都应用于 KITTI ＃0 序列。
+<ul>
+<li>虽然点路标的 BA 在轨迹的过程中累积了大量的尺度漂移，但是物体补充版本能够维持一个与地面实况基本相同的地图 - <strong>并没有使用闭环来优化</strong>；</li>
+</ul></li>
+<li><font color =red><strong>速度对比</strong></font>：图 6（c）中可以更清楚地看到误差的减少，图 6（c）显示了两种方法<strong>相机的速度</strong>与 ground truth 的比较，计算<strong>关键帧 k 处的相机速度为反向差分</strong>：
+<ul>
+<li>其中 <span class="math inline">\({\mathbf {c}} = {{\texttt R}}^\top {\mathbf {t}}\)</span> 是该<strong>关键帧的相机中心在世界坐标系中的位置</strong>；</li>
+<li>估计的与真实的相机速度之间的差异随着时间的推移而增长，而物体补充版本保持接近真实速度。 <span class="math display">\[
+{\color{Blue}s_k = | {\mathbf {c}}_k{-}{\mathbf {c}}_{k{-}1} | \quad(16)}
+\]</span></li>
+</ul></li>
+<li>尽管在真实的相机轨迹中存在环路，但<strong>本文有意不闭合，以便产生更长的开环轨迹</strong>，图 6（d）展示了在进一步的 KITTI 序列上运行 物体 BA 的轨迹结果。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig6.PNG?raw=true" title="fig6" width="800" />
+</center></li>
+<li>表 1 比较了 KITTI 数据集中前 11 个序列的有和没有物体 BA 的<strong>轨迹的均方根误差 ERMS</strong>，它带有ground truth，ERMS 是<strong>单目序列的平移误差的尺度不变量度</strong>：
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/f17.PNG?raw=true" title="fig17" width="500" />
+</center></li>
+<li>由于ground truth 是可用的，表 1 显示了 s = 1 时的值，但是估计的轨迹已经标准化了，所以它的<strong>起始尺度等于 ground truth 的起始尺度</strong>；
+<ul>
+<li>对于除两个序列外的所有序列，使用对象会显著降低平移错误，序列 1 和序列 4 仍然有大量的错误：如图 7 所示，这些<strong>序列中缺少静止的对象</strong>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig7+tab1.PNG?raw=true" title="fig7+tab1" width="750" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="尺度漂移之后的恢复">6.2 尺度漂移之后的恢复</h3>
+<ul>
+<li><strong>第 3 节中方法</strong>的主要失败在于，在发生实质性的漂移之后引入尺度校正（例如，<strong>由于缺乏物体测量）是破坏性的</strong>，导致良好的测量结果被拒绝；
+<ul>
+<li>图 8 表明现在情况并非如此，它显示了<strong>通过忽略前 2000 帧的所有物体测量</strong>而获得的估计轨迹和相机速度；</li>
+<li>在<strong>再次使用物体之后</strong>，几乎<strong>立即将比例修正</strong>为接近真实值的值。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig8.PNG?raw=true" title="fig8" width="750" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="物体观测对速度速度估计的影响">6.3 物体观测对速度速度估计的影响</h3>
+<ul>
+<li>虽然第 6.1 节显示使用物体补充的 BA 优化明显优于仅使用路标点的 BA ，在这里我们提供了<strong>物体如何影响尺度估计</strong>的更局部化的视角。</li>
+<li>对于轨迹中的每一个关键帧，<strong>速度上的 RMS 误差</strong>是与在 10 个关键帧的<strong>邻域内出现的目标观测的平均数</strong>一起计算的；
+<ul>
+<li>平均值是在空间上计算的，因为观测通常还会影响周围的关键帧而不仅仅是当前的单个关键帧；</li>
+<li>虽然没有观察结果，但是<strong>没有对象观察</strong>但<strong>被具有物体观测的关键帧包围</strong>的单个关键帧仍然可能具有<strong>低速错误</strong>。</li>
+</ul></li>
+<li>图 9 显示了<strong>速度的最大误差</strong>与 KITTI 0-10 序列的<strong>物体平均观察数量</strong>的关系图，但由于缺少静止物体而排除了序列＃1和＃4，<strong>增加观测数确实会降低误差的上限</strong>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig9+fig10.PNG?raw=true" title="fig9+fig10" width="800" />
+</center></li>
+</ul>
+<h3 id="验证物体半径的分布">6.4 验证物体半径的分布</h3>
+<ul>
+<li>本文的<strong>目标不是在运行时了解检测到的物体的大小或结构</strong>，而是<strong>使用预先已知大小的数据来稳定尺度</strong>；
+<ul>
+<li>在这项工作中，使用<strong>制造商的数据来找到流行的车辆的平均半径</strong> <span class="math inline">\(\bar{\epsilon }\)</span>，但其他物体的尺寸数据可以在建筑手册等来源中找到（例如，[45]），人类研究文献（如[46]）等；</li>
+<li>但是，由于 KITTI 数据集为每帧提供已知的摄像机姿势，可以以多种方式<strong>验证提议的汽车半径分布</strong>。</li>
+</ul></li>
+<li><font color = red><strong>总结</strong>：
+<ul>
+<li>实验一：将物体<strong>半径作为一个变量</strong>，验证在<strong>取不同值时对性能（估计的速度误差）的影响</strong>，最后得到半径取 1.2 m 时最优；</li>
+<li>实验二：利用 ground-truth 的关键帧真实位姿（上一步是估计值）利用公式（19）<strong>最小化得到所有帧中最优的物体尺寸</strong>，发现尺寸的分布均值依然是 1.2 m，方差 0.2 ㎡，符合正态分布；</li>
+<li>实验三：验证检测框的误差，发现<strong>检测框中心的误差符合正态分布，宽度和高不符合正态分布</strong>。</font></li>
+</ul></li>
+</ul>
+<h4 id="使用半径作为离散参数">6.4.1 使用半径作为离散参数</h4>
+<ul>
+<li>首先，对半径 <span class="math inline">\(\bar{\epsilon }\)</span> 进行<strong>经验搜索</strong>，<strong>将其作为要优化的参数</strong>，通过<strong>评估系统</strong>在包含汽车的 KITTI 数据集所有序列上的<strong>性能</strong>，得出性能最优时对应的半径参数；
+<ul>
+<li>作为依据的<strong>性能指标是估计的每帧速度 RMS 的平均误差公式（18）</strong></li>
+<li>其中 <span class="math inline">\(s_i\)</span> 来自公式（16）的<strong>速度真值</strong> ground-truth， <span class="math inline">\(\hat{s}_i(\epsilon)\)</span> 是关于半径的函数<strong>估计的速度</strong>， <span class="math inline">\(N\)</span> 是所有关键帧的数量。 <span class="math display">\[
+{\color{Blue} E_{\text {speed}}(\epsilon) = \left[ \frac{1}{N}\sum ^N_{i = 1} \left(s_i - \hat{s}_i(\epsilon) \right)^2\right]^{1/2} \quad(18)}
+\]</span></li>
+</ul></li>
+<li>如图 10 显示了对象半径值的误差，<strong>具有最低误差的值出现在 <span class="math inline">\(\epsilon =\text{1.2}\)</span> 米处</strong>，与制造商数据的平均值一致。</li>
+</ul>
+<h4 id="恢复半径分布">6.4.2 恢复半径分布</h4>
+<ul>
+<li>第二次验证<strong>直接估计 <span class="math inline">\(\epsilon\)</span> 的分布</strong>，再次利用 KITTI 的 ground-truth，给定一组具有真值的包含物体观测的关键帧 <span class="math inline">\(\mathcal {T}_{\text{GT}}\)</span> ，通过最小化来估计所讨论的特定类的一组对象 <span class="math inline">\(\mathcal {Q}^\ast\)</span>： <span class="math display">\[
+\mathcal {Q}^\ast = {\arg\,\min}_\mathcal {Q}\sum _{j \in \mathcal {Q}} \sum _{k \in \mathcal {T}_{GT}} \tilde{{\mathbf {q}}}_{jk} ^\top \tilde{{\mathbf {q}}}_{jk} \quad(19)
+\]</span></li>
+<li>这是公式（8）物体观测项的简化，没有协方差矩阵，每个<strong>物体的半径 <span class="math inline">\(\epsilon\)</span> 不再是整个类的常量，而是每个物体实例位置旁的一个自由参数变量估计值</strong>；
+<ul>
+<li>图 11 显示了在 KITTI ＃0 至 ＃10 序列中检测到的汽车的结果分布，<strong>分布平均值为 1.2 米，方差为 0.2 平方米</strong>，与早先的估算一致，而且，<strong>正态分布的假设似乎是合理的</strong>。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig11.PNG?raw=true" title="fig11" width="500" />
+</center></li>
+</ul></li>
+</ul>
+<h4 id="检测框尺寸的错误">6.4.3 检测框尺寸的错误</h4>
+<ul>
+<li><strong>物体相关误差的分布</strong>（公式 12）是通过累积在每个图像中检测到的<strong>边界框的位置、大小之间的差异的直方图</strong>以及在<strong>收敛之后通过 BA 给出的位置和大小</strong>来生成的，并且<strong>将后者视为正确</strong>的。</li>
+<li><strong>位置 <span class="math inline">\((x,y)\)</span> 的误差</strong>直方图如图 12（a）所示，它们具有<strong>零均值，独立且接近正态分布</strong>，因此遵守（12）的假设；<strong>标准差</strong> <span class="math inline">\(\sigma _x\)</span> 和 <span class="math inline">\(\sigma _y\)</span> 分别估计为 <strong>6.6 像素和 4.1 像素</strong>；
+<ul>
+<li><strong>边界框大小 <span class="math inline">\((w,h)\)</span> 的误差</strong>直方图如图 12（b）所示，<strong>宽度和高度误差的平均值</strong>分别为 10.4 和 -11.6 ;</li>
+<li><strong>误差协方差</strong>是： <span class="math display">\[
+\sigma _\epsilon ^2{\mathbf {f}}{\mathbf {f}}^\top + {\Sigma}_{\texttt{box}} = {\left[\begin{array}{cc}190.0&amp; -123.4 \\ -123.4&amp; 128.2 \end{array}\right]} \quad(20)
+\]</span></li>
+</ul></li>
+<li>由于在 KITTI 数据集中，相机的 x 轴和汽车的主轴主要位于水平面上；
+<ul>
+<li>对单一半径的物体模型进行拟合，<strong>往往会缩小宽度并推高高度</strong>，如图 13（a）所示；</li>
+<li>图 12（b）中的<strong>不对称分布</strong>在某种程度上打破了正态分布的假设，因为<strong>越靠近物体检测受到更大的透视畸变，同时检测到的数量更少</strong>；</li>
+<li>利用相机的光学、速度和目标检测等现实假设合成的分布如图 13（b）所示，再现了在图 12（b）中实际观测到的分布。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig12.PNG?raw=true" title="fig12" width="700" />
+</center>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig13.PNG?raw=true" title="fig13" width="600" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="在线评估">6.5 在线评估</h3>
+<ul>
+<li>本文方法使用 KITTI 的在线评估工具<sup><strong>[44]</strong></sup>及其保留的测试序列上进行了评估；
+<ul>
+<li>但是那里的所有参考方法都采用一种形式或其他形式的<strong>平面约束，使得本文的无约束方法的比较不公平</strong>；</li>
+<li>所有受约束的的单目 SLAM 系统的平均性能约 9％ 的平移误差和 0.020°/m 旋转误差，而性能最佳的约束方法实现 2.4％ 的平移误差和 0.006°/m 的旋转误差<sup><strong>[22,23]</strong></sup>；</li>
+<li><strong>本文无约束方法平均产生 20％ 的平移误差和 0.014°/m 的旋转误差</strong>，这些值至少接近并且旋转误差优于受约束方法的平均值。</li>
+</ul></li>
+<li>尽管本文方法在绝对意义上<strong>难以与有约束方法竞争</strong>，但仍有进一步减少误差的余地；
+<ul>
+<li>首先，KITTI 序列中的<strong>大型帧间运动过度扩展了 PTAM 的特征和相机跟踪线程</strong>，该系统是专为小型 AR 工作空间开发的；基于 KLT 的简单里程计系统 <sup><strong>[47]</strong></sup> 能够在 PTAM 丢失多个地图点的序列上的每对帧之间找到许多匹配，表 1 中的序列 ＃1 是一个这样的例子；</li>
+<li>其次，许多 KITTI 的测试序列<strong>不包含足够的静态汽车，因此难以进行漂移校正</strong>；一个极端的例子是测试序列 ＃14 ，它被捕获在公园里：有灌木，但没有汽车，后面在结论中讨论了多个类的使用。</li>
+</ul></li>
+</ul>
+<h3 id="手持相机高度存在变化序列测试">6.6 手持相机（高度存在变化）序列测试</h3>
+<ul>
+<li>由于与 KITTI 在线评估工具提供的现有技术水平的比较不是对当前方法的公平测试，因为<strong>最佳表现方案都限制摄像机在道路上方具有固定高度</strong>。</li>
+<li>为了证明我们的方法在没有这种高度约束的情况下运行的能力，使用手持式手机相机（具有固定焦距的三星 Galaxy S6 ，使用标准方法校准）在室外捕获序列；
+<ul>
+<li>由于<strong>自制序列没有 ground trut</strong>h ，所以包含一个小闭环，并且<strong>在闭环的开始和结束之间的定性距离上</strong>评估性能，汽车再次被用作物体级路标，并且将 <span class="math inline">\(\bar{\epsilon } = \text{1.2}\)</span>；</li>
+</ul></li>
+<li>从序列内的不同相机高度拍摄的两帧如图 14（a）所示,分别使用仅有点路标和物体补充的 BA ，估计的结果轨迹如图 14（b）中所示，其<strong>覆盖在拍摄序列的区域的卫星图像上</strong>；
+<ul>
+<li>物体补充的 BA 方案尺度漂移显着减少，建图区域的详细点云如图 14（c）所示，再次发现，物体路标与背景特征点的比率非常小。</li>
+</ul></li>
+</ul>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190227/fig14.PNG?raw=true" title="fig14" width="800" />
+</center>
+<h2 id="总结与讨论">7. 总结与讨论</h2>
+<h3 id="总结">7.1 总结</h3>
+<ul>
+<li>本文提出了一种利用 BA 优化将物体的尺度信息整合到单目视觉 SLAM 中的新方法；
+<ul>
+<li>然而其他方法依赖于进一步硬件传感器或关于地平面上方固定相机高度的假设，<strong>本方法仅假设相机能够观测到已知的物体，并且这些物体可以通过单一的半径进行合理的视觉描述</strong>；</li>
+<li>本方案通过<strong>避免物体方向的恢复</strong>，物体的 BA 结构与常规场景点的结构联合，<strong>导致计算复杂度没有增加</strong>并且计算成本仅适度增加。</li>
+</ul></li>
+<li>结果已表明，<strong>只要可以获得常规的物体观测，该方法就能够在整个轨迹上保持一致的尺度估计</strong>；
+<ul>
+<li>所需的物体路标观测数量是点路标数量的非常小的一部分，在我们的实验中，典型的比例是 0.1％；</li>
+<li>已经证明，<strong>在缺乏物体观察发生尺度漂移时，当重新引入物体时，漂移会迅速减少</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="讨论">7.2 讨论</h3>
+<ul>
+<li>① <font color =red>首先是使用<strong>多个物体类</strong></font>
+<ul>
+<li>虽然在这项工作中使用了一个对象类，但<strong>使用多个对象类很简单</strong>：一个并行运行合适的物体检测器和跟踪器，有一点需要注意， <strong>BA 与物体类别无关</strong>；</li>
+<li>同时，知道<strong>各个类别相应的尺寸分布</strong>很重要，因此可以对来自几个类别的尺寸信息赋予<strong>适当差异的权重</strong>；</li>
+<li><strong>尺寸信息来源</strong>：最有可能<strong>从独立数据中找</strong>到对象尺寸信息，但在本文中，也演示了当 ground truth 的相机位姿信息可用时，如何<strong>使用视觉信息来验证这些尺寸值</strong>。</li>
+</ul></li>
+<li>② <font color =red>其次是 <strong>SLAM 流程的细节</strong></font>
+<ul>
+<li>目前，<strong>该方法不能在局部 BA 窗口之外的地图的部分中校正比例</strong>,例如，在第 6.2 节中，BA 无法校正没有物体观测可用部分的轨迹；</li>
+<li>文献 <strong>[48]</strong> 已经表明，<strong>全局 BA 是不必要的</strong>，因为仅在当前相机估计值附近需要精确的结构，相反，它们<strong>应用联合双窗口优化</strong>，在本地调整窗口中细化结构和关键帧，并对地图的其余部分进行姿势图优化；</li>
+<li>可以探究一下，使用相似度转换 <strong>[25]</strong> 来探索<strong>局部 BA 的缩放信息是否可以沿着位姿图正确地传播</strong>，此外，这将简单地使闭环闭合。</li>
+</ul></li>
+<li>③ <font color =red>第三个问题涉及<strong>物体建模</strong></font>
+<ul>
+<li>结果表明，<strong>使用单一半径的模型不会妨碍整体尺度的恢复</strong>，这在一定程度上是基于物体的视图集成的良性结果（例如，细长对象的细的一段被相对较少地观测到；另外在一定程度上是视觉兴趣聚集的结果；</li>
+<li><strong>最简单、也是最有效的建模增强是使用特定的部件检测器</strong>，并将不同的范围半径分配给不同的零件：汽车后部、汽车侧面等等；</li>
+<li>使用更<strong>复杂的姿态感知模型</strong>并非没有困难，例如可以使用非可视测量建立<strong>椭球体模型</strong>，也可以使用最近 <strong>[49]</strong> 和 <strong>[50]</strong> 中使用的带有边框的运动结构来构建椭球体模型；然后，需要估计物体的 <strong>6 自由度姿态</strong>，而不是仅仅估计它的 3 自由度位置，<strong>这一要求不会像点那样直接位于同一 BA 框架中</strong>；此外，如在 <strong>[50]</strong> 中看到的，<strong>在相机经过时，从几个少量视图恢复位姿并不总是可靠的</strong>。</li>
+</ul></li>
+</ul>
+<h2 id="r-参考文献">【R】 参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>[2]</strong> Kerl C, Sturm J, Cremers D. <a href="https://ieeexplore.ieee.org/abstract/document/6696650"><strong>Dense visual SLAM for RGB-D cameras</strong></a>[C]//2013 IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, <strong>2013</strong>: 2100-2106.<br />
+<font color = gray> 本文关键帧选择策略之一：当前帧与关键帧之间的熵比作为依据的参考来源 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[23]</strong> Song S, Chandraker M. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Song_Robust_Scale_Estimation_2014_CVPR_paper.pdf"><strong>Robust scale estimation in real-time monocular SFM for autonomous driving</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>CVPR 2014</strong>: 1566-1573.<br />
+<font color = gray> <strong>自动驾驶中单目 SFM 尺度估计； 恒定高度假设，平面估计</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[24]</strong> Botterill T, Mills S, Green R. <a href="http://www.hilandtom.com/tombotterill/Botterill-Mills-Green-SCORE2-2012.pdf"><strong>Correcting scale drift by object recognition in single-camera SLAM</strong></a>[J]. IEEE transactions on cybernetics, <strong>2013</strong>, 43(6): 1767-1780.<br />
+<font color = gray> <strong>通过物体识别校正单目 SLAM 尺度漂移；物体之间的距离</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>25</strong>] Strasdat H, Montiel J, Davison A J. <a href="https://books.google.com.hk/books?hl=zh-CN&amp;lr=&amp;id=q9TxCwAAQBAJ&amp;oi=fnd&amp;pg=PA73&amp;ots=76g-Djt81d&amp;sig=I6HoJ0mtP8L2YyZgESx8VyJGQqg&amp;redir_esc=y#v=onepage&amp;q&amp;f=false"><strong>Scale drift-aware large scale monocular SLAM</strong></a>[J]. Robotics: Science and Systems VI, <strong>2010</strong>, 2(3): 7.<br />
+<font color = gray> ERMS：单目序列的平移误差的尺度不变量度 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>35</strong>] Fioraio N, Di Stefano L. <a href="http://openaccess.thecvf.com/content_cvpr_2013/html/Fioraio_Joint_Detection_Tracking_2013_CVPR_paper.html"><strong>Joint detection, tracking and mapping by semantic bundle adjustment</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2013</strong>: 1538-1545.<br />
+<font color = gray> <strong>物体三维模型表达，联合检测、跟踪与建图的语义BA</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>36</strong>] Gálvez-López D, Salas M, Tardós J D, et al. <a href="https://arxiv.org/pdf/1504.02398.pdf"><strong>Real-time monocular object slam</strong></a>[J]. Robotics and Autonomous Systems, <strong>2016</strong>, 75: 435-449.<br />
+<font color = gray> <strong>需要有先验模型的单目目标级 SLAM； BA 约束；点云放置在地图中</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>37</strong>] Dame A, Prisacariu V A, Ren C Y, et al. <a href="https://ieeexplore.ieee.org/document/6619014"><strong>Dense reconstruction using 3D object shape priors</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2013</strong>: 1288-1295.<br />
+<font color = gray> <strong>2013 利用 3D 物体先验的稠密建图</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>40</strong>] Zhang H, Geiger A, Urtasun R. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2013/html/Zhang_Understanding_High-Level_Semantics_2013_ICCV_paper.html"><strong>Understanding high-level semantics by modeling traffic patterns</strong></a>[C]//Proceedings of the IEEE international conference on computer vision. <strong>2013</strong>: 3056-3063.<br />
+<font color = gray> <strong>本文数据关联参考的方法</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>41</strong>] Geiger A, Lauer M, Wojek C, et al. <a href="https://ieeexplore.ieee.org/abstract/document/6613480"><strong>3d traffic scene understanding from movable platforms</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2014</strong>, 36(5): 1012-1025.<br />
+<font color = gray> <strong>本文数据关联参考的方法；关键帧中物体检测和数据关联的方法</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>44</strong>] Geiger A, Lenz P, Stiller C, et al. <a href="https://journals.sagepub.com/doi/abs/10.1177/0278364913491297"><strong>Vision meets robotics: The KITTI dataset</strong></a>[J]. The International Journal of Robotics Research, <strong>2013</strong>, 32(11): 1231-1237.<br />
+<font color = gray> KITTI 数据集；在线评估 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>48</strong>] Strasdat H, Davison A J, Montiel J M M, et al. <a href="https://ieeexplore.ieee.org/abstract/document/6126517"><strong>Double window optimisation for constant time visual SLAM</strong></a>[C]//2011 International Conference on Computer Vision. IEEE, <strong>2011</strong>: 2352-2359.<br />
+<font color = gray> <strong>双窗口优化；认为全局 BA 没有必要</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>49</strong>] Crocco M, Rubino C, Del Bue A. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Crocco_Structure_From_Motion_CVPR_2016_paper.pdf"><strong>Structure from motion with objects</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2016</strong>: 4141-4149.<br />
+<font color = gray> <strong>椭球体物体建模</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>50</strong>] Rubino C, Crocco M, Del Bue A. <a href="https://ieeexplore.ieee.org/abstract/document/7919240"><strong>3d object localisation from multi-view image detections</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2018</strong>, 40(6): 1281-1294.<br />
+<font color = gray> <strong>椭球体物体建模</strong> </font></li>
+</ul>
+<h2 id="q-问题">【Q】 问题</h2>
+<ul>
+<li>公式（3）中的权重如何确定？公式（8）没有权重吗？</li>
+<li>公式（15）的 Tukey biweight 目标函数不太理解，三种情况下对于 <span class="math inline">\(\sigma _T\)</span> 的定义也不太理解；</li>
+<li>5.3 节中将物体加入到关键帧部分不太理解；</li>
+<li>5.3 节中第一个关键帧如何确定？</li>
+<li>局部 BA 是针对关键帧还是普通帧：关键帧？</li>
+<li>汽车范围设置为 1.2 m，但 cube slam 中使用的是 w = 3.9 m；l = 1.6 m；h = 1.5 m；</li>
+<li><strong>速度上的 RMS 误差</strong>是与在 10 个关键帧的<strong>邻域内出现的目标观测的平均数</strong>一起计算，这两个量怎么计算？平均值什么作用？</li>
+<li>20％ 的平移误差大于 9% 的平均误差，表现并不好，最后的相机序列测试为什么没对比其他方案呢，可能效果也不错。</li>
+</ul>
+<h2 id="t-思考">【T】 思考</h2>
+<ul>
+<li><strong>1.</strong> 关于局部 BA：没有观察到物体的帧则无法优化，比如 local 序列中，<strong>第 3，4 帧没有观察到物体</strong>，其余帧观察到了，则其余帧都进行了优化，第 3,4 帧没有变化，但这两真肯定也有漂移，可以<strong>用他们周围的第 1,2 帧和 5,6 帧的误差均值作为他们的误差</strong>。</li>
+<li><strong>2.</strong> 本文的公式并不复杂，基本上就是建立在一个优化函数上，实验部分也不复杂相当于就是有无物体的对比，但却能分成 6 个实验来进行，而且还很有逻辑有说服力，写作方面可以学习。但是本文参考和对比（基本没有对比）的文献都比较老，基本都是 14 年之前的</li>
+<li><strong>3.</strong> 在效果上其实不是很好，包括在线对比也不占优势，作者解释是说没有基于相机高度的假设不公平（那你也可以加上高度假设啊），但是 Cube SLAM 也没有基于相机高度假设，误差只有 1.78% ，或许是 PTAM 本身的缺陷，在小场景比较实用， Cube SLAM 是基于 ORB SLAM，本身就有优势。</li>
+<li><strong>4.</strong> 使用 ground truth 视觉信息来验证这些尺寸信息，噪声分布等可以参考。</li>
+</ul>
+<blockquote>
+<p>2019.02.27<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-03-14-learnable-line/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 视觉 SLAM 的可学习线段描述符</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-02-22-cubeslam/">
+            <span class="next-text nav-default"> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

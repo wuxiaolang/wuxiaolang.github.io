@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 用于室内 RGB-D 重建的基于平面的几何和纹理优化
+Wang C, Guo X. Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction[J]. arXiv preprint arXiv:1905.08853, 2019.
+作者：德克萨斯大学达拉斯分校 Google Scholor
+代码开源
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-06-06-plane-reconstruction/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化" />
+<meta property="og:description" content="
+用于室内 RGB-D 重建的基于平面的几何和纹理优化
+Wang C, Guo X. Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction[J]. arXiv preprint arXiv:1905.08853, 2019.
+作者：德克萨斯大学达拉斯分校   Google Scholor
+代码开源
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-06-06-plane-reconstruction/" />
+<meta property="article:published_time" content="2019-06-06T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-06-06T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化">
+<meta itemprop="description" content="
+用于室内 RGB-D 重建的基于平面的几何和纹理优化
+Wang C, Guo X. Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction[J]. arXiv preprint arXiv:1905.08853, 2019.
+作者：德克萨斯大学达拉斯分校   Google Scholor
+代码开源
+">
+<meta itemprop="datePublished" content="2019-06-06T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-06-06T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="9698">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化"/>
+<meta name="twitter:description" content="
+用于室内 RGB-D 重建的基于平面的几何和纹理优化
+Wang C, Guo X. Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction[J]. arXiv preprint arXiv:1905.08853, 2019.
+作者：德克萨斯大学达拉斯分校   Google Scholor
+代码开源
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-06-06 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 9698 字 </span>
+          <span class="more-meta"> 预计阅读 20 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>用于室内 RGB-D 重建的基于平面的几何和纹理优化</strong><br />
+Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction</strong></a>[J]. arXiv preprint arXiv:1905.08853, <strong>2019</strong>.<br />
+作者：德克萨斯大学达拉斯分校   <a href="https://scholar.google.com/citations?user=PXm3u3gAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a><br />
+<a href="https://github.com/chaowang15/plane-opt-rgbd"><strong>代码开源</strong></a></p>
+</blockquote>
+<h1 id="efficient-plane-based-optimization-of-geometry-and-texture-for-indoor-rgb-d-reconstruction">Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li><strong>利用平面</strong>的方法进行<strong>室内场景的三维重建</strong>；</li>
+<li>同时如何<strong>降低重建的密度且保证质量</strong>，克服原始 RGB-D 数据的噪点，保存几何信息；</li>
+<li>不仅考虑大型的平面环境的重建，还<strong>考虑小物体</strong>；</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>首先利用 BundleFusion 的方法获取 RGB-D 数据的<strong>稠密的粗糙的初始重建</strong>；</li>
+<li>然后用平面基元对上一步获取的输入网格进行划分，将其<strong>简化为一个轻量级网格</strong>；</li>
+<li>接着对平面参数、相机姿态和纹理颜色进行优化，<strong>使帧间光度一致性最大化</strong>；</li>
+<li>最后对网格几何进行优化，<strong>使平面几何的一致性最大化</strong>；</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>生成一个<strong>轻量级的网格</strong>，保留鲜明的特征和良好的表面纹理；</li>
+<li>在<strong>运行时间上合理</strong>，且存在很多并行优化的空间；</li>
+<li>相较于 3DLite 方法<strong>提取了更多场景布局、非平面物体的纹理和几何信息</strong>。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>需要有一种三维重建方法（BundleFusion）先获取网格信息作为输入，<strong>本文主要针对这些输入做简化，本身不是做三维重建，也不是实时运行</strong>；</li>
+<li>表面纹理没有 3DLite 那么清晰；</li>
+<li>不能填补 RGB-D 扫描中经常出现的空洞和缝隙；</li>
+<li>纹理优化过程依赖于密集的光度误差，在相机位姿优化过程中对初始输入敏感，容易以局部最小结束，因此，如果由 BundleFusion 系统生成的初始相机姿态存在较大的误差，结果可能会包含未对齐的表面纹理。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>本文提出了一种用<strong>平面基元重建 RGB-D 室内场景</strong>的新方法；</li>
+<li>该方法以 RGB-D 序列为输入，采用三维重建方法在序列上<strong>重建稠密的粗糙网格</strong>，生成<strong>具有清晰纹理和鲜明特征的轻量的低多边形网格</strong>，同时<strong>不丢失原始场景的几何细节</strong>；</li>
+<li>为此，我们<font color = red><strong>首先用平面基元（plane primitives）对输入网格进行划分</strong>，将其<strong>简化为一个轻量级网格</strong></font>
+<ul>
+<li>然后<font color = red>对<strong>平面参数、相机姿态和纹理颜色</strong>进行优化，<strong>使帧间光度一致性最大化</strong></font>；</li>
+<li>最后<font color = red>对<strong>网格几何进行优化</strong>，使<strong>几何与平面的一致性最大化</strong></font>；</li>
+</ul></li>
+<li>与现有的只在场景中覆盖较大平面区域的平面重建方法相比，我们的方法在<strong>不丢失几何细节</strong>的情况下，通过<strong>自适应平面构建整个场景</strong>，并<strong>在最终网格中保留了鲜明的特征</strong>；
+<ul>
+<li>我们应用于几个 RGB-D 扫描序列，并与其他最先进的重建方法进行比较，证明了我们的方法的有效性。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><font color =red><strong>三维重建：</strong></font>近年来，随着消费者深度相机的普及，在线和离线的 <strong>RGB-D 重建技术</strong>发展迅速，在 VR 、 AR 、游戏和 3D 打印等热门领域有着广泛的应用；
+<ul>
+<li>最先进的在线三维重建方法可以利用<strong>几何细节</strong>高效地捕捉真实环境中的室内和室外场景 <sup><strong>[19,24,25,6,21]</strong></sup>；</li>
+<li>然而，由于<strong>数据融合中存在深度数据噪声、相机姿态不正确、数据过度平滑</strong>等原因，这些方法生成的三维模型往往<strong>过于密集</strong>，纹理不令人满意。如果没有进一步的<strong>细化</strong>或后期后处理，这些模型就不能直接在大多数应用程序中使用。</li>
+</ul></li>
+<li><font color =red><strong>问题：</strong></font>为了<strong>降低重建模型的密度和提高结构质量</strong>，一个典型的策略是<strong>将平面基元引入前端(如跟踪)或后端(如模型细化)重建通道</strong>，作为典型的满足曼哈顿世界假设的<strong>室内场景主要是由平面区域构成</strong>；
+<ul>
+<li>然而，大多数现有的平面重建方法<strong>仅考虑大的平面区域</strong>，例如墙壁，天花板，地板和大桌面，并且<strong>简单地忽略和移除具有自由形状表面的其他物体</strong>，无论它们是否包含平面区域，如各种室内家具和大型平面上的物体或附着物；</li>
+<li>这些仅用<strong>大平面重建的模型过于简化，缺乏保真度</strong>，不适用于获得室内装修漫游、游戏以及各种 VR 或 AR 应用等需要几何细节的情况；</li>
+<li>此外，在室内场景的平面重建中，一个具有<strong>挑战性的问题</strong>是，<strong>由于 RGB-D 原始数据的噪声，几何细节往往是有噪声的，从场景中提取平面基元或其他类型的几何先验在保持原始形状的前提下是困难的，也是费时的</strong>。</li>
+</ul></li>
+<li><font color =red><strong>本文方法：</strong></font>本文提出了一种<strong>利用平面重建 RGB-D 室内场景</strong>的新方法，在<strong>不丢失几何细节</strong>的前提下生成一个<strong>轻量级的完整的三维纹理模型</strong>；
+<ul>
+<li>我们的方法以<strong>室内场景的 RGB-D 序列作为输入</strong>，并在该序列上采用某种在线重建方法<strong>重建一个稠密的粗糙网格</strong>；</li>
+<li>首先<strong>将整个密集网格划分为不同的平面簇</strong>，每个簇表示一个<strong>平面基元</strong>；</li>
+<li>接下来，我们<strong>将基于平面分区的稠密网格简化为一个轻量级网格</strong>，它<strong>既保留了大的平面区域，也保留了小的对象，同时又不丢失几何细节</strong>；</li>
+<li>为了<strong>生成网格表面纹理映射</strong>，我们为每个平面和平面上的采样点创建<strong>纹理块</strong>，并通过优化相机姿态、平面参数和纹理颜色，运行全局优化过程，<strong>使采样点在帧间的光度一致性最大化</strong>；</li>
+<li>最后，我们通过<strong>最大化几何与平面基元的一致性来优化几何网格</strong>，进一步保留了原场景的<strong>尖锐特征</strong>，如平面交叉口的棱角。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<ul>
+<li>近年来，基于消费级深度相机的<strong>在线和离线三维重建</strong>技术得到了广泛的研究；
+<ul>
+<li><font color = red><strong>基于体素的方法：</strong></font><strong>在线大规模三维重建</strong>方法的一个主要类别是<strong>利用体积数据结构和体积融合技术</strong>，如最早的在线方法之一 KinectFusion [18] 及其后续的变体，如可伸缩的在线重建 [4]、VoxelHashing [19]、Volume shifting[23]、BundleFusion [6] 和 InfiniTAM [21]；
+<ul>
+<li>这些<strong>基于体积的方法的一个重要优点</strong>是，<strong>能够快速和有效地平滑由深度相机扫描的噪声数据且易于生成网格和表面连接</strong>；</li>
+<li>然而，一个<strong>主要的限制</strong>是，<strong>体积融合过度平滑了表面，消除了尖锐的特征</strong>，因为它倾向于在体积中相同的体素位置<strong>平均点和它们的颜色</strong>；</li>
+</ul></li>
+<li><font color = red><strong>基于面元的方法：</strong></font>除了基于体积的方法外，另一种策略是<strong>基于点的方法</strong>，它<strong>利用面元作为基本的数据结构来表示没有连接的曲面</strong> [14,24,25]；
+<ul>
+<li>然而，它仍然存在<strong>过度平滑的问题</strong>，因为它也倾向于取空间中邻近点的平均 [24]；</li>
+<li>此外，在扫描过程中，由于过度平滑以及包括有噪声的颜色和深度数据在内的其他因素，<strong>使得曲面表示和相机姿态的误差积累</strong>。</li>
+</ul></li>
+</ul></li>
+<li>为了<font color = red><strong>提高摄像机的姿态估计和表面质量</strong>，有几项工作<strong>将平面引入重建通道</strong>中</font>，<strong>利用简单的表面先验估计复杂的表面</strong>，特别是在具有曼哈顿世界假设等特殊结构特征的建筑物或室内场景中；<br />
+<font color = red><strong>1. 提高跟踪效果：</strong></font>其中一类方法<strong>将平面约束引入重建过程的前端</strong>，以<strong>提高摄像机跟踪的鲁棒性</strong>；
+<ul>
+<li>文献 [<strong>7</strong>] 是最早的方法之一，<strong>结合平面和特征点</strong>对应来估计相机在 RGB-D 扫描序列中的姿态；</li>
+<li>文献 [<strong>12</strong>]采用了非常相似的思想，<strong>将平面约束引入 SLAM 框架中进行跟踪</strong>，其结果在姿态估计方面超过了目前最先进的在线三维重建方法；</li>
+<li>对于<strong>离线重建框架</strong>，文献 [<strong>10</strong>] <strong>将平面关系约束与其他类型的约束结合起来</strong>，提出了一种 RGB-D 数据的精细到粗糙的全局配准算法，该方法对大规模的 RGB-D 数据有效。</li>
+</ul></li>
+<li><font color = red><strong>2. 表达重建模型：</strong></font>另一类方法试图<strong>利用平面来更好地表示由 RGB-D 数据重建的最终模型的曲面</strong>；
+<ul>
+<li>文献 [<strong>8</strong>] 在移动设备上的实时三维重建通道中<strong>引入了平面先验，降低了计算复杂度</strong>，去噪深度数据，改善了室内结构；
+<ul>
+<li>然而，这种方法只对一些<strong>有限类型的平面</strong>(如墙壁、天花板和地板)进行了细化，而对其他扫描数据保持不变；</li>
+</ul></li>
+<li>另一个令人印象深刻的方法是 3DLite [<strong>13</strong>]，通过<strong>平面重建 RGB-D 模型，并在其上优化表面纹理</strong>；
+<ul>
+<li>该方法通过输入稠密和融合重建生成具有优化纹理的轻量级模型，提出了一种<strong>基于帧的平面检测技术</strong>，用于从 RGB-D 网格中<strong>提取大平面</strong>，然后在平面上全局优化相机姿态和表面纹理；</li>
+<li>但是，此方法仍然<strong>无法检测并简单地删除所有小平面和非平面几何细节</strong>，而<strong>我们的方法是通过平面重建整个场景而不会丢失几何细节</strong>。</li>
+</ul></li>
+</ul></li>
+<li><font color = red><strong>点云数据的平面重建</strong></font>也是近几十年来的一个热点问题，<strong>点云数据非常普遍</strong>，可以通过激光扫描仪等多种工具或运动恢复结构(SfM)轻松获取，平面被广泛应用于室外环境的改造，以适应建筑结构；
+<ul>
+<li>文献 [<strong>16</strong>] 从非结构化、大规模、有噪声的建筑扫描中提取出平面的规则排列，并用完整的、轻量级的平面重建建筑模型，但是，它<strong>只在建筑框架中检测到较大的平面区域，而忽略了建筑内部的细节</strong>，所以它更像是一种使用平面的建筑重建方法；</li>
+<li>文献 [<strong>17</strong>] 提出的另一种方法也是如此，通过从输入点云中所有检测到的构件上提取平面，<strong>只重建建筑物的永久性构件(墙壁、天花板和地板)</strong> 。</li>
+</ul></li>
+<li>两种最常见的<font color = red><strong>平面检测</strong></font>策略是 <strong>RANSAC 和 区域生长</strong>；
+<ul>
+<li><font color = red><strong>基于 RANSAC 的方法</strong></font>因其简单、可扩展性和概率保证而受到广泛的欢迎；
+<ul>
+<li>然而，它很容易<strong>忽略全局场景结构</strong>，忽略<strong>点之间的邻域规则性</strong> [16]；</li>
+<li>因此，基于 RANSAC 的方法通常用于 <strong>CAD 图形、建筑结构</strong>等常规模型 [15]；</li>
+</ul></li>
+<li>与 RANSAC 相比，<font color = red><strong>区域生长</strong></font>从种子扩展到相邻的区域，天生就能<strong>检测到相互连接的部分</strong>，更<strong>适用于大规模模型的平面检测</strong>，并得到了广泛的应用；
+<ul>
+<li>然而，一个重要的<strong>缺点</strong>是，区域增长的设计<strong>不是用来检测自由形状的平面</strong>，因为它很<strong>容易将曲面分割成不规则的部分，导致过度分割</strong>；</li>
+<li>文献 [3] 提出了<strong>从具有平面区域的噪声非结构化点云中提取平面并构建三角形网格</strong>的最早方法之一；</li>
+<li>文献 [1] 通过<strong>使表面相对于边缘和角度规则化</strong>，从距离图像中呈现分段平面表面的 3D 重建；</li>
+<li>文献 [20] 提出了一种<strong>基于原始点集的平面形状检测和正则化方法</strong>；</li>
+<li>同样的，这些方法虽然没有刻意忽略非平面区域，但是依赖于区域的生长，仍然<strong>不能保持曲面的形状</strong>。</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="平面重建">3. 平面重建</h2>
+<ul>
+<li>我们的重建通道以 RGB-D 序列作为输入，首先使用一些最先进的在线重建技术，如 BundleFusion[6] <strong>来重建初始密集网格</strong>；
+<ul>
+<li>首先，我们通过<strong>将网格划分为不同的簇来检测平面基元</strong>，每个簇表示一个平面 patch（3.1节）；</li>
+<li>接下来的步骤是基于平面划分<strong>对稠密网格进行简化</strong>（第3.2节）；</li>
+<li>接下来，我们<strong>对网格中每个平面上的点进行采样</strong>，为平面 patch 创建纹理块，并优化相机的姿态、平面参数和纹理颜色，最大限度地<strong>提高帧间的颜色一致性</strong>（章节3.3）；</li>
+<li>最后，我们对<strong>网格几何进行优化</strong>，使<strong>网格上的顶点与对应的平面基元之间的一致性最大化</strong>（第3.4节）。</li>
+</ul></li>
+</ul>
+<h3 id="平面网格划分">3.1 平面网格划分</h3>
+<ul>
+<li><font color = red><strong>传统平面重建方法的缺陷：</strong></font>与现有的只考虑大平面区域的平面重建方法不同，我们的<strong>目标是将整个网格划分为包含所有几何细节的平面基元</strong>；
+<ul>
+<li>正如我们在第 2 节中介绍的，两种最常见的<strong>平面检测方法是 RANSAC 法和区域生长法</strong>；</li>
+<li>基于 ransac 的检测是有效的，但<strong>容易忽略全局场景级结构</strong>，而区域增长在检测规则下的平面更健壮，但仍然不是设计用来检测<strong>具有曲面的自由形状的平面</strong>；</li>
+<li>3DLite [13] 提出了一种<strong>基于帧的平面检测方法</strong>，用于<strong>从 RGB- D网格中提取大平面</strong>，然而，这种方法<strong>仍然不能检测小的平面区域或非平面表面</strong>，它只是在最终网格中去除它们，此外，3DLite 中使用的<strong>逐帧平面检测和合并方案耗时较长</strong>，容易积累错误，因此需要利用许多进一步的优化步骤来提高鲁棒性。</li>
+</ul></li>
+<li><font color = red><strong>本文采用的平面划分方法：</strong></font>在我们的方法中，我们参考了文献 [2] 提出的一种最先进的<strong>表面划分算法</strong>；
+<ul>
+<li>该方法提出了一种新的<strong>基于主成分分析(PCA)的能量分析方法</strong>，该方法能<strong>使能量最小化</strong>，从而<strong>获得对整个曲面的最优分段线性逼近</strong>；</li>
+<li>将一个输入网格划分成簇后，每个簇都附加一个<strong>由质心 <span class="math inline">\(c_{i}\)</span> 和法向 <span class="math inline">\(\phi _{i}\)</span> 定义的平面</strong>代理作为簇协方差矩阵的最小特征向量方向；</li>
+<li>为了更灵敏地检测平面，并<strong>对平面簇的紧致性进行正则化</strong>，在实验中，我们将文献 [2] 中的式 (4) 的系数从 <span class="math inline">\(10^{-15}\)</span> 降低到 <span class="math inline">\(10^{-20}\)</span>；</li>
+<li>图 1 (左)为采用 groundtruth camera pose 在线重建系统 VoxelHashing [19] 重构的稠密网格上的平面划分结果。</li>
+</ul></li>
+<li>在得到初始<strong>平面分区</strong>之后，我们运行进一步的<font color = red><strong>平面合并</strong></font>步骤，将相邻的平面合并为较大的平面（图 1 右）；
+<ul>
+<li>究其原因，基于 RGB-D 数据的重构网格中总是<strong>含有平面区域上的凹凸点等噪声</strong>，因此，一个大的平面区域可能被划分为几个不同的小集群，而不是仅仅一个大集群(参见图 1 左边的墙壁)；</li>
+<li>我们的平面<strong>合并准则</strong>是这样的：相邻的两个平面 i 和 j 如果满足以下条件，可以合并在一起:
+<ul>
+<li>① 两个平面<strong>法向量之间的夹角</strong>比较小：<span class="math inline">\(\theta \left ( n_{i},n_{j} \right )&lt; \epsilon _{n}\)</span>；</li>
+<li>② 两个<strong>平面之间的平均距离</strong>很小：<span class="math inline">\(Avgdis\left ( i,j \right )&lt; \epsilon _{d} ,Avgdis\left ( j,i \right )&lt; \epsilon _{d}\)</span>；</li>
+<li>③ 两个平面中心连线 <span class="math inline">\(r_{i,j} = c_{i}-c_{j}\)</span> <strong>与每个平面的法线之间的夹角接近 90°</strong>：<span class="math inline">\(\left | cos\left ( \theta \left ( r_{i,j},n_{i} \right ) \right ) \right |&lt; \epsilon _{c},\left | cos\left ( \theta \left ( r_{i,j},n_{j} \right ) \right ) \right |&lt; \epsilon _{c}\)</span>。</li>
+<li>在本文的实验中，角度阈值取 8°，距离阈值取 0.05，与法线的夹角阈值取 80 °；</li>
+<li>前两个条件来自于文献 [8] 的平面合并方法；</li>
+<li>我们添加了第三条规则，以消除两个相邻平面在噪声网格中几乎“重叠”的特殊情况，并且只合并彼此一侧的相邻平面。</li>
+</ul></li>
+</ul></li>
+</ul>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig1.PNG" title="1" width="700" />
+</center>
+<h3 id="平面采样">3.2 平面采样</h3>
+<ul>
+<li>在<strong>将网格划分为平面集群</strong>之后，我们基于集群对网格进行了简化，<font color = red><strong>创建了一个轻量级网格以进行进一步优化</strong></font>；
+<ul>
+<li>注意，即使我们已经有了一个由平面组成的模型，我们仍然选择<strong>通过简化原始的稠密网格来创建网格</strong>，而<strong>不是使用一些网格生成算法(如Delaunay三角剖分)来生成平面上的网格</strong>，这一策略出现在大多数现有方法中[3,13,15]；</li>
+<li>究其原因，我们发现<strong>在一个有噪声的模型中，从复杂的平面截距中建立正确的连通性是困难的，也是耗时的</strong>，特别是在一个包含各种形状自由几何物体的室内重建网格中；</li>
+<li>因此，我们的策略是<strong>通过对基于平面的原始密集网格进行简化，有效地创建一个微小的轻量级网格，并进一步优化其几何形状以适应平面</strong>(章节3.4)。</li>
+</ul></li>
+<li>在网格简化过程中，我们选择了经典的<font color = red><strong>基于二次误差度量(QEM)的曲面简化算法</strong></font> [9]；
+<ul>
+<li>QEM 的核心是<strong>通过最小化点到平面的能量来收缩边缘</strong>，这非常符合我们对平面形状进行预处理的目的；</li>
+<li>此外，QEM 简单高效，<strong>并倾向于保留原始模型的鲜明特征</strong>，这也是我们在简化网格中所需要的；</li>
+<li>不同之处在于，与标准的 QEM 过程不同，<strong>标准的 QEM 过程根据收缩能量将所有边都放到最小堆中，并在全局范围内收缩</strong>，我们的简化过程是<strong>逐组进行</strong>的，由两个步骤组成：
+<ul>
+<li>（1）固定所有聚类边界边，<strong>单独化简每个聚类的内聚类边</strong>；</li>
+<li>（2）修正简化的簇内边，<strong>简化簇的所有有界边</strong>。</li>
+</ul></li>
+<li>通过这两个步骤，我们可以减少平面内不重要的信息，同时仍然<strong>保留沿平面边界通常出现的重要的尖锐特征</strong>；</li>
+<li>另一个需要考虑的问题是，集群的大小各不相同，但是我们<strong>希望每个集群在简化之后包含几乎相同数量的边</strong>，也就是说，大平面包含大三角形，反之亦然；</li>
+<li>然后，在收缩目标相同的情况下，<strong>逐簇化简更有利于使小簇密度更大，以保持其形状</strong>，因为它们通常是曲面的划分；</li>
+<li>图 2 显示了标准 QEM (保持网格边界)与我们的方法在图 1 中使用的相同模型上的比较。
+<ul>
+<li>两个简化模型的面数完全相同，为 41K 点，而 mesh QEM 模型的面数为 30K，大于我们的模型的面数为 22K；</li>
+<li>显然，<strong>QEM 过分简化了平面边界和曲面，而我们的方法更好地保持了尖锐的特征和几何细节</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig2.PNG" title="2" width="700" />
+</center></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="平面相机位姿和纹理优化">3.3 平面、相机位姿和纹理优化</h3>
+<ul>
+<li>在我们得到<strong>具有平面分区的简化网格</strong>之后，我们运行优化过程以<strong>最大化帧之间网格几何的光度一致性</strong>，在优化之前，我们仍然需要对网格进行一些预处理。</li>
+<li>首要工作是<font color = red><strong>为网格的所有面生成一个初始纹理映射</strong></font>；
+<ul>
+<li>在我们的方法中，我们<strong>为网格上的每个 3D 平面创建一个 2D 纹理块</strong>，虽然目前已有许多成熟的参数化方法来生成三维网格表面的二维纹理块，但我们使用的是一种非常简单有效的方法；</li>
+<li>考虑到网格上每个簇中的顶点都已经接近共面，我们<strong>只需将它们投影到平面上得到二维 patch，然后对 patch 边界内的网格点进行采样得到纹理元素点</strong>；</li>
+<li>在我们的实验中，我们使用固定的采样密度 0.0025m，也就是说，在<strong>全局空间中 1 米对应于纹理图像中的 400 像素</strong>，很明显，每个纹理都位于从网格中投射出的三角面内；</li>
+<li>然后，我们<strong>计算每个纹理元素在其对应的 2D 面内的质心坐标</strong>，并使用它们<strong>计算纹理元素在全局空间中对应的 3D 点 p</strong>，只需将相同的质心坐标应用于三维空间中的三个顶点即可，这些三维纹理元素点将作为优化过程中的主要元素。</li>
+</ul></li>
+<li>另外的工作是<font color = red><strong>从 RGB-D 帧中选择的关键帧</strong></font>；
+<ul>
+<li>为了<strong>降低时间复杂度，提高纹理质量</strong>，我们采用了类似于文献 [26] 的彩色地图优化思想，<strong>每隔一段时间只选择清晰的帧</strong>（sharp frames）；</li>
+<li>与他们的方法类似，我们用文献 [5] <strong>对每个图像的模糊度进行了定性度量</strong>，区别在于，在 [26] 中，我们不是每 1 到 5 秒选择关键帧，而是<strong>根据数据每 5 到 10 帧选择最尖锐的帧</strong>。</li>
+</ul></li>
+<li>在优化过程中输入的是彩色图像 <span class="math inline">\(\left \{ I_{i} \right \}\)</span> 和关键帧的深度图像，所有纹理的 3D 点 <span class="math inline">\(\left \{ p\right \}\)</span> 在网格上采样，初始相机位姿（全局到相机空间）为 <span class="math inline">\(T=\left \{ T_{i} \right \}\)</span> ，初始的平面参数为 <span class="math inline">\(\Phi =\left \{ \phi _{j} \right \}\)</span> ；
+<ul>
+<li>在优化过程中，我们通过<font color = red><strong>优化相机位姿，平面参数和纹理颜色，最大化 3D 纹素在帧间相应平面上投影的图像一致性</strong></font>；</li>
+<li><font color = red><strong>目标函数</strong></font>为：
+<ul>
+<li>其中 <span class="math inline">\(E_{s}\)</span> 是文献 [26] 中引入的对彩色图像非刚性校正偏移量的约束；</li>
+<li><span class="math inline">\(\lambda _{1},\lambda _{2}\)</span> 是平衡系数，在实验中 <span class="math inline">\(\lambda _{1}\)</span> 的初值满足 <span class="math inline">\(E_{c} =\lambda _{1}E_{p}\)</span>，<span class="math inline">\(\lambda _{2}=0.1\)</span>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f1.PNG" title="f1" width="500" />
+</center></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="光度一致性项">3.3.1 光度一致性项</h4>
+<ul>
+<li><strong>光度能量</strong>用于测量每个纹理在对应平面上<strong>投影点的颜色与目标颜色在帧间的光度误差</strong>：
+<ul>
+<li>实验中遵循文献 [26] 的相同参数，每个图像上使用 20 * 16 个网格；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f2.PNG" title="f2" width="850" />
+</center></li>
+</ul></li>
+</ul>
+<h4 id="平面约束项">3.3.2 平面约束项</h4>
+<ul>
+<li>平面约束项是最小化 <strong>3D 纹理点到其对应平面的距离</strong>之和；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f6.PNG" title="f6" width="380" />
+</center></li>
+</ul>
+<h4 id="偏移约束项">3.3.3 偏移约束项</h4>
+<ul>
+<li>偏移约束是为了<strong>使偏移向量的大小最小化</strong>；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f7.PNG" title="f7" width="380" />
+</center></li>
+<li>为了使公式（1）中的目标函数最小化，我们采用了类似文献 [26] 的<font color = red><strong>交替优化策略</strong>：其基本思想是<strong>在优化不同变量与固定变量之间进行交替</strong></font>；
+<ul>
+<li>在每次迭代中，我们首先对 C 进行优化并修复其他所有的，然后对其他的进行优化和修复，最后对 T 和 F 进行优化并修复其他的；</li>
+<li><strong>优化 C 时</strong>，问题变成了一个线性系统，解的形式是封闭的，<span class="math inline">\(C\left ( p \right )\)</span> 是<strong>所有可见帧中与 p 相关的所有投影像素的平均颜色</strong>；</li>
+<li><strong>优化 <span class="math inline">\(\Phi\)</span> 时</strong>，采用标准的高斯-牛顿直接<strong>对平面的四个参数进行更新</strong>，注意，每个平面的优化都是相互独立的，所以可以进行并行求解；</li>
+<li><strong>优化 F</strong> 类似于优化 <span class="math inline">\(\Phi\)</span> 直接更新所有相关变量；</li>
+<li><strong>优化 T</strong> 时，将每个位姿 <span class="math inline">\(T_{i}\)</span> 参数化为 6 个参数（ 3 个表示旋转，3 个表示平移）作为增量变换，并<strong>局部线性化每个位姿的最后更新值</strong>；</li>
+<li>类似地，每个 <span class="math inline">\(T_{i}\)</span> 和 <span class="math inline">\(F_{i}\)</span> 的优化与其他帧无关，并且可以进行<strong>并行求解</strong>。</li>
+</ul></li>
+<li>图 3 显示了<strong>优化前后</strong>网格上的纹理，在优化之前，对每个纹理使用<strong>所有可见帧的平均颜色</strong>，我们的优化过程可以<strong>降低噪音，使纹理更清晰</strong>。</li>
+</ul>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig3.PNG" title="fig3" width="550" />
+</center>
+<h3 id="几何优化">3.4 几何优化</h3>
+<ul>
+<li>最后一步是<strong>优化网格几何形状以尽可能接近平面</strong>；
+<ul>
+<li>从 RGB-D 数据重建的融合网格总是<strong>包含噪声或过度平滑的表面</strong>，例如平面区域上的凹凸表面和平滑边界，其被认为是<strong>尖锐特征</strong>；</li>
+<li>通过优化网格几何以适应优化平面，我们可以<strong>减少网格表面的噪声并锐化几何特征</strong>。</li>
+</ul></li>
+<li>为了<strong>优化几何与平面之间的一致性</strong>，我们的方法是<strong>使每个簇中的网格顶点与其对应平面之间的一致性最大化</strong>；
+<ul>
+<li>正如我们在 3.3 节中介绍的，<strong>每个 2D 纹理都位于一个三角形面的投影中</strong>，在优化过程中，我们利用了<strong>每个纹理及其对应平面之间的初始重心关系</strong>，并试图保持纹理<strong>点在平面上的投影与每个面的优化顶点之间的这种关系</strong>；</li>
+<li>具体而言，想要<strong>最小化关于所有顶点 <span class="math inline">\(V=\left \{ v_{i} \right \}\)</span> 的能量函数</strong>公式（8）
+<ul>
+<li>其中第一项是<strong>几何一致性项</strong>，见公式（9）；</li>
+<li>另一项是<strong>正则化项</strong>，是为了保证公式（8）有有效的解，见公式（10）用于<strong>最小化每个顶点与其所有邻近的顶点的平均值之间的差</strong>；</li>
+<li>公式（8）中的 <span class="math inline">\(\lambda _{3}\)</span> 是为了平衡两项，在实验中简单地取其为 1.0。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f8.PNG" title="f8" width="550" />
+</center>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f10.PNG" title="f10" width="650" />
+</center></li>
+</ul></li>
+</ul></li>
+<li>公式（8）中的问题实际上是一个<strong>稀疏线性系统</strong>，可以通过 <strong>Cholesky 分解</strong>有效地求解；
+<ul>
+<li>图 4 显示了从 BundleFusion 数据集 [6] 扫描得到的<strong>优化几何网格</strong>结果；</li>
+<li>即使对输入的密集模型进行了锐化处理，我们的方法仍然<strong>可以在最终的轻量化网格中保留锐化特征</strong>。</li>
+</ul></li>
+</ul>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig4.PNG" title="fig4" width="550" />
+</center>
+<hr />
+<h2 id="结果">4. 结果</h2>
+<ul>
+<li>我们在<strong>三个流行 RGB-D 扫描数据集的 10 个序列</strong>测试了我们的方法；
+<ul>
+<li>6 个模型来自于 <strong>BundleFusion</strong> [6]（表1中的前6行）；</li>
+<li>2 个模型来自于 <strong>ICL-NUIM</strong> [11]（表1下面2行）；</li>
+<li>2 个模型来自于 <strong>TUM RGB-D</strong> 数据集 [22]（表1中最后2行）。</li>
+<li>根据文献 [13]，在线 BundleFusion 代码可能在重建中产生一些工件，因此，在我们的实验中，我们遵循文献 [13] 的思想，<strong>在每个 RGB-D 序列上运行体素哈希代码</strong> [19]，使用 groundtruth pose (BundleFusion dataset提供了由BundleFusion系统计算的pose)来<strong>重建输入密集网格</strong>；</li>
+<li>表 1 显示了每次扫描的<strong>定量结果</strong>和我们的结果模型，注意，每个输出结果模型的<strong>面数或顶点数仅为原始稠密模型的 1%-3%</strong> ；</li>
+<li>图 5 和图 6 显示了两次扫描的更多<strong>定性结果</strong>；</li>
+<li>这些数据表明，<font color =red><strong>我们的方法可以生成一个轻量级的网格，保留鲜明的特征和良好的表面纹理</strong></font>。</li>
+</ul></li>
+<li>在<font color =red><strong>时间分析</strong></font>方面，我们使用 c++ 实现了我们的算法，并在 Intel Core i7 2.5GHz CPU 和 16gb 内存的台式机上进行了测试，每次扫描的运行时间如表 1 所示；
+<ul>
+<li>时间数据表是我们运行系统的总时间，其中在每个模型上<strong>平面分区(3.1节)和网格简化(3.2节)步骤花费2分钟</strong>，而<strong>几何优化(3.4节)只需要不到10秒</strong>，其余大部分是<strong>平面，相机构成和结构优化</strong>(3.3节)；</li>
+<li>注意，我们的代码只是 <strong>CPU 版本</strong>，目前在所有步骤中<strong>不包含任何并行加速技术</strong>，如我们在 3.3 节中所描述的，每个平面的优化是相互独立的，可以并行运行，对于每一帧相机的姿态和校正函数的优化也是如此；</li>
+<li>此外，我们发现优化过程中的<strong>大部分时间都花在高斯牛顿算法中雅可比矩阵的计算上</strong>，由于每个纹理的计算过程也独立于其他所有的计算过程，因此<strong>使用 GPU 可以大大加速雅可比矩阵的计算</strong>；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/tab1_fig5.PNG" title="tab1_fig5" width="900" />
+</center></li>
+</ul></li>
+<li><font color =red>与两种最先进的方法 <strong>BundleFusion</strong>[6] 和 <strong>3DLite</strong>[13] 比较</font>；
+<ul>
+<li>BundleFusion <strong>实时生成稠密融合重建</strong>；</li>
+<li>3DLite 与我们的方法类似，以 BundleFusion 为输入进行稠密重建，<strong>提取大的平面区域作为几何形状，对其纹理进行优化，生成带有表面纹理的轻量化网格</strong>；</li>
+<li>图 6 显示了这些方法与<strong>表面纹理的网格比较</strong>；
+<ul>
+<li>BundleFusion 模型具有<strong>稠密的覆盖平滑的尖锐特征和粗糙纹理</strong>；</li>
+<li>3DLite 模型<strong>简洁清晰，纹理清晰</strong>，但是它<strong>只提取大平面区域作为最终的网格</strong>，显然遗漏了几乎所有的几何对象或包括大型结构化的支撑平面（如在第一排书架）与曲面和任意的对象（如第二排中放在桌子上的）；</li>
+<li>我们的方法解决了上述问题。</li>
+</ul></li>
+</ul></li>
+<li><font color =red><strong>局限性分析：</strong></font>虽然我们的方法可以生成<strong>具有清晰特征和保留几何细节的轻量级纹理网格</strong>，但它仍然存在一些限制
+<ul>
+<li>① 首先，我们的<strong>表面纹理没有 3DLite 那么清晰</strong>，因为 3DLite 引入了很多优化纹理的技术，比如<strong>纹理锐化和帧间的颜色校正</strong>；
+<ul>
+<li>然而，根据 3DLite 论文 [13] 中描述的运行时间数据，这些<strong>步骤非常耗时</strong>，可能需要几个小时；</li>
+<li>我们计划找到一个类似但更快的方法来进一步优化纹理；</li>
+</ul></li>
+<li>② 齐次，我们的方法<strong>不能填补 RGB-D 扫描中经常出现的空洞和缝隙</strong>，而 3DLite 可以通过<strong>外推现有平面和填充空洞，从提取的大平面生成完整的几何图形</strong>；
+<ul>
+<li>然而，在不去除任何几何细节的情况下完成含噪重建的几何信息仍然是一个具有挑战性的问题；</li>
+</ul></li>
+<li>③ 此外，我们的<strong>纹理优化过程</strong>类似于文献 [26]，它<strong>依赖于密集的光度误差</strong>，在相机位姿优化过程中<strong>对初始输入敏感，容易以局部最小[13]结束</strong>；
+<ul>
+<li>因此，如果由 BundleFusion 系统生成的初始相机姿态存在较大的误差，我们的结果可能会包含未对齐的表面纹理。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig6.PNG" title="fig6" width="700" />
+</center></li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">5. 总结</h2>
+<ul>
+<li>我们提出了一种新的方法来<font color =red><strong>从初始的稠密三维重建和融合网格中生成轻量级的重建与清晰的表面纹理</strong></font>；
+<ul>
+<li>与只检测场景中大平面区域的现有方法不同，我们的方法<strong>从所有对象检测平面，并按平面分割整个网格</strong>。</li>
+</ul></li>
+<li>然后，我们简单地<font color =red><strong>基于平面划分密集网格</strong></font>，并优化平面、相机姿态和面纹理，以<strong>最大限度地提高帧间的光度一致性</strong>，最后优化网格几何信息，以<strong>最大限度地提高平面几何的一致性</strong>；
+<ul>
+<li>实验结果表明，该方法能很好地<strong>保留网格中的锐利特征和几何细节</strong>。</li>
+</ul></li>
+<li>我们的方法<font color =red><strong>可以应用于获取纹理化室内场景重建的相关情况，而不会遗漏几何细节</strong></font>。</li>
+<li>在未来，计划通过解决上述限制来改进我们的方法，并通过引入 <strong>GPU 加速</strong>或其他相关技术来提高我们方法的效率。</li>
+</ul>
+<hr />
+<h2 id="r参考文献">【R】参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>[1]</strong> Boulch A, de La Gorce M, Marlet R. <a href="http://certis.enpc.fr/~marletr/publi/SGP-2014-Boulch-et-al.pdf"><strong>Piecewise‐planar 3D reconstruction with edge and corner regularization</strong></a>[C]//Computer Graphics Forum. <strong>2014</strong>, 33(5): 55-64.<br />
+<font color = gray> 区域生长方法，使表面相对于边缘和角度规则化，从距离图像中呈现分段平面表面的 3D 重建</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[2]</strong> Cai Y, Guo X, Liu Y, et al. <a href="https://arxiv.org/pdf/1510.03935.pdf"><strong>Surface approximation via asymptotic optimal geometric partition</strong></a>[J]. IEEE transactions on visualization and computer graphics, <strong>2016</strong>, 23(12): 2613-2626.<br />
+<font color = gray> <strong>本文采用的平面划分方法，作者前期工作</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[6]</strong> Dai A, Nießner M, Zollhöfer M, et al. <a href="https://arxiv.org/pdf/1604.01093.pdf"><strong>Bundlefusion: Real-time globally consistent 3d reconstruction using on-the-fly surface reintegration</strong></a>[J]. ACM Transactions on Graphics (ToG), <strong>2017</strong>, 36(4): 76a.<br />
+<font color = gray> <strong>BundleFusion 数据集，本文对比实验之一，本文输入密集网格的获取方法，<a href="http://graphics.stanford.edu/projects/bundlefusion/">项目主页</a>，<a href="https://github.com/niessner/BundleFusion">代码开源</a></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[7]</strong> Dou M, Guan L, Frahm J M, et al. <a href="https://link.springer.com/chapter/10.1007%2F978-3-642-37484-5_9"><strong>Exploring high-level plane primitives for indoor 3d reconstruction with a hand-held rgb-d camera</strong></a>[C]//Asian Conference on Computer Vision. Springer, Berlin, Heidelberg, <strong>2012</strong>: 94-108.<br />
+<font color = gray> <strong>点面结合估计相机位姿，较早的工作之一</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[8]</strong> Dzitsiuk M, Sturm J, Maier R, et al. <a href="https://arxiv.org/pdf/1609.08267.pdf"><strong>De-noising, stabilizing and completing 3D reconstructions on-the-go using plane priors</strong></a>[C]//2017 IEEE International Conference on Robotics and Automation (ICRA). IEEE, <strong>2017</strong>: 3976-3983.<br />
+<font color = gray> <strong>引入平面先验，降低计算复杂度</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[10]</strong> Halber M, Funkhouser T. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Halber_Fine-To-Coarse_Global_Registration_CVPR_2017_paper.pdf"><strong>Fine-to-coarse global registration of rgb-d scans</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>CVPR 2017</strong>: 1755-1764.<br />
+<font color = gray> 将平面关系约束与其他类型的约束结合起来</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[11]</strong> Handa A, Whelan T, McDonald J, et al. <a href="http://mural.maynoothuniversity.ie/8309/1/JM-Benchmark-2014.pdf"><strong>A benchmark for RGB-D visual odometry, 3D reconstruction and SLAM</strong></a>[C]//2014 IEEE international conference on Robotics and automation (<strong>ICRA</strong>). IEEE, <strong>2014</strong>: 1524-1531.<br />
+<font color = gray> 本文使用的 ICL-NUIM 数据集</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[12]</strong> Hsiao M, Westman E, Zhang G, et al. Keyframe-based dense planar SLAM[C]//2017 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2017</strong>: 5110-5117.<br />
+<font color = gray> <strong>浙大章国锋 将平面约束引入 SLAM 框架中进行跟踪</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[13]</strong> Huang J, Dai A, Guibas L J, et al. <a href="http://graphics.stanford.edu/~niessner/papers/2017/8dlite/huang2017dlite.pdf"><strong>3Dlite: towards commodity 3D scanning for content creation</strong></a>[J]. ACM Trans. Graph., <strong>2017</strong>, 36(6): 203:1-203:14.<br />
+<font color = gray> <strong>基于帧的平面检测技术，提取大平面，本文对比实验之一</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[14]</strong> Keller M, Lefloch D, Lambers M, et al. <a href="https://ieeexplore.ieee.org/abstract/document/6599048"><strong>Real-time 3d reconstruction in dynamic scenes using point-based fusion</strong></a>[C]//2013 International Conference on 3D Vision-3DV 2013. IEEE, <strong>2013</strong>: 1-8.<br />
+<font color = gray> <strong>基于点的面元表示来进行三维重建</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[20]</strong> Oesau S, Lafarge F, Alliez P. <a href="https://hal.inria.fr/hal-01168394/document"><strong>Planar shape detection and regularization in tandem</strong></a>[C]//Computer Graphics Forum. <strong>2016</strong>, 35(1): 203-215.<br />
+<font color = gray> 区域生长方法，基于原始点集的平面形状检测和正则化方法</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[26]</strong> Zhou Q Y, Koltun V. <a href="https://dl.acm.org/citation.cfm?id=2601134"><strong>Color map optimization for 3D reconstruction with consumer depth cameras</strong></a>[J]. ACM Transactions on Graphics (TOG), <strong>2014</strong>, 33(4): 155.<br />
+<font color = gray> 本文关键帧选择策略，对图像模糊度进行度量</font></li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li>3.3.1 节，彩色图像上控制顶点的非刚性校正函数集？F_i 和 f_i,l 没理解；</li>
+<li>本文的工作一个是基于平面对网格进行简化，另一个是对结果进行优化，包括光度一致性和几何一致性，这个有类似于 SLAM 的直接法和特征点法吗？</li>
+</ul>
+<hr />
+<h2 id="t思考">【T】思考</h2>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2019.06.06</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-06-09-line-based-object-slam/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-05-30-orb-slam2-loop/">
+            <span class="next-text nav-default"> 😀 ORB-SLAM2 代码解读（二）：闭环检测线程</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

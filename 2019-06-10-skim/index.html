@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>2019 年 6 月论文泛读（21篇） - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 6 项开源代码工作：用于跟踪与建图的模块化优化框架 用于室内 RGB-D 重建的基于平面的几何和纹理优化 ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建 学习双目，推断单目：用于自我监督，单目，深度估计的连体网络 用于地面机器人的 RGBD-惯导轨迹估计与建图 从单个深度图像完成语义场景理解	其他：将基于线的特定类别物体模型集成到单目 SLAM 中 基于鲁棒的物体 SLAM 的高速导航系统 无组织点云中平面检测的定向点采样
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-06-10-skim/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="2019 年 6 月论文泛读（21篇）" />
+<meta property="og:description" content="
+6 项开源代码工作：用于跟踪与建图的模块化优化框架    用于室内 RGB-D 重建的基于平面的几何和纹理优化    ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建    学习双目，推断单目：用于自我监督，单目，深度估计的连体网络    用于地面机器人的 RGBD-惯导轨迹估计与建图    从单个深度图像完成语义场景理解			
+其他：将基于线的特定类别物体模型集成到单目 SLAM 中    基于鲁棒的物体 SLAM 的高速导航系统    无组织点云中平面检测的定向点采样
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-06-10-skim/" />
+<meta property="article:published_time" content="2019-06-10T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-06-10T00:00:00+08:00" />
+<meta itemprop="name" content="2019 年 6 月论文泛读（21篇）">
+<meta itemprop="description" content="
+6 项开源代码工作：用于跟踪与建图的模块化优化框架    用于室内 RGB-D 重建的基于平面的几何和纹理优化    ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建    学习双目，推断单目：用于自我监督，单目，深度估计的连体网络    用于地面机器人的 RGBD-惯导轨迹估计与建图    从单个深度图像完成语义场景理解			
+其他：将基于线的特定类别物体模型集成到单目 SLAM 中    基于鲁棒的物体 SLAM 的高速导航系统    无组织点云中平面检测的定向点采样
+">
+<meta itemprop="datePublished" content="2019-06-10T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-06-10T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="11132">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="2019 年 6 月论文泛读（21篇）"/>
+<meta name="twitter:description" content="
+6 项开源代码工作：用于跟踪与建图的模块化优化框架    用于室内 RGB-D 重建的基于平面的几何和纹理优化    ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建    学习双目，推断单目：用于自我监督，单目，深度估计的连体网络    用于地面机器人的 RGBD-惯导轨迹估计与建图    从单个深度图像完成语义场景理解			
+其他：将基于线的特定类别物体模型集成到单目 SLAM 中    基于鲁棒的物体 SLAM 的高速导航系统    无组织点云中平面检测的定向点采样
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">2019 年 6 月论文泛读（21篇）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-06-10 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            </div>
+          <span class="more-meta"> 约 11132 字 </span>
+          <span class="more-meta"> 预计阅读 23 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一geometric-slam">一、Geometric SLAM</a>
+      <ul>
+        <li><a href="#1-用于跟踪与建图的模块化优化框架">1. 用于跟踪与建图的模块化优化框架</a></li>
+        <li><a href="#2-用于室内-rgb-d-重建的基于平面的几何和纹理优化">2. 用于室内 RGB-D 重建的基于平面的几何和纹理优化</a></li>
+        <li><a href="#3-一种基于点特征和平面特征的-rgb-d-相机三维重建子地图连接算法">3. 一种基于点特征和平面特征的 RGB-D 相机三维重建子地图连接算法</a></li>
+        <li><a href="#4-将基于线的特定类别物体模型集成到单目-slam-中">4. 将基于线的特定类别物体模型集成到单目 SLAM 中</a></li>
+        <li><a href="#5-一种基于手绘地图的使用物体度量移动机器人导航方法">5. 一种基于手绘地图的使用物体度量移动机器人导航方法</a></li>
+        <li><a href="#6-基于鲁棒的物体-slam-的高速导航系统">6. 基于鲁棒的物体 SLAM 的高速导航系统</a></li>
+        <li><a href="#7-具有挑战环境下的鲁棒的语义建图">7. 具有挑战环境下的鲁棒的语义建图</a></li>
+        <li><a href="#8-无组织点云中平面检测的定向点采样">8. 无组织点云中平面检测的定向点采样</a></li>
+        <li><a href="#9-refusion利用残差的-rgb-d-相机动态环境下的三维重建">9. ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建</a></li>
+      </ul>
+    </li>
+    <li><a href="#二learning-slam">二、Learning SLAM</a>
+      <ul>
+        <li><a href="#10-学习双目推断单目用于自我监督单目深度估计的连体网络">10. 学习双目，推断单目：用于自我监督，单目，深度估计的连体网络</a></li>
+        <li><a href="#11-基于-deconvnet-的-slam-闭环检测方法">11. 基于 DeconvNet 的 SLAM 闭环检测方法</a></li>
+      </ul>
+    </li>
+    <li><a href="#三传感器融合">三、传感器融合</a>
+      <ul>
+        <li><a href="#12-具有显式遮挡处理和平面检测的精确的直接视觉激光里程计">12. 具有显式遮挡处理和平面检测的精确的直接视觉激光里程计</a></li>
+        <li><a href="#13-用于地面机器人的-rgbd-惯导轨迹估计与建图">13. 用于地面机器人的 RGBD-惯导轨迹估计与建图</a></li>
+        <li><a href="#14-ds-vio基于双重-ekf-的稳健高效的双目视觉惯性测距仪">14. DS-VIO：基于双重 EKF 的稳健高效的双目视觉惯性测距仪</a></li>
+        <li><a href="#15-使用复合路标的在移动平台上自主着陆的微型飞行器">15. 使用复合路标的在移动平台上自主着陆的微型飞行器</a></li>
+      </ul>
+    </li>
+    <li><a href="#四ar--mr--vr">四、AR &amp; MR &amp; VR</a>
+      <ul>
+        <li><a href="#16-多运动刚体运动三维跟踪与重建">16. 多运动刚体运动三维跟踪与重建</a></li>
+        <li><a href="#17-通过混合现实重温协作群件的发展">17. 通过混合现实重温协作:群件的发展</a></li>
+      </ul>
+    </li>
+    <li><a href="#五learning-others">五、Learning others</a>
+      <ul>
+        <li><a href="#18-从单个深度图像完成语义场景理解">18. 从单个深度图像完成语义场景理解</a></li>
+        <li><a href="#19-跳出边界框的思考无约束-3d-房间布局的生成">19. 跳出边界框的思考：无约束 3D 房间布局的生成</a></li>
+      </ul>
+    </li>
+    <li><a href="#六others">六、Others</a>
+      <ul>
+        <li><a href="#20-ls3d-单视图格式塔三维表面重建曼哈顿线段">20. LS3D: 单视图格式塔三维表面重建曼哈顿线段</a></li>
+        <li><a href="#21-一种用于6d目标姿态跟踪的-rao-blackwellized-粒子滤波器">21. 一种用于6D目标姿态跟踪的 Rao-Blackwellized 粒子滤波器</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>6 项开源代码工作</strong>：用于跟踪与建图的模块化优化框架    用于室内 RGB-D 重建的基于平面的几何和纹理优化    ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建    学习双目，推断单目：用于自我监督，单目，深度估计的连体网络    用于地面机器人的 RGBD-惯导轨迹估计与建图    从单个深度图像完成语义场景理解			
+<strong>其他</strong>：将基于线的特定类别物体模型集成到单目 SLAM 中    基于鲁棒的物体 SLAM 的高速导航系统    无组织点云中平面检测的定向点采样</p>
+</blockquote>
+<h2 id="一geometric-slam">一、Geometric SLAM</h2>
+<h3 id="1-用于跟踪与建图的模块化优化框架">1. 用于跟踪与建图的模块化优化框架</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[1]</strong> <a href="https://ingmec.ual.es/~jlblanco/papers/blanco2019mola_rss2019.pdf"><strong>A Modular Optimization Framework for Localization and Mapping</strong></a>. [C] RSS <strong>2019</strong>
+<ul>
+<li><!-- raw HTML omitted -->用于跟踪与建图的模块化优化框架<!-- raw HTML omitted --></li>
+<li>西班牙阿尔梅里亚大学   <a href="https://scholar.google.com/citations?hl=zh-CN&amp;user=bhDtzKgAAAAJ">Google Scholor</a></li>
+<li><a href="https://github.com/MOLAorg/mola"><strong>代码开源</strong></a>（还未放出）   <a href="https://www.youtube.com/watch?v=Bb92aMBJR44">演示视频</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>摘要</strong></p>
+<ul>
+<li>本文探讨了如何<strong>将 SLAM 划分为其最小组成成分</strong>，从而最大限度地<strong>提高每个模块的可重用性和互换性</strong>；</li>
+<li>特别是，提出的系统中的大多数组件不应该知道诸如地图是由单一的全局地图还是一组局部子地图组成，状态向量是在 SE(2) 或 SE(3) 中定义的，是否有速度等细节，任何数量的异构传感器都应该一起使用，它们的信<strong>息无缝地融合到一个一致的定位解决方案中</strong>；</li>
+<li>由此产生的系统将有助于研究人员，<strong>促进可重复研究的发展，并使最先进的算法能够快速应用到产品原型中</strong>；</li>
+<li>我们使用不同的传感器对 Kitti、Euroc 和 Kaist 数据集的实现进行了测试；</li>
+<li>本文重点介绍了<strong>三维激光雷达里程计</strong>测量与建图的框架和实验结果；</li>
+<li>用于 KITTI 数据集的 LiDAR SLAM 在大多数城市序列中实现了 1％-2％ 的典型变换误差，同时由于我们的框架能够动态地从内存中换出，因此以 1.5 倍的实时速率处理数据并降低了内存需求；</li>
+<li>由于我们的框架能够动态地从内存中交换不是立即需要的地图部分，在需要时再次公开地加载它们；</li>
+<li><a href="https://github.com/MOLAorg/mola"><strong>代码开源</strong></a>。</li>
+</ul>
+<p><strong>主要贡献</strong></p>
+<ul>
+<li>提出了一个开源的框架，提供一个统一的数学框架和 C++ API，从 SE（2）或 SE（3）表示的姿态的使用中解耦，或者在全局地图或相对子图之间进行选择；</li>
+<li>确保 <strong>SLAM 系统各组件的可重用性</strong>，例如<strong>基于 ORB 的视觉闭环检测器</strong>（如[19]）应可用，<strong>无论主地图是基于激光雷达还是基于视觉的 SLAM 构建的</strong>；</li>
+<li><strong>支持不同的传感器</strong>：2D 和 3D 激光雷达，单目和双目相机，测距仪，IMU 和 GPS；</li>
+<li>允许用户在<strong>不同的状态向量</strong>表示中进行选择：仅姿态、姿态与线速度，或姿态与线速度、角速度；</li>
+<li>内置<strong>对相对坐标</strong>(即子地图)的支持，还允许存储解析信息和地图的层次表示；</li>
+<li>支持最常见的<strong>地图实体(无结构、点、线、平面路标)</strong> ，可由用户扩展到其他类型；</li>
+<li>支持<strong>不同的优化模式：平滑与批量优化</strong>；</li>
+<li>具有方便的工具：内置异常堆栈跟踪报告、各代码段详细性能报告等；</li>
+<li>向 SLAM 模块<strong>公开统一的 API</strong>，<strong>独立于来自实时传感器</strong>或主要数据集格式(如KITTI[20]、EuRoC[6]、ROS bag’s、MRPT rawlog’s)<strong>的数据</strong>；</li>
+<li>透明地从动态内存切换，并在需要时返回与最近没有访问的地图区域相关的大部分数据。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="2-用于室内-rgb-d-重建的基于平面的几何和纹理优化">2. 用于室内 RGB-D 重建的基于平面的几何和纹理优化</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[2]</strong> Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction</strong></a>[J]. arXiv preprint arXiv:1905.08853, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->用于室内 RGB-D 重建的基于平面的几何和纹理优化<!-- raw HTML omitted --></li>
+<li>德克萨斯大学达拉斯分校   <a href="https://scholar.google.com/citations?user=PXm3u3gAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+<li><a href="https://github.com/chaowang15/plane-opt-rgbd"><strong>代码开源</strong></a></li>
+<li>详见：详读笔记</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>摘要</strong></p>
+<ul>
+<li>本文提出了一种用<strong>平面基元重建 RGB-D 室内场景</strong>的新方法；</li>
+<li>该方法以 RGB-D 序列为输入，采用三维重建方法在序列上<strong>重建稠密的粗糙网格</strong>，生成<strong>具有清晰纹理和鲜明特征的轻量的低多边形网格</strong>，同时<strong>不丢失原始场景的几何细节</strong>；</li>
+<li>为此，我们<!-- raw HTML omitted --><strong>首先用平面基元（plane primitives）对输入网格进行划分</strong>，将其<strong>简化为一个轻量级网格</strong><!-- raw HTML omitted -->
+<ul>
+<li>然后<!-- raw HTML omitted -->对<strong>平面参数、相机姿态和纹理颜色</strong>进行优化，<strong>使帧间光度一致性最大化</strong><!-- raw HTML omitted -->；</li>
+<li>最后<!-- raw HTML omitted -->对<strong>网格几何进行优化</strong>，使<strong>几何与平面的一致性最大化</strong><!-- raw HTML omitted -->；</li>
+</ul>
+</li>
+<li>与现有的只在场景中覆盖较大平面区域的平面重建方法相比，我们的方法在<strong>不丢失几何细节</strong>的情况下，通过<strong>自适应平面构建整个场景</strong>，并<strong>在最终网格中保留了鲜明的特征</strong>；
+<ul>
+<li>我们应用于几个 RGB-D 扫描序列，并与其他最先进的重建方法进行比较，证明了我们的方法的有效性。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="3-一种基于点特征和平面特征的-rgb-d-相机三维重建子地图连接算法">3. 一种基于点特征和平面特征的 RGB-D 相机三维重建子地图连接算法</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[3]</strong> Wang J, Song J, Zhao L, et al. <a href="https://www.sciencedirect.com/science/article/pii/S0921889018302033"><strong>A submap joining algorithm for 3D reconstruction using an RGB-D camera based on point and plane features</strong></a>[J]. Robotics and Autonomous Systems, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->一种基于点特征和平面特征的 RGB-D 相机三维重建子地图连接算法<!-- raw HTML omitted --></li>
+<li>悉尼科技大学   <a href="https://scholar.google.com/citations?user=rf8d0o4AAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>Google Scholor</strong></a>   中科院三区，JCR Q2，IF 2.809</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p><strong>摘要</strong></p>
+<ul>
+<li>在基于标准的点特征方法中，<!-- raw HTML omitted --><strong>点特征的深度测量受到噪声的影响</strong><!-- raw HTML omitted -->，这将导致<strong>不正确的全局环境结构</strong>；</li>
+<li>本文通过<strong>引入平面和点作为特征，提出了一种基于 SLAM 与 RGB-D 相机连接的子图</strong>；</li>
+<li>这项工作包括两个步骤：<strong>子图构建和子图连接</strong>；
+<ul>
+<li>使用几个相邻的关键帧，以及从这些<strong>关键帧中观察到的相应的块、视觉特征点和平面</strong>，<strong>构建子图</strong>；</li>
+<li><strong>将子图按顺序融合成全局地图</strong>，通过<strong>平面特征关联和优化逐步恢复全局结构</strong>；</li>
+</ul>
+</li>
+<li>我们还证明了该算法可以<!-- raw HTML omitted --><strong>在子图层次上增量地处理平面关联问题</strong>，因为<strong>每个子图都可以得到平面协方差</strong><!-- raw HTML omitted -->；</li>
+<li>子图的使用大大<strong>降低了优化过程中的计算成本</strong>，同时<strong>保留了所有关于平面的信息</strong>；</li>
+<li>使用公开可用的 RGB-D 基准数据集测试和作者收集的数据集对该方法进行了验证，该算法可以在这些具有挑战性的数据集上生成<strong>精确的轨迹和高质量的三维模型</strong>，这是现有的 RGB-D SLAM 或 SFM 算法难以实现的。</li>
+</ul>
+<p><strong>主要贡献</strong></p>
+<ul>
+<li>提出了一种新的有效的<strong>流形平面参数化方法</strong>；</li>
+<li>提出了一种<strong>利用点、块、平面精确生成子地图</strong>的方法，<strong>块和平面对深度测量噪声有较强的抵抗能力</strong>，因此可以生成比单点测量更精确的子图；</li>
+<li>提出了一种<strong>以点和面为特征的子图连接方法</strong>，结果表明，这种新的平面处理方法比层次式平面利用[16]方法效率高得多，同时，我们的方法也能对最终配准结果产生由细到粗的影响；</li>
+<li>改进算法，对更具挑战性的数据集进行评估。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="4-将基于线的特定类别物体模型集成到单目-slam-中">4. 将基于线的特定类别物体模型集成到单目 SLAM 中</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[4]</strong> Joshi N, Sharma Y, Parkhiya P, et al. <a href="https://arxiv.org/pdf/1905.04698.pdf"><strong>Integrating Objects into Monocular SLAM: Line Based Category Specific Models</strong></a>[J]. arXiv preprint arXiv:1905.04698, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->将物体集成到单目 SLAM 中：基于线的特定类别模型<!-- raw HTML omitted --></li>
+<li>印度海德拉巴大学</li>
+<li>Parkhiya P, Khawad R, Murthy J K, et al. <strong>Constructing Category-Specific Models for Monocular Object-SLAM</strong>[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.</li>
+<li><strong>详见详读笔记</strong></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要">摘要</h4>
+<ul>
+<li>我们提出了一种新的<strong>基于线的参数化特定类别的 CAD 物体模型</strong>；</li>
+<li>所提出的参数化使用<strong>基于字典的 RANSAC 方法</strong>将<strong>特定于 3D 类别的 CAD 模型</strong>和所考虑的物体关联起来，该方法使用<strong>物体视点作为先验</strong>并且在场景的相应强度图像中<strong>检测到边缘</strong>；</li>
+<li><strong>关联问题</strong>被认为是一个经典的<strong>几何问题</strong>，而不是数据集驱动的问题，从而节省了注释数据集以训练不同类别对象的关键点网络[1，2]所花费的时间和人力；</li>
+<li>除了<strong>消除了数据集准备的需要</strong>，该方法还加快了整个过程，因为该方法<strong>对所有物体只处理一次图像</strong>，从而<strong>消除了在所有图像中对图像中的每个对象调用网络的需要</strong>；</li>
+<li><!-- raw HTML omitted -->使用 <strong>3D-2D 边缘关联</strong>模块，然后<strong>使用线的切除算法来恢复物体姿势</strong><!-- raw HTML omitted -->；
+<ul>
+<li>该公式<strong>对物体的形状和姿态进行了优化</strong>，从而有助于更精确地恢复物体的三维结构；</li>
+</ul>
+</li>
+<li>最后，利用<strong>因子图公式将物体姿态与相机里程计相结合</strong>，建立了一个 SLAM 问题。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="5-一种基于手绘地图的使用物体度量移动机器人导航方法">5. 一种基于手绘地图的使用物体度量移动机器人导航方法</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[5]</strong> Niu J, Qian K. <a href="https://journals.sagepub.com/doi/pdf/10.1177/1729881419846339"><strong>A hand-drawn map-based navigation method for mobile robots using objectness measure</strong></a>[J]. International Journal of Advanced Robotic Systems, <strong>2019</strong>, 16(3): 1729881419846339.
+<ul>
+<li><!-- raw HTML omitted -->一种基于手绘地图的使用物体度量移动机器人导航方法<!-- raw HTML omitted --></li>
+<li>东南大学   期刊：中科院四区， JCR Q4，IF 1.0</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-1">摘要</h4>
+<ul>
+<li>正确认识环境是移动机器人实现自主导航控制任务的前提，<strong>时变环境信息引起的不一致是认知环境技术发展和应用的瓶颈</strong>；</li>
+<li>在本文中，我们提出了一种<strong>使用手绘地图的环境认知方法</strong>；
+<ul>
+<li>首先，我们使用单骨架细化（single skeleton refinement）和模糊 c 均值算法来<strong>分割图像</strong>；</li>
+<li>然后，<strong>结合显著性图选择候选区域</strong>；</li>
+<li>同时，我们<strong>使用超像素跨界方法来过滤窗户</strong>；</li>
+<li>最终<strong>候选对象区域是基于显着性分割和超像素聚类的融合而获得的</strong>；</li>
+</ul>
+</li>
+<li>基于上述客观估计结果，<strong>采用人机交互的方法，构建了一种不准确的手绘导航环境地图</strong>；</li>
+<li>PASCAL VOC2007 的实验结果验证了该方法的有效性，平均平均精度为 41.2%，是测试方法中最好的，此外，机器人导航在实际场景中的实验结果也验证了该方法的有效性。</li>
+</ul>
+<h4 id="主要贡献">主要贡献</h4>
+<ul>
+<li><!-- raw HTML omitted -->提出了一种新颖的<strong>物体度量方法</strong>，它同时<strong>使用图像分割和超像素分析</strong>，该过程可以进一步<strong>降低物体检测阶段的计算成本</strong><!-- raw HTML omitted -->；</li>
+<li>提出了一种<strong>基于手绘地图的新导航方法，该方法由特定物体和粗略路径组成</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="6-基于鲁棒的物体-slam-的高速导航系统">6. 基于鲁棒的物体 SLAM 的高速导航系统</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[6]</strong> <a href="http://groups.csail.mit.edu/rrg/papers/OkLiu19icra.pdf"><strong>Robust Object-based SLAM for High-speed Autonomous Navigation</strong></a>. <strong>2019</strong>
+<ul>
+<li><!-- raw HTML omitted -->基于鲁棒的物体 SLAM 的高速导航系统<!-- raw HTML omitted --></li>
+<li>MIT</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-2">摘要</h4>
+<ul>
+<li>我们提出了基于物体的鲁棒 SLAM 系统，用于高速自主导航（ROSHAN），这是一种<strong>适用于自主导航的物体级建图的新方法</strong>；</li>
+<li>在 ROSHAN 中，<!-- raw HTML omitted -->我们<strong>将物体表示为椭球</strong>，并<strong>使用三个信息源（边界框检测，图像纹理和语义知识）推断其参数</strong>，以在<strong>基于椭圆体的 SLAM 中在共同的前向平移车辆运动下克服可观察性问题</strong><!-- raw HTML omitted -->；</li>
+<li><!-- raw HTML omitted --><strong>每个边界框在对象表面上提供四个平面约束</strong>，并且我们使用<strong>物体上的纹理以及椭圆体形状上的语义先验添加第五个平面约束</strong><!-- raw HTML omitted -->；</li>
+<li>我们在模拟中演示 ROSHAN，其中我们的表现优于基准方法，在正向移动相机序列中将形状误差减少了 83％，位置误差减少了 72％，我们对快速移动的自主四旋翼飞行器上收集的数据进行了类似的定性结果。</li>
+</ul>
+<h4 id="主要贡献-1">主要贡献</h4>
+<ul>
+<li>我们提出了基于物体的鲁棒的 SLAM 系统用于高速自主导航（ROSHAN），其中我们<strong>将语义上有意义的对象体积地表示为椭圆体，并使用三种信息源在线推断椭圆体的参数</strong>：边界框检测，纹理和语义形状约束；</li>
+<li>我们<strong>对最先进的边界框测量模型进行了改进</strong>[18]，引入了一种<strong>可区分的闭合形式的纹理测量模型，描述了一种语义形状先验</strong>，提出了一种<strong>对快速移动有用的单一测量初始化方案车辆</strong>；</li>
+<li>与现有离线方法相反[17]，[18]<strong>不假设已知的数据关联或批量优化</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="7-具有挑战环境下的鲁棒的语义建图">7. 具有挑战环境下的鲁棒的语义建图</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[7]</strong> Cheng J, Sun Y, Meng M Q H. <a href="https://www.cambridge.org/core/journals/robotica/article/robust-semantic-mapping-in-challenging-environments/19F9EA5C806AFC10377F13ABDEDA68EE"><strong>Robust Semantic Mapping in Challenging Environments</strong></a>[J]. Robotica, 1-15, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->具有挑战环境下的鲁棒的语义建图<!-- raw HTML omitted --></li>
+<li>香港中文大学，香港科技大学   期刊：中科院四区， JCR Q4，IF 1.267</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-3">摘要</h4>
+<ul>
+<li>为了促进路径规划和探索等任务，传统的视觉 SLAM 通常为移动机器人提供几何图，忽略语义信息；</li>
+<li>为了解决这个问题，受到最近深度神经网络成功的启发，我们将它<strong>与视觉 SLAM 系统结合起来进行语义建图</strong>，<strong>几何和语义信息都将被投影到 3D 空间中以生成 3D 语义地图</strong>；</li>
+<li>我们还使用<strong>基于光流的方法来处理移动物体</strong>，使得我们的方法能够在<strong>动态环境</strong>中稳健地工作；</li>
+<li>我们在公共 TUM 数据集和我们记录的办公室数据集中进行了实验， 实验结果证明了该方法的可行性和令人印象深刻的性能。</li>
+</ul>
+<h4 id="主要贡献-2">主要贡献</h4>
+<ul>
+<li>我们提出了一种<strong>将视觉 SLAM 与语义分割相结合以生成语义 3D 地图的新方法</strong>；</li>
+<li>提出了一种<strong>基于光流的方法来处理动态因素</strong>，确保定位精度；</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="8-无组织点云中平面检测的定向点采样">8. 无组织点云中平面检测的定向点采样</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[8]</strong> Sun B, Mordohai P. <a href="https://arxiv.org/pdf/1905.02553.pdf"><strong>Oriented Point Sampling for Plane Detection in Unorganized Point Clouds</strong></a>[J]. arXiv preprint arXiv:1905.02553, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->无组织点云中平面检测的定向点采样<!-- raw HTML omitted --></li>
+<li>美国史蒂文斯理工学院</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-4">摘要</h4>
+<ul>
+<li>3D 点云中的<strong>平面检测</strong>是点云分割，语义建图和 SLAM 等应用的关键预处理步骤；</li>
+<li>与最近<strong>仅适用于有组织点云</strong>的许多平面检测方法相比，我们的工作针对的是<strong>无法进行 2D 参数化的无组织点云</strong>；</li>
+<li>我们比较了<strong>三种有效检测点云平面的方法</strong>；
+<ul>
+<li>一种是<strong>本文提出的一种新方法</strong>，它<strong>通过从具有估计法线的一组点中采样来生成平面假设</strong>，我们将此方法命名为<strong>定向点采样（OPS）</strong>；</li>
+<li>以与传统的方法形成对比，<strong>传统方法需要三个无定向点的抽样来生成平面假设</strong>；</li>
+</ul>
+</li>
+<li>我们还<strong>实现了一种基于三个无定向点的局部采样的有效平面检测方法</strong>，并将其与 OPS 和基于八叉树的 3D-KHT 算法进行比较，以检测来自 SUN RGB-D 数据集的10000个点云的平面。</li>
+</ul>
+<h4 id="主要贡献-3">主要贡献</h4>
+<ul>
+<li>我们提出 OPS，一种<!-- raw HTML omitted --><strong>基于 RANSAC 的快速平面检测方法</strong>，在<strong>无组织点云</strong>中，<strong>只需要一个导向点的最小样本</strong>来生成平面假设<!-- raw HTML omitted -->；</li>
+<li>我们比较 OPS 根据平面方向和平面分割<strong>对点云的点进行分类</strong>，采用两种替代方法
+<ul>
+<li>FSPF 的扩展，即对本文提出的三个无方向点进行采样；</li>
+<li>以及在八叉树中运行的 3D-KHT。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="9-refusion利用残差的-rgb-d-相机动态环境下的三维重建">9. ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[9]</strong> Palazzolo E, Behley J, Lottes P, et al. <a href="https://arxiv.org/pdf/1905.02082.pdf"><strong>ReFusion: 3D Reconstruction in Dynamic Environments for RGB-D Cameras Exploiting Residuals</strong></a>[J]. arXiv preprint arXiv:1905.02082, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->ReFusion 利用残差的 RGB-D 相机动态环境下的三维重建<!-- raw HTML omitted --></li>
+<li>德国波恩大学   <a href="https://github.com/PRBonn/refusion"><strong>代码开源</strong></a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-5">摘要</h4>
+<ul>
+<li><strong>建图和定位</strong>是机器人系统的基本功能，尽管大多数建图系统都关注静态环境，但在实际环境中的部署要求它们<strong>处理动态对象</strong>；</li>
+<li>在本文中，我们提出了一种 RGB-D 传感器的方法，该方法能够<strong>一致地映射包含多个动态元素的场景</strong>；</li>
+<li>对于建图和定位，我们<!-- raw HTML omitted --><strong>对截断的带符号距离函数（TSDF）采用有效的直接跟踪，并利用 TSDF 中编码的颜色信息来估计传感器的姿态</strong>，<strong>使用体素哈希有效地表示 TSDF</strong>，大多数计算在 GPU 上并行化<!-- raw HTML omitted -->；</li>
+<li>为了检测动力学，我们<strong>利用初始配准后获得的残差，以及模型中自由空间的显式建模</strong>；</li>
+<li>我们在现有数据集上评估我们的方法，并提供一个显示高度动态场景的新数据集，这些实验表明，我们的方法往往超过其他先进的稠密 SLAM 方法；</li>
+<li>我们的数据集提供了运动捕捉系统获得的 RGB-D 传感器轨迹的真值数据，以及使用高精度地面激光扫描仪建立的静态环境模型；</li>
+<li>最后，我们以开放源代码的形式发布我们的方法。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h2 id="二learning-slam">二、Learning SLAM</h2>
+<h3 id="10-学习双目推断单目用于自我监督单目深度估计的连体网络">10. 学习双目，推断单目：用于自我监督，单目，深度估计的连体网络</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[10]</strong> Goldman M, Hassner T, Avidan S. <a href="https://arxiv.org/pdf/1905.00401.pdf"><strong>Learn Stereo, Infer Mono: Siamese Networks for Self-Supervised, Monocular, Depth Estimation</strong></a>[J]. arXiv preprint arXiv:1905.00401, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->学习双目，推断单目：用于自我监督，单目，深度估计的连体网络<!-- raw HTML omitted --></li>
+<li>以色列特拉维夫大学   <a href="https://github.com/mtngld/lsim"><strong>代码开源</strong></a>（还未放出）</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-6">摘要</h4>
+<ul>
+<li><strong>自监督单眼深度估计</strong>领域近年来取得了巨大进步，大多数方法都假设立体数据在训练期间可用，但通常未充分利用它并仅将其视为参考信号；</li>
+<li>我们提出了一种新颖的自我监督方法，该方法<!-- raw HTML omitted --><strong>在训练期间同等地使用左右图像，但在测试时仍然可以与单个输入图像一起使用，用于单眼深度估计</strong><!-- raw HTML omitted -->；</li>
+<li>我们的 Siamese 网络架构<strong>由两个双网络组成</strong>，每个网络都<strong>学习如何从单个图像预测视差图</strong>，然而，<strong>在测试时，仅使用这些网络中的一个来推断深度</strong>；</li>
+<li>我们在标准的 KITTI Eigen 分割基准上展示了最先进的结果，同时也是新 KITTI 单视图基准测试中得分最高的自我监控方法；</li>
+<li>为了证明我们的方法能够推广到新的数据集，我们进一步提供了 Make3D 基准测试的结果，这在训练期间没有使用。</li>
+</ul>
+<h4 id="主要贡献-4">主要贡献</h4>
+<ul>
+<li>① 提出了一种<strong>用于深度（视差）估计的自我监督学习的新方法</strong>，其同时且<strong>对称地训练成对的双目图像</strong>；</li>
+<li>② 展示了<strong>在双目图像上训练的网络如何能够在测试时自然地用于单眼深度估计</strong>；</li>
+<li>③ 报告了最先进的单眼视差估计结果，在某些情况下<strong>甚至优于监督系统</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="11-基于-deconvnet-的-slam-闭环检测方法">11. 基于 DeconvNet 的 SLAM 闭环检测方法</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> [11] Mukherjee A, Chakaborty S, Saha S K. <a href="https://www.sciencedirect.com/science/article/pii/S1568494619302339"><strong>Detection of loop closure in SLAM: A DeconvNet based approach</strong></a>[J]. Applied Soft Computing, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->基于 DeconvNet 的 SLAM 闭环检测方法<!-- raw HTML omitted --></li>
+<li>印度贾达普大学   期刊：中科院二区，JCR Q1，IF 4.0</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-7">摘要</h4>
+<ul>
+<li>SLAM 问题在长期里程测量中存在着<strong>漂移</strong>，唯一的解决方法是<strong>基于回路闭合检测的图形优化</strong>，如果机器人检测到它在以前访问过的地方，它就能够精确地修正其位置;</li>
+<li><strong>传统的识别已知位置的方法遵循一个基于特征的词袋模型</strong>，该模型<strong>丢弃某些几何和结构信息</strong>；</li>
+<li>本文提出的方法<strong>利用深度去卷积网络将场景表示为低维向量</strong>，提出了一种 12 层反卷积网，其对图像进行自编码和解码，以学习图像的表示；
+<ul>
+<li>在网络中<strong>使用本地连接的自动编码器大大减小了尺寸，而没有保留上下文信息的显着损失</strong>，通过比较这些表示来识别闭环；</li>
+</ul>
+</li>
+<li>来自 KITTI 视觉里程计数据集和新的大学数据集的序列用于评估，将性能与最先进的技术进行比较，结果令人满意。</li>
+</ul>
+<h4 id="实现方法">实现方法</h4>
+<ul>
+<li>在这项工作中提出了一种<!-- raw HTML omitted -->基于<strong>自动编码器的深度学习网络</strong>，以<strong>提取用于表示图像的低维向量</strong>，自动编码器将图像编码为较低维矢量，<strong>该较低维矢量可被解码为图像本身</strong><!-- raw HTML omitted -->；</li>
+<li>换句话说，它<strong>提供了密集信息（即图像）的紧凑（稀疏）表示</strong>；</li>
+<li>因此，它可以显着<strong>更快地比较两个密集表示</strong>，这是一个基本的要求；</li>
+<li>每当<strong>被比较的图像之间的距离低于阈值时，就识别出闭环</strong>，阈值可以手动设置，它可以调整以适应环境条件的变化，与相似度值成比例的置信比也可以用闭环来报告。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h2 id="三传感器融合">三、传感器融合</h2>
+<h3 id="12-具有显式遮挡处理和平面检测的精确的直接视觉激光里程计">12. 具有显式遮挡处理和平面检测的精确的直接视觉激光里程计</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[12]</strong> Huang K, Xiao J, Stachniss C. <a href="http://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/huang2019icra.pdf"><strong>Accurate Direct Visual-Laser Odometry with Explicit Occlusion Handling and Plane Detection</strong></a>[C]//Proceedings of the IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->具有显式遮挡处理和平面检测的精确的直接视觉激光里程计<!-- raw HTML omitted --></li>
+<li>国防科大</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-8">摘要</h4>
+<ul>
+<li>本文讨论了<strong>将三维激光扫描仪和相机信息相结合</strong>来估计移动平台运动的问题，提出了一种<strong>基于光度图像对准的直接激光视觉里程计方法</strong>；</li>
+<li>我们的方法旨在<strong>最大化图像和激光扫描两者的信息使用</strong>，以计算准确的帧到帧运动估计；</li>
+<li><!-- raw HTML omitted -->为了<strong>处理距离测量的稀疏性</strong>，我们的方法<strong>识别各个点云内的平面点集，然后从相机图像中提取其相应的像素块</strong><!-- raw HTML omitted -->；</li>
+<li>提取的<strong>平面图像块与非平面像素一起使用</strong>，以使用能够<strong>结合两种类型的像素对准的单应性公式</strong>来估计帧到帧的运动；</li>
+<li>为了获得较高的估计精度，我们明确地<strong>预测了不同位置的观测可能造成的遮挡</strong>；</li>
+<li>我们使用 KITTI 数据集以及使用 Clearpath Husky 平台记录的数据来评估我们提出的方法，实验表明，我们的方法可以实现有竞争力的估计准确性，并<strong>产生一致的注册彩色点云</strong>。</li>
+</ul>
+<h4 id="主要贡献-5">主要贡献</h4>
+<ul>
+<li>本文的主要贡献是提出了一种新的<strong>直接联合激光相机运动估计方法</strong>；</li>
+<li>我们<strong>利用平面信息，进行遮挡预测和两阶段配准</strong>；</li>
+<li>通过这种新的配准方法，我们的方法<strong>能够利用单目相机图像和激光测距数据获得精确的帧到帧运动估计</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="13-用于地面机器人的-rgbd-惯导轨迹估计与建图">13. 用于地面机器人的 RGBD-惯导轨迹估计与建图</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[13]</strong> Shan Z, Li R, Schwertfeger S. <a href="https://www.mdpi.com/1424-8220/19/10/2251"><strong>RGBD-Inertial Trajectory Estimation and Mapping for Ground Robots</strong></a>[J]. Sensors, <strong>2019</strong>, 19(10): 2251.
+<ul>
+<li><!-- raw HTML omitted -->用于地面机器人的 RGBD-惯导轨迹估计与建图<!-- raw HTML omitted --></li>
+<li>上海科技大学   <a href="https://scholar.google.com/citations?user=Y2olJ9kAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+<li><a href="https://github.com/STAR-Center/VINS-RGBD">代码开源</a>   <a href="https://robotics.shanghaitech.edu.cn/datasets/VINS-RGBD">演示视频</a>   期刊：开源，中科院三区，JCR Q2Q3</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-9">摘要</h4>
+<ul>
+<li>将相机传感器用于地面机器人的同步定位和绘图（SLAM）比基于激光的方法有许多优点，例如成本低、鲁棒性高；</li>
+<li>RGBD 传感器有望同时满足这两方面的要求：从具有深度信息的相机中获取稠密数据；</li>
+<li>本文提出了一种基于开源软件 VINS-mono 的视觉 SLAM 系统，即 VINS-RGBD 与 IMU 数据融合；</li>
+<li>本文对 VINS 方法进行了分析，重点讨论了该方法的可观测性问题；</li>
+<li>然后，我们扩展了 VINS-mono 系统，<!-- raw HTML omitted -->在初始化过程和VIO（视觉惯性里程表）阶段使用深度数据<!-- raw HTML omitted -->；</li>
+<li>此外，我们还<strong>集成了一个基于子采样深度数据和八叉树滤波的建图系统</strong>，以实现包括闭环在内的实时建图；</li>
+<li>我们提供用于评估的软件和数据集，广泛的实验是在不同的环境中使用手持、轮式和履带式机器人进行的，我们展示了 ORB-SLAM2 在我们的应用程序中失败，并看到我们的 VINS-RGBD 方法优于 VINS-mono。</li>
+</ul>
+<h4 id="主要贡献-6">主要贡献</h4>
+<ul>
+<li>为 VINS-RGBD 系统制定和实现<strong>深度集成的初始化过程</strong>；</li>
+<li>深度集成的视觉惯性里程计（VIO）的制定和实施，<strong>克服了视觉和仅 IMU VIO 系统的退化情况</strong>；</li>
+<li>设计和实现后端建图功能，<strong>构建具有噪声抑制功能的稠密点云</strong>，适用于进一步的地图后期处理和路径规划；</li>
+<li>具有手持式，轮式机器人和跟踪机器人运动的<strong>彩色深度惯性数据集</strong>，具有用于groundtruth 的跟踪系统数据。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="14-ds-vio基于双重-ekf-的稳健高效的双目视觉惯性测距仪">14. DS-VIO：基于双重 EKF 的稳健高效的双目视觉惯性测距仪</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[14]</strong> Xiong X, Chen W, Liu Z, et al. <a href="https://arxiv.org/pdf/1905.00684.pdf"><strong>DS-VIO: Robust and Efficient Stereo Visual Inertial Odometry based on Dual Stage EKF</strong></a>[J]. arXiv preprint arXiv:1905.00684, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->DS-VIO：基于双重 EKF 的稳健高效的双目视觉惯性测距仪<!-- raw HTML omitted --></li>
+<li>哈工大   <a href="https://scholar.google.com/citations?user=Dhnz264AAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-10">摘要</h4>
+<ul>
+<li>本文提出了一种<strong>基于扩展卡尔曼滤波的实时鲁棒双目视觉惯性里程计</strong>；</li>
+<li><!-- raw HTML omitted -->基于 EKF 的算法的<strong>第一阶段是加速度计和陀螺仪的融合</strong>，第二阶段是<strong>双目相机和 IMU 的融合</strong><!-- raw HTML omitted -->；</li>
+<li>由于加速度计与陀螺仪、双目与 IMU 之间具有足够的互补性，基于双重 EKF 的算法可以实现高精度的里程计估计；</li>
+<li>同时，由于该算法的<strong>状态向量维数较低</strong>，计算效率与以前的基于滤波器的方法相当；</li>
+<li>我们称我们的方法为 DS-VIO（基于双重 EKF 的立体视觉惯性里程计），并通过将其与 EuRoC  数据集上的最新方法（包括OKVIS、Rovio、VINS-Mono和S-MSCKF）进行比较来评估我们的 DS-VIO 算法，结果表明，该算法在<strong>均方根误差方面具有可比性甚至更好的性能</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="15-使用复合路标的在移动平台上自主着陆的微型飞行器">15. 使用复合路标的在移动平台上自主着陆的微型飞行器</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[15]</strong> Xing B Y, Pan F, Feng X X, et al. <a href="https://www.hindawi.com/journals/ijae/2019/4723869/abs/"><strong>Autonomous Landing of a Micro Aerial Vehicle on a Moving Platform Using a Composite Landmark</strong></a>[J]. International Journal of Aerospace Engineering, 2019, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->使用复合路标的在移动平台上自主着陆的微型飞行器<!-- raw HTML omitted --></li>
+<li>北京理工大学   <a href="https://www.youtube.com/watch?v=ZljQ1Ng-EIQ"><strong>演示视频</strong></a>     期刊开源   中科院四区，JCR Q3 ，IF 1.329</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-11">摘要</h4>
+<ul>
+<li>在现有的基于视觉的微型飞行器(MAVs)在移动平台上自主着陆系统中，<strong>航标定位范围有限</strong>，移动平台<strong>测量偏差未知</strong>(如轮滑或编码器标定不准确)，着陆轨迹打结严重影响系统性能；</li>
+<li>为了克服上述不足，本文提出了一种<strong>基于复合地标的自主着陆系统</strong>；</li>
+<li>在所提出的系统中，<strong>将缺口环路标和二维路标组合为 R2D 路标</strong>，以提供<strong>大范围的视觉定位</strong>；</li>
+<li>此外，编码器的轮滑和不精确校准被建模为<strong>编码器的未知测量偏差，并通过扩展卡尔曼滤波器在线估计</strong>；</li>
+<li>在每个控制循环中，求解器将着陆轨迹规划为<strong>凸二次规划问题</strong>；</li>
+<li>同时，提出了一种<strong>用于添加等式约束的迭代算法</strong>，并用于验证计划轨迹是否可行；</li>
+<li>仿真和实际着陆实验结果验证了以下几点
+<ul>
+<li><strong>R2D 地标的视觉定位具有定位范围广，定位精度高的特点</strong>；</li>
+<li>具有未知编码器测量偏差的移动平台的姿态估计结果是连续准确的；</li>
+<li>提出的着陆轨迹规划算法提供了可靠着陆的连续轨迹。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h2 id="四ar--mr--vr">四、AR &amp; MR &amp; VR</h2>
+<h3 id="16-多运动刚体运动三维跟踪与重建">16. 多运动刚体运动三维跟踪与重建</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[16]</strong> Ozawa T, Nakajima Y, Saito H. <a href="https://ieeexplore.ieee.org/abstract/document/8709158"><strong>Simultaneous 3D Tracking and Reconstruction of Multiple Moving Rigid Objects</strong></a>[C]//2019 12th Asia Pacific Workshop on Mixed and Augmented Reality (APMAR). IEEE, <strong>2019</strong>: 1-5.
+<ul>
+<li><!-- raw HTML omitted -->多运动刚体运动三维跟踪与重建<!-- raw HTML omitted --></li>
+<li>日本庆应义塾大学   <a href="https://scholar.google.com/citations?user=lX5lY8YAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+<li>分类错了，怎么放到 AR 部分了呢？？请忽略。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-12">摘要</h4>
+<ul>
+<li>大多数 SLAM 系统基于静态场景的假设而工作，所以相机的定位和场景的建图都会失败，导致包括运动物体在内的场景精度下降；</li>
+<li>本文提出了一种<strong>基于时间帧几何分割的运动目标在目标场景中的建图与运动相机定位同时进行的方法</strong>；</li>
+<li><!-- raw HTML omitted -->该方法<strong>利用目标场景的分割，仅利用场景的几何结构</strong>，在<strong>不识别目标的情况下，就可以估计出相机的相对姿态和每个几何分割区域</strong><!-- raw HTML omitted -->；</li>
+<li>为了验证该方法的有效性，实验表明该方法<strong>可以估计场景中所有分段区域的相对姿态</strong>，从而实现<strong>包括多个运动对象</strong>场景的 SLAM。</li>
+<li>主要贡献在于我们提出了一种<strong>仅利用几何信息，从输入的深度图像序列和目标的三维地图中，同时估计运动相机和被分割目标的姿态的方法</strong>。</li>
+</ul>
+<h4 id="实现方法-1">实现方法</h4>
+<ul>
+<li>① <strong>分割</strong>
+<ul>
+<li>首先，为了估计每个物体的轨迹，将场景分割成不同物体；</li>
+<li>此时，<strong>基于目标场景中的对象大部分凸起的假设来执行边缘检测</strong>，并且其<strong>实现简单且快速的分割</strong>；</li>
+<li>除了<strong>深度的连续性</strong>之外，还通过<strong>深度的凸度来执行边缘检测</strong>。</li>
+</ul>
+</li>
+<li>② <strong>标签</strong>
+<ul>
+<li>为了在动态场景中执行 SLAM，针对每个对象单独地执行 6DOF 位姿估计；</li>
+<li>因此，必须<strong>通过场景向同一对象提供相同的标签</strong>；</li>
+<li>在上一步获得的<strong>边缘图中，执行连通分量标记以获得标签图</strong>，其中<strong>标签被分配给除了作为边的像素的每个像素</strong>；</li>
+<li>为了使从前一帧获得的标签图对应于从当前帧获得的标签图，比较这些标签图并修改标签。</li>
+</ul>
+</li>
+<li>③ <strong>SLAM</strong>
+<ul>
+<li>通过在每个对象和具有相同标签的 3D 模型之间执行<strong>点到平面 ICP 算法[15]来估计对象的姿势</strong>;</li>
+<li>此时，通过使用静态对象的姿势估计结果，可以获得传感器的自身位置；</li>
+<li>随后，通过使用对象和传感器的估计位置和取向，<!-- raw HTML omitted --><strong>通过将点云与相同标签合并来更新 3D 模型</strong><!-- raw HTML omitted -->。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="17-通过混合现实重温协作群件的发展">17. 通过混合现实重温协作:群件的发展</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[17]</strong> Ens B, Lanir J, Tang A, et al. <a href="https://www.sciencedirect.com/science/article/pii/S1071581919300606"><strong>Revisiting Collaboration through Mixed Reality: The Evolution of Groupware</strong></a>[J]. International Journal of Human-Computer Studies, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->通过混合现实重温协作:群件的发展<!-- raw HTML omitted --></li>
+<li>澳大利亚莫纳什大学，以色列海法大学，加拿大卡尔加里大学   期刊：中科院三区，JCR Q1Q2，IF 2.3</li>
+<li><strong>没啥用</strong></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-13">摘要</h4>
+<ul>
+<li><strong>协同混合现实（MR）</strong> 系统正处于一个关键时刻，因为它们很快就会变得更加普遍；</li>
+<li>然而，MR 技术直到最近才成熟到研究人员可以深入研究支持协作的细微差别，而不需要专注于创建支持协作的技术；</li>
+<li>在过去的 30 多年里，<strong>计算机支持的合作工作(CSCW)</strong> 领域主要集中在人类沟通和协作的基础上；</li>
+<li>由于 MR 研究现在正处于进入现实世界的边缘，我们回顾了三十年来的 MR 合作研究，并试图将其与 CSCW 的现有理论进行协调，以帮助 MR 研究人员定位，为他们的工作寻求富有成效的方向；</li>
+<li>为此，我们回顾了协作 MR 系统的历史，研究了 CSCW 和 MR 研究中常见的分类法和框架如何应用于协作 MR 系统的现有工作，探索了它们的不足之处，并寻找描述当前趋势的新方法；</li>
+<li>通过对新兴趋势的识别，我们为 MR 提出了未来的发展方向，并发现 CSCW 的研究人员可以在哪些领域探索新的理论，从而更全面地代表工作、娱乐和与他人相处的未来。</li>
+</ul>
+<hr>
+<h2 id="五learning-others">五、Learning others</h2>
+<h3 id="18-从单个深度图像完成语义场景理解">18. 从单个深度图像完成语义场景理解</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[18]</strong> Song S, Yu F, Zeng A, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Song_Semantic_Scene_Completion_CVPR_2017_paper.pdf"><strong>Semantic scene completion from a single depth image</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>CVPR 2017</strong>: 1746-1754.
+<ul>
+<li><!-- raw HTML omitted -->从单个深度图像完成语义场景理解<!-- raw HTML omitted --></li>
+<li>普林斯顿大学   <a href="https://scholar.google.com/citations?user=5031vK4AAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a></li>
+<li><a href="https://github.com/shurans/sscnet"><strong>代码开源</strong></a>  <a href="http://sscnet.cs.princeton.edu/">项目主页</a></li>
+<li>Wang H, Sridhar S, Huang J, et al. <a href="https://arxiv.org/pdf/1901.02970.pdf"><strong>Normalized Object Coordinate Space for Category-Level 6D Object Pose and Size Estimation</strong></a>[J]. arXiv preprint arXiv:1901.02970, <strong>2019</strong>.</li>
+<li><a href="https://www.researchgate.net/publication/333135099_A_Survey_of_3D_Indoor_Scene_Synthesis"><strong>A Survey of 3D Indoor Scene Synthesis</strong></a>[J]. Journal of Computer Science and Technology 34(3):594-608 · May <strong>2019</strong></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-14">摘要</h4>
+<ul>
+<li>本文主要研究<strong>语义场景补全</strong>，这是一项<strong>从单视图深度地图观测中生成一个完整的三维体素表示场景的体积占用地图和语义标签的任务</strong>；</li>
+<li>之前的工作分别考虑了<strong>场景补全和深度图的语义标注</strong>，但是，我们注意到<strong>这两个问题是紧密相连的</strong>；</li>
+<li>为了利用这两个任务的耦合特性，我们引入了<strong>语义场景补全网络</strong>(semantic scene completion network, SSCNet)，这是一个端到端三维卷积网络，它<!-- raw HTML omitted --><strong>以单个深度图像作为输入，同时输出相机视图中所有体素的占用率和语义标签</strong><!-- raw HTML omitted -->；
+<ul>
+<li>我们的网络<strong>使用一个基于扩展的三维上下文模块，有效地扩展了接受域</strong>，使三维上下文学习成为可能；</li>
+<li>为了训练我们的网络，我们构建了 <strong>SUNCG 一个手工创建的大型三维场景合成数据集</strong>，具有<strong>稠密的体积注释</strong>；</li>
+</ul>
+</li>
+<li>实验结果表明，该<strong>联合模型的性能优于单独处理每个任务的方法，也优于语义场景完成任务的替代方法</strong>。数据集和代码可以在http://sscnet.cs.princeton.edu</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="19-跳出边界框的思考无约束-3d-房间布局的生成">19. 跳出边界框的思考：无约束 3D 房间布局的生成</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[19]</strong> Howard-Jenkins H, Li S, Prisacariu V. <a href="https://arxiv.org/pdf/1905.03105.pdf"><strong>Thinking Outside the Box: Generation of Unconstrained 3D Room Layouts</strong></a>[C]//Asian Conference on Computer Vision. Springer, Cham, <strong>ACCV2018</strong>: 432-448.
+<ul>
+<li><!-- raw HTML omitted -->跳出边界框的思考：无约束 3D 房间布局的生成<!-- raw HTML omitted --></li>
+<li>牛津大学</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-15">摘要</h4>
+<ul>
+<li>我们提出了一种房间布局估计方法，该方法不依赖于典型的盒子近似或曼哈顿世界假设；</li>
+<li>相反，我们<strong>将几何推理问题重新表述为实例检测任务</strong>，我们通过使用 R-CNN 直接回归 3D 平面来解决这个问题；</li>
+<li>然后，我们使用<strong>概率聚类</strong>的一种变体，将在视频序列中<strong>每个帧回归的 3D 平面</strong>，以及它们<strong>各自的相机位姿</strong>，组合成一个单一的全局 3D 房间布局估计；</li>
+<li>最后，我们展示了<strong>对垂直对齐没有任何假设的结果，因此可以有效地处理任何对齐的墙壁</strong>。</li>
+</ul>
+<h4 id="主要贡献-7">主要贡献</h4>
+<ul>
+<li>提供围墙、地板和天花板的<strong>类型和范围的边界面实例检测器</strong>；</li>
+<li>对 RGB 图像中的每个<strong>房间平面实例进行直接平面回归</strong>；</li>
+<li>结合即时测量，<strong>从 RGB 图像序列中获得 3D 布局</strong>，该序列不受 Boxy 或曼哈顿世界限制。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h2 id="六others">六、Others</h2>
+<h3 id="20-ls3d-单视图格式塔三维表面重建曼哈顿线段">20. LS3D: 单视图格式塔三维表面重建曼哈顿线段</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[20]</strong> Qian Y, Ramalingam S, Elder J H. <a href="http://www.elderlab.yorku.ca/wp-content/uploads/2018/12/LS3DACCV18.pdf"><strong>LS3D: Single-View Gestalt 3D Surface Reconstruction from Manhattan Line Segments</strong></a>[C]//Asian Conference on Computer Vision. Springer, Cham, <strong>ACCV 2018</strong>: 399-416.
+<ul>
+<li><!-- raw HTML omitted -->LS3D: 单视图格式塔三维表面重建曼哈顿线段<!-- raw HTML omitted --></li>
+<li>英国约克大学，美国犹他大学    <a href="https://scholar.google.com/citations?user=gmpm0a8AAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a>    会议 ACCV：CCF 人工智能 C 类会议</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-16">摘要</h4>
+<ul>
+<li>最近用于单视图三维重建的深度学习算法可以恢复粗糙的3D布局，但无法捕捉到优雅的城市景观的清晰线性结构；</li>
+<li>在这里，我们展示了<strong>对于 3D 曼哈顿建筑重建的特定问题</strong>，在经典的建设性感知组织框架内<strong>明确应用线性透视和曼哈顿约束</strong>允许计算准确且有意义的重建；</li>
+<li>所提出的 The proposed Line-Segment-to-3D (LS3D) 算法通过<strong>重复应用格式塔邻近原理来计算层次表示</strong>；
+<ul>
+<li><strong>边缘首先被组织成线段</strong>，并且提取符合曼哈顿帧的子集；</li>
+<li>通过邻近度对正交线段的最佳二分组最小化总间隙并生成一组<strong>曼哈顿生成树</strong>，然后将每个生成树提升到 3D；</li>
+<li>对于每个 3D 曼哈顿树，我们识别完整的 3D 3-junctions 和 3-paths，并显示每个都定义了一个独特的最小跨度长方体；</li>
+<li><strong>每个曼哈顿树生成的长方体一起定义了实体模型和该树的可见表面</strong>；</li>
+<li>这些实体模型的相对深度由 L1 最小化确定，L1 最小化再次植根于深度和图像尺寸的接近原理；</li>
+</ul>
+</li>
+<li>该方法具有相对较少的参数并且不需要训练；</li>
+<li>对于<strong>定量</strong>评估，我们引入了新的 <strong>3D 曼哈顿建筑数据集（3DBM）</strong>，我们发现所提出的 LS3D 方法产生的 3D 重建在质量和数量上都优于由最先进的深度学习方法产生的重建。</li>
+</ul>
+<h4 id="主要贡献-8">主要贡献</h4>
+<ul>
+<li>介绍了一种新颖的，<!-- raw HTML omitted -->可解释的<strong>单视图三维重建算法</strong>，称为 LS3D，它<strong>推断出曼哈顿建筑的三维欧几里德表面布局</strong><!-- raw HTML omitted -->，直到未知的比例因子；</li>
+<li><!-- raw HTML omitted -->引入了一个<strong>新的 3D 曼哈顿建筑物 3DBM groundtruth 数据集模型</strong><!-- raw HTML omitted -->和一个新的评估框架，允许评估和比较 3D 曼哈顿建筑物重建的单视图方法；</li>
+<li>使用这个数据集和框架，我们发现 LS3D 方法优于最先进的方法深度学习算法，无论是定性的还是定量。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="21-一种用于6d目标姿态跟踪的-rao-blackwellized-粒子滤波器">21. 一种用于6D目标姿态跟踪的 Rao-Blackwellized 粒子滤波器</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[21]</strong> Deng X, Mousavian A, Xiang Y, et al. <a href="https://arxiv.org/pdf/1905.09304.pdf"><strong>PoseRBPF: A Rao-Blackwellized Particle Filter for 6D Object Pose Tracking</strong></a>[J]. arXiv preprint arXiv:1905.09304, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->一种用于6D目标姿态跟踪的 Rao-Blackwellized 粒子滤波器<!-- raw HTML omitted --></li>
+<li>英伟达，华盛顿大学，斯坦福大学    <a href="https://www.youtube.com/watch?v=lE5gjzRKWuA&amp;feature=youtu.be">演示视频</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-17">摘要</h4>
+<ul>
+<li>从视频中<strong>获取物体的 6D 姿态</strong>可以为机器人执行不同的任务提供丰富的信息，如操作和导航；</li>
+<li>本文在 Rao Blackwellized 粒子滤波框架中，建立了一个 6D 目标姿态跟踪问题，将目标的<strong>三维旋转和三维平移</strong>分离开来；</li>
+<li>这种因式分解使我们的方法（称为 PoseRBPF）能够有效地估计物体的<strong>三维平移以及在三维旋转过程中的完整分布</strong>；</li>
+<li>这是通过以<strong>细粒度的方式离散旋转空间</strong>，并训练一个自动编码器网络，为离散旋转构造一个特征嵌入的代码本来实现的；</li>
+<li>因此，<strong>PoseRBPF 可以跟踪具有任意对称性的物体，同时保持足够的后验分布</strong>；</li>
+<li>我们的方法在两个 6D 姿态估计基准数据集上实现了最先进的结果。</li>
+</ul>
+<h4 id="主要贡献-9">主要贡献</h4>
+<ul>
+<li>本文介绍了一种新的 6D 目标姿态估计框架，该框架<strong>将 RAO Blackwellized 粒子滤波与学习型自动编码器网络有效地结合在一起</strong>；</li>
+<li>我们的框架能够跟踪 6D 物体姿态的完整分布，它也可以<strong>对具有任意对称类型的对象</strong>这样实现，而不需要任何手动对称标记。</li>
+</ul>
+<hr>
+<blockquote>
+<p><a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a> <br>
+2019.06.01</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-06-16-orb-slam2-features/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😀 ORB-SLAM2 代码解读（三）：特征提取</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-06-09-line-based-object-slam/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>非线性优化之高斯牛顿法、L-M 算法 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="1. 状态估计中的最小二乘问题 1.1 贝叶斯法则 SLAM 要解决的两个问题是定位（求解相机位姿）和建图（求解路标的位置），因此可以分别用一个运动方程和观测方程" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-07-01-nonlinear-optimization/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="非线性优化之高斯牛顿法、L-M 算法" />
+<meta property="og:description" content="1. 状态估计中的最小二乘问题 1.1 贝叶斯法则 SLAM 要解决的两个问题是定位（求解相机位姿）和建图（求解路标的位置），因此可以分别用一个运动方程和观测方程" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-07-01-nonlinear-optimization/" />
+<meta property="article:published_time" content="2019-07-01T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-07-01T00:00:00+08:00" />
+<meta itemprop="name" content="非线性优化之高斯牛顿法、L-M 算法">
+<meta itemprop="description" content="1. 状态估计中的最小二乘问题 1.1 贝叶斯法则 SLAM 要解决的两个问题是定位（求解相机位姿）和建图（求解路标的位置），因此可以分别用一个运动方程和观测方程">
+<meta itemprop="datePublished" content="2019-07-01T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-01T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="2752">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="非线性优化之高斯牛顿法、L-M 算法"/>
+<meta name="twitter:description" content="1. 状态估计中的最小二乘问题 1.1 贝叶斯法则 SLAM 要解决的两个问题是定位（求解相机位姿）和建图（求解路标的位置），因此可以分别用一个运动方程和观测方程"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">非线性优化之高斯牛顿法、L-M 算法</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-01 </span>
+        <div class="post-category">
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 2752 字 </span>
+          <span class="more-meta"> 预计阅读 6 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="状态估计中的最小二乘问题">1. 状态估计中的最小二乘问题</h2>
+<h3 id="贝叶斯法则">1.1 贝叶斯法则</h3>
+<ul>
+<li>SLAM 要解决的两个问题是<strong>定位（求解相机位姿）</strong>和<strong>建图（求解路标的位置）</strong>，因此可以分别用一个<strong>运动方程</strong>和<strong>观测方程</strong>来建模 SLAM 问题： <span class="math display">\[
+  \left\{\begin{matrix}
+  x_{k} = f\left ( x_{k-1},u_{k} \right ) + w_{k}\\ 
+  z_{k,j} = h\left ( y_{i},x_{k} \right ) + v_{k,j}
+  \end{matrix}\right.
+  \]</span>
+<ul>
+<li>其中第一个公式称为<strong>运动方程</strong>，<span class="math inline">\(x_k\)</span> 表示 k 时刻相机的位姿，其受到<strong>上一时刻 k-1 时刻的位姿</strong> <span class="math inline">\(x_{k-1}\)</span> 和<strong>当前时刻 k 传感器输入</strong>（比如 IMU 提供的旋转、相机计算出的 R，t）的影响。<span class="math inline">\(w_k\)</span> 是噪声项，满足 0 均值的高斯分布；</li>
+<li>第二个公式称为<strong>观测方程</strong>，<span class="math inline">\(z_{k,j}\)</span> 表示在相机位姿 <span class="math inline">\(x_k\)</span> 时对路标点 <span class="math inline">\(y_i\)</span> 产生的观测（图像上的像素位置），<span class="math inline">\(v_{k,j}\)</span> 是噪声项，满足 0 均值的高斯分布。</li>
+</ul></li>
+<li>将所有待估计的量放入一个状态变量中 <span class="math inline">\(x = \left \{ x_1, \cdots ,x_N,y_1,\cdots ,y_N \right \}\)</span>，于是<strong>对机器人的状态估计就是已知输入数据 <span class="math inline">\(u\)</span> 和观测数据 <span class="math inline">\(z\)</span> 的情况下，求 <span class="math inline">\(x\)</span> 的条件概率分布</strong>（这里的 x ,z ,u 都是数据的统称，不对应上面的两个方程） <span class="math display">\[
+  P\left ( x|z,u \right )
+  \]</span>
+<ul>
+<li>如果不考虑图像在连续时间上的运动问题，即没有传感器的运动测量，<strong>只有图像提供的观测，问题就变成了 SFM</strong>，变成估计 <span class="math inline">\(P\left ( x|z \right )\)</span>。</li>
+</ul></li>
+<li>然后介绍几个概念
+<ul>
+<li><font color = red><strong>先验</strong></font>：指根据以往经验和分析得到当前的概率（在这里就是<strong>根据 0 ~ k-1 时刻的状态来推测 k 时刻的状态</strong>）；</li>
+<li><font color = red><strong>后验</strong></font>：事件已经发生了，但发生可能有很多原因，判断事情发生时由哪个原因引起的概率（在这里可以理解为<strong>已知 k 时刻的状态，求这个状态是由观测 z 引起的概率</strong>）；</li>
+<li><font color = red><strong>似然</strong></font>：事件已经发生，可能的原因有哪些（在现在的位姿下，可能产生怎样的观测数据）；</li>
+<li><font color = red><strong>最大似然</strong></font>：在什么样的状态下，最可能产生现在的观测。</li>
+</ul></li>
+<li>为估计状态变量的条件分布，利用<strong>贝叶斯法则</strong>有： <span class="math display">\[
+  P\left ( x|z \right ) = \frac{P(z|x)P(x)}{P(z)}\propto P(z|x)P(x)
+  \]</span>
+<ul>
+<li>一个形象的例子（<a href="https://www.cnblogs.com/yemanxiaozu/p/7680761.html">参考</a>）
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/fig1.png" title="fig1" width="600" />
+</center></li>
+<li>公式中左侧 <span class="math inline">\(P\left ( x|z \right )\)</span> 称为<strong>后验概率</strong>，右侧的 <span class="math inline">\(P(z|x)\)</span> 称为<strong>似然</strong>，<span class="math inline">\(P(x)\)</span> 称为<strong>先验</strong>；</li>
+<li>直接求后验分布是困难的，但是求一个状态最优估计，使得该状态下<strong>后验概率最大化</strong>（MAP）是可行的（贝叶斯法则的分母部分与待估计的状态量 x 无关，因此忽略） <span class="math display">\[
+  {x^*}_{MAP} = arg maxP(x|z) = arg maxP(z|x)P(x)
+  \]</span></li>
+</ul></li>
+<li>也就是说求解 <font color =red><strong>后验 = 最大似然 × 先验</strong></font>，当没有相机位姿先验时，转变为求解 x 的<strong>最大似然估计</strong>：在怎样的状态 x 下，最可能产生现在的观测 z <span class="math display">\[
+  {x^*}_{MLE} = arg maxP(z|x)
+  \]</span></li>
+</ul>
+<h3 id="最小二乘的引出">1.2 最小二乘的引出</h3>
+<ul>
+<li><font color =red><strong>在高斯分布下，最大似然有较简洁的形式，可以通过最小化负对数的方式来求解一个高斯分布的最大似然。</strong></font></li>
+<li>回顾前面的<strong>观测方程</strong> <span class="math inline">\(z_{k,j} = h\left ( y_{i},x_{k} \right ) + v_{k,j}\)</span>，假设其<strong>噪声项服从 0 均值的高斯分布</strong> <span class="math inline">\(v_k \sim N(0, Q_{k,j})\)</span> ，则其观测数据的条件概率为： <span class="math display">\[
+  P\left ( z_{j,k}|x_k,y_j \right ) \sim N(h(y_i,h_k), Q_{k,j})
+  \]</span></li>
+<li>考虑任意一个<strong>高维高斯分布</strong> <span class="math inline">\(x\sim N(\mu ,\Sigma )\)</span>，其<strong>概率密度函数展开</strong>的形式为：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f1.png" title="f1" width="500" />
+</center>
+<ul>
+<li>对上式<strong>取负对数</strong>（高斯分布在负对数下有较好的数学形式）有
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f2.png" title="f2" width="600" />
+</center></li>
+<li>对原分布求最大化相当于<strong>对负对数求最小化</strong>，在最小化上式的 x 时,第一项与 x 无关,可以略去。于是，<strong>只要最小化右侧的二次型项，就得到了对状态的最大似然估计</strong>。</li>
+</ul></li>
+<li>将上式带入到 SLAM 模型中，得到
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f3.png" title="f3" width="600" />
+</center>
+<ul>
+<li>观察上式会发现相当于<strong>最小化噪声项（即误差项）的平方</strong></li>
+</ul></li>
+<li>对于所有的运动和任意的观测，定义<strong>数据与观测值之间的误差</strong>为：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f4.png" title="f4" width="300" />
+</center>
+<ul>
+<li>从而求得该<strong>误差的平方之和</strong>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f5.png" title="f5" width="500" />
+</center></li>
+</ul></li>
+<li>上式即为 <strong>SLAM 的最小二乘问题</strong>，<strong>通过不断调整误差量使之达到一个极小值，从而得到最准确的状态估计</strong>。</li>
+</ul>
+<hr />
+<h2 id="最小二乘问题的一阶二阶梯度法">2. 最小二乘问题的一阶二阶梯度法</h2>
+<ul>
+<li>对于方便直接求解的函数，通过使目标函数的导数为 0，然后逐个比较导数为 0 处的极值；对于<strong>不方便直接求解的最小二乘问题</strong>，使用<strong>迭代</strong>的方式，从一个初始值出发，不断地更新当前的优化变量，<strong>使目标函数下降</strong>，重点是要寻找到每次<strong>增量</strong><span class="math inline">\(\Delta x\)</span>。</li>
+</ul>
+<h3 id="最速下降法">2.1 最速下降法</h3>
+<ul>
+<li>求解增量最直接的方式是将<strong>目标函数在 x 附近进行泰勒展开</strong>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f2.1.1.png" title="f2.1.1" width="500" />
+</center>
+<ul>
+<li>其中 <span class="math inline">\(J\)</span> 是关于 x 的<strong>导数（雅克比矩阵）</strong>， <span class="math inline">\(H\)</span> 是<strong>二阶导（海森矩阵）</strong>，可以<strong>选择对其保留一阶项或二阶项</strong>。</li>
+</ul></li>
+<li>如果只保留一阶项，则<font color =red><strong>增量的方向</strong></font>为： <span class="math display">\[
+  \Delta x^{*} =-J^{T}\left ( x \right )
+  \]</span>
+<ul>
+<li>其意义为<strong>沿着逆梯度的方向进行迭代</strong>（还需要取一个步长），求得最快的下降方式，称为<strong>最速下降法</strong>，其缺点是过于贪心，容易走出<strong>锯齿</strong>路线，反而增加了迭代次数。</li>
+</ul></li>
+</ul>
+<h3 id="牛顿法">2.2 牛顿法</h3>
+<ul>
+<li>如果对上面的泰勒展开式<strong>保留至二阶项</strong>，则<font color =red><strong>增量的方程</strong></font>为：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f2.1.3.png" title="f2.1.3" width="500" />
+</center>
+<ul>
+<li>求右侧等式关于 <span class="math inline">\(\Delta x\)</span> 的导数，并令其为 0，得到<strong>增量的解</strong> <span class="math display">\[
+  H\Delta x =-J^{T} \Rightarrow \Delta x = -H^{-1}J^{T}
+  \]</span></li>
+<li>这个方法称为<strong>牛顿法</strong>，二阶收敛，但<strong>需要计算目标函数的 H 矩阵</strong>,这在问题规模较大时非常困难，我们通常倾向于避免 H 的计算</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="高斯-牛顿法">3. 高斯-牛顿法</h2>
+<ul>
+<li>对于一个<strong>非线性最小二乘问题</strong> <span class="math inline">\(x = arg min\frac{1}{2}\left \| f\left ( x \right ) \right \|^{2}\)</span>，<strong>高斯牛顿法</strong>的思想是对 <span class="math inline">\(f(x)\)</span>（而不是目标函数 <span class="math inline">\(f\left ( x \right )^{2}\)</span>）进行<strong>泰勒展开，取一阶线性项近似</strong> <span class="math display">\[
+  f\left ( x+\Delta x \right )\approx f\left ( x \right ) +J\left ( x \right )\Delta x
+  \]</span>
+<ul>
+<li>将其带入到最小二乘问题中，得到
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f3.1.png" title="f3.1" width="700" />
+</center></li>
+<li>对上式关于 <span class="math inline">\(\Delta x\)</span> 求导，令导数为 0 得到 <span class="math display">\[
+  J(x)^{T}J(x)\Delta x = -J(x)^{T}f(x)
+  \]</span></li>
+</ul></li>
+<li>上式即为<strong>高斯牛顿方程</strong>（增量方程、正规方程），需要求的变量是 <span class="math inline">\(\Delta x\)</span> ，是一个线性方程，将左侧的系数定义为 H，右侧定义为 g，上式变成 <span class="math display">\[
+  H\Delta x = g
+  \]</span>
+<ul>
+<li>注意上式左侧的 H，<font color =red><strong>高斯牛顿法中用 <span class="math inline">\(J^TJ\)</span> 来近似牛顿法中的二阶海森矩阵，从而省略了 H 矩阵的求解过程</strong>（所以高斯-牛顿是近似二阶泰勒展开）</font> 。</li>
+</ul></li>
+<li><strong>迭代步骤</strong>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/fig2.png" title="fig2" width="600" />
+</center></li>
+<li><strong>缺陷</strong>
+<ul>
+<li>高斯牛顿<strong>要求所用的近似 H 矩阵是可逆的(而且是正定的)</strong> ，但实际数据中计算得到的 <span class="math inline">\(J^TJ\)</span> 只有<strong>半正定性</strong>，也就是说,在使用 Gauss Newton 方法时,可能出现 <span class="math inline">\(J^TJ\)</span> <strong>为奇异矩阵或者病态</strong>的情况，此时<strong>增量的稳定性较差，导致算法不收敛</strong>；</li>
+<li>更严重的是,就算我们假设 H 非奇异也非病态，如果求出来的步长 <span class="math inline">\(\Delta x\)</span> 太大，也会导致我们采用的局部近似(一阶泰勒展开式) 不够准确，这样一来我们甚至都<strong>无法保证它的迭代收敛</strong>，哪怕是让目标函数变得更大都是有可能的。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="l-m-法">4. L-M 法</h2>
+<ul>
+<li><strong>G-N 方法中采用的近似二阶泰勒展开只能在展开点附近有较好的近似结果，<font color = red>在 L-M 算法中给增量添加了一个信任域</font></strong>，这个区域由近似模型和实际函数之间的差异来确定，如果差异小，可以让范围尽量大；如果差异大，则缩小近似范围。</li>
+<li>L-M 算法的优化问题：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f4.1.png" title="f4.1" width="500" />
+</center>
+<ul>
+<li>其中 <span class="math inline">\(\mu\)</span> 是信任区域的半径，将增量限定在一个半径为 <span class="math inline">\(\mu\)</span> 的球内，约束项带上 D 之后，这个球可以看成一个椭球；
+<ul>
+<li>在 Levenberg 提出的优化方法中，将 D 取单位矩阵 I，相当于直接把 <span class="math inline">\(\Delta x\)</span> 约束在一个球中；</li>
+<li>之后 Marqaurdt 剔除将 D 取成非负数对角阵（实际中通常取 <span class="math inline">\(J^TJ\)</span> 的对角元素平方根），使得<strong>在梯度小的维度上约束范围更大一点</strong>。</li>
+</ul></li>
+</ul></li>
+<li>利用<strong>拉格朗日乘子</strong>将上面的有约束优化问题转换成<strong>无约束优化问题</strong>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190701/f4.2.png" title="f4.2" width="450" />
+</center>
+<ul>
+<li>其中 <span class="math inline">\(\lambda\)</span> 是拉格朗日乘子。类似于前面高斯牛顿的方法，将其展开，其实<strong>该问题的核心仍然是计算增量的线性方程</strong> <span class="math display">\[
+  \left ( H + \lambda D^{T} D\right )\Delta x = g
+  \]</span></li>
+<li>上式增量方程相比于 G-N 多了意向 <span class="math inline">\(\lambda D^{T} D\)</span> ，先将其带入简化的形式，即 <span class="math inline">\(D=I\)</span>，相当于是求解 <span class="math display">\[
+  \left ( H + \lambda I\right )\Delta x = g
+  \]</span></li>
+<li>对于上式增量方程可以发现:
+<ul>
+<li><strong>当参数 <span class="math inline">\(\lambda\)</span> 较小时</strong>， H 占主导地位，说明二次近似模型在该范围内比较好，<font color = red><strong>L-M 算法更接近于 G-N 算法</strong></font>；</li>
+<li><strong>当参数 <span class="math inline">\(\lambda\)</span> 较大时</strong>， <span class="math inline">\(\lambda I\)</span> 占主导L-M 算法更接近于一阶梯度下降法（<strong>最速下降法</strong>）。</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="r.-参考资料">R. 参考资料</h2>
+<ul>
+<li>[1] <a href="">SLAM 十四讲第 6 讲</a></li>
+<li>[2] <a href="https://www.cnblogs.com/yemanxiaozu/p/7680761.html">贝叶斯公式的直观理解(先验概率/后验概率)</a></li>
+<li>[3] <a href="https://zhuanlan.zhihu.com/p/42383070">[优化] Gauss-Newton非线性最小二乘算法</a></li>
+<li>[4] <a href="https://blog.csdn.net/jinshengtao/article/details/51615162">Gauss-Newton算法学习</a><font color =red><strong>（☆）</strong></font></li>
+</ul>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2019.07.01</p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-07-03-orb-slam2-optimization1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😀 ORB-SLAM2 代码解读（三）：优化 1（概述）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-06-17-orb-slam2-monocular-initialization/">
+            <span class="next-text nav-default"> 😀 ORB-SLAM2 代码解读（三）：单目初始化</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 在非参数和聚类的 SLAM 中使用类别物体进行定位
+Iqbal A, Gans N R. Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2018: 161-168.
+德克萨斯大学计算机工程学院
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-07-12-nonparametric-statistics-and-clustering/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位" />
+<meta property="og:description" content="
+在非参数和聚类的 SLAM 中使用类别物体进行定位
+Iqbal A, Gans N R. Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2018: 161-168.
+德克萨斯大学计算机工程学院
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-07-12-nonparametric-statistics-and-clustering/" />
+<meta property="article:published_time" content="2019-07-12T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-07-12T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位">
+<meta itemprop="description" content="
+在非参数和聚类的 SLAM 中使用类别物体进行定位
+Iqbal A, Gans N R. Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2018: 161-168.
+德克萨斯大学计算机工程学院
+">
+<meta itemprop="datePublished" content="2019-07-12T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-12T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8267">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位"/>
+<meta name="twitter:description" content="
+在非参数和聚类的 SLAM 中使用类别物体进行定位
+Iqbal A, Gans N R. Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2018: 161-168.
+德克萨斯大学计算机工程学院
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-12 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 8267 字 </span>
+          <span class="more-meta"> 预计阅读 17 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>在非参数和聚类的 SLAM 中使用类别物体进行定位</strong><br />
+Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/8593541/"><strong>Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering</strong></a>[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2018</strong>: 161-168.<br />
+德克萨斯大学计算机工程学院</p>
+</blockquote>
+<h1 id="localization-of-classified-objects-in-slam-using-nonparametric-statistics-and-clustering">Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>如何提取和建立检测到的<strong>物体作为可能的路标</strong>，同时进行地图的定位和构建；</li>
+<li>解决目标检测的<strong>数据关联</strong>问题，以及识别地图中<strong>已存在的物体</strong>；</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>在<strong>数据关联</strong>的时候采用<strong>非参数的 Mann-Whitney 方法</strong>进行统计关联；</li>
+<li>在 SLAM 中<strong>位姿估计采用 SIFT 特征和 ICP 算法</strong>；</li>
+<li>在物体特征向量表示的时候<strong>不是采用质心的方式</strong>，而是采用<strong>物体所属区域的点的联合分布</strong>来表示；</li>
+<li>在连续帧间通过 <strong>NPDA</strong> 进行数据关联，当出现新的物体或遇到大的变动则使用<strong>基于密度的聚类</strong>（代价较高，不能每帧都聚类）。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>主要是定性分析，测试了<strong>三个 RGB-D 数据集</strong>；</li>
+<li>一方面是用<strong>椭圆表示聚类物体</strong>在地图中显示；</li>
+<li>另一方面比较了在<strong>序列中检测到的物体的总数</strong>和最后<strong>聚类在地图上的物体的数量</strong>。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>传感器采用 <strong>RGB-D</strong>；</li>
+<li><strong>椭圆表示的物体</strong>的位置不够准确，可利用的信息不多；</li>
+<li>只关注了数据关联，没有将<strong>物体作为路标进行优化位姿</strong>，也没有定量分析位姿数据；</li>
+<li>数据关联采用的<strong>非参数方法的是 Mann-Whitney 统计</strong>，聚类时采用的是<strong>开源的 HDBSCAN 库</strong>，其实创新点不多。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>传统的 SLAM 方法基于点，线或平面构建地图，这些地图在视觉上类似于环境，但<strong>没有任何关于环境中物体的语义或信息</strong>；</li>
+<li>机器学习的最新进展使得目标检测对于大量对象具有高度准确性和可靠性，<font color = red><strong>目标检测可以有效地帮助 SLAM 在建图过程中合并语义</strong></font>；</li>
+<li>其中一个主要障碍是<strong>检测到的物体随时间的数据关联</strong>；
+<ul>
+<li>我们演示了一种<font color = red><strong>非参数统计方法来解决连续帧上检测到的对象之间的数据关联</strong></font>；</li>
+<li>然后我们使用<font color = red><strong>无监督的聚类方法来识别地图中对象的存在</strong></font>，整个过程可以与 SLAM 并行运行；</li>
+</ul></li>
+<li>我们的算法的性能在几个公共数据集上得到了证明，这些数据集显示了在 SLAM 中定位物体的有较好的结果。</li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><font color = red><strong>SLAM 大背景：</strong></font>SLAM 用于解决在<strong>构建可识别的周围环境地图的同时在未知环境中定位移动机器人</strong>的问题；
+<ul>
+<li>SLAM 历史悠久，有许多重要贡献; Thrun[1]，[2] 和 Durrant-Whyte 和 Bailey [3] 提供了极好的概述和广泛的参考；</li>
+<li>许多 SLAM 方法涉及基于范围的传感器，例如雷达或LIDAR；</li>
+<li>基于视觉的SLAM（VSLAM）已经得到了使用相机作为主要路标获取传感器的广泛发展（例如，[4]，[5]）；</li>
+<li>一个重要的<strong>挑战是在环境地图中语义的表示和混合</strong>，以便它可以用于导航，交互，抓取等，这种感知学习是<strong>机器人和人工智能集成的主要挑战</strong>。</li>
+</ul></li>
+<li><font color = red><strong>引出本文出发点：</strong></font>大多数 SLAM 算法生成的地图由<strong>估计的几何特征组成，如点，平面或线，没有任何语义或信息</strong> [6]，[7]；
+<ul>
+<li>我们的工作<strong>目标是将语义和地图结构结合在一起，形成环境的连贯表示</strong>；</li>
+<li><font color = red>常见的<strong>语义包括空间</strong>（房间，走廊，大厅）和<strong>物体</strong>（桌子，椅子，标志等）的类别</font>；</li>
+<li><font color = red><strong>通过识别物体实例并在估计的地图中连续注册那些对象实例来添加语义</strong></font>。</li>
+</ul></li>
+<li><font color = red><strong>要解决的问题和实施方法：</strong></font>本文所要解决的问题是<strong>提取和建立检测到的目标作为可能的路标</strong>，同时进行地图的定位和构建；
+<ul>
+<li>对象和对象的位置都不是预先知道的，利用深度神经网络工具箱，如Tensorflow[8]、Caffe[9]等，可以对对象进行识别，近年来，这些深度机器学习方法已经超越了传统的目标检测；</li>
+<li>但是，它们更适合于<strong>从单个图像进行检测，并且在多个图像中没有关联</strong>；</li>
+<li>因此，我们提出了一种新的<strong>非参数统计方法的应用，以在连续帧关联检测对象</strong>；</li>
+<li>然后，我们<strong>使用无监督聚类方法来发现地图中存在的对象</strong>。</li>
+</ul></li>
+<li><font color = red><strong>主要贡献：</strong></font>
+<ul>
+<li>展示了如何将<strong>非参数统计方法</strong>用于连续图像中检测到的对象的数据关联；</li>
+<li>展示了一个<strong>无监督的聚类过程</strong>，以找出对象在环境映射中的可能位置，并结合非参数数据关联来帮助聚类过程；</li>
+<li>已经在公共数据集上评估了我们提出的方法，以显示显著的结果。</li>
+</ul></li>
+<li>如下图 1 是在 RGB-D 数据集中
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig1.PNG" title="fig1" width="500" />
+</center>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig2.PNG" title="fig1" width="1000" />
+</center></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<ul>
+<li>基于几何的 SLAM 方法的普遍特点是它们的<strong>地图包含几何和物理信息但没有场景的语义信息</strong>，本课题<strong>对环境的语义建图</strong>有着重要的研究兴趣；
+<ul>
+<li>在最近几个 SLAM 解决方案 [10,11] 中尝试了检测到的<strong>物体的数据关联</strong>问题；</li>
+<li>文献 [12 SLAM++] 提出一种<strong>面向物体的 SLAM</strong>，将检测到的对象与 3D 模型数据库匹配，并将其建立为路标，在运算算法之前需要手动建立对象的 3D 模型；</li>
+<li>文献 [13] 演示了一种<strong>物体识别系统</strong>，它利用 SLAM 从一帧到另一帧提供一致的物体提议，它还表明，<strong>给定 SLAM 解决方案和已知的机器人位姿可以解决地图中对象的数据关联</strong> [11]，[13]。</li>
+<li>相比之下，<font color = red><strong>我们的方法在机器人位姿和地图完全未知的环境中同时定位了已存在的未知数量的物体</strong></font>。</li>
+</ul></li>
+<li>文献 [14,15] 提出了一种识别已知平面物体并将他们合并到地图中的算法，但<strong>仅限于平面几何体</strong>；
+<ul>
+<li>在文献 [16,17] 中也证明了 <strong>SLAM 中集成物体识别</strong>；</li>
+<li><strong>SemanticFusion</strong> [18] 利用 ElasticFusion SLAM and CNNs 展示了<strong>稠密语义三维重建</strong>，<strong>为地图中每个点分配语义信息或标签，而不是添加物体的中心到地图中</strong>；</li>
+<li>文献 [10] <strong>将 SLAM 问题分解为姿态和数据关联优化子问题</strong>，并在室内和室外数据集上显示出有效的结果；</li>
+<li>相比之下，<font color = red><strong>本文提出的方法使用基于卷积神经网络的通用的视觉目标检测系统，并借助于统计数据关联和无监督聚类分析来估计它们在地图中的位置</strong></font>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="具体方法">3. 具体方法</h2>
+<ul>
+<li>在深入研究算法之前，我们希望建立本文中用到的一些<strong>概念</strong>；
+<ul>
+<li>设 <span class="math inline">\(\mathbb{N}\)</span> 表示<strong>自然数的集合</strong>；</li>
+<li>我们使用 RGB-D 传感器，将 RGB-D 传感器数据定义为 <strong>3 元素 RGB 颜色通道 i 和标量深度通道 d</strong>，在图像中每个离散的像素，都存在着相应的 3 元素颜色值和标量深度值，即在图像中给定 2D 点 <span class="math inline">\(x\in \mathbb{R}^{2}\)</span> ，可以检索器相应的颜色和深度值 <span class="math inline">\(i(x),d(x)\)</span>；</li>
+<li>将笛卡尔<strong>相机坐标系</strong>定义为 C，将固定的<strong>世界、惯性坐标系</strong>定义为 W，给定 3D 点 p，其在 W 坐标系中表示为 <span class="math inline">\(p^{W}\in \mathbb{R}^{3}\)</span>，在 C 坐标系中表示为 <span class="math inline">\(p^{C}\in \mathbb{R}^{3}\)</span>；</li>
+<li>我们使用<strong>上标</strong> <span class="math inline">\(t\in \mathbb{N}\)</span> 来表示测量、估计和图像等发生的离散<strong>时间</strong>；</li>
+<li>使用<strong>右下标</strong> <span class="math inline">\(k\in \mathbb{N}\)</span> 表示来自相应的<strong>坐标系</strong>空间的一个特定<strong>集合</strong>；</li>
+<li>因此 <span class="math inline">\(p_{k}^{C^{t}}\)</span> 表示在时间 t 时从相机帧 C 测量的集合 k 中的所有点 p 的坐标，类似地，<span class="math inline">\(d_{k}^{t}, i_{k}^{t}\)</span> 是在时间 t 处的集合 k 的深度值和颜色值的集合；</li>
+<li>给定一个集合 P ，让 <span class="math inline">\(|P|\)</span> 表示它的基数（大小）。</li>
+</ul></li>
+</ul>
+<h3 id="基于深度学习的目标检测">3.1 基于深度学习的目标检测</h3>
+<ul>
+<li>目标检测可以被描述为<strong>识别对象的实例并使用训练的模型在图像帧中找到其位置</strong>；
+<ul>
+<li>近年来，在深度卷积神经网络的帮助下，它取得了巨大的进步（例如 [19]，[20]）；</li>
+<li>训练分类器，例如神经网络，以学习不同对象的特征，现代方法能够训练分类器以识别具有超过 90％ 准确率的千种类别的对象。</li>
+</ul></li>
+<li>在我们的算法中，我们使用检测模型<strong>检索识别对象的位置和类别</strong>；
+<ul>
+<li>在我们的实验中，我们使用了 Mobilenets [21] 和 Faster-RCNN [22]，但只要它们为检测到的对象<strong>提供类和区域</strong>，就可以使用任何检测器；</li>
+<li>我们的目的是<strong>具有使用任何物体探测器的灵活性，因为这是一个经常更新和改进的活跃研究领域</strong>；</li>
+<li>模型在 Microsoft COCO 数据集 [23] 上进行训练，我们的测试实验中没有用于模型的训练的对象的图像。</li>
+<li>本文通过提取 RGB 图像 i 中的<strong>检测目标的区域（边界框或掩膜）</strong>，设 <span class="math inline">\(B_{k}^{t}\)</span> 是 t 时刻的物体 k 的区域；</li>
+<li><strong>每个区域都定义了一系列属于该物体的点集</strong>， <span class="math inline">\(d_{k}^{t}\)</span> 是 <span class="math inline">\(B_{k}^{t}\)</span> 区域中点的深度集合，其可以用于后续的<strong>对象的数据关联、聚类和定位</strong>；</li>
+<li>每个<font color = red><strong>被检测的物体都使用物体的类别和从 SLAM 数据中得到的物体在 W 坐标系的位置表示</strong></font>。</li>
+</ul></li>
+</ul>
+<h3 id="非参数的数据关联">3.2 非参数的数据关联</h3>
+<ul>
+<li>尽管近年来物体检测的准确性已经大大提高，但是<strong>检测到的物体在连续帧上的关联仍然是一个挑战</strong>；
+<ul>
+<li>在单个图像中可以看到<strong>同一类对象的多个实例</strong>，并且<strong>需要在帧与帧之间区分它们以进行数据关联</strong>；</li>
+<li>而且，<strong>物体的外观可能在多个帧上受阻，或者对象检测模块可能无法在几帧上检测到对象</strong>。</li>
+</ul></li>
+<li><font color = red><strong>本文使用非参数推论统计方法用于两个连续图像之间的数据关联</strong></font>：我们选择了 <strong>Mann-Whitney 统计</strong> [24]，测试来解决这个问题；
+<ul>
+<li>Mann-Whitney 统计检验用于统计学，以<strong>确定是否从具有相同分布的群体中选择两组独立的样本</strong>；</li>
+<li>非正式地，我们使用它来<strong>确定两个已识别对象的深度集是否相似并且可能对应于同一对象</strong>。</li>
+</ul></li>
+<li>测试包括一个统计量 U 的计算，要计算此处提出的问题 U；
+<ul>
+<li>首先<strong>从深度图 <span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 中提取两组样本</strong>；</li>
+<li>设 <span class="math inline">\(k\)</span> 和 <span class="math inline">\(l\)</span> 表示在时间 t 和 t-1 时刻检测到的<strong>两个物体</strong>，其对应的区域为 <span class="math inline">\(B_{k}^{t}\)</span> 和 <span class="math inline">\(B_{l}^{t-1}\)</span> ，那么<strong>统计量 U</strong> 可以定义为：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f0.PNG" title="f0" width="600" />
+</center></li>
+</ul></li>
+<li><strong>两组深度样本的累计分布函数</strong>分别为 <span class="math inline">\(F\left(d_{k}^{t}\right)\)</span> 和 <span class="math inline">\(F\left(d_{l}^{t-1}\right)\)</span> ，如果满足以下公式（1）的条件，我们不否认 <font color = red><strong><span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 来源于相同分布</strong></font>的假设： <span class="math display">\[
+  F\left(d_{k}^{t}\right)=F\left(d_{l}^{t-1}-\Delta\right) \quad(1)
+  \]</span>
+<ul>
+<li>其中 <span class="math inline">\(\Delta\)</span> 是<strong>非参数置信区间</strong>，反映了由于运动和噪声导致的 <span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 之间的差异；</li>
+<li>设 <strong>V</strong> 定义为 <span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 之间所有<strong>成对差的有序集合</strong> <span class="math display">\[
+  V=\left\{d_{k}^{t}(x)-d_{l}^{t-1}(y)\right\} \quad \forall x \in B_{k}^{t}, \forall y \in B_{l}^{t-1} \quad(2)
+  \]</span></li>
+<li>如果 <span class="math inline">\(pwd(q)\)</span> 是集合 V 的第 q 个最小成对差，那么不等式 （3）在当且仅当满足的集合 V 中至少有 <span class="math inline">\(q_a\)</span> 但不超过 <span class="math inline">\(q_b\)</span> 元素时成立 <span class="math display">\[
+  p w d\left(q_{a}\right)&lt;\Delta \leq p w d\left(q_{b}\right) ; \quad q_{a}&lt;q_{b} \quad(3)
+  \]</span></li>
+<li>这表明 <font color = red><strong>V 中有足够数量元素的差（见公式 4 ）小于我们的置信区间，那么 <span class="math inline">\(d_{k}^{t}\)</span> 和 <span class="math inline">\(\left(d_{l}^{t-1}-\Delta\right)\)</span> 很可能来自于相同的分布</strong></font> <span class="math display">\[
+  d_{k}^{t}(x)-d_{l}^{t-1}(y)&lt;\Delta \quad(4)
+  \]</span></li>
+<li>因此，可以说对于 <font color = red><span class="math inline">\(\Delta\)</span> 有 <strong>80% 的置信区间</strong></font>，其对应概率 P 表述为： <span class="math display">\[
+  P\left(p w d\left(q_{a}\right)&lt;\Delta \leq p w d\left(q_{b}\right)\right)=P\left(q_{a} \leq U&lt;q_{b}\right)=0.80 \quad(5)
+  \]</span></li>
+<li><font color = blue><strong>总结</strong>：这一段关于置信区间，证明只要有足够多的成对序列满足公式（4,5），则 <span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 来源于相同分布。</font></li>
+</ul></li>
+<li>对于<strong>大样本数据</strong>，可以<strong>使用基于正态理论的过程来近似非参数技术</strong>，由于我们的大多数样本都可以被认为是较大的，因此<strong>可以使用正态近似来估计 U 的分布</strong>；
+<ul>
+<li>此外，<strong>在两个连续帧之间的深度图中，如果它们是相同的对象，则期望在两组样本中看到类似的值</strong>；</li>
+<li>在这种情况下， <span class="math inline">\(\left\{d_{k}^{t}(x), d_{l}^{t-1}(y)\right\}\)</span> 中的<strong>重复值</strong>称为 <span class="math inline">\(ties\)</span>；</li>
+<li>如果我们有 <span class="math inline">\(g\)</span> 个 <span class="math inline">\(tie\)</span> 组，<span class="math inline">\(t_z\)</span> 表示第 <span class="math inline">\(z\)</span> 个 <span class="math inline">\(tie\)</span> 组中的观察数，然后使用 <font color = red><strong>U 的正态近似</strong></font>；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f6.PNG" title="f6" width="550" />
+</center></li>
+</ul></li>
+<li>需要计算 <span class="math inline">\(q_a\)</span> 和 <span class="math inline">\(q_b\)</span> 的值以在公式（5）中使用，通过公式（6）和 <span class="math inline">\(\Delta = 80\%\)</span> 的置信区间，我们可以<font color = red><strong>近似计算 <span class="math inline">\(q_a\)</span> 和 <span class="math inline">\(q_b\)</span></strong></font>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f7.PNG" title="f7" width="450" />
+</center></li>
+<li>现在使用公式（7）的估计值，如果满足公式（5），那么我们就不能拒绝零假设，因此回想：当至少有 <span class="math inline">\(q_a\)</span> 和最多有 <span class="math inline">\(q_b\)</span> 个元素满足 <span class="math inline">\(d_{k}^{t}(x)&lt;d_{l}^{t-1}(y)+\Delta\)</span> 时，<span class="math inline">\(d_{k}^{t}\)</span> 和 <span class="math inline">\(d_{l}^{t-1}\)</span> 是相同的；
+<ul>
+<li>此外从公式（7）中更容易看出，<span class="math inline">\(ties\)</span> 的存在将增加 <span class="math inline">\(q_a\)</span> 并减少 <span class="math inline">\(q_b\)</span> ，从而使 U 在公式（5）中满足较低的余量；</li>
+<li>通常在两帧间的运动量很小，使得 <span class="math inline">\(d_{k}^{t}\)</span> 和 <span class="math inline">\(d_{l}^{t-1}\)</span> 之间的关联 <span class="math inline">\(ties\)</span> 是存在的，因此，<font color = red><strong>没有关联 <span class="math inline">\(ties\)</span> 表明物体不匹配，或者物体的大小太小；</strong></font></li>
+<li>虽然这些是直观的推测，但我们并没有根据这些假设推导出数据关联；（这句话啥意思？？？）</li>
+<li>如图 3 显示了两帧图像，其对应的物体区域分别为 <span class="math inline">\(B_{k}^{t},B_{l}^{t-1}\)</span> ，其对应的深度分别为 <span class="math inline">\(d_{k}^{t}, d_{l}^{t-1}\)</span>，以及经过非参数数据关联之后的关联物体。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig3.PNG" title="fig3" width="800" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="使用-slam-位姿的物体反投影">3.3 使用 SLAM 位姿的物体反投影</h3>
+<ul>
+<li>典型的 SLAM 系统包括两个组件，前端和后端；
+<ul>
+<li>前端将传感器数据提取到模型中，该模型为后端提供估计以进行外推；</li>
+<li>我们使用<strong>基于特征法</strong>的定位与建图过程来获得位姿并建立环境地图；</li>
+<li>我们依靠<strong>迭代最近点（ICP）</strong> 来估计 C 和 W 中的运动。</li>
+</ul></li>
+<li>在<strong>前端</strong>，局部姿势估计模块是基于 <strong>SIFT</strong> [26] 特征的系统，它通过 <span class="math inline">\(i^{t}\)</span> 和 <span class="math inline">\(i^{t-1}\)</span> 中的特征匹配来<strong>计算帧到帧的运动</strong>；
+<ul>
+<li>从 <span class="math inline">\(i^{t}\)</span> 和 <span class="math inline">\(i^{t-1}\)</span> 中提取的 SIFT 特征使用 Brute-Force 匹配进行配对；</li>
+<li>然后将 <span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 的对应关系<strong>投影到 C 中</strong>得到特征点 <span class="math inline">\(p_{k}^{C^{t}}\)</span> 和 <span class="math inline">\(p_{k}^{C^{t-1}}\)</span>；</li>
+<li>然后<strong>利用 ICP 估计 t 和 t-1 之间的位姿</strong>，随着时间的推移，这些匹配的特征或关键点也会被跟踪，以<strong>估计 W 坐标系中的运动</strong>。</li>
+</ul></li>
+<li>在<strong>后端</strong>，首先将当前的特征点 <span class="math inline">\(p_{k}^{C^{t}}\)</span> <strong>转换到 W 坐标系中最后一个相机的位置</strong>，得到 <span class="math inline">\(p_{k}^{W^{t}}\)</span> ；
+<ul>
+<li>然后将之前的从 <span class="math inline">\(p_{k}^{W^{t}}\)</span> 到 <span class="math inline">\(p_{k}^{W^{t-n}}\)</span> 的特征跟踪库与这些新转换的特征相关联来<strong>估计相机在 W 中的运动</strong>；</li>
+<li><strong>每一个不匹配的特征都与其最近的邻居相关联</strong>，如果它在 W 中处于一定的距离内；</li>
+<li>这里用 <strong>C 的估计变换作为 W 中 ICP 优化的初始化</strong>。</li>
+</ul></li>
+<li>运动估计使用使用 <strong>Levenberg-Marquardt（LM） 优化的 ICP 变体</strong>进行[27]，它基本上<strong>最小化了点之间的点对点误差</strong>；
+<ul>
+<li>另 <span class="math inline">\(p_{m}^{W^{t}}\)</span> 是维护地图的点集，其是在时间 t 的点 <span class="math inline">\(p_{k}^{W^{t}}\)</span> 的候选匹配；</li>
+<li>设 <span class="math inline">\(a \in p_{k}^{W^{t}}\)</span> 和 <span class="math inline">\(a \in p_{m}^{W^{t}}\)</span> 是一对匹配的点集；</li>
+<li>然后再 ICP 中<strong>最小化</strong>以找到相机的旋转 <span class="math inline">\(\mathbf{R} \in S O(3)\)</span> 和平移 <span class="math inline">\(\tau \in \mathbb{R}^{3}\)</span> 组成的<strong>刚体运动</strong>，可以写成：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f8.PNG" title="f8" width="550" />
+</center></li>
+<li>使用 <span class="math inline">\(d^t\)</span> 、在 t 时刻估计的相机位姿和相机内参<strong>将 <span class="math inline">\(i^t\)</span> 中每个检测到的物体 k 反投影到 W 中</strong>；</li>
+<li>如果在时间段 <span class="math inline">\(t-n\)</span> 和 <code>t</code> 之间，<font color = red><strong>有一个对象可以通过非参数的数据关联成功关联，则将从 <span class="math inline">\(p_{k}^{W^{t-n}}\)</span> 到 <span class="math inline">\(p_{k}^{W^{t}}\)</span> 的所有反投影点组成一个联合分布，以表示单个特征向量</strong></font>；</li>
+<li>一个<strong>对象的特征向量</strong> <span class="math inline">\(f\)</span> 可以表示为：(此特征向量用于计算下一节中的距离度量，图 3 显示了在 W 中反投影的相关物体)
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f.PNG" title="f" width="350" />
+</center></li>
+</ul></li>
+<li><font color = blue><strong>总结</strong>：这一节描述用 SIFT 作为特征点，通过 ICP 算法估计位姿，并最小化重投影误差，<strong>在物体特征向量表示的时候不是采用质心的方式，而是采用物体所属区域的点的联合分布来表示</strong>。</font></li>
+</ul>
+<h3 id="基于密度的物体聚类">3.4 基于密度的物体聚类</h3>
+<ul>
+<li>尽管非参数数据关联（NPDA）将对象从一帧到另一帧关联起来，但它将<strong>无法将对象与突然的大运动，遮挡或重新访问先前的位置相关联</strong>；
+<ul>
+<li>由于这种情况，<strong>地图上可能有未知数量的对象</strong>，我们使用<strong>聚类</strong>过程解决了这个问题。</li>
+</ul></li>
+<li>基于数据类型使用不同类型的聚类方法，<strong>大多数聚类方法都基于连通性，密度，子空间，质心，层次</strong>等；
+<ul>
+<li>流行的聚类算法包括 K-means，Mean Shift，Hierarchical Clustering，DBSCAN，BIRCH等 [28]；</li>
+<li><font color = red>本文选择了一种<strong>无监督的聚类算法</strong>，称为<strong>基于分层密度的噪声应用空间聚类</strong>（HDBSCAN）</font>[29]；</li>
+<li>HDBSCAN 是 DBSCAN 的扩展，使其成为<strong>分层聚类算法</strong>，它<strong>能够找到不同密度的簇，并且通常对参数选择更稳健</strong>。</li>
+</ul></li>
+<li><strong>聚类过程需要估计密度以对类似对象进行分组</strong>；
+<ul>
+<li>密度的这种估计通常<strong>通过计算与其邻近的距离来实现</strong>，使用中有许多流行的<strong>距离度量</strong>，例如 euclidean，minkowski，manhattan 等；</li>
+<li>我们<strong>使用 Bhattacharyya 距离（BD）[30] 来测量所有特征向量之间的距离</strong>，它在<strong>计算两个分布之间的距离时考虑了均值和方差</strong>；</li>
+<li>两个特征向量 <span class="math inline">\(f_a\)</span> 和 <span class="math inline">\(f_b\)</span> 之间的<strong>距离度量</strong> D 是:
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f3.4.PNG" title="f3.4" width="650" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="使用-npda-进行间接性聚类">3.5 使用 NPDA 进行间接性聚类</h3>
+<ul>
+<li>在聚类过程之后，我们得到了许多聚类，其中世界坐标 W 中存在对象唯一的密度；
+<ul>
+<li>然而，随着时间的推移，这种<strong>聚类在计算上变得更加昂贵</strong>，使得<strong>在每帧之后聚类是不可行的</strong>；</li>
+<li>例如，如果目前在 D 中有 m 个观测值并且有 n 个新观测值，那么它需要对新的 D 产生（m + n）* n 次附加运算；</li>
+<li>另一方面，<font color = red><strong>NPDA 仅在两个连续的帧上运行以进行数据关联，因此它比聚类需要更少的复杂性，我们使用 NPDA 查询模型，指示何时需要再次训练聚类</strong></font>。</li>
+</ul></li>
+<li><strong>NPDA 表明当前时间帧处检测到的对象是否与前一时间帧处检测到的对象相关联</strong>；
+<ul>
+<li>当帧之间<strong>没有障碍物，错误检测或非常大的相机运动</strong>时，该关联可以继续；</li>
+<li><strong>在此连续关联期间，我们不使用聚类来查找新对象</strong>；</li>
+<li>相反，我们查询这些新观察以适应任何现有的聚类，如果这些关联对象属于现有聚类，则在此期间未观察到新对象；</li>
+<li>但是，<font color = red><strong>如果关联的对象不属于任何现有的聚类，则表示环境中存在较新的对象，然后我们再次运行聚类过程</strong></font>。</li>
+</ul></li>
+<li>假设自上次聚类以来，检测到的对象集合是 N，来自相同持续时间的 NPDA 的关联对象集合是 M，我们<strong>使用 HDBSCAN 的近似预测方法来确定新观测是否属于任何现有聚类中</strong>；
+<ul>
+<li>现在如果适合当前聚类的检测到的对象集合是 P，其余的被认为是异常值 O，也即：<span class="math inline">\(N=P \cup O\)</span> 和 <span class="math inline">\(M \subseteq N\)</span>；</li>
+<li>当满足公式（9）时<strong>重新训练聚类</strong>，我们也会<strong>在再次开始聚类之前为要观察的新对象添加一个阈值</strong>。 <span class="math display">\[
+  |M \cap P|&lt;|M \cap O| \quad(9)
+  \]</span> —</li>
+</ul></li>
+</ul>
+<h2 id="实验">4. 实验</h2>
+<ul>
+<li>分别在 TUM 数据集、Microsoft RGB-D Dataset 7-Scenes [32] 和 RGB-D Scenes Dataset [33] 三个数据集上进行了测试。</li>
+<li>使用的目标检测模块是 MobileNet SSD 检测网络和 Faster-RCNN，它是在 Microsoft COCO 数据集上训练的；
+<ul>
+<li>由于 MobileNet 本身是一个轻量级的深度神经网络，因此 MobileNet 对于移动和嵌入式视觉应用是有效的；</li>
+<li>评估我们的方法的一个<strong>问题</strong>是，大多数这些数据集<strong>没有提供场景中对象的 ground truth 语义标签</strong>，在<strong>量化</strong>包含语义信息的 SLAM 方法的性能时，这是一个常见的问题；</li>
+<li>我们<strong>提出了一个定性的评估我们的算法</strong>，提出了<font color = red><strong>在整个序列中检测到的唯一对象的数量和在序列末尾映射中的集群的数量</strong></font>；</li>
+<li>在序列逐帧检测过程中，通常会在环境中检测到多个对象，但是<font color = red><strong>只有在对一定数量的帧进行观察时，才会关联和聚集一个对象</strong></font>；</li>
+<li>我们指出如果它<strong>已经被 CNN 检测了至少 25 帧的完整序列</strong>，则认为它是一个在环境中被检测的对象；</li>
+<li>物体在确定之前必须有 <strong>50 个数据点</strong>，其动机是<strong>只保留与可靠检测到的对象相对应的集群</strong>；</li>
+<li><strong>由于模糊的外观而只被短暂地看到或被错误分类的对象不会被聚集</strong>，每个数据序列的编号都在相关的表中指出。</li>
+</ul></li>
+<li>我们所有的代码都是使用 python 库实现的，Tensorflow 平台用于目标检测，<strong>聚类模块基于开源 HDBSCAN 库[34]</strong> ；
+<ul>
+<li>我们的结果通过<strong>点云图和地图中检测到的对象簇</strong>进行了演示，每个簇表示为具有不同颜色的椭圆体，椭球的中心是簇的平均值，<strong>半径是簇沿主轴的标准偏差</strong>；</li>
+<li>本文中显示的最终地图已使用 VoxelGrid 过滤器进行了下采样，以便于查看，红色曲线表示相机的姿势。</li>
+</ul></li>
+</ul>
+<h3 id="tum-rgb-d-dataset">4.1 TUM RGB-D dataset</h3>
+<ul>
+<li>测试的数据集：<code>freiburg3 teddy</code>，<code>freiburg2 desk</code>，<code>freiburg3 long office household</code>，<code>freiburg3 long office household validation</code>。</li>
+<li>在图 4 中展示了<strong>间歇性聚类过程</strong>，它显示了在执行聚类操作时具有四个不同帧时的 freiburg3 long office household 的结果，如第 3.5 节所述；
+<ul>
+<li>图 5a 显示了 freiburg3 teddy 的结果，它专注于一个物体，在一个房间中间的一个泰迪熊，分类器在该序列中检测到 3 个对象，并且最终的两个聚类由泰迪和椅子组成，第三个检测到的物体是一个人在背景中行走，该人没有被分配一个聚类，因为<strong>他们的动作导致分布不够密集以满足我们构成群集的标准</strong>；</li>
+<li><code>freiburg2 desk</code> 包含桌面上的几个办公用品，地图，轨迹和最终聚类如图 5b 所示；</li>
+<li><code>freiburg3 long office household</code> 和 <code>freiburg3 long office household validation</code> 有相同的环境，包括两个办公桌隔墙。结果聚类结果如图 5c 所示；</li>
+<li>所有 TUM 数据集的结果合并在表 I 中。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig4.PNG" title="fig4" width="700" />
+</center>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig5.1.PNG" title="fig5.1" width="700" />
+</center>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/tab1_2.PNG" title="tab1_2" width="700" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="rgb-d-dataset-7-scenes">4.2 RGB-D Dataset 7-Scenes</h3>
+<ul>
+<li>RGB-D Dataset 7-Scenes 来自微软，由 7 个不同的环境组成，每个环境都有自己不同的序列，本文测试了<strong>四个场景，灭火器，办公室，南瓜，象棋</strong>；
+<ul>
+<li>图 5d - 5g 为我们对 4 个场景的仿真结果，结果如表 2 所示。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig5.2.PNG" title="fig5.2" width="900" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="rgb-d-scenes-dataset-v2">4.3 RGB-D Scenes Dataset v2</h3>
+<ul>
+<li>RGB-D Scenes Dataset v2 数据集由 14 个场景组成，其中包含几件家具和不同的物体，如<strong>碗、帽子、麦片盒、咖啡杯和汽水罐</strong>；
+<ul>
+<li>我们测试了序列 1,6,10,13,14，在<strong>所有的序列中，小物体被放置在一个平面上</strong>，相机在物体周围移动；</li>
+<li>这些序列的结果如图 5h-5l 所示，表 3 为报道的结果，结果表明，对于这些序列，我们<strong>对地图中检测到的大部分目标进行了聚类</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig5.3.PNG" title="fig5.3" width="900" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">5. 总结</h2>
+<ul>
+<li>本文讨论了分类器在视频流中<strong>从多个帧中提取目标并将其关联起来，从而确定其在地图中的位置的问题</strong>；</li>
+<li>为此，我们<strong>证明了非参数统计可以用来解决数据关联问题</strong>，其次是<strong>无监督聚类，当对象数量未知时，这个过程就会起作用</strong>，并且适用于 CNNs 和类似的分类器；</li>
+<li>我们的方法可以<strong>很容易地结合任何 SLAM 系统</strong>，并使用任何基于深度神经网络的对象检测器为环境添加语义；</li>
+<li>在三个不同数据集上的实验表明，我们的方法能够成功地确定环境中目标的位置，同时构建一个地图；</li>
+<li>在未来的计划中，我们打算使用地图中已有的<strong>语义合并闭环</strong>，并<strong>恢复对象的姿态</strong>，使检测到的对象的<strong>定位更加鲁棒</strong>。</li>
+</ul>
+<hr />
+<h2 id="r参考文献">【R】参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[7]</strong> Civera J, Gálvez-López D, Riazuelo L, et al. <a href="http://webdiis.unizar.es/~jcivera/papers/civera_etal_iros11.pdf"><strong>Towards semantic SLAM using a monocular camera</strong></a>[C]//2011 IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, <strong>2011</strong>: 1277-1284.<br />
+<font color = gray><strong>使用单目相机的语义 SLAM</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[10]</strong> Bowman S L, Atanasov N, Daniilidis K, et al. <a href="http://erl.ucsd.edu/ref/Bowman_SemanticSLAM_ICRA17.pdf"><strong>Probabilistic data association for semantic slam</strong></a>[C]//2017 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2017</strong>: 1722-1729.<br />
+<font color = gray><strong>通过基于随机有限集合的贝叶斯滤波器在度量优化中引入了语义观测</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[11]</strong> Mu B, Liu S Y, Paull L, et al. <a href="https://arxiv.org/pdf/1704.05959.pdf"><strong>Slam with objects using a nonparametric pose graph</strong></a>[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2016</strong>: 4602-4609.<br />
+<font color = gray><strong>使用非参数位姿图的物体 SLAM，数据关联问题</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[13]</strong> Pillai S, Leonard J. <a href="https://arxiv.org/pdf/1506.01732.pdf"><strong>Monocular slam supported object recognition</strong></a>[J]. arXiv preprint arXiv:1506.01732, <strong>2015</strong>.<br />
+<font color = gray><strong>目标检测与单目 SLAM 结合的物体级 SLAM，构建半稠密地图，数据关联问题</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[14]</strong> Castle R O, Gawley D J, Klein G, et al. <a href="https://www.robots.ox.ac.uk/ActiveVision/Publications/castle_etal_icra2007/castle_etal_icra2007.pdf"><strong>Towards simultaneous recognition, localization and mapping for hand-held and wearable cameras</strong></a>[C]//Proceedings 2007 IEEE International Conference on Robotics and Automation. IEEE, <strong>2007</strong>: 4102-4107.<br />
+<font color = gray>平面级物体的早期探索</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[15]</strong> Castle R O, Klein G, Murray D W. <a href="https://www.sciencedirect.com/science/article/pii/S0262885610000508"><strong>Combining monoSLAM with object recognition for scene augmentation using a wearable camera</strong></a>[J]. Image and Vision Computing, <strong>2010</strong>, 28(11): 1548-1556.<br />
+<font color = gray>平面级物体的早期探索</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[16]</strong> Ekvall S, Jensfelt P, Kragic D. <a href="https://www.researchgate.net/profile/Danica_Kragic/publication/221066926_Integrating_Active_Mobile_Robot_Object_Recognition_and_SLAM_in_Natural_Environments/links/0deec52b935fd762d8000000/Integrating-Active-Mobile-Robot-Object-Recognition-and-SLAM-in-Natural-Environments.pdf"><strong>Integrating active mobile robot object recognition and slam in natural environments</strong></a>[C]//2006 IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, <strong>2006</strong>: 5792-5797.<br />
+<font color = gray>SLAM 中集成物体检测的早期探索</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[17]</strong> Zender H, Mozos O M, Jensfelt P, et al. <a href="http://eprints.lincoln.ac.uk/9321/1/zender2008ras.pdf"><strong>Conceptual spatial representations for indoor mobile robots</strong></a>[J]. Robotics and Autonomous Systems, <strong>2008</strong>, 56(6): 493-502.<br />
+<font color = gray>SLAM 中集成物体检测的早期探索</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[18]</strong> McCormac J, Handa A, Davison A, et al. <a href="https://arxiv.org/pdf/1609.05130.pdf"><strong>Semanticfusion: Dense 3d semantic mapping with convolutional neural networks</strong></a>[C]//2017 IEEE International Conference on Robotics and automation (ICRA). IEEE, <strong>2017</strong>: 4628-4635.<br />
+<font color = gray><strong>Semanticfusion</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[24]</strong> Mann H B, Whitney D R. <a href="https://projecteuclid.org/download/pdf_1/euclid.aoms/1177730491"><strong>On a test of whether one of two random variables is stochastically larger than the other</strong></a>[J]. The annals of mathematical statistics, <strong>1947</strong>: 50-60.<br />
+<font color = gray><strong>本文使用的非参数方法 Mann-Whitney 统计进行数据关联</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[27]</strong> Holz D, Ichim A E, Tombari F, et al. <a href="https://www.researchgate.net/profile/Sven_Behnke/publication/283198426_Registration_with_the_Point_Cloud_Library_-_A_Modular_Framework_for_Aligning_in_3-D/links/5676a1c908aebcdda0e92e06.pdf"><strong>Registration with the point cloud library: A modular framework for aligning in 3-D</strong></a>[J]. IEEE Robotics &amp; Automation Magazine, <strong>2015</strong>, 22(4): 110-124.<br />
+<font color = gray>使用 L-M 算法优化的 ICP</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[28]</strong> Berkhin P. <a href="http://www.miv.t.u-tokyo.ac.jp/ishizuka/pr-class/clustering_survey(Berkhin2002).pdf"><strong>A survey of clustering data mining techniques</strong></a>[M]//Grouping multidimensional data. Springer, Berlin, Heidelberg, <strong>2006</strong>: 25-71.<br />
+<font color = gray>数据聚类方法调研</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[29]</strong> Campello R J G B, Moulavi D, Sander J. <a href="https://link.springer.com/chapter/10.1007/978-3-642-37456-2_14"><strong>Density-based clustering based on hierarchical density estimates</strong></a>[C]//Pacific-Asia conference on knowledge discovery and data mining. Springer, Berlin, Heidelberg, <strong>2013</strong>: 160-172.<br />
+<font color = gray><strong>本文所使用的无监督聚类方法：基于分层密度的噪声应用空间聚类（HDBSCAN）</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[32]</strong> Glocker B, Izadi S, Shotton J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/6671777"><strong>Real-time RGB-D camera relocalization</strong></a>[C]//2013 IEEE International Symposium on Mixed and Augmented Reality (ISMAR). IEEE, <strong>2013</strong>: 173-179.<br />
+<font color = gray>Microsoft RGB-D Dataset</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[33]</strong> Lai K, Bo L, Ren X, et al. <a href="https://homes.cs.washington.edu/~xren/publication/lai_icra11_rgbd_dataset.pdf"><strong>A large-scale hierarchical multi-view rgb-d object dataset</strong></a>[C]//2011 IEEE international conference on robotics and automation. IEEE, <strong>2011</strong>: 1817-1824.<br />
+<font color = gray>RGB-D Scenes Dataset</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[34]</strong> M. Campello and Sander, “The hdbscan clustering library.”http://hdbscan.readthedocs.io/<br />
+<font color = gray><strong>本文所采用的开源的聚类方法</strong></font></li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li><strong>1.</strong> 3.2 节中定义统计量 U 的公式 0 为什么要限定 <span class="math inline">\(d_{k}^{t}(x)&lt;d_{l}^{t-1}(y)\)</span> ？</li>
+<li><strong>2.</strong> 3.2 节中描述 U 正态近似的公式（6）？</li>
+<li><strong>3.</strong> 3.3 节中系统使用的是 SIFT 特征岂不是很慢，能实时吗？</li>
+<li><strong>4.</strong> 3.4 节中两个物体的向量之间距离的公式中非匹配类惩罚项，对于不同类别的物体距离值就设为 100 是不是不太合理，因为目标检测存在很大的误检情况，需要考虑进来。</li>
+</ul>
+<hr />
+<h2 id="t思考">【T】思考</h2>
+<ul>
+<li>本文重点关注的是数据关联和聚类，而不是位姿估计、路标构造和建图；</li>
+<li>主要研究两种方法，一种是连续帧之间的非参数数据关联，一种是发现新物体或剧烈运动时采用的基于密度的聚类。</li>
+</ul>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2019.07.12</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-10-19-eigen-factors/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-07-05-orb-slam2-optimization2/">
+            <span class="next-text nav-default"> 😀 ORB-SLAM2 代码解读（三）：优化 2（详解 &#43; g2o 使用）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

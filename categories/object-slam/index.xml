@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>object slam on 吴言吴语</title>
+    <link>https://wuyanmin.coding.me/categories/object-slam/</link>
+    <description>Recent content in object slam on 吴言吴语</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>wu</copyright>
+    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://wuyanmin.coding.me/categories/object-slam/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</title>
+      <link>https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;将基于线的特定类别物体模型集成到单目 SLAM 中&lt;/strong&gt;&lt;br /&gt;
+Joshi N, Sharma Y, Parkhiya P, et al. &lt;a href=&#34;https://arxiv.org/pdf/1905.04698.pdf&#34;&gt;&lt;strong&gt;Integrating Objects into Monocular SLAM: Line Based Category Specific Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1905.04698, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
+作者：印度海德拉巴大学   &lt;a href=&#34;https://robotics.iiit.ac.in/publications.html&#34;&gt;实验室主页&lt;/a&gt;&lt;br /&gt;
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. &lt;a href=&#34;https://arxiv.org/pdf/1802.09292.pdf&#34;&gt;&lt;strong&gt;Constructing Category-Specific Models for Monocular Object-SLAM&lt;/strong&gt;&lt;/a&gt;[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</title>
+      <link>https://wuyanmin.coding.me/2019-02-27-object-ba/</link>
+      <pubDate>Wed, 27 Feb 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-02-27-object-ba/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度&lt;/strong&gt;&lt;br /&gt;
+Frost D, Prisacariu V, Murray D. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8353862&#34;&gt;&lt;strong&gt;Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Transactions on Robotics, &lt;strong&gt;2018&lt;/strong&gt;, 34(3): 736-747.&lt;br /&gt;
+&lt;strong&gt;作者&lt;/strong&gt;：&lt;strong&gt;Duncan Frost&lt;/strong&gt;：牛津大学2017年博士毕业，好像是 PTAM 那个组的  &lt;a href=&#34;https://scholar.google.com/citations?user=P9l4zHIAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+&lt;strong&gt;期刊&lt;/strong&gt;：IEEE Transactions on Robotics  JCR 类别：ROBOTICS  排序：2/26   JCR分区：Q1   IF：4.684&lt;br /&gt;
+&lt;strong&gt;文章&lt;/strong&gt;：作者 2016 年 &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/7487680/&#34;&gt;Object-aware bundle adjustment for correcting monocular scale drift&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿</title>
+      <link>https://wuyanmin.coding.me/2019-02-22-cubeslam/</link>
+      <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-02-22-cubeslam/</guid>
+      <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</title>
+      <link>https://wuyanmin.coding.me/2019-01-28-quadric-slam/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-01-28-quadric-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标&lt;/strong&gt;&lt;br /&gt;
+Nicholson L, Milford M, Sünderhauf N. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8440105&#34;&gt;&lt;strong&gt;Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Robotics and Automation Letters, &lt;strong&gt;2019&lt;/strong&gt;, 4(1): 1-8.&lt;br /&gt;
+关于&lt;strong&gt;作者&lt;/strong&gt;：&lt;br /&gt;
+&lt;a href=&#34;https://www.roboticvision.org/&#34;&gt;昆士兰科技大学澳大利亚机器人视觉中心&lt;/a&gt;&lt;br /&gt;
+一作：&lt;strong&gt;Lachlan Nicholson&lt;/strong&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=DkyLABAAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+二作：&lt;strong&gt;Michael Milford&lt;/strong&gt;（Rat SLAM 的提出者）  &lt;a href=&#34;https://scholar.google.com/citations?user=TDSmCKgAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+三作：&lt;strong&gt;Niko Sünderhauf&lt;/strong&gt; (Suenderhauf)（感觉这个更大佬）  &lt;a href=&#34;https://scholar.google.com/citations?user=WnKjfFEAAAAJ&amp;amp;hl=zh-CN&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://nikosuenderhauf.github.io/publications/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</title>
+      <link>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</link>
+      <pubDate>Fri, 11 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM&lt;/strong&gt;&lt;br /&gt;
+Yang S, Song Y, Kaess M, et al. &lt;a href=&#34;https://arxiv.org/pdf/1703.07334&#34;&gt;&lt;strong&gt;Pop-up slam: Semantic monocular plane slam for low-texture environments&lt;/strong&gt;&lt;/a&gt;[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2016&lt;/strong&gt;: 1222-1229.&lt;br /&gt;
+作者：&lt;strong&gt;YangShichao&lt;/strong&gt;：&lt;a href=&#34;http://www.frc.ri.cmu.edu/~syang/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;Google Scholar&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://github.com/shichaoy&#34;&gt;&lt;strong&gt;Github&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+卡内基梅隆大学机器人研究所：&lt;a href=&#34;https://www.ri.cmu.edu/&#34;&gt;&lt;strong&gt;The Robotics Institute of CUM&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+演示视频：&lt;a href=&#34;https://www.youtube.com/watch?v=TOSOWdxmtkw&#34;&gt;https://www.youtube.com/watch?v=TOSOWdxmtkw&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</title>
+      <link>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</link>
+      <pubDate>Sun, 06 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;结构化环境中单目物体级与平面级的SLAM&lt;/strong&gt;&lt;br /&gt;
+Yang S, Scherer S. &lt;strong&gt;&lt;a href=&#34;https://arxiv.org/pdf/1809.03415.pdf&#34;&gt;Monocular Object and Plane SLAM in Structured Environments&lt;/a&gt;&lt;/strong&gt;[J]. arXiv preprint arXiv:1809.03415, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
+作者：YangShichao：&lt;a href=&#34;http://www.frc.ri.cmu.edu/~syang/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;Google Scholar&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://github.com/shichaoy&#34;&gt;&lt;strong&gt;Github&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+卡内基梅隆大学机器人研究所：&lt;a href=&#34;https://www.ri.cmu.edu/&#34;&gt;&lt;strong&gt;The Robotics Institute of CUM&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+演示视频：&lt;a href=&#34;https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;amp;t=11s&#34;&gt;https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;amp;t=11s&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</title>
+      <link>https://wuyanmin.coding.me/2018-11-30-cubeslam/</link>
+      <pubDate>Fri, 30 Nov 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2018-11-30-cubeslam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM&lt;/strong&gt;&lt;br /&gt;
+Yang S, Scherer S. &lt;a href=&#34;https://arxiv.org/abs/1806.00557&#34;&gt;&lt;strong&gt;CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1806.00557, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
+作者： YangShichao：&lt;a href=&#34;http://www.frc.ri.cmu.edu/~syang/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;Google Scholar&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://github.com/shichaoy&#34;&gt;&lt;strong&gt;Github&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+卡内基梅隆大学机器人研究所：&lt;a href=&#34;https://www.ri.cmu.edu/&#34;&gt;&lt;strong&gt;The Robotics Institute of CUM&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+演示视频：&lt;a href=&#34;https://www.youtube.com/watch?v=QnVlexXi9_c&#34;&gt;https://www.youtube.com/watch?v=QnVlexXi9_c&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

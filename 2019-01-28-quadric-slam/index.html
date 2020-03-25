@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标
+Nicholson L, Milford M, Sünderhauf N. Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam[J]. IEEE Robotics and Automation Letters, 2019, 4(1): 1-8.
+关于作者：
+昆士兰科技大学澳大利亚机器人视觉中心
+一作：Lachlan Nicholson 谷歌学术
+二作：Michael Milford（Rat SLAM 的提出者） 谷歌学术
+三作：Niko Sünderhauf (Suenderhauf)（感觉这个更大佬） 谷歌学术 个人主页
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-01-28-quadric-slam/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标" />
+<meta property="og:description" content="
+Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标
+Nicholson L, Milford M, Sünderhauf N. Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam[J]. IEEE Robotics and Automation Letters, 2019, 4(1): 1-8.
+关于作者：
+昆士兰科技大学澳大利亚机器人视觉中心
+一作：Lachlan Nicholson   谷歌学术
+二作：Michael Milford（Rat SLAM 的提出者）  谷歌学术
+三作：Niko Sünderhauf (Suenderhauf)（感觉这个更大佬）  谷歌学术   个人主页
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-01-28-quadric-slam/" />
+<meta property="article:published_time" content="2019-01-28T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-01-28T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标">
+<meta itemprop="description" content="
+Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标
+Nicholson L, Milford M, Sünderhauf N. Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam[J]. IEEE Robotics and Automation Letters, 2019, 4(1): 1-8.
+关于作者：
+昆士兰科技大学澳大利亚机器人视觉中心
+一作：Lachlan Nicholson   谷歌学术
+二作：Michael Milford（Rat SLAM 的提出者）  谷歌学术
+三作：Niko Sünderhauf (Suenderhauf)（感觉这个更大佬）  谷歌学术   个人主页
+">
+<meta itemprop="datePublished" content="2019-01-28T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-01-28T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="10188">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标"/>
+<meta name="twitter:description" content="
+Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标
+Nicholson L, Milford M, Sünderhauf N. Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam[J]. IEEE Robotics and Automation Letters, 2019, 4(1): 1-8.
+关于作者：
+昆士兰科技大学澳大利亚机器人视觉中心
+一作：Lachlan Nicholson   谷歌学术
+二作：Michael Milford（Rat SLAM 的提出者）  谷歌学术
+三作：Niko Sünderhauf (Suenderhauf)（感觉这个更大佬）  谷歌学术   个人主页
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-01-28 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 10188 字 </span>
+          <span class="more-meta"> 预计阅读 21 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</strong><br />
+Nicholson L, Milford M, Sünderhauf N. <a href="https://ieeexplore.ieee.org/abstract/document/8440105"><strong>Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam</strong></a>[J]. IEEE Robotics and Automation Letters, <strong>2019</strong>, 4(1): 1-8.<br />
+关于<strong>作者</strong>：<br />
+<a href="https://www.roboticvision.org/">昆士兰科技大学澳大利亚机器人视觉中心</a><br />
+一作：<strong>Lachlan Nicholson</strong>   <a href="https://scholar.google.com/citations?user=DkyLABAAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>谷歌学术</strong></a><br />
+二作：<strong>Michael Milford</strong>（Rat SLAM 的提出者）  <a href="https://scholar.google.com/citations?user=TDSmCKgAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>谷歌学术</strong></a><br />
+三作：<strong>Niko Sünderhauf</strong> (Suenderhauf)（感觉这个更大佬）  <a href="https://scholar.google.com/citations?user=WnKjfFEAAAAJ&amp;hl=zh-CN"><strong>谷歌学术</strong></a>   <a href="https://nikosuenderhauf.github.io/publications/"><strong>个人主页</strong></a></p>
+</blockquote>
+<blockquote>
+<p>关于<strong>期刊</strong>：<br />
+IEEE Robotics and Automation Letters(RAL) 2015 年 6 月新创刊目前仅有电子刊，属于 IEEE RAS(国际机器人与自动化协会)，2019 年 ICRA 投稿的两种方式一种是直接投给 ICRA，一种是通过 RAL 同时投稿，所以质量应该不错。<br />
+关于<strong>文章</strong>（这篇文章有好多个版本或相关研究）：<br />
+2018 年 ICRA Best workshop paper award<br />
+2017 年的版本（理论）：https://arxiv.org/pdf/1708.00965.pdf<br />
+An Orientation Factor for Object-Oriented SLAM：https://arxiv.org/abs/1809.06977<br />
+作者建的一个<strong>面向物体的 SLAM</strong>，主页：<a href="http://semanticslam.ai/quadricslam.html"><strong>SemanticSLAM.ai</strong></a><br />
+演示视频：https://www.youtube.com/watch?v=w1-INFCpc20</p>
+</blockquote>
+<h1 id="quadric-slam-dual-quadrics-from-object-detections-as-landmarks-in-object-oriented-slam">Quadric SLAM: Dual Quadrics from Object Detections as Landmarks in Object-oriented SLAM</h1>
+<h2 id="c.-四问">【C】. 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>在 SLAM 系统中如何<strong>同时估计运动轨迹和目标检测</strong>，并创建<strong>语义上有意义（object-oriented）</strong> 的地图。</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>首先<strong>初始化</strong>两个观测量：<strong>相机位姿</strong>和<strong>二次曲面参数</strong>（通过对偶二次曲面的等式匹配性质得到旋转、平移和形状），同时联立多视图的观测 SVD 分解将物体目标参数化为封闭的<strong>对偶二次曲面</strong>，并作为透视相机模型中的<strong>路标</strong>；</li>
+<li>创建<strong>目标检测的传感器模型</strong>：估计的二次曲面参数通过相机位姿的投影得到对偶二次曲线，再通过共轭关系得到原始二次曲线，最后通过 BBox 算法得到<strong>准确的二次曲线边界框</strong>；</li>
+<li>最后创建<strong>基于里程计观测和目标检测观测的因子图 SLAM 公式</strong>，从而<strong>联合估计相机位姿和二次曲面参数</strong>。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>目标检测的二次曲面路标为 SLAM 系统提供了<strong>高级别的语义信息</strong>，同时 SLAM 系统有效地整合了稀疏和易失性的单视图目标检测，以便<strong>在连续帧上提供一致的类标签和物体形状</strong>；</li>
+<li>TUM RGB-D 数据集下<strong>与两个里程计方法（Fovis 和 ORB-VO）比较</strong>：基于二次曲面路标的 Fovis 比原始 Fovis 提升明显；基于二次曲面路标的 ORB-VO 比原始 ORB-VO 提升不明显（在剔除了高边界框标准差物体之后略有提升）；</li>
+<li>用 UnrealCV 生成仿真环境：基于二次曲面路标的 SLAM 比原始里程计和 SVD 分解方法在<strong>轨迹、路标位置、形状和整体路标质量上都有较大的提升</strong>；</li>
+<li>本文使用的<strong>几何误差</strong>比前期工作使用的代数误差效果更显著；</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>在一些视角有限、观察次数较少的路标上容易将<strong>路标初始化在相机的后面</strong>；</li>
+<li>目标检测产生的可能<strong>错误的语义信息</strong>；</li>
+<li>通过检测框标准差剔除了一些不稳定的目标，但<strong>未对语义上错误的匹配进行剔除和约束</strong>；</li>
+</ul></li>
+</ul>
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li><font color =red>使用来自<strong>多视图的 2D 目标检测来同时估计每个对象的 3D 二次曲面和相机的位置</strong>；</font></li>
+<li>推导了一种使用<strong>对偶二次曲面作为 3D 路标</strong>的 SLAM 公式，利用它们紧凑地<strong>表示物体的大小、位置和方向</strong>，并展示 <strong>2D 目标检测如何通过新颖的几何误差公式直接约束二次曲面参数</strong>；</li>
+<li>开发了一种用于物体探测的传感器模型，用于<strong>解决物体只有部分可见</strong>的困难情形，并演示了如何使用普通的透视相机<strong>在基于因子图的 SLAM 中联合估计相机位姿和约束对偶二次曲面参数</strong>。</li>
+</ul>
+<h2 id="介绍">1. 介绍</h2>
+<ul>
+<li><strong>背景</strong>：于<strong>卷积神经网络</strong>的“重生”，<strong>基于视觉的物体检测</strong>的性能已经取得了令人瞩目的进步，文献 [1~8] 提高了 CNN 物体检测的质量；
+<ul>
+<li>最近的方法甚至在标准化的 ImageNet ILSVRC 基准测试中达到了人类的表现 <sup><strong>[9]</strong></sup> ，并继续推动其他基准测试的性能界限，如 COCO <sup><strong>[10]</strong></sup> 。</li>
+</ul></li>
+<li><strong>问题</strong>：但 <strong>SLAM 研究领域</strong>还没有完全采用这种新的技术的来创建具有意义的地图，<strong>传统的 SLAM 地图只表示几何信息，不直接携带对相机的语义信息</strong>；
+<ul>
+<li>具有语义信息的 SLAM 系统能增加机器人了解周围世界的丰富程度，从而<strong>增强机器人与世界交互的范围和复杂程度</strong>。</li>
+</ul></li>
+<li><strong>方法</strong>：在<strong>语义上有意义的地图应该是面向对象的</strong>，对象直接作为地图中的中心实体；<br />
+<font color =red><strong>二次曲面 Quadrics</strong></font>：诸如<strong>椭球之类的 3D 表面可以作为面向对象的语义地图的路标</strong>，如图 1 所示；
+<ul>
+<li>① 与更复杂的对象表示形成对比，例如<strong>截断的有符号距离场</strong> <sup><strong>[11]</strong></sup> ，<font color =red><strong>二次曲面具有非常紧凑的表示，并且可以在投影几何的框架内有效地操纵</strong></font>；</li>
+<li>② <font color =red><strong>Quadrics 捕获有关对象的大小，位置和方向的信息</strong></font>，并且可以在必要时用作更详细的 <strong>3D 重建的锚点</strong>；</li>
+<li>③ 从集成的角度来看，它们也具有优势：在对偶（dual）形式中，可以<font color =red>直接<strong>从物体检测边界框构建二次曲面</strong>，并方便地将其<strong>结合到基于因子图的SLAM公式中</strong></font>。</li>
+</ul></li>
+<li><strong>前期工作</strong> <sup><strong>[14]</strong></sup> 的不足：仅使用对偶二次曲面作为路标建图的参数，仅限于<strong>正交相机</strong> <sup><strong>[15]</strong></sup> 或使用<strong>代数误差</strong>，当路标仅部分可见时，该代数误差则无效 <sup><strong>[16]</strong></sup> ；
+<ul>
+<li>在本文中，通过一般<strong>透视相机</strong>和更强大的<strong>几何误差</strong>执行完整的 SLAM；</li>
+<li>此外，之前的工作 <sup><strong>[14,15]</strong></sup> <strong>需要椭圆拟合作为预处理步骤</strong>，本文展示了可以从边界框直接在 SLAM 中估计双二次曲面。</li>
+</ul></li>
+<li><font color =red><strong>主要贡献</strong>：
+<ul>
+<li>首先展示<strong>如何将 SLAM 中的对象路标参数化为约束对偶二次曲面</strong>；</li>
+<li>然后证明了视觉<strong>目标检测系统</strong>（如 YOLO v3 <sup><strong>[12]</strong></sup> ）<strong>可以视为 SLAM 中的一种传感器</strong>，并且<strong>检测器的观</strong>测（目标周围的边界框）可以通过新的几何误差测量公式直接<strong>约束成对偶的二次曲面参数</strong>；</li>
+<li>为了将二次曲面结合到 SLAM 中，本文<strong>推导了基于因子图的 SLAM 公式</strong>，该公式在假设数据关联的情况下<strong>联合估计对偶二次曲面和机器人的位姿参数</strong>；</font></li>
+<li>通过高保真<strong>模拟环境</strong>使用 250 个室内轨迹进行大规模评估，结合 <strong>TUM RGB-D <sup>[13]</sup> 数据集</strong>上的实际实验，<strong>展示了目标检测和对偶二次曲面参数化如何有助于 SLAM 解决方案</strong>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/fig1.PNG?raw=true" alt="fig1" /></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关工作">2. 相关工作</h2>
+<ul>
+<li>下面讨论在最先进的建图系统中<strong>使用语义上有意义的路标表示</strong>，并详细介绍<strong>利用二次曲面作为对象表示</strong>的现有文献。</li>
+</ul>
+<h3 id="slam-中的地图和路标表示">2.1 SLAM 中的地图和路标表示</h3>
+<ul>
+<li>当前大多数 SLAM 系统将环境用<strong>不同几何点的集合</strong>来表示为路标，比如 ORB-SLAM；
+<ul>
+<li><strong>直接法</strong> <sup><strong>[19，20]</strong></sup> SLAM 也会产生点云图，尽管比此前的特征点法相对更稠密；</li>
+<li>还有一些探索<strong>高阶的几何特征</strong>，比如<strong>线段</strong> <sup><strong>[21]</strong></sup> 和<strong>平面</strong> <sup><strong>[22]</strong></sup> 。</li>
+</ul></li>
+<li>基于几何 SLAM 的共性是没有利用到语义信息，一个例外是 <strong>SLAM++</strong> <sup><strong>[23]</strong></sup>；
+<ul>
+<li>这项工作提出了一种<strong>面向对象的 SLAM 系统</strong>，它使用诸如椅子和桌子之类的<strong>真实世界物体对象作为地标</strong>而不是几何元素；通过<strong>匹配已知对象实例的3D模型在RGB-D数据中检测到这些对象</strong>；</li>
+<li><font color =red>与 SLAM++ 相比，<strong>本文提出的方法不需要先验已知的对象 CAD 模型，而是使用 YOLOv3 目标检测工具</strong>。</font></li>
+</ul></li>
+<li><strong>SemanticFusion</strong> <sup><strong>[24]</strong></sup> 最近展示了如何通过语义信息丰富 SLAM 获得<strong>稠密地图</strong>；
+<ul>
+<li>这项工作和其他类似的论文如 [25]，<font color =red><strong>在创建地图后将地图语义添加到地图中，并且没有充分利用几何和语义之间的关系</strong></font>；</li>
+<li><strong>地图不是以对象为中心的，而是密集的点云</strong>，其中<strong>每个点都带有语义标签或标签上的分布</strong>；</li>
+<li><font color =red><strong>本文方法使用物体对象作为 SLAM 系统内的路标</strong>，得到的地<strong>图由编码为二次曲面的对象组成</strong>。</font></li>
+</ul></li>
+</ul>
+<h3 id="对偶二次曲面作为路标表示">2.2 对偶二次曲面作为路标表示</h3>
+<ul>
+<li>作者前期工作 [14,15] 研究了<strong>物体检测和对偶二次曲面之间的联系</strong>，文献 [15] 提出了一种<strong>从封闭形式的物体检测中估计对偶二次曲面参数的方法</strong>；
+<ul>
+<li>但他们的方法<strong>仅限于正交相机</strong>，而我们的方法适用于透视相机，因此更通用并且适用于机器人场景；此外还需要<strong>在每个检测到的物体周围进行椭圆拟合</strong>步骤；</li>
+<li><font color =red><strong>本文方法可以通过目标检测算法（比如 Faster R-CNN，SSD,YOLO v3）直接估计相机位姿和二次曲面参数。</strong></font></li>
+</ul></li>
+<li>作为文献 [15] 的延伸，文献 [14] 描述了一种<strong>从多视图目标检测中恢复对偶二次曲面参数的封闭式方法</strong>，这种方法可以处理透视相机，但不能解决相机姿势参数，<strong>只有在已知相机位姿的情况下执行路标建图</strong>；
+<ul>
+<li><font color =red><strong>本文方法执行完整的 SLAM，同时解决相机位姿估计、路标估计和形状参数估计的问题</strong>，与文献 [14,15] 相同，也<strong>需要首先将椭圆拟合到边界检测框</strong>。</font></li>
+</ul></li>
+<li>作者在文献 [16] 的<strong>因子图 SLAM 中探索了使用对偶二次曲面作为路标的初始思想</strong>；
+<ul>
+<li>这篇未发表的前期工作提出了一种代数误差公式，在<strong>目标仅部分可见的情况下被证明是不稳定的</strong>；</li>
+<li><font color =red>在本文中提出一种<strong>新的几何误差公式来克服物体部分可见的情况</strong>；与文献 [16] 相比，本文<strong>将二次曲面路标约束为椭球，正确地初始化它们</strong></font>，并在高保真的模拟环境和真实世界的图像序列中进行大尺度评估。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="对偶二次曲面dual-quadrics的定义">3. 对偶二次曲面（Dual Quadrics）的定义</h2>
+<ul>
+<li>这一节主要介绍对偶二次曲面的一些基本概念，在本文和相关工作中是必需的，可以参考投影几何的教科书（比如多视图几何）。</li>
+</ul>
+<h3 id="对偶二次曲面-dual-quadrics">3.1 对偶二次曲面 Dual Quadrics</h3>
+<ul>
+<li><strong>二次曲面</strong>是<strong>三维空间中的表面</strong>，由 4 * 4 的<strong>对称矩阵 Q 表示</strong>；<br />
+在<strong>对偶</strong>的形式中，<strong>二次曲面由一组切向平面定义</strong>：
+<ul>
+<li><font color = red>这种<strong>对偶二次曲面 Q</strong>* 被定义为：使得所有平面 <span class="math inline">\(\pi\)</span> 满足 <span class="math inline">\(\pi ^{T}Q^{*} \pi = 0\)</span>；</font></li>
+<li><strong>二次曲面</strong>的示例有<strong>球体，椭圆体，双曲面，圆锥体或圆柱体</strong>；</li>
+</ul></li>
+<li>二次曲面具有 <strong>9 自由度的位姿</strong>，对应于<strong>对称矩阵的 10 个独立元素减去一个尺度元素</strong>；
+<ul>
+<li>可以用一个<strong>含有 10 个元素的向量 <span class="math inline">\(\hat{q} = \left ( \hat{q_{1}},\cdots ,\hat{q_{10}} \right )\)</span> 表示</strong>一个一般的二次曲面，其中<strong>每个元素对应于对称矩阵 Q* 的 10 个独立元素之一</strong>.</li>
+</ul></li>
+<li>当<strong>对偶二次曲面投影</strong>到平面上时，会根据简单的规则 <span class="math inline">\(C^{*} = P Q^{*} P^{T}\)</span> 来<strong>创建一个对偶二次曲线</strong>（conic）；
+<ul>
+<li>其中 <span class="math inline">\(P = K\left [ R|t \right ]\)</span> 是一个<strong>包含相机内参和外参的投影矩阵</strong>；</li>
+<li><strong>二次曲线是二次曲面的二维投影</strong>，形状如圆、椭圆或双曲线</li>
+</ul></li>
+</ul>
+<h3 id="约束对偶二次曲面参数化">3.2 约束对偶二次曲面参数化</h3>
+<ul>
+<li>一般形式中，对偶二次曲面既可以表示<strong>闭合表面</strong>（如球体，椭圆体），也可以表示<strong>非闭合表面</strong>（如抛物面，双曲面）；
+<ul>
+<li>由于<strong>前者才能作为有意义的路标表示</strong>，本文<strong>使用约束对偶曲面来表示椭球或球体的闭合表面</strong>。</li>
+</ul></li>
+<li>与文献 [14] 类似，将对偶二次曲面参数化为： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f1.PNG?raw=true" alt="f1" />
+<ul>
+<li>其中 Z 是一个可以<strong>表示任意旋转和平移的齐次变换</strong>。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f2.PNG?raw=true" alt="f2" /></li>
+<li>在后面将用 <strong>9 元素的向量</strong> <span class="math inline">\(q = \left ( \theta _{1},\theta _{2},\theta _{3},t_{1},t_{2},t_{3},s_{1},s_{2},s_{3}, \right )^{T}\)</span> <strong>紧凑地表示约束双重二次曲面</strong>，并<strong>重建</strong>如公式（1）定义的<strong>所有对偶二次曲面</strong>。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="基于图像目标检测的传感器模型">4. 基于图像目标检测的传感器模型</h2>
+<h3 id="目的">4.1 目的</h3>
+<ul>
+<li>目的是希望能将先进且成熟的<strong>目标检测库作为一种传感器测量</strong>集成到 SLAM 系统中；
+<ul>
+<li>因此<strong>需要先建立传感器模型</strong>，在给定估计的<strong>相机姿态</strong> <span class="math inline">\(x_{i}\)</span> 和估计的地图结构（即<strong>二次曲面参数</strong> <span class="math inline">\(q_{j}\)</span> ）的情况下<strong>预测物体检测器的观测结果</strong>；</li>
+<li>这种传感器模型通常相对简单，但当使用点特征、激光扫描和占用网格地图时，目标检测器的传感器模型会更复杂。</li>
+</ul></li>
+<li>目标检测器的<font color = red><strong>观测</strong></font>包括：约束图像尺寸的轴对称的<strong>边界框</strong>和每个检测到的目标的离散<strong>标签分布</strong>；
+<ul>
+<li>在本文中关注<strong>边界框</strong>，它可以表示为<strong>四条线的集合</strong> <span class="math inline">\(I_{k}\)</span> 或一个包括边界框<strong>左上角和右下角像素坐标</strong>的向量 <span class="math inline">\(b = \left ( x_{min},y_{min},x_{max},y_{max} \right )\)</span> ;</li>
+<li><font color = red>需要找到传感器模型 <span class="math inline">\(\beta \left ( x_{i},q_{j} \right ) = \hat{b_{ij}}\)</span> 的一个<strong>映射关系</strong>，从<strong>相机位姿</strong> <span class="math inline">\(x_{i}\)</span> 和<strong>二次曲面</strong> <span class="math inline">\(q_{j}\)</span> 映射到<strong>观测的边界框观测</strong> <span class="math inline">\(\hat{b_{ij}}\)</span> 。</font></li>
+</ul></li>
+<li>这种传感器模型允许我们<strong>在预测和观测到的物体检测之间产生几何误差</strong>，这是整个 SLAM 的关键组成部分，如第五节所示。</li>
+</ul>
+<h3 id="推导目标检测传感器模型-β">4.2 推导目标检测传感器模型 β</h3>
+<ul>
+<li>推导<font color = red><strong>传感器模型</strong></font> <span class="math inline">\(\beta \left ( x_{i},q_{j} \right ) = \hat{b_{ij}}\)</span>
+<ul>
+<li>根据公式 <span class="math inline">\(C_{i,j}^{*} = P_{j}Q_{\left ( q_{j} \right )}^{*} P_{i}^{T}\)</span>（其中 <span class="math inline">\(P = K\left [ R|t \right ]\)</span> 是一个包含相机内参和外参的投影矩阵）， <font color = red>利用相机位姿 <span class="math inline">\(x_{i}\)</span> <strong>将估计的二次曲面（由 <span class="math inline">\(q_{j}\)</span> 参数化）投影到图像中</strong>，得到对偶二次曲线 <span class="math inline">\(C^{*}\)</span> 之后通过<strong>共轭（adjugate）</strong>获取<strong>原始的投影二次曲线</strong> <span class="math inline">\(C\)</span> </font>。</li>
+</ul></li>
+<li>一个原始的传感器模型可以<strong>简单地计算二次曲线 C 的封闭边界框</strong>并<strong>裁剪该框以适应图像</strong>；
+<ul>
+<li>但是如图 2a 所示，<strong>当二次曲线的极值位于图像边界之外时会带来显著的误差</strong>。</li>
+</ul></li>
+<li><font color = red><strong>精确的传感器模型</strong></font>需要知道<strong>二次曲线和图像边界之间的截面点</strong>；
+<ul>
+<li>对目标检测器边界框的正确预测是<strong>最小的轴对齐矩形</strong>，它框出<font color = red><strong>仅在图像尺寸区域内包含的所有圆锥曲线</strong></font>，如图 2b；</li>
+<li>将<strong>正确的二次曲线边界框</strong>定义为：<span class="math inline">\(\texttt{BBox}\left ( C \right )\)</span>；</li>
+<li>整个<strong>传感器模型</strong>定义为： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f3.PNG?raw=true" alt="f3" /> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/fig2.PNG?raw=true" alt="fig2" /></li>
+</ul></li>
+</ul>
+<h3 id="计算在图像区域内on-image的二次曲线边界框">4.3 计算在图像区域内（On-Image）的二次曲线边界框</h3>
+<ul>
+<li>用以下 <font color = red><span class="math inline">\(\texttt{BBox}\left ( C \right )\)</span> 算法</font>计算<strong>正确的在图像区域内的二次曲线边界框</strong>：
+<ul>
+<li>① 找到二次曲线 C 上的<strong>四个极值点</strong>，即分别表示 <strong>x 和 y 分量上的最大和最小值点</strong> <span class="math inline">\(\left ( \mathbf{p}_{1},\mathbf{p}_{2},\mathbf{p}_{3},\mathbf{p}_{4} \right )\)</span>；</li>
+<li>② 找到<strong>二次曲线与图像边界的交点</strong>（最多 8 个）<span class="math inline">\(\left ( \mathbf{p}_{5},\cdots ,\mathbf{p}_{12} \right )\)</span>；</li>
+<li>③ <strong>剔除</strong>集合 <span class="math inline">\(\left ( \mathbf{p}_{1},\cdots ,\mathbf{p}_{12} \right )\)</span> 中所有的非实数点和所有在<strong>图像边界线外的点</strong>；</li>
+<li>④ 得到剩余点中在 <strong>x 和 y 分量上的最大和最小值点</strong> 。</li>
+</ul></li>
+<li>算法 <span class="math inline">\(\texttt{BBox}\left ( C \right )\)</span> 执行上述步骤，并返回向量 <span class="math inline">\(\hat{b}\)</span>，正确地描述了一个包围了图像可见部分的二次曲线的边界框。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f4.PNG?raw=true" alt="f4" /></li>
+</ul>
+<hr />
+<h2 id="基于对偶二次曲面路标的-slam">5. 基于对偶二次曲面路标的 SLAM</h2>
+<h3 id="一般问题设置">5.1 一般问题设置</h3>
+<ul>
+<li><strong>在连续两个位姿 <span class="math inline">\(x_{i}\)</span> 和 <span class="math inline">\(x_{i+1}\)</span> 之间有里程计测量</strong> <span class="math inline">\(u_{i}\)</span> ：<span class="math inline">\(x_{i+1} = f\left ( x_{i},u_{i} \right )+w_{i}\)</span>；
+<ul>
+<li>其中 f 通常是<strong>非线性函数，代表机器人的运动模型</strong>；</li>
+<li><span class="math inline">\(x_{i}\)</span> 和 <span class="math inline">\(x_{i+1}\)</span> 是<strong>未知的机器人位姿</strong>；</li>
+<li><span class="math inline">\(w_{i}\)</span> 是协方差为 <span class="math inline">\(\sum { }_{i}\)</span> 的<strong>零均值高斯误差项</strong>；</li>
+<li>下面的讨论<strong>不涉及里程计测量</strong> <span class="math inline">\(u_{i}\)</span> 的来源，可以有很多来源，比如车轮里程计、视觉里程计等。</li>
+</ul></li>
+<li>进一步观察一组观测 <span class="math inline">\(B = \left (b_{ij} \right )\)</span> （用这种表示法来表示<strong>从位姿 <span class="math inline">\(x_{i}\)</span> 观察到的对象 j 周围的边界框</strong>）；
+<ul>
+<li>假设<strong>数据关联问题</strong>已经解决，即<strong>可以识别观测源自于那哪个物理对象</strong>；</li>
+<li>关于 SLAM 方法对于数据关联误差和鲁棒性的讨论可以参考文献 [27,28]，所讨论的位姿图 SLAM 可以应用于本文所考虑的路标 SLAM。</li>
+</ul></li>
+</ul>
+<h3 id="创建和求解因子图表示">5.2 创建和求解因子图表示</h3>
+<ul>
+<li>在<strong>给定观测值</strong> <span class="math inline">\(U = \left \{ u_{i} \right \}\)</span> 和 <span class="math inline">\(B = \left \{ b_{ij} \right \}\)</span> 的情况下，<font color = red><strong>机器人位姿 <span class="math inline">\(X = \left \{ x_{i} \right \}\)</span> 和路标 <span class="math inline">\(Q = \left \{ q_{i} \right \}\)</span> 的条件概率分布可以表示为公式（5）</strong></font>，这个因式分布可以方便地<strong>建模为因子图</strong> <sup><strong>[29]</strong></sup> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f5.PNG?raw=true" alt="f5" /></li>
+<li>给<strong>定观测集合 U，B</strong>，<strong>寻求机器人位姿 X 和对偶二次曲面 Q 的最优值</strong>，即<strong>最大后验（MAP）</strong> 配置；
+<ul>
+<li>该最大后验变量配置等于联合概率分布 <span class="math inline">\(P\left ( X,Q \right )\)</span> 的模式；也即：<font color = red><strong>最大后验解决方案是该联合分布具有最大值的点</strong></font>。</li>
+</ul></li>
+<li>通常假设里程计因子 <span class="math inline">\(P\left( x_{i+1}|x_{i},u_{i}\right)\)</span> 服从高斯分布，即：<span class="math inline">\(x_{i+1}\sim N\left ( f\left ( x_{i},u_{i} \right ),\sum { }_{i} \right )\)</span>，其中 f 是机器人的运动模型；
+<ul>
+<li>为了<strong>将路标因子整合到高斯因子图中</strong>，应用<strong>贝叶斯规则</strong>： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f6.PNG?raw=true" alt="f6" /></li>
+<li>由于正在执行 MAP 估计，因此可以忽略基本上用作归一化的分母；</li>
+<li>此外，假设一个一致的先验 <span class="math inline">\(P\left ( q_{j} |x_{i}\right )\)</span> ，可以看到<strong>最大化后验 <span class="math inline">\(P\left ( q_{j} |x_{i},b_{ij}\right)\)</span> 等价于最大化似然项 <span class="math inline">\(P\left ( b_{ij} |q_{j},x_{i}\right)\)</span></strong>;</li>
+<li><font color = orange >这种似然可以建模为 <span class="math inline">\(N\left ( \beta _{\left ( x_{i},q_{j} \right )},\Lambda _{ij} \right )\)</span>，其中 β 是第四节中定义的传感器模型，<span class="math inline">\(\Lambda\)</span> 是<strong>协方差矩阵，捕获观察到的目标的空间不确定性（在图像空间中）</strong>。</font></li>
+</ul></li>
+<li>现在可以<strong>最大化联合概率（公式 5 ）来确定最优变量配置 <span class="math inline">\(X^{*},Q^{*}\)</span></strong>；
+<ul>
+<li>通过<strong>采用负对数并将联合概率分解为非线性最小二乘问题</strong>： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f7.PNG?raw=true" alt="f7" /></li>
+</ul></li>
+<li>像公式（7）这样的<strong>最小二乘问题</strong>可以使用 <strong>L-M 或高斯-牛顿</strong>的方法进行<strong>迭代求解</strong>：利用<strong>因子稀疏结构的求解器</strong>可以非常有效地解决数千个变量的典型问题。</li>
+</ul>
+<h3 id="几何误差项">5.3 几何误差项</h3>
+<ul>
+<li>构成公式（7）中二次曲面路标因子的误差项 <span class="math inline">\(\left \| b_{ij}-\beta _{\left ( x_{i},q_{i} \right )} \right \|_{\Lambda _{ij}}^{2}\)</span> 称为<strong>几何误差</strong>，<strong>因为 b 和 β是包含像素坐标的矢量</strong>；
+<ul>
+<li>与文献 [14-16] 的前期工作提出的代数误差相比，即使在观察到的<strong>物体部分可见时</strong>，用几何误差公式也可以明确地表示出来（如图2b）；这种情况将<strong>导致边界框被截断的观测，使代数误差公式估计无效并缩小估计的二次曲面</strong>。</li>
+</ul></li>
+<li>使用<strong>几何</strong>上有意义的<strong>误差</strong>还可以<strong>通过协方差矩阵 <span class="math inline">\(\Lambda_{ij}\)</span> 方便地将目标检测的空间不确定性 <sup>[30]</sup> 传播到 SLAM 系统中</strong>。</li>
+</ul>
+<h3 id="变量初始化">5.4 变量初始化</h3>
+<ul>
+<li>需要初始化所有变量参数 <span class="math inline">\(x_{i}\)</span> 和 <span class="math inline">\(q_{j}\)</span> ，以使增量求解器起作用;
+<ul>
+<li>虽然<strong>机器人的位姿</strong> <span class="math inline">\(x_{i}\)</span> 可以<strong>初始化为一个初始估计（从原始里程计测量 <span class="math inline">\(u_{i}\)</span> 中获得）</strong>，但二次曲面路标 <span class="math inline">\(q_{j}\)</span> 的初始化需要更多的考虑；</li>
+</ul></li>
+<li>可以使用与其定义等式匹配的<strong>最小二乘来初始化二次曲面</strong> <span class="math inline">\(q_{j}\)</span> ： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f8.PNG?raw=true" alt="f8" /></li>
+<li>使用路标边界框的观测值 <span class="math inline">\(b_{ij}\)</span> 和投影他们而得到的线 <span class="math inline">\(l_{ijk}\)</span> 根据 <span class="math inline">\(\pi_{ijk}=P_{i}^{T}l_{ijk}\)</span> 来行成定义平面 <span class="math inline">\(\pi_{ijk}\)</span> 的齐次向量；
+<ul>
+<li>使用从里程计测量获得的初始相机位姿估计 <span class="math inline">\(x_{i}\)</span> 形成相机矩阵 <span class="math inline">\(P_{i}\)</span> ；</li>
+<li>利用 <span class="math inline">\(Q_{\left ( \hat{q_{j}} \right )}^{*}\)</span> 的对称性，可以将公式（8）的特定平面 <span class="math inline">\(\pi_{ijk}\)</span> 重写为 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f9.PNG?raw=true" alt="f9" /></li>
+</ul></li>
+<li>通过联立来自多个视图 i 和平面 k 的方程，得到一个形式为 <span class="math inline">\(A_{j}\hat{q}_{j}=0\)</span> 的线性系统，其中 <span class="math inline">\(A_{j}\)</span> 包含与路标观测 <span class="math inline">\(\hat{q}_{j}\)</span> 相关联的所有 <span class="math inline">\(\pi_{ijk}\)</span> （如公式9所示）的系数；
+<ul>
+<li>最小化 <span class="math inline">\(\left \| A_{j} \hat{q}_{j}\right \|\)</span> 得到的最小二乘解 <span class="math inline">\(\hat{q}_{j}\)</span> 可以从 <span class="math inline">\(V\)</span> 的最后一列获得；其中 <span class="math inline">\(A_{j} \hat{q}_{j}=UDV^{T}\)</span> 是 <span class="math inline">\(A_{j} \hat{q}_{j}\)</span> 的奇异值分解（SVD）</li>
+</ul></li>
+<li>SVD 分解的方法代表了一个一般的二次曲面，不局限于椭圆体；
+<ul>
+<li>通过提取二次曲面的旋转、平移和形状来参数化 3.2 节中定义的每一个路标。</li>
+</ul></li>
+<li>根据参考文献 [14] 将<strong>二次曲面的形状</strong>定义为： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/f10.PNG?raw=true" alt="f10" /></li>
+<li><strong>旋转矩阵</strong> <span class="math inline">\(R\left ( \theta \right )\)</span> 等于 <span class="math inline">\(Q_{33}\)</span> 的特征向量矩阵；<br />
+对偶二次曲面的<strong>平移向量</strong>由 <span class="math inline">\(Q^{*}\)</span> 的最后一列定义为齐次向量：<span class="math inline">\(\mathbf{t}=\left ( \hat{q_{4}},\hat{q_{7}},\hat{q_{9}} \right )/\hat{q_{10}}\)</span><br />
+然后可以重建第 3.2 节中估计二次曲面的约束等效。</li>
+<li><font color = red>可以通过计算<strong>公式（8）的 SVD 解对每个路标的完整检测集进行初始化</strong>，并<strong>将估计的二次曲面约束为椭球</strong>。</font></li>
+</ul>
+<hr />
+<h2 id="实验与评估">6. 实验与评估</h2>
+<ul>
+<li>使用 <strong>TUM RGB-D</strong> 数据集比较<strong>定位性能</strong>；</li>
+<li>在具有真实 3D 物体形状和位置的高保真<strong>模拟环境</strong>中<strong>评估构建的路标的质量</strong>。</li>
+</ul>
+<h3 id="tum-rgb-d-实验">6.1 TUM RGB-D 实验</h3>
+<ul>
+<li>与 ORB-SLAM2 比较<strong>相机的绝对误差</strong>和<strong>里程计测量</strong>。</li>
+<li><font color= red><strong>在两种里程计方法中评估基于对偶二次曲面路标的定位性能：Fovis <sup>[31]</sup> 和 ORB-VO；</strong></font>
+<ul>
+<li>使用具<strong>有预训练权重的 YOLOv3</strong> 检测器生成检测对象，并通过一组<strong>人工注释</strong>信息来提供<strong>各个检测器与不同物理对象之间的关联</strong>。</li>
+</ul></li>
+<li>为解决 SLAM 问题（公式7），创建了 Quadric SLAM（一种使用 GTSAM <sup><strong>[32]</strong></sup> 的因子图方法）；
+<ul>
+<li>机器人的位姿 <span class="math inline">\(X^{*}\)</span> 和对偶二次曲面 <span class="math inline">\(Q^{*}\)</span> 填充<strong>图</strong>的潜在变量，与<strong>里程计因子</strong> <span class="math inline">\(U\)</span> 和 <strong>2D 边界框因子</strong> <span class="math inline">\(B\)</span> 相关联；</li>
+<li>作为这些因子协方差矩阵的粗略近似，对于平移和旋转，<strong>里程计噪声模型的标准差</strong>设置为 0.001，<strong>边界框标准差</strong>近似为每个对象的所有边界框高度和宽度标准差（以像素为单位）的总和；</li>
+<li><font color= red>单次测量的置信度变化很大，<strong>越难检测到的物体的边界框尺寸具有越大的方差，因此将方差作为检测噪声的近似值</strong>。</font></li>
+</ul></li>
+<li><font color =red><strong>为了对所有二次曲面路标进行分类，对属于每个对象的全部检测得分进行平均，将最有可能的类指定为对象的最终分类。</strong></font></li>
+</ul>
+<h3 id="tum-rgb-d-结果">6.2 TUM RGB-D 结果</h3>
+<ul>
+<li><strong>定量结果</strong>如表 1 所示；
+<ul>
+<li>结果显示，在轨迹估计中<strong>与 foviz 相比，性能得到明显的提升</strong>，但<strong>与 ORB-VO 相比效果不明显，甚至有性能降低</strong>；</li>
+<li><strong>性能损失</strong>可能是<strong>由非高斯边界框测量的不良恒定噪声估计和对象遮挡引起的</strong>，这些因素会造成<strong>边界框明显变小</strong>，并对轨迹估计产生负面影响。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/tab1.PNG?raw=true" alt="tab1" /></li>
+</ul></li>
+<li><strong>定性结果</strong>如图 3 所示，<strong>将三维的二次曲面从估计的相机位姿投影到了二维图像中</strong>（即不显示遮挡物体）；
+<ul>
+<li><strong>二次曲面轴与检测量的对齐程度代表了路标的准确性</strong>，同时为每个对象都<strong>显示了估计的标签类</strong>； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/fig3.PNG?raw=true" alt="fig3" /></li>
+</ul></li>
+<li><font color =red>与<strong>单视图目标检测</strong>相比，<strong>基于路标的 SLAM 系统</strong>中<strong>路标提供了它们所代表的 3D 对象的准确的高级别信息</strong>，并且有效地整合了<strong>稀疏和易失性的单视图目标检测</strong>，<strong>以便在连续帧上提供一致的类标签和物体形状</strong>。</font> 可以参考提供的<a href="https://ieeexplore.ieee.org/abstract/document/8440105/media#media">视频材料</a>（意思就是单视图的目标检测表达稀疏（二维？）且容易丢失，这一帧检测到了下一帧可能没检测出来，基于路标 SLAM 系统则能在连续帧之间提供持续的路标信息，物体只要之前被观测到了且还在视野中就有其二次曲面路标）</li>
+<li><font color =red><strong>问题</strong></font>：
+<ul>
+<li>在某些情况下，SVD 解决方案会导致一些<strong>二次曲面路标初始化到了相机后面的位置</strong>，这是可能的，因为使用 <span class="math inline">\(PQ^*P^T\)</span> 投影的二次曲面<strong>可以从图像平面的任一侧投影</strong>；
+<ul>
+<li>在本文的实验中，只发生在视角有限的路标上，但这些物体被观察的次数较少，通常不会对轨迹产生大的影响；</li>
+</ul></li>
+<li>此外还在一些包含<strong>不明显物体</strong>的区域<strong>被检测到次数足以构成二次路标</strong>，尽管这些路标似乎不会对轨迹产生较大的影响，但<strong>可能提供错误的语义信息</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="仿真实验">6.3 仿真实验</h3>
+<ul>
+<li><strong>仿真模拟环境</strong>提供了准确的地面真实信息和物体信息，<strong>本文使用 UnrealCV <sup>[33]</sup> 插件创建了一个合成数据集</strong>，包含了<strong>真实相机轨迹</strong> <span class="math inline">\(x_{i} \in SE\left ( 3 \right )\)</span>，<strong>二维目标边界框</strong> <span class="math inline">\(b_{ij}\)</span> 和<strong>三维目标边界框</strong>。
+<ul>
+<li>在 10 个场景中记录了轨迹，生成了共 50 个轨迹，这50个地面实况轨迹均被5个种子产生的噪声破坏，共计250次试验；</li>
+<li>模拟相机的焦距为 320，焦点为 （320.0,240.0），分辨率为 640 * 480；</li>
+<li><strong>这些图像用于提取</strong>与基于 ConvNet 的物体检测（如文献6，7）生成的相同形式的 <strong>ground truth 边界框</strong>。</li>
+</ul></li>
+<li>类似于 6.1 节，定制一个<strong>因子图</strong>，<strong>将机器人的位姿和对偶二次曲面通过里程计和边界因子连接</strong>；</li>
+<li><font color =red><strong>噪声</strong>的产生</font>：
+<ul>
+<li>通过将<strong>零均值高斯滤波噪声</strong>引入<strong>真实相机位置之间的相对运动</strong>来获得每个实验的<strong>里程计测量</strong>；</li>
+<li>对于<strong>平移</strong>和全局相机位置之间的<strong>旋转</strong>会产生大约 5% 和 15% 的误差；</li>
+<li>该轨迹噪声与<strong>标准惯性导航系统的噪声</strong>类似，在标准惯性导航系统中，<strong>相对轨迹的复合扰动导致全局轨迹偏离真实轨迹</strong>，如图 4 所示。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/fig4.PNG?raw=true" alt="fig4" /></li>
+</ul></li>
+<li>通过向边界框真值添加 4 个像素的<strong>附加方差</strong>来模拟目标检测，并且在假设数据关联问题已经解决的情况下，<strong>模拟器提供 3D 目标和 2D 检测框之间的关联</strong>；
+<ul>
+<li>在模拟实验期间，将<strong>里程计和边界框检测的协方差矩阵设置为引入的附加方差</strong>。</li>
+</ul></li>
+<li><font color =red><strong>评估方法</strong></font>：
+<ul>
+<li>比较<strong>相机轨迹的绝对轨迹误差</strong>（Absolute Trajectory Error）；</li>
+<li>使用三个指标将初始和估计的二次曲面参数与真正的<strong>三维目标边界框进行比较</strong>；
+<ul>
+<li>① 通过计算估计的<strong>二次曲面平移</strong>与<strong>物体质心真值</strong>之间的<strong>均方根误差</strong>（RMSE）来比较<font color =red><strong>物体的位置</strong></font>；</li>
+<li>② 使用二次曲面 3D <strong>轴对齐边界框</strong>与真实物体边界框之间的 <strong>Jaccard 距离</strong>（IOU 用来评估两个集合相似度的指标）来评估<font color =red><strong>路标形状误差</strong></font>；</li>
+<li>③ 使用<strong>两个目标之间的标准 Jaccard 距离</strong>来评估<font color =red><strong>整体的路标质量</strong></font>。</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="仿真结果">6.4 仿真结果</h3>
+<ul>
+<li><strong>定量结果</strong>如表 2 所示，<strong>定性结果</strong>如图 4,5 所示，分别说明了对相机轨迹的改进和估计的二次曲面精度的提升。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/tab2.PNG?raw=true" alt="tab2" /> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190127/fig5.PNG?raw=true" alt="fig5" /></li>
+<li><strong>实验结果表明</strong>
+<ul>
+<li><strong>基于二次曲面的路标</strong>能显著提高机器人<strong>轨迹和估计的地图</strong>的质量，并提供了关于环境中<strong>物体的形状和位置的准确的高级别信息</strong>；</li>
+<li><strong>几何误差</strong>在轨迹误差方面提升了 65.2%，路标的位置、形状和整体质量提升了 70.4%，26.7% 和 30.6%；</li>
+<li><font color =red>二次曲面路标<strong>对轨迹的校正效果</strong>是通过<strong>对帧间路标的重新观测</strong>来实现的，有助于<strong>减少累计的里程计误差</strong>。</font></li>
+</ul></li>
+<li>如 6.2 节所述，估计的路标参数与真实目标之间的其他差异预计是由遮挡产生的，<strong>遮挡会导致路标表面的收缩和视角受限，从而导致对路标的形状产生过高估计</strong>。</li>
+<li>同时评估了先前工作（文献14-16）中使用的<strong>标准代数误差函数</strong>的性能，并发现估计的解决方案<strong>很少改进</strong>初始地图和轨迹估计；
+<ul>
+<li>代数误差使相机的<strong>轨迹和路标质量提高了 0.6% 和 1.5%</strong> ，但同时<strong>对路标位置和形状的误差增加了 2.6% 和 2.0%</strong>，这是由对象部分可见引起的，由于大多数场景中存在大型对象而被夸大了。</li>
+</ul></li>
+</ul>
+<h2 id="总结与展望">7. 总结与展望</h2>
+<ul>
+<li>Quadric SLAM 结合了最先进的<strong>目标检测和 SLAM 技术</strong>，<strong>同时估计相机的位置和环境中物体的三维路标表达</strong>；
+<ul>
+<li>基于对象的路标（比如对偶二次曲面）的引入对于<strong>语义</strong>上也有更大的意义，<strong>面向对象（object-oriented）</strong> 的机器人地图开发是必不可少的。</li>
+</ul></li>
+<li>实验表明，<strong>对偶二次曲面路标</strong>为<strong>纠正里程计误差</strong>提供了有价值的信息，但基于二次曲面的对象级路标<strong>更显著的作用是估计包含对象作为不同元素的地图</strong>；
+<ul>
+<li><font color =red><strong>当把高阶几何约束引入到 SLAM 公式中时，使用对偶二次曲面作为 SLAM 的路标参数的优势才能体现</strong></font>，例如需要有<strong>特定语义类型的路标如何</strong>相对于其他路标或一般结构<strong>放置在环境中</strong>的<strong>先验知识</strong>。</li>
+</ul></li>
+<li><font color =red>本文展示了<strong>如何使用对偶二次曲面作为 SLAM 中的透视相机的路标表示</strong>，提供了一种<strong>将对偶二次曲面参数化为闭合曲面的方法</strong>，并展示了它们<strong>如何直接与典型的目标检测系统相关联</strong>。</font></li>
+<li>定义了基于因子图的 SLAM 公式，在存在里程计噪声、物体检测噪声、遮挡和物体部分可见的情况下联合估计相机轨迹和物体参数。
+<ul>
+<li>这是通过设计<strong>用于目标检测器的传感器模型</strong>和<strong>对物体部分可见的稳定的几何误差</strong>来实现的。</li>
+</ul></li>
+<li><strong>未来的工作</strong>
+<ul>
+<li>研究如何更好地<strong>整合来自目标检测器的不确定性估计</strong>；</li>
+<li>探索将二次曲面<strong>初始化约束在图像平面的前方</strong>；</li>
+<li>使用深度信息来<strong>剔除与不同物理对象的不对应检测</strong>。</li>
+</ul></li>
+</ul>
+<h2 id="r-参考文献">【R】 参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[6]</strong> Ren S, He K, Girshick R, et al. <a href="http://papers.nips.cc/paper/5638-faster-r-cnn-towards-real-time-object-detection-with-region-proposal-networks.pdf"><strong>Faster r-cnn: Towards real-time object detection with region proposal networks</strong></a>[C]//Advances in neural information processing systems. <strong>2015</strong>: 91-99.<br />
+<font color = gray> <strong>Faster r-cnn</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[7]</strong> Liu W, Anguelov D, Erhan D, et al. <a href="https://arxiv.org/pdf/1512.02325.pdf"><strong>Ssd: Single shot multibox detector</strong></a>[C]//European conference on computer vision. Springer, Cham, 2016: 21-37.<br />
+<font color = gray> <strong>SSD 目标检测</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[12]</strong> Redmon J, Farhadi A. <a href="https://arxiv.org/pdf/1804.02767.pdf"><strong>Yolov3: An incremental improvement</strong></a>[J]. arXiv preprint arXiv:1804.02767, <strong>2018</strong>.<br />
+<font color = gray> <strong>YOLO v3 目标检测</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[14]</strong> Rubino C, Crocco M, Del Bue A. <a href="https://ieeexplore.ieee.org/document/7919240"><strong>3d object localisation from multi-view image detections</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2018</strong>, 40(6): 1281-1294.<br />
+<font color = gray> <strong>作者前期工作：多视图三维目标定位</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[15]</strong> Crocco M, Rubino C, Del Bue A. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Crocco_Structure_From_Motion_CVPR_2016_paper.pdf"><strong>Structure from motion with objects</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2016</strong>: 4141-4149.<br />
+<font color = gray> <strong>作者前期工作：目标运动恢复结构</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[16]</strong> Sünderhauf N, Milford M. <a href="https://arxiv.org/pdf/1708.00965.pdf"><strong>Dual quadrics from object detection boundingboxes as landmark representations in slam</strong></a>[J]. arXiv preprint arXiv:1708.00965, <strong>2017</strong>.<br />
+<font color = gray> <strong>作者前期工作，利用因子图优化，对偶二次曲面在 SLAM 中的首次试探</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>19</strong>] Engel J, Schöps T, Cremers D. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.646.7193&amp;rep=rep1&amp;type=pdf"><strong>LSD-SLAM: Large-scale direct monocular SLAM</strong></a>[C]//European Conference on Computer Vision. Springer, Cham, <strong>2014</strong>: 834-849.<br />
+<font color = gray> LSD 直接法 SLAM </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>20</strong>] Whelan T, Salas-Moreno R F, Glocker B, et al. <a href="https://spiral.imperial.ac.uk/bitstream/10044/1/39502/4/Whelan16ijrr.pdf"><strong>ElasticFusion: Real-time dense SLAM and light source estimation</strong></a>[J]. The International Journal of Robotics Research, <strong>2016</strong>, 35(14): 1697-1716.<br />
+<font color = gray> ElasticFusion  https://github.com/mp3guy/ElasticFusion </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[21]</strong> Lemaire T, Lacroix S. <a href="https://ieeexplore.ieee.org/abstract/document/4209512"><strong>Monocular-vision based SLAM using line segments</strong></a>[C]//Robotics and Automation, 2007 IEEE International Conference on. IEEE, <strong>2007</strong>: 2791-2796.<br />
+<font color = gray> <strong>线段作为 SLAM 的高阶路标</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[22]</strong> Kaess M. <a href="https://www.ri.cmu.edu/pub_files/2015/5/Kaess15icra.pdf"><strong>Simultaneous localization and mapping with infinite planes</strong></a>[C]//ICRA. <strong>2015</strong>, 1: 2.<br />
+<font color = gray> <strong>因子图 iSAM 的作者；基于无限平面的 SLAM；RGB-D相机直接获取平面测量；定义了对数四元数的平面误差</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>24</strong>] McCormac J, Handa A, Davison A, et al. <a href="https://arxiv.org/pdf/1609.05130.pdf"><strong>Semanticfusion: Dense 3d semantic mapping with convolutional neural networks</strong></a>[C]//2017 IEEE International Conference on Robotics and automation (ICRA). IEEE, <strong>2017</strong>: 4628-4635.<br />
+<font color = gray> Semanticfusion 基于 CNN 的稠密语义建图 </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>25</strong>] Pham T T, Reid I, Latif Y, et al. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Pham_Hierarchical_Higher-Order_Regression_ICCV_2015_paper.pdf"><strong>Hierarchical higher-order regression forest fields: An application to 3d indoor scene labelling</strong></a>[C]//Proceedings of the IEEE International Conference on Computer Vision. 2015: 2246-2254.<br />
+<font color = gray> 分层高阶回归森林：室内三维重建 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>29</strong>] Kschischang F R, Frey B J, Loeliger H A. <a href="http://www.cs.utoronto.ca/~radford/csc2506/factor.pdf"><strong>Factor graphs and the sum-product algorithm</strong></a>[J]. IEEE Transactions on information theory, <strong>2001</strong>, 47(2): 498-519.<br />
+<font color = gray> <strong>因子图 1998</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+[<strong>30</strong>] Miller D, Nicholson L, Dayoub F, et al. <a href="https://arxiv.org/pdf/1710.06677.pdf"><strong>Dropout sampling for robust object detection in open-set conditions</strong></a>[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, <strong>2018</strong>: 1-7.<br />
+<font color = gray> 目标检测的空间不确定性 </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>31</strong>] Huang A S, Bachrach A, Henry P, et al. <a href="http://aiweb.cs.washington.edu/research/projects/aiweb/media/papers/Huang-ISRR-2011.pdf"><strong>Visual odometry and mapping for autonomous flight using an RGB-D camera</strong></a>[M]//Robotics Research. Springer, Cham, <strong>2017</strong>: 235-252.<br />
+<font color = gray> <strong>本文对比的一种里程计方法</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>32</strong>] <a href="http://borg.cc.gatech.edu/download.htmlf"><strong>GTSAM – The Georgia Tech Smoothing and Mapping Library</strong></a><br />
+<font color = gray> <strong>因子图开源库</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>33</strong>] Qiu W, Zhong F, Zhang Y, et al. <a href="http://delivery.acm.org/10.1145/3130000/3129396/p1221-qiu.pdf?ip=219.216.73.1&amp;id=3129396&amp;acc=ACTIVE%20SERVICE&amp;key=BF85BBA5741FDC6E%2E4183B12E3311CD37%2E4D4702B0C3E38B35%2E4D4702B0C3E38B35&amp;__acm__=1550066825_734f808fb4f50cad72b898230adc72d9"><strong>Unrealcv: Virtual worlds for computer vision</strong></a>[C]//Proceedings of the 2017 ACM on Multimedia Conference. ACM, <strong>2017</strong>: 1221-1224.<br />
+<font color = gray> <strong>利用 UnrealCV 插件合成仿真数据集</strong> </font></li>
+</ul>
+<hr />
+<h2 id="q-问题">【Q】 问题</h2>
+<ul>
+<li>5.2 节中，建模的似然噪声不太理解？</li>
+<li>6.1 节中，将每个对象的一系列检测评分进行平均，指定为最有可能的分类，那场景中<strong>多个同一类物体</strong>的对象呢？</li>
+<li>6.2 节中，与两种里程计方法的定量测量加入了二次曲面作为路标，其<strong>与原来测量之间是如何产生约束和优化</strong>的？</li>
+<li>6.2 节中，与单视图目标检测比较，能提供更稳定且丰富的表达，提供的视频材料显示，二次曲面的形状和位置在第一次被检测到之后就没变过了，之后难道没有进行矫正和优化吗（类似于 CubeSLAM 中的<strong>最优提案</strong>）？</li>
+<li>6.3 节中的<strong>附加方差</strong>不太理解？假设数据关联问题得到解决，怎么解决的？</li>
+<li>6.4 节，表 2 对比的 <strong>SVD 方案与 QuadricSLAM</strong> 的区别？SVD 方案是指 5.4 节联立多帧之间的线性系统方程得到的二次曲面参数 q 吗？QuadricSLAM 是指 5.2 节中公式 7 得到的参数 Q 吗？</li>
+<li>“二次曲面路标对轨迹的校正效果是通过对帧间路标的重新观测来实现的，有助于减少累计的里程计误差”，<strong>帧间的路标多视图观测</strong>结果来校正轨迹误差，这个观测结果是如何定量表示的？具体的公式和约束关系？</li>
+<li>几何误差与代数误差？</li>
+<li>文章说<strong>假设数据关联</strong>的情况下联合估计位姿和二次曲面参数，数据到底怎么关联的？</li>
+</ul>
+<hr />
+<h2 id="t-思考">【T】 思考</h2>
+<ul>
+<li>6.2 节中，描述图 3 时说明是投影，不显示遮挡的物体，是否可以有一种<strong>透视的表达</strong>？遮挡的物体也以某种形式表现出来？</li>
+<li>多视图路标检测与单视图目标检测，Cube SLAM 是利用目标检测的最优提案确定<strong>最后的路标</strong>，这篇文章呢？</li>
+<li>6.3 节中，图 4 用物体的<strong>质心表示位置</strong>，是否可以再加入一个<strong>方向</strong>表达？</li>
+</ul>
+<hr />
+<blockquote>
+<p>2019.01.27<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-02-22-cubeslam/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-01-11-pup-up-slam/">
+            <span class="next-text nav-default"> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

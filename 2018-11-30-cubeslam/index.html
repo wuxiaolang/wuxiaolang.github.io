@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM
+Yang S, Scherer S. CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models[J]. arXiv preprint arXiv:1806.00557, 2018.
+作者： YangShichao：个人主页 Google Scholar Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=QnVlexXi9_c
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2018-11-30-cubeslam/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM" />
+<meta property="og:description" content="
+CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM
+Yang S, Scherer S. CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models[J]. arXiv preprint arXiv:1806.00557, 2018.
+作者： YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=QnVlexXi9_c
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2018-11-30-cubeslam/" />
+<meta property="article:published_time" content="2018-11-30T00:00:00+08:00" />
+<meta property="article:modified_time" content="2018-11-30T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM">
+<meta itemprop="description" content="
+CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM
+Yang S, Scherer S. CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models[J]. arXiv preprint arXiv:1806.00557, 2018.
+作者： YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=QnVlexXi9_c
+">
+<meta itemprop="datePublished" content="2018-11-30T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2018-11-30T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8378">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM"/>
+<meta name="twitter:description" content="
+CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM
+Yang S, Scherer S. CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models[J]. arXiv preprint arXiv:1806.00557, 2018.
+作者： YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=QnVlexXi9_c
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-11-30 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/cube-slam/"> cube slam </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 8378 字 </span>
+          <span class="more-meta"> 预计阅读 17 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</strong><br />
+Yang S, Scherer S. <a href="https://arxiv.org/abs/1806.00557"><strong>CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models</strong></a>[J]. arXiv preprint arXiv:1806.00557, <strong>2018</strong>.<br />
+作者： YangShichao：<a href="http://www.frc.ri.cmu.edu/~syang/"><strong>个人主页</strong></a>   <a href="https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>Google Scholar</strong></a>   <a href="https://github.com/shichaoy"><strong>Github</strong></a><br />
+卡内基梅隆大学机器人研究所：<a href="https://www.ri.cmu.edu/"><strong>The Robotics Institute of CUM</strong></a><br />
+演示视频：<a href="https://www.youtube.com/watch?v=QnVlexXi9_c">https://www.youtube.com/watch?v=QnVlexXi9_c</a></p>
+</blockquote>
+<h1 id="cubeslam-monocular-3d-object-detection-and-slam-without-prior-models">CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models</h1>
+<p><font color = blue><strong>注：本文对应的是作者 2018 年 6 月份放在 arixv 上的预印版，正式发表是在 2019 年 4 月（CubeSLAM: Monocular 3D Object SLAM），有些改动，请注意对比。这也是我当时阅读的第一篇物体级 SLAM，现在回头看有些地方翻译和表述的也不太恰当。</strong></font></p>
+<p>注：<a href="https://www.wuxiaolang.cn/slam/"><u><strong>🌐 Cube SLAM 系列论文，代码注释、总结汇总</strong></u></a></p>
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li><font color =red>提出一种<strong>单张图像的 3D 立方体对象检测方法</strong>和<strong>没有先验目标模型的多视图物体SLAM</strong>，且这两种方法使相互促进的；</font></li>
+<li>对于 <strong>3D 检测</strong>：从 <strong>2D 边界框和消失点</strong>采样生成高质量的立方体目标。
+<ul>
+<li>进一步对物体进行评分，并选择其<strong>与图像的边缘对齐</strong>。</li>
+</ul></li>
+<li><strong>物体 SLAM</strong>：提出具有新测量（novel measurement）功能的<strong>多视图 BA 约束</strong>，利用单视图的检测结果来<strong>联合优化相机位姿、物体和特征点</strong>；
+<ul>
+<li>与特征点相比，物体可以<strong>提供更多的集合约束和尺度一致性</strong>；</li>
+<li>在公开数据集中不但得到了较好的位姿估计精度，还提高了 3D 物体的检测精度。</li>
+</ul></li>
+</ul>
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><strong>(1)</strong> 大多数现有的单目研究可以分别实现对象检测和 SLAM，并且还<strong>需要依赖可能不适用于一般环境的先验目标 CAD 模型</strong>。 本研究在没有先验的情况下进行 3D 对象映射，并<strong>同时解决 3D 目标检测和多视图的物体 SLAM</strong>；</li>
+<li><strong>物体目标检测</strong>：
+<ul>
+<li>利用卷积神经网络（CNN）在大型数据集中检测具有不同大小和视点的不同 2D对象 <sup>[1]</sup>；</li>
+<li>机器人，无人车中的目标检测 <sup>[2]</sup>；</li>
+</ul></li>
+<li>在 SLAM 中经典的方法是<strong>跟踪视觉几何特征，比如点<sup>[ORB-SLAM]</sup>、线 <sup>[4]</sup>、跨帧的平面，再通过 BA 约束最小化投影误差或光度误差</strong>；</li>
+<li><font color = red><strong>以 3D 目标作为路标不仅可以起到上面几何特征的作用，还可以额外提供语义和几何约束来改善相机位姿。</strong></font></li>
+<li><strong>(2)</strong> 本研究提出一个系统来同时实现 3D 目标检测和 SLAM：
+<ul>
+<li>鉴于2D物体检测，在<strong>物体投影后与 2D 边界框紧密贴合</strong>的假设下，通过<strong>消失点（VP）采样</strong>来生成多个有效的立方体方案；</li>
+<li>利用<strong>多视图 BA 中的点和相机进一步优化</strong>所选的立方体方案姿态；</li>
+<li><font color = red><strong>物体</strong>在两个地方被用到：<strong>为难以三角化的点提供初始深度；在 BA 中提供几何约束；</strong></font></li>
+<li><font color = red><strong>同时， SLAM 中的相机位姿可以用于改善单视图的目标检测。</strong></font></li>
+</ul></li>
+<li><strong>(3)</strong> <font color = red><strong>本文贡献</strong></font>
+<ul>
+<li>提出一种<strong>针对单视图的有效且准确的三维立方体拟合方法</strong>，无需先前的对象模型或先前的方向和尺寸预测；</li>
+<li>提出一种<strong>物体 SLAM</strong> ，在点、相机和物体之间产生新的度量方式。 &gt; 实验证明，<strong>两者之间是相互促进的</strong>。</li>
+</ul></li>
+</ul>
+<h2 id="相关研究">2. 相关研究</h2>
+<h3 id="单视图-3d-物体检测">2.1 单视图 3D 物体检测</h3>
+<ul>
+<li><strong>有先验 CAD 模型</strong>的方法：利用手工制造的特征 <sup>[5]</sup> 或深度网络 <sup>[6，7，8]</sup> 来找到与 RGB 图像对齐的最佳的目标位姿；</li>
+<li><strong>没有先验模型</strong>的情况：
+<ul>
+<li>早期方法<strong>几何建模</strong>，通过 VPs <sup>[9，10]</sup> 的曼哈顿边缘或光线的组合生成对象；</li>
+<li>在地面上对多个 3D 盒子进行精确的采样，然后<strong>通过上下文特征进行选择</strong> <sup>[11]</sup> ；</li>
+<li><strong>使用投影几何来找到与 2D 边界框紧密贴合的立方体 <sup>[12]</sup></strong> 本研究中将其拓展到没有物体大小和方向预测的情况。</li>
+</ul></li>
+</ul>
+<h3 id="多视图-object-slam">2.2 多视图 object SLAM</h3>
+<ul>
+<li>基于<strong>特征点</strong>的 SLAM ；</li>
+<li>利用<strong>物体</strong>来增强建图，大致分为分离(decoupled )和耦合(coupled)方法：</li>
+<li><font color = red><strong>分解</strong>方法</font>：<strong>首先构建 SLAM 点云图</strong>，然后<strong>基于点云聚类和图像证据滤波</strong>（image evidence ltering <sup>[<strong>14，15，16</strong>]</sup> ）进一步检测和优化 3D 目标姿态；
+<ul>
+<li>与 2D 目标检测相比有明显的改进，但并不会改变 SLAM 的效果，因此如果SLAM无法构建高质量的地图，则可能无法正常工作;</li>
+</ul></li>
+<li><font color = red><strong>耦合</strong>方法</font>：通常称为对象级 SLAM
+<ul>
+<li>首个<strong>语义 SFM 来联合优化相机位姿、物体、点和平面测量</strong> <sup>[<strong>17</strong>]</sup>；</li>
+<li>使用 RGB-D 相机和先验目标 CAD 模型的 SLAM++ <sup>[<strong>18</strong>]</sup>；</li>
+<li><strong>将对象表示为球体</strong>来校正单目 SLAM 的尺度漂移 <sup>[<strong>19,20</strong>]</sup>；</li>
+<li>使用<strong>先验数据库的实时单目 SLAM</strong> <sup>[<strong>21</strong>]</sup>；</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="单视图目标检测">3. 单视图目标检测</h2>
+<h3 id="d-物体提案生成">3.1 3D 物体提案生成</h3>
+<ul>
+<li>3D 立方体可用 <strong>9 个自由度表示</strong>：3个自由度表示位置，3个自由度表示旋转，3个自由度表示尺寸；<strong>立方体坐标系在其中心</strong>，与主轴对齐；</li>
+<li>基于<strong>长方体的投影角应该与2D边界框紧密相关的假设</strong>，投影的四条边对应着 4 个约束，还不足以完全约束 9 个自由度，还需要其他信息，比如已提供的或检测到的物体的尺寸和方向；<font color =red><strong>本文利用消失点来改变减少回归参数</strong></font>。</li>
+<li>3D 立方体有三个正交轴，根据旋转 R 和相机参数 K，<strong>通过透视投影生成三个消失点</strong><sup>[<strong>10</strong>]</sup>；</li>
+<li>故可以<strong>通过估计物体的三自由度旋转 R 来计算消失点， 在立方体的上边缘采样一个角，然后结合三个消失点分析计算其他 7 个角</strong>。<br />
+&gt; 如图 2 所示, a 为观察到三个面的情况，<strong>观察到7个点，并计算出 3 个消失点，假如对点 1 进行采样，可以通过 VP 线与矩形的射线相交确定角 2 和角 3，然后再确定角 4 及其他四个底角</strong>；同理吧，b,c 两种情况也一样，先采样一个点，通过消失点计算出其他 7 个点。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig2.PNG?raw=true" /><br />
+</li>
+<li>总结：<font color = red><strong>首先估计物体三自由度的旋转和上边缘的一个角，然后计算所有其他 2D 点，并进一步进行反投影获得 3D 位置和尺寸。所以现在的问题是：如何获得物体的旋转和顶角？</strong></font>
+<ul>
+<li>有一种方式是利用深度网络通过大量的数据集直接训练预测得到，但<strong>本文为了充分利用 SLAM 优化后的几何约束，选择先进行详尽的采样，再进行评分选择最优的结果</strong>；</li>
+<li><strong>对于平放在地面的物体，用于计算 VP 的旋转可以用物体的偏航角（yaw）和相机的俯仰角（pitch）和滚转角（roll）来表示</strong>，并且相机的两个角参数可以通过 SLAM 或其他传感器来获得，以减少采样空间；比如在 KITTL 数据集中，相机几乎与地面平行，具有固定的俯仰和滚转角。</li>
+</ul></li>
+</ul>
+<h3 id="物体提案评分">3.2 物体提案评分</h3>
+<ul>
+<li>对目标物体进行立方体采样有多种方式，如语义分割 <sup>[<strong>11</strong>]</sup>，边距 <sup>[<strong>5</strong>]</sup>，HOG 特征 <sup>[<strong>9</strong>]</sup>；本文提出一种快速有效的成本函数，<strong>使长方体与图像的边缘最佳对齐</strong>，此方法最适用于带有清晰边缘的四方物体，但由于消失点和 2D 方框也可适用于其他物体，此外 <strong>SLAM 为物体提供后期优化</strong>。</li>
+<li>将图像定义为 I ，立方体方案定义为 x，定义<font color =red><strong>成本函数</strong></font>： &gt; 其中 <span class="math inline">\(\phi _{dist},\phi_{angle},\phi_{shape}\)</span> 是三项成本项，<span class="math inline">\(w_1,w_2\)</span>是后两者的权重，在<strong>经过小样本训练后得到经验值</strong>分别取0.7和2.5 <span class="math display">\[
+{\color{Blue}E(x|I)=\phi _{dist}(x) + w_1\phi_{angle}(x) + w_2\phi_{shape}(x) \quad (1)}
+\]</span></li>
+<li><strong>① 距离误差 <span class="math inline">\(\phi _{dist}\)</span></strong><br />
+2D 长方体<strong>边缘应与实际图像的边缘匹配</strong>。利用 <strong>Canny 边缘检测方法构建距离图</strong>，然后再<strong>长方体边缘倒角距离（Chamfer distance</strong>进行累加求和，再通过 2D 框的大小进行归一化。</li>
+<li><strong>② 角度对齐误差 <span class="math inline">\(\phi _{angle}\)</span></strong><br />
+由于距离误差对假阳性边缘噪声（例如物体表面纹理）非常敏感，故还需要<strong>检测线段并测量它们是否与 3.1 节立方体生成期间计算的消失点对齐</strong>，定义<strong>角度误差</strong>为： &gt; 其中 <span class="math inline">\(p\)</span> 是消失点VP，<span class="math inline">\(a,b\)</span> 是检测到的线段，<span class="math inline">\(\theta\)</span> 是两点之间的<font color = orange><strong>线角</strong></font>。 <span class="math display">\[
+\phi_{angle} = \left \| \theta (a,b)-\theta (p,b) \right \|
+\]</span></li>
+<li><strong>③ 形状误差 <span class="math inline">\(\phi _{shape}\)</span></strong><br />
+前面两项可以在 2D 图像空间进行评估，但相似的长方体角可能会产生完全不同的 3D 立方体，提出一个<strong>代价来惩罚具有较大歪斜比（s=长度/宽度）的立方体</strong>，定义形状误差的代价函数为： &gt; 其中 <span class="math inline">\(\sigma\)</span> 是一个阈值，若歪斜比小于阈值则不会受到惩罚。 <span class="math display">\[
+\phi_{shape} = max(s - \sigma ,0)
+\]</span></li>
+<li>如图 3 所示，是物体边缘对齐的评分，右图中左上角是最好的，右下角是最差的。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig3.PNG?raw=true" /></li>
+</ul>
+<h2 id="物体-slam">4. 物体 SLAM</h2>
+<ul>
+<li>物体 SLAM <strong>基于特征点的 ORB-SLAM</strong>，包括相机跟踪的前端和 BA 约束的后端，<strong>本文的主要工作是修改了 BA 部分，将特征点、物体和相机位姿约束在一起</strong>。</li>
+</ul>
+<h3 id="ba-优化方案">4.1 BA 优化方案</h3>
+<ul>
+<li>BA 用于联合优化不同地图元素，包括相机位姿，点、线等。考虑一组相机位姿 <span class="math inline">\(C = \left \{ c_i \right \}\)</span>，和一组 3D 对象路标 <span class="math inline">\(O = \left \{ o_j \right \}\)</span>，还有一系列的特征点 <span class="math inline">\(P = \left \{ p_k \right \}\)</span>（因为单独的物体还不足以完全约束相机位姿），可以将 BA 表示成如下的最小二乘问题： &gt; 其中 e 是 C,O,P之间的测量误差，W 是不同误差的权重矩阵，很多现有的库可以解决优化问题，比如g2o和iSAM。</li>
+</ul>
+<p><img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/f4.PNG?raw=true" /> + <strong>参数</strong>：<br />
++ 相机位姿表示为：<span class="math inline">\(T_{c} \subseteqq SE\left ( 3 \right )\)</span><br />
+特征点位姿表示为：<span class="math inline">\(P \subseteqq R_{3}\)</span><br />
+物体目标用 9 自由度表示为：<span class="math inline">\(O = \left \{ T_{o},D \right \}\)</span>，其中 <span class="math inline">\(T_{o} \subseteqq SE\left ( 3 \right )\)</span> 表示 6 自由度的位姿，<span class="math inline">\(D \subseteqq R_{3}\)</span> 是 3 自由度的物体的尺寸。</p>
+<h3 id="测量误差">4.2 测量误差</h3>
+<h4 id="物体-相机测量">4.2.1 物体-相机测量</h4>
+<ul>
+<li>根据场景提出两种物体与相机之间的测量误差</li>
+<li>第一种情形：3D 物体检测准确时使用的 <font color =red><strong>3D 测量误差</strong></font><br />
+定义来自相机坐标系<strong>测量</strong>的物体的位姿（本文中下标 m 表示测量量）：<span class="math inline">\(O_m = \left \{ T_{om},D_m \right \}\)</span><br />
+先将物体真实的位姿旋转至相机坐标系下，再与测量量比较，得到测量误差： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/f5.PNG?raw=true" /><br />
+</li>
+<li>注意：在没有先前的对象模型的情况下，我们基于图像的立方体检测<strong>不能区分对象的正面和背面</strong>。例如，可以通过将对象坐标系旋转 90 度并交换长宽来表示同一个长方体。因此，需要<strong>将目标物体沿高度方向旋转 90 ， 0 和 180 度以得到公式（5）中的最小误差</strong>。</li>
+<li>第二种情形：<font color =red><strong>2D 测量</strong></font><br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig4b.PNG?raw=true" /><br />
+将立方体路标<strong>投影到图像平面，得到上面图 4 中的 2D 红色边框</strong>，然后将其与<strong>检测到的 2D 蓝色边框</strong>进行比较: <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/f6.PNG?raw=true" />
+<ul>
+<li><span class="math inline">\((c,d)\)</span> 表示 2D 表框的中心（x1,x2）和尺寸(a,b)；</li>
+<li>该测量对比公式（5）的 3D 测量具有更小的不确定性，因为 2D 测量更加准确；</li>
+<li>但同时投影后会丢失信息，因为<strong>很多不同的 3D 立方体可能投影到同一个 2D 矩阵，只有一个观察面不足以完全约束相机和物体的姿态</strong>。</li>
+</ul></li>
+<li>对象测量的不确定度和<strong>权重矩阵 w</strong> 要比点方法更复杂；本文简单地<strong>给予对象和附近物体更多的测量权重</strong>，假设，相机-物体之间的距离为 d ，<strong>物体的 2D 检测概率为 p</strong>，则<font color =red><strong>权重</strong></font>为（在KITTI数据集中）： <span class="math display">\[
+{\color{Blue} w = p \times \max ((70 - d),0)/50}
+\]</span></li>
+</ul>
+<h4 id="物体-点测量">4.2.2 物体-点测量</h4>
+<ul>
+<li>点与物体对象相互约束，如果点所属于物体，则它应位于 3D 长方体内，故可以<strong>先将点投影到立方体目标边框上，然后再与立方体尺寸进行比较</strong>，此处取 max 是<strong>希望点落在立方体内</strong>： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/f7.PNG?raw=true" /></li>
+</ul>
+<h4 id="点-相机测量">4.2.3 点-相机测量</h4>
+<ul>
+<li>特征点的测量误差部分采用<strong>标准的 3D 点重投影误差</strong>（参考 ORB-SLAM <sup>[<strong>2</strong>]</sup>）</li>
+</ul>
+<h3 id="数据关联">4.3 数据关联</h3>
+<ul>
+<li><strong>多帧之间关联基于目标要比基于特征点的关联更容易</strong>，因为包含更多的信息，并可以使用 <strong>2D 对象跟踪与匹配</strong>的方法，这样使得即使在简单地 2D 目标框重合的情况下也可以运行，但出现如下图 5 所示的严重遮挡情况会出现不稳定；
+<ul>
+<li>绿点是全局中地图特征点，其他颜色点与具有相同颜色的目标关联；其中正前方青色移动车没有添加为 SLAM 路标，因此没有与之关联的特征点；由于双关，对象重叠区域中的点不与任何对象相关联； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig5.PNG?raw=true" /><br />
+</li>
+</ul></li>
+<li>此外，<strong>需要从 SLAM 优化结果中检测和剔除动态目标</strong>，但是标准目标跟踪方法不能分类它是否是静态的，除非使用特定的运动分割。</li>
+<li>因此，本文提出了另一种<font color = red><strong>基于点匹配的目标关联方法</strong></font>；<br />
+许多基于点的 SLAM 可以通过描述符匹配和极线搜索来检测动态点，因此<font color = red>若观察到的点足够属于 2D 目标边界框并且接近 3D 空间中的立方体质心，则首先将点关联到对象；（一些最新的实例分割的方法也可用于改善点-对象的关联精度）；然后可以找到可共享地图点最多且超过阈值数（实验中设为10）的对象匹配</font>；
+<ul>
+<li>此外，在第 4.2 节中 BA 期间计算目标物体与点的测量误差时，也使用折中目标-点的关联方法；<br />
+</li>
+<li>通过实验，这种方法适用于像图5中的宽基线匹配，重复对象，遮挡和动态场景。</li>
+</ul></li>
+</ul>
+<h2 id="实验">5. 实验</h2>
+<h3 id="实现">5.1 实现</h3>
+<h4 id="目标检测">5.1.1 目标检测</h4>
+<ul>
+<li>对于 2D 目标检测，在<strong>室内场景</strong>使用概率阈值为 0.25 的 <strong>YOLO</strong> 检测器 <sup>[<strong>26</strong>]</sup>，在<strong>室外</strong> KITTI 数据集中使用概率阈值为 0.5 的 <strong>MS-CNN</strong> <sup>[<strong>27</strong>]</sup> ，均可在 <strong>GPU</strong> 上实时运行；</li>
+<li><font color = red><strong>检测过程</strong>：<br />
+① 由于数据集中已提供<strong>相机的准确位姿</strong>（若没有相机位姿，可以通过 SLAM 位姿估计来得到相机的滚转和俯仰角），<strong>只需要采样目标的偏航角 yaw 便可计算消失点 VP</strong>（对应 3.1 节）；<br />
+② 在立方体可以旋转的情况下，<strong>生成 15 个偏航角范围为 90 度的物体</strong>（对应 4.2 节）；<br />
+③ 然后<strong>在 2D 边界框的顶部采样 10 个点</strong>，注意并非所有的样本都可以生成有效的立方体方案，因为有些立方体的顶角可能在 2D 边界框之外；</font><br />
+</li>
+<li>本方法的一个优点是<strong>不需要有大量的训练数据，只需要调整公式（1）两个权重</strong>；</li>
+</ul>
+<h4 id="物体-slam-1">5.1.2 物体 SLAM</h4>
+<ul>
+<li>SLAM 算法流程如下图所示； <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig4a.PNG?raw=true" /></li>
+<li>本文建立在 ORB-SLAM2 上，没有更改相机跟踪与关键帧筛选模块，<strong>在新创建在关键帧的基础上检测立方体物体，并使之关联，然后使用相机和特征点位姿进行 BA 调整</strong>；例如相机旋转较大的具有挑战性场景中的系统鲁棒性</li>
+<li>当<strong>基线或视差小于阈值时</strong>，<strong>立方体还用于初始化难以三角测量的特征点的深度</strong>，可以在一些具有挑战性的场景中提高稳健性；</li>
+<li>由于<strong>物体的数量远少于特征点</strong>，在实时运行时，物体关联和 BA 优化非常有效；</li>
+<li>为了获取单目 SLAM 的绝对地图尺度，<strong>提供初始帧的相机高度来确定地图尺度</strong>。</li>
+<li>本文的物体 SLAM 也可以在没有特征点的情况下独立工作，<strong>在一些缺少特征点的环境下，仍然可以通过物体-相机的测量来估计相机位姿</strong>。</li>
+</ul>
+<h3 id="单视图物体检测">5.2 单视图物体检测</h3>
+<ul>
+<li><strong>数据集</strong>：具有真实轨迹 3D 边界框注释的 <strong>SUN RGBD <sup>[<strong>28</strong>]</sup> 和 KITTI <sup>[<strong>29</strong>]</sup> 数据集</strong>；<br />
+<strong>评估方法</strong>：采用 3D intersection over union <strong>(IoU) 算法</strong>（可<strong>用于评估两个多维度数据的相似度</strong>），而不是仅仅根据旋转和视差进行评估；
+<ul>
+<li>若 3D IoU 大于 25% ，视为<strong>阳性检测</strong> <sup>[<strong>28，11</strong>]</sup>；</li>
+<li>由于本方法不依赖先验目标模型，<strong>为获得目标位置和尺度的绝对比例，仅评估具有已知相机高度的地面目标</strong>；<br />
+<font color = grey><em>对于 KITTI 数据集均知道相机高度，对于 SUN RGBD 数据集，选择了 1670 个图像，可以在视野中完全可见地面对象和地平面</em></font></li>
+</ul></li>
+</ul>
+<h4 id="物体提案评估">5.2.1 物体提案评估</h4>
+<ul>
+<li>首先使用参考论文 [30] 的方法训练和验证分析 KITTI 数据集上提案的质量；
+<ul>
+<li>在参考论文 [11] 中，首先尽量抽取大量的立方体提案（14k），然后通过语义分析等方法选择前 N 个提案召回；</li>
+</ul></li>
+<li>如下图 6a 中红色线（难道不是绿色的线吗？？）所示，<strong>在评分之前，本方法可达到 90% 的召回率，每个图像有 800 个原始提案，每个目标约有 200 个原始提案</strong>；</li>
+<li>在评分之后绿色的线（难道不是红色的线吗？？）所示，<strong>仅使用 20 个提案就达到了相同的召回率</strong>，比论文 [11] 的方法减少很多；</li>
+<li><font color= red><strong>原因</strong>：<br />
+① 本文 3D 原始提案的质量很高，因为他们可以保证与 2D 检测到的边界框相匹配；<br />
+② 本文高效的评分机制。</font><br />
+<font color = grey><em>注意本文方法有上限，因为在 2D 检测时可能会遗漏物体</em></font> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig6.PNG?raw=true" /></li>
+</ul>
+<h4 id="最终检测">5.2.2 最终检测</h4>
+<ul>
+<li>评估挑选出的<strong>最佳提案的最终准确性</strong>。</li>
+<li><font color =red><strong>SUN RGBD 数据集</strong></font>
+<ul>
+<li>暂时未找到训练好的 3D 检测算法，本文在<strong>室内环境</strong>中比较两种公共方法 <strong>SUN primitive</strong> <sup>[<strong>9</strong>]</sup> 和 <strong>3D Geometric Phrases (3dgp)</strong> <sup>[<strong>31</strong>]</sup>；<br />
+</li>
+<li>在<strong>检测和反投影</strong>到 3D 空间时，修改了部分代码以<strong>使用实际的相机位姿和校准矩阵</strong>；<br />
+</li>
+<li>为消除 2D 检测器的影响，<strong>两种方法均仅评估在 2D 检测框的 IoU 大于 0.7 对应的物体的 3D IoU</strong>；<br />
+</li>
+<li>如上图 6b 和下图 7 所示，<strong>本文方法检测到更多更准确的立方体</strong>，所以更加稳健；<strong>平均的 3D IoU 与使用先验 CAD 模型的 3dgp 相比更小</strong>，但如果仅通过 3dgp 对相同的检测对象进行评估则更高。<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig7.PNG?raw=true" /></li>
+</ul></li>
+<li><font color =red><strong>KITTI 数据集</strong></font>
+<ul>
+<li>使用深度网络与其他两种单目算法 <sup>[<strong>12,30</strong>]</sup> 比较；</li>
+<li>如图 6b 所示，本文方法与使用先验模型的 SubCNN 表现类似；直接预测车辆方向和尺寸的 [12] 表现更差；</li>
+<li><font color = orange >由于只有一个 具有固定相机视角的对象类“汽车”，因此 CNN 预测比手工设计特征更好；</font></li>
+<li>在 6b 中最后一行，选择前 10 个立方体方案进行评估，表明在少数提案中也能有较高的质量。</li>
+</ul></li>
+</ul>
+<h3 id="物体-slam-2">5.3 物体 SLAM</h3>
+<ul>
+<li>物体 SLAM 的评估指标：<strong>相机位姿估计和 BA 优化之后的 3D 物体 IoU</strong>；
+<ul>
+<li>均方根误差（RMSE）和 KITTI 相对平移误差用于评估相机位姿；</li>
+</ul></li>
+</ul>
+<h4 id="tum-和-icl-nuim-rgbd-数据集">5.3.1 TUM 和 ICL-NUIM RGBD 数据集</h4>
+<ul>
+<li>TUM 和 ICL-NUIM RGBD 数据集<sup>[<strong>32，33</strong>]</sup> 提供<strong>相机 ground truth 轨迹（此处仅使用 RGB 图像）</strong>；使用<strong>深度图像构造全局点云</strong>，并<strong>手动标记 3D 立方体作为 ground truth 物体</strong>；</li>
+<li>首先测试 TUM fr3 cabinet 序列，如图 8a 所示，这个<strong>具有挑战性的低纹理数据集，由于特征点少现有单目 SLAM 算法均失败</strong>；</li>
+<li>利用 4.2 节中的方法，<strong>将 3D 物体作为唯一的 SLAM 路标进行物体-相机测量</strong>；在图 8a 左侧中使用 SLAM 估计的相机姿态在某些帧下检测到的立方体，可以看出底部边界框存在很大的测量误差，<strong>经过多视图优化，得到右侧图的红色立方体基于与真实点云匹配</strong>；</li>
+<li><font color= red>实验数据对比如图 8b 所示：
+<ul>
+<li>对于<strong>低纹理的 fr3 cabinet 序列</strong>中经过 <strong>SLAM 优化之后 3D IoU 提升，相机姿态误差为 0.17m</strong>；<br />
+</li>
+<li>对于<strong>特征丰富的 ICL 客厅序列</strong>，由于单目的 DSO 和 ORB-SLAM 没有绝对尺度，本文计算尺度对齐后的姿态误差 <sup>[<strong>13</strong>]</sup>，在这个序列中<strong>提高了物体检测的精度，但牺牲了一定的相机位姿准确性</strong>；</li>
+<li>在图 1a 中的 ICL 数据的物体建图（其中Mesh网格模型仅用于显示，不用于检测）可以看出，<strong>本文方法检测除了不同的物体，展示了没有先前模型的3D检测的优势</strong>。</font><br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig8.PNG?raw=true" /> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig1.PNG?raw=true" /></li>
+</ul></li>
+</ul>
+<h4 id="collected-chair-数据集">5.3.2 Collected chair 数据集</h4>
+<ul>
+<li>如图 9a,b 用 Kinect RGBD 相机收集两个椅子的数据集，<strong>RGBD ORB-SLAM 测量的相机位姿视为是相机的 ground truth</strong>；</li>
+<li>图 9a ，在优化之后，立方体框与相关的 3D 特征点紧密联合；<br />
+图 9b ，相机旋转剧烈，其定量的误差测量在图 8b 的底部两行中， 3D IoU 也得到了改善；
+<ul>
+<li>DSO 能在第一个数据集中运行，但在第二个数据集中效果糟糕，无法进行定量计算；</li>
+<li><strong>单目的 ORB-SLAM 在两个数据集中都无法进行初始化</strong>，<strong>本文方法的立方体检测可以从单个视图提供的深度点来初始化</strong>；</li>
+</ul></li>
+</ul>
+<p><img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig9.PNG?raw=true" /></p>
+<h4 id="kitti-数据集">5.3.3 KITTI 数据集</h4>
+<ul>
+<li>测试两种KITTI数据集，一种是<strong>提供目标注释 ground truth 的短序列</strong>，另一种是<strong>没有目标注释的标准测距基准测试的长序列</strong>；</li>
+<li>由于<strong>不确定度低</strong>，在 BA 期间的测量误差模型采用 4.2 节中 <strong>2D 相机-目标测量</strong>；</li>
+<li>在于 ORB-SLAM 进行比较时，<strong>关闭了其闭环线程，以更好地测量单目尺度漂移</strong>；</li>
+<li><font color =red><strong>通过第一帧相机的高度（实验中为 1.7 m）来缩放 ORB-SLAM 的初始地图</strong>，就可以直接评估绝对轨迹误差而不需要轨迹尺度对齐；</font>
+<ul>
+<li>图 10 中，在第一次转弯之前的初始贵极端与 ground truth 匹配良好，说明尺度缩放正确；</li>
+</ul></li>
+<li>在 <strong>KITTI 数据集中还使用先验的汽车尺寸（实验中为 w = 3.9 m；l = 1.6 m；h = 1.5 m）初始化目标尺寸，以保持长期的尺度一致性</strong>，在参考论文[19,20]中也使用这样的方法；特别是目标在一些序列中观察不到时尤为有用。 <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/fig10.PNG?raw=true" /></li>
+<li>对于<strong>第一类提供目标注释的短序列</strong>，选择了 19 个 KITTI 原始序列，目标注释最多的是 <strong><code>2011_09_26 drive x</code></strong> 序列；
+<ul>
+<li>如图表 1，3D 目标 <strong>IoU 和相机位姿均得到改善</strong>；</li>
+<li>尤其是相机位姿，<strong>物体 SLAM 提供的几何约束可以减少 SLAM 的尺度漂移</strong>，部分物体建图和位姿估计的可视化效果见图 1b 和图 10 所示。<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/tab1.PNG?raw=true" /><br />
+</li>
+</ul></li>
+<li>对于<strong>第二类 KITTI 里程计数据集</strong>：</li>
+<li><strong>单目恢复尺度</strong>的方法：
+<ul>
+<li>文献[34,35]<strong>使用恒定的地面高度假设来减少尺度漂移</strong>；</li>
+<li>文献[19,20]<strong>基于物体的尺度恢复方法</strong>；</li>
+</ul></li>
+<li>没有与 ORB-SLAM 比较，因为没有闭环无法在长序列中恢复尺度，且存在如图 10 所示的漂移；</li>
+<li>如表 2 所示，与使用物体恢复尺度的其他 SLAM 比较，<strong>它们将车辆表示为球体或仅使用车辆高度信息，没有本文使用的立方体准确</strong>；并且与基于地面高度缩放的方法相接近；</li>
+<li>在 Seq 02, 06, 10 序列中表现更差是因为长距离可见的物体不多产生漂移；故<font color = red><strong>提出一种地面高度假设与物体 SLAM 结合的方法，若再最近20帧中没有可见物体，会使用点云平面拟合，使用恒定地面高度假设来缩放相机位姿和局部地图；</strong></font>
+<ul>
+<li>如表 2 中的<strong>组合方法</strong>，在 KITTI 标准中<strong>达到了最精确地水平</strong>；</li>
+<li>注意：<font color = red><strong>基于地面高度的方法也有局限性，比如不适用于飞行器或手持相机，如果地面不可见，比如图 5 中的图像帧，会导致失败；前视车辆遮挡了地面信息，这也是很多方法在 KITTI 07 数据集上失败或表现不佳的原因。</strong></font> <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2018/20181130/tab2.PNG?raw=true" /></li>
+</ul></li>
+</ul>
+<h2 id="结论">6. 结论</h2>
+<ul>
+<li><font color = red>① 研究内容：本文提出一种<strong>没有先验物体模型的单目三维物体检测与 SLAM 方法</strong>，并首次证明，语义目标检测与几何 SLAM 在一个统一框架中可以相互关联。
+<ul>
+<li>单视图的<strong>三维物体检测</strong>，<strong>基于消失点从二维边界框中有效地生成高质量的立方体提案</strong>，然后通过图像信息有效地对提案进行评分；</li>
+<li>提出一种<strong>物体级的 SLAM</strong>，在相机-物体-点之间产生测量，并提出新的物体关联方法，有效处理遮挡和动态情形；</li>
+<li><strong>物体可以为点提供深度约束，为相机提供尺度约束，反过来，SLAM 也为 3D 物体检测提供初始化</strong>。</font></li>
+</ul></li>
+<li>② 实验结果：本文在不同的室内和室外数据集上评估了以上两个功能，在 SUN RGBD 数据集上实现了最准确的<strong>目标检测</strong>，在 KITTI 里程计数据集上达到了最佳的<strong>位姿估计</strong>。</li>
+<li>③ 未来展望：将来考虑<strong>动态目标和使用目标的稠密地图</strong>，将更完整的<strong>场景理解</strong>与 SLAM 优化相结合。</li>
+</ul>
+<h2 id="r.-参考文献">R. 参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>[1]</strong> He K, Gkioxari G, Dollár P, et al. <a href="https://arxiv.org/pdf/1703.06870.pdf%20http://arxiv.org/abs/1703.06870.pdf"><strong>Mask r-cnn</strong></a>[C]//Computer Vision (<strong>ICCV</strong>), 2017 IEEE International Conference on. IEEE, <strong>2017</strong>: 2980-2988.</li>
+<li><input type="checkbox" disabled="" />
+<strong>[2]</strong> Xiang Y, Mottaghi R, Savarese S. <a href="https://www-cs.stanford.edu/~roozbeh/papers/Xiang14wacv.pdf"><strong>Beyond pascal: A benchmark for 3d object detection in the wild</strong></a>[C]//Applications of Computer Vision (WACV), <strong>2014</strong> IEEE Winter Conference on. IEEE, 2014: 75-82. &gt; 室外 3D 目标检测</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[3]</strong> Mur-Artal R, Montiel J M M, Tardos J D. <a href="https://arxiv.org/pdf/1502.00956"><strong>ORB-SLAM: a versatile and accurate monocular SLAM system</strong></a>[J]. IEEE Transactions on Robotics, <strong>2015</strong>, 31(5): 1147-1163.</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[4]</strong> Yang S, Scherer S. <a href="https://www-cs.stanford.edu/~roozbeh/papers/Xiang14wacv.pdf"><strong>Direct monocular odometry using points and lines</strong></a>[J]. arXiv preprint arXiv:1703.06380, <strong>ICRA 2017</strong>. &gt; 作者前期研究，融合点线的直接法视觉里程计</li>
+<li><input type="checkbox" disabled="" />
+<strong>[5]</strong> Lim J J, Pirsiavash H, Torralba A. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2013/papers/Lim_Parsing_IKEA_Objects_2013_ICCV_paper.pdf"><strong>Parsing ikea objects: Fine pose estimation</strong></a>[C]//Proceedings of the IEEE International Conference on Computer Vision. <strong>ICCV 2013</strong>: 2992-2999. &gt; 基于边缘信息进行物体检测</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[9]</strong> Xiao J, Russell B, Torralba A. <a href="https://papers.nips.cc/paper/4842-localizing-3d-cuboids-in-single-view-images.pdf"><strong>Localizing 3D cuboids in single-view images</strong></a>[C]//Advances in neural information processing systems. <strong>2012</strong>: 746-754.<br />
+<font color = grey><em>基于 <strong>HOG 特征进行物体检测</strong>，<strong>单视图中本地立方体检测</strong></em></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[11]</strong> Chen X, Kundu K, Zhang Z, et al. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Chen_Monocular_3D_Object_CVPR_2016_paper.pdf"><strong>Monocular 3d object detection for autonomous driving</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>ICCV 2016</strong>: 2147-2156. &gt; 用于自动驾驶的<strong>单目三维物体检测</strong>，<strong>语义分割</strong></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[12]</strong> Mousavian A, Anguelov D, Flynn J, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Mousavian_3D_Bounding_Box_CVPR_2017_paper.pdf"><strong>3d bounding box estimation using deep learning and geometry</strong></a>[C]//Computer Vision and Pattern Recognition (<strong>CVPR</strong>), 2017 IEEE Conference on. IEEE, <strong>2017</strong>: 5632-5640. &gt; 基于深度学习与几何信息的<strong>3D物体边界估计</strong></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[13]</strong> Engel J, Koltun V, Cremers D. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7898369"><strong>Direct sparse odometry</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2018</strong>, 40(3): 611-625.<br />
+<font color = grey><strong><em>DSO, 单目相机尺度对齐计算姿态误差</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[17]</strong> Bao S Y, Bagra M, Chao Y W, et al. <a href="http://cvgl.stanford.edu/papers/bao_cvpr2012_ssfm.pdf"><strong>Semantic structure from motion with points, regions, and objects</strong></a>[C]//Computer Vision and Pattern Recognition (<strong>CVPR</strong>), 2012 IEEE Conference on. IEEE, <strong>2012</strong>: 2703-2710. &gt; 首个语义 SFM 来联合优化相机位姿、物体、点和平面测量</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[18]</strong> Salas-Moreno R F, Newcombe R A, Strasdat H, et al. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2013/papers/Salas-Moreno_SLAM_Simultaneous_Localisation_2013_CVPR_paper.pdf"><strong>Slam++: Simultaneous localisation and mapping at the level of objects</strong></a>[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. <strong>2013</strong>: 1352-1359.</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[19]</strong> Frost D P, Kähler O, Murray D W. <a href="http://www.robots.ox.ac.uk/~duncan/pdf/frost2016.pdf"><strong>Object-aware bundle adjustment for correcting monocular scale drift</strong></a>[C]//Robotics and Automation (<strong>ICRA</strong>), 2016 IEEE International Conference on. IEEE, <strong>2016</strong>: 4770-4776.<br />
+<font color = grey><strong><em>目标感知的BA校正单目尺度漂移</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[20]</strong> Sucar E, Hayet J B. <a href="https://arxiv.org/pdf/1711.02768.pdf"><strong>Bayesian scale estimation for monocular slam based on generic object detection for correcting scale drift</strong></a>[C]//2018 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2018</strong>: 1-7.<br />
+<font color = grey><strong><em>物体检测校正尺度漂移</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[21]</strong> Gálvez-López D, Salas M, Tardós J D, et al. <a href="https://arxiv.org/pdf/1504.02398.pdf"><strong>Real-time monocular object slam</strong></a>[J]. Robotics and Autonomous Systems, <strong>2016</strong>, 75: 435-449.</li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[26]</strong> Redmon J, Farhadi A. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Redmon_YOLO9000_Better_Faster_CVPR_2017_paper.pdf"><strong>YOLO9000: better, faster, stronger</strong></a>[J]. arXiv preprint, <strong>CVPR2017</strong>.<br />
+<font color = grey><strong><em>YOLO 目标检测</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[27]</strong> Cai Z, Fan Q, Feris R S, et al. <a href="https://arxiv.org/pdf/1607.07155.pdf"><strong>A unified multi-scale deep convolutional neural network for fast object detection</strong></a>[C]//European Conference on Computer Vision. Springer, Cham, <strong>ECCV2016</strong>: 354-370.<br />
+<font color = grey><strong><em>MS-CNN 目标检测</em></strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[28]</strong> Song S, Lichtenberg S P, Xiao J. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Song_SUN_RGB-D_A_2015_CVPR_paper.pdf"><strong>Sun rgb-d: A rgb-d scene understanding benchmark suite</strong></a>[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. <strong>CVPR2015</strong>: 567-576.<br />
+<font color = grey><strong><em>SUN RGBD数据集</em></strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[30]</strong> Xiang Y, Choi W, Lin Y, et al. <a href="https://arxiv.org/pdf/1604.04693.pdf"><strong>Subcategory-aware convolutional neural networks for object proposals and detection</strong></a>[C]//Applications of Computer Vision (WACV), 2017 IEEE Winter Conference on. IEEE, <strong>2017</strong>: 924-933.<br />
+<font color = grey><strong><em>用于目标提案和检测的子类别感知卷积神经网络</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[31]</strong> Choi W, Chao Y W, Pantofaru C, et al. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2013/papers/Choi_Understanding_Indoor_Scenes_2013_CVPR_paper.pdf"><strong>Understanding indoor scenes using 3d geometric phrases</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2013</strong>: 33-40.<br />
+<font color = grey><strong><em>3D 几何语义理解室内场景</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[34] Lee B, Daniilidis K, Lee D D. <a href="https://ieeexplore.ieee.org/abstract/document/7139928"><strong>Online self-supervised monocular visual odometry for ground vehicles</strong></a>[C]//Robotics and Automation (ICRA), 2015 IEEE International Conference on. IEEE, <strong>ICRA2015</strong>: 5232-5238.<br />
+<font color = grey><strong><em>使用恒定的地面高度假设来减少尺度漂移</em></strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[35] Song S, Chandraker M, Guest C C. <a href="https://songshiyu01.github.io/pdf/pami2016_monovo.pdf"><strong>High accuracy monocular SFM and scale correction for autonomous driving</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2016</strong>, 38(4): 730-743.<br />
+<font color = grey><strong><em>使用恒定的地面高度假设来减少尺度漂移</em></strong></font></li>
+</ul>
+<blockquote>
+<p>2018.11.30<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-01-06-object-plane-slam/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

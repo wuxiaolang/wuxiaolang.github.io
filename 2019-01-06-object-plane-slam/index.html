@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 结构化环境中单目物体级与平面级的SLAM
+Yang S, Scherer S. Monocular Object and Plane SLAM in Structured Environments[J]. arXiv preprint arXiv:1809.03415, 2018.
+作者：YangShichao：个人主页 Google Scholar Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;amp;t=11s
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-01-06-object-plane-slam/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 结构化环境中单目物体与平面SLAM" />
+<meta property="og:description" content="
+结构化环境中单目物体级与平面级的SLAM
+Yang S, Scherer S. Monocular Object and Plane SLAM in Structured Environments[J]. arXiv preprint arXiv:1809.03415, 2018.
+作者：YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;t=11s
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-01-06-object-plane-slam/" />
+<meta property="article:published_time" content="2019-01-06T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-01-06T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 结构化环境中单目物体与平面SLAM">
+<meta itemprop="description" content="
+结构化环境中单目物体级与平面级的SLAM
+Yang S, Scherer S. Monocular Object and Plane SLAM in Structured Environments[J]. arXiv preprint arXiv:1809.03415, 2018.
+作者：YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;t=11s
+">
+<meta itemprop="datePublished" content="2019-01-06T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-01-06T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8740">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 结构化环境中单目物体与平面SLAM"/>
+<meta name="twitter:description" content="
+结构化环境中单目物体级与平面级的SLAM
+Yang S, Scherer S. Monocular Object and Plane SLAM in Structured Environments[J]. arXiv preprint arXiv:1809.03415, 2018.
+作者：YangShichao：个人主页   Google Scholar   Github
+卡内基梅隆大学机器人研究所：The Robotics Institute of CUM
+演示视频：https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;t=11s
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-01-06 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/cube-slam/"> cube slam </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 8740 字 </span>
+          <span class="more-meta"> 预计阅读 18 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>结构化环境中单目物体级与平面级的SLAM</strong><br />
+Yang S, Scherer S. <strong><a href="https://arxiv.org/pdf/1809.03415.pdf">Monocular Object and Plane SLAM in Structured Environments</a></strong>[J]. arXiv preprint arXiv:1809.03415, <strong>2018</strong>.<br />
+作者：YangShichao：<a href="http://www.frc.ri.cmu.edu/~syang/"><strong>个人主页</strong></a>   <a href="https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>Google Scholar</strong></a>   <a href="https://github.com/shichaoy"><strong>Github</strong></a><br />
+卡内基梅隆大学机器人研究所：<a href="https://www.ri.cmu.edu/"><strong>The Robotics Institute of CUM</strong></a><br />
+演示视频：<a href="https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;t=11s">https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;t=11s</a></p>
+</blockquote>
+<p>注：<a href="https://www.wuxiaolang.cn/slam/"><u><strong>🌐 Cube SLAM 系列论文，代码注释、总结汇总</strong></u></a></p>
+<h1 id="monocular-object-and-plane-slam-in-structured-environments">Monocular Object and Plane SLAM in Structured Environments</h1>
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>本文提出<font color = red><strong>利用高级别的物体、平面路标和特征点的单目 SLAM</strong></font> ，与仅利用特征点的 SLAM 生成的地图更密集、紧凑；</li>
+<li>首先提出一个<font color = red><strong>高阶图形模型</strong>考虑<strong>单张图像的语义和遮挡约束来推断 3D 物体和平面</strong></font>；提取的立方体物体和平面在一个统一的 SLAM 框架中进行优化；</li>
+<li>与点特征相比，<strong>物体和平面具有更多的语义约束，例如曼哈顿和目标支持（object supporting ）</strong>；</li>
+<li>在 ICL NUIM 和 TUM mono 数据集中定位精度准确，并可以在<font color = red><strong>结构化环境中生成稠密地图</strong></font>。</li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><strong>语义理解与 SLAM 的发展与联系</strong>
+<ul>
+<li>卷积神经网络（CNN）用于目标检测、语义分割和 3D 理解；SLAM / SFM ,ORB-SLAM（2015） 与 DSO（2017）应用于自动机器人及 AR；</li>
+<li><strong>但是环境理解与 SLAM 之间并没有得到很好地结合</strong>，现存大多数 SLAM 方法都是将环境表示成点云（稀疏或稠密），无法满足很多高级或智能的需求；例如自动驾驶需要 3D 空间中检测车辆，AR应用中需要对 3D 物体和平面有很好地定位来实现真实的交互。</li>
+</ul></li>
+<li><font color = red><strong>环境理解与 几何SLAM 结合的两种方式</strong></font>
+<ul>
+<li><strong>解耦方法</strong>：首先构建 SLAM 点云然后进行进一步添加标签 <sup><strong>[6,7]</strong></sup> 、3D 物体 <sup><strong>[8]</strong></sup> 或平面 <sup><strong>[9]</strong></sup> 信息；</li>
+<li><strong>耦合方法</strong>：联合优化相机位姿和物体或平面的位置；</li>
+</ul></li>
+<li><strong>本文采用耦合方法来验证高级别物体和平面地标用来改善相机位姿和稠密建图</strong>；
+<ul>
+<li>很多现有物体级 SLAM （例如 <strong>SLAM++</strong> <sup><strong>[11]</strong></sup>）需要有先验检测目标模型和建模模型，限制了应用场景；</li>
+<li>也有一些工作利用建筑平面进行稠密 3D 重建，但需要依靠 RGB-D 传感器或 LiDAR 扫描仪。</li>
+</ul></li>
+<li><strong>本文提出一个没有先验物体和房间模型的联合物体和平面的单目SLAM</strong>，主要分为两个步骤：
+<ul>
+<li>首先<font color = red><strong>单视图结构化 3D 环境理解</strong></font>，基于图像的语义信息<strong>生成多个布局平面和立方体目标提案</strong>，然后选择最佳的子集来<strong>最小化遮挡和交叉</strong>；</li>
+<li><font color = red><strong>多视图 SLAM 联合优化</strong></font>，在统一的 BA 框架中，通过相机和特征点位姿进一步优化平面和物体的位置。</li>
+</ul></li>
+<li>本文方案可以提供更多的<strong>语义和几何约束（例如曼哈顿世界假设和目标支持关系）来改善相机位姿</strong>，优化的平面和物体位置也有利于形成最终的稠密 3D 建图。</li>
+<li><font color = red>主要贡献：
+<ul>
+<li>提出一种高阶图形模型，对 <strong>3D 对象和布局平面的联合结构</strong>进行有效推理；</li>
+<li>首次提出一种<strong>包含点，对象和平面的单目 SLAM 方法</strong>， 在定位和建图方面都有效地提升了当前先进的 SLAM 算法的精度。</font></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<h3 id="单视图理解">2.1 单视图理解</h3>
+<ul>
+<li>关于单独的目标检测与平面布局检测；
+<ul>
+<li>经典的 <strong>3D 目标检测</strong>依赖于<strong>人造特征</strong>，比如边缘和纹理 <sup><strong>[14]</strong></sup> ；<strong>深度学习</strong>可用于直接预测单个图像中立方体目标的姿态 <sup><strong>[15]</strong></sup>；</li>
+<li>对于<strong>平面布局检测</strong>，基于<strong>消失点的房间模型</strong> <sup><strong>[16]</strong></sup>，基于学习的方法（例如 <strong>[17]</strong> 和 RoomNet <sup><strong>[3]</strong></sup> ）应用于<strong>曼哈顿房间</strong>中，<font color =red>这些方法可以生成大致准确的平面模型，但<strong>不适合作为 SLAM 的优化地标</strong>，因为 CNN 预测可能在帧之间不一致，此外其中大部分都仅适用于受限制的四壁房型。</font></li>
+</ul></li>
+<li><font color =red><strong>本文工作侧重于物体和平面的联合以及整体的 3D 环境理解，他们的位置通过空间位置和语义关系（例如遮挡，交叉和形变 <sup></strong>[18]<strong></sup>）进行优化；</strong></font>
+<ul>
+<li>现有的方案大部分基于 RGBD 相机，并没有实时运行，近期有用 CNN 直接预测物体和平面的 3D 占有 <sup><strong>[19]</strong></sup>。</li>
+</ul></li>
+</ul>
+<h3 id="物体与平面级的-slam">2.2 物体与平面级的 SLAM</h3>
+<ul>
+<li>基于物体和平面级的 SLAM <strong>简单地实现方法是：首先构建基于点的 SLAM，然后再检测目标和平面</strong>，由于多视图的点云信息，可以提高目标检测的精度，但当点云质量较低时容易失败；</li>
+<li>本文专注于<strong>明确使用目标和平面作为 SLAM 的路标</strong>，首个提出联合优化相机位姿、物体、点和平面的系统称之为：Semantic Structure from Motion <sup><strong>[20]</strong></sup>；
+<ul>
+<li>需要先验模型的基于物体的 SLAM ：文献 [10] 和 [11]；</li>
+<li>不需要先验模型的物体级 SLAM：<strong>QuadricSLAM</strong> <sup><strong>[21]</strong></sup> 和 <strong>CubeSLAM</strong> <sup><strong>[22]</strong></sup></li>
+</ul></li>
+<li>还有一些工作使用<strong>平面或超像素生成稠密地图</strong> <sup><strong>[23,24]</strong></sup> ，文献 <strong>[12]</strong> 迭代地估计布局平面和点云匹配以减小 RGBD 地图的漂移，<strong>与结构化环境中的点比较，平面可提供更长距离的约束</strong> <sup><strong>[25,26]</strong></sup> 。</li>
+<li>参考文献 [27] 提出用 RGBD 相机姿态联合优化物体、点和平面，但本文使用的是单目，并且具有不同的目标表示。</li>
+</ul>
+<hr />
+<h2 id="单视图理解-1">3. 单视图理解</h2>
+<ul>
+<li>与单视图场景理解的研究类似 <sup><strong>[18]</strong></sup> ，<font color = red><strong>将环境表示为一组布局平面（例如墙面，地面和立方物体），目的是从 2D 图像中推断他们的位置</strong></font>。</li>
+<li><font color = red><strong>首先生成一些物体和平面的提案（假设），然后通过条件随机场（CRF）优化来选择满足遮挡约束的最佳子集</strong></font>。</li>
+</ul>
+<h3 id="提案生成">3.1 提案生成</h3>
+<h4 id="平面布局提案">3.1.1 平面布局提案</h4>
+<ul>
+<li><strong>将实际检测到的地面和墙面的边缘投影到 3D 空间生成平面提案，由于边缘在帧之间的观察一致性可以直接将其作为 SLAM 的路标；</strong></li>
+<li>首先检测所有图像的边缘，然后<strong>选择靠近地面-墙面分割边界 <sup>[2]</sup> 的一些边缘</strong>；<br />
+在室内环境中，<strong>布局平面的预测得分</strong>另用于选择可能的边缘；<br />
+若边缘部分地位于物体区域的内部，由于其可能被前景遮挡，<strong>进一步将其拓展与其他边缘交叉</strong>，如图 2a 所示。
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/fig2.PNG?raw=true" title="fig2" width="700" />
+</center></li>
+</ul>
+<h4 id="物体立方体提案">3.1.2 物体立方体提案</h4>
+<ul>
+<li><strong>参照 Cube SLAM 生成 2D 检测边界框的方案</strong>，再根据图像特征对提案进行评分；</li>
+<li>对于每个物体实例，本文<strong>为后面的 CRF 优化选择 15 个立方体提案</strong>，提案数量能提高最终性能但也会增加计算量；图 2b 是两个立方体提案。 ### 3.2 CRF 模型定义</li>
+<li>需要从所有的提案中选择最佳的方案，首先<strong>为每个平面和立方体提案定义二进制随机变量</strong> <span class="math inline">\(x_{i}\epsilon \left \{ 0,1 \right \}\)</span> 来表示是否被选择；<br />
+这种<strong>多变量标签的优化问题</strong>称为<strong>条件随机场（CRF）</strong>，本文通过最小化下列的差分代价函数/潜能函数，来<strong>优化标签</strong>：<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/f1.PNG?raw=true" alt="f1" /></li>
+</ul>
+<p>  其中 <span class="math inline">\(\psi _{i}^{U}\)</span> 表示<strong>一元势能</strong>， <span class="math inline">\(\psi _{ij}^{P}\)</span> 表示<strong>成对势能</strong>， <span class="math inline">\(\psi _{c}^{HO}\)</span> 是 <span class="math inline">\(x_c\)</span> 团的<strong>高阶项</strong></p>
+<h4 id="一元势能函数unary-potential">3.2.1 一元势能函数（unary potential）</h4>
+<ul>
+<li><font color = red>一元势能代表了<strong>提案本身的质量</strong>；</font></li>
+<li>对于<strong>平面</strong>：室内环境中，<font color = red><strong>势能取决于边缘到地-墙分割边界的距离和布局边缘预测的分数</strong></font>；<br />
+与由于检测误差而得到的<strong>可能是异常值的短边</strong>相比，长边质量更高，<strong>需要适当的加权和标准化才能将它们组合在一起</strong>。</li>
+<li>对于<strong>物体</strong>：直接使用文献 [22] 中<font color = red><strong>基于消失点和边缘对齐的立方体拟合误差</strong></font>。</li>
+</ul>
+<h4 id="成对势能函数pairwise-potentia">3.2.2 成对势能函数（Pairwise Potentia）</h4>
+<ul>
+<li><font color = red><strong>物体和平面之间存在不同形式的成对关联</strong></font>，例如语义共现 <sup><strong>[18]</strong></sup> ，<font color = red><strong>本文中仅利用几何关系来最小化 2D 遮挡和交叉</strong></font>；</li>
+<li>在 <strong>object-object</strong> 之间， <span class="math inline">\(\psi _{ij}^{P}\)</span> 定义为<strong>联合的 3D 交集</strong>；</li>
+<li>在 <strong>object-plane</strong> 之间，代表了<strong>平面对物体体积的截断比</strong>；</li>
+<li>在 <strong>plane-plane</strong> 之间，表明<strong>平面之间的角度重叠比</strong>；</li>
+<li>注意，<strong>属于同一物体的立方体提案之间没有成对势能</strong>。</li>
+</ul>
+<h4 id="高阶势能函数high-order-potential">3.2.3 高阶势能函数（High order potential）</h4>
+<ul>
+<li>如 3.1 部分所述，对于单视图中的每个 2D 物体实例，从中生成多个 3D 立方体提案，但<font color = red><strong>最终最多只选择其中一个</strong></font>，故高阶势能定义为：<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/f2.PNG?raw=true" alt="f2" /></li>
+</ul>
+<h3 id="高效的-crf-推理">3.3 高效的 CRF 推理</h3>
+<ul>
+<li>文献 <strong>[28]</strong> 对<strong>高阶离散 CRFs</strong> 进行了研究，但在很多情况下，有效的 CRF 推理仍存在很大的挑战；</li>
+<li>但本文方程（2）的<strong>高阶项非常稀疏</strong>，因为 <span class="math inline">\(\mathbf{x}_{c}\)</span> 集合中只有一个变量可被选择为 1 ，因此可以对其设计有效推理；采用<strong>最大乘积循环信任传播</strong>（Max-product loopy belief propagation） <sup><strong>[29]</strong></sup> ；</li>
+<li>计算成本最高的部分在于变量从节点 i 到团 c：<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/f3.PNG?raw=true" alt="f3" />   对于具有 N 个二进制节点的团，具有 <span class="math inline">\(2^N\)</span> 个 <span class="math inline">\(\mathbf{x}_{c}\)</span> 的状态，但只有 N+1 个有效的状态 <span class="math inline">\(\left ( 1,0, \cdots 0\right ),\left ( 0,1, \cdots 0\right ),\cdots \left ( 0,0, \cdots 1\right ),\left ( 0,0, \cdots 0\right )\)</span>，表示为：<span class="math inline">\(\left ( y_{1},y_{2}, \cdots y_{N+1}\right )\)</span>，因此只需要检查 N+1 个状态并找到公式（3）中的最小值；<br />
+  其中，相邻的 <span class="math inline">\(y_{i}\)</span> 之间只有两个不同的变量，因此公式（3）加号后面的部分可以对每个 <span class="math inline">\(y_{i}\)</span> 迭代计算；因此<font color = red><strong>计算 <span class="math inline">\(m_{c\rightarrow i}^{t} \left ( x_{i} \right )\)</span> 的平均复杂度为 <span class="math inline">\(O\left ( 1 \right )\)</span> 而不是 <span class="math inline">\(O\left ( 2^{N} \right )\)</span></strong></font>。</li>
+</ul>
+<hr />
+<h2 id="slam-优化">4. SLAM 优化</h2>
+<ul>
+<li><strong>将选择出来的物体和平面提案作为 SLAM 的路标，并通过多视图 BA 进行联合优化</strong>，与特征点路标相似，需要在这些路边之间定义新的参数和测量函数。</li>
+</ul>
+<h3 id="参数">4.1 参数</h3>
+<ul>
+<li><font color = red><strong>地图中存在 4 个不同的组件：相机、点、线、物体和平面</strong></font>；
+<ul>
+<li><strong>相机</strong>位姿表示为：<span class="math inline">\(T_{c} \subseteqq SE\left ( 3 \right )\)</span><br />
+</li>
+<li><strong>特征点</strong>位姿表示为：<span class="math inline">\(P \subseteqq R_{3}\)</span><br />
+</li>
+<li><strong>物体</strong>目标用 9 自由度表示为：<span class="math inline">\(O = \left ( T_{o},D \right )\)</span>，其中 <span class="math inline">\(T_{o} \subseteqq SE\left ( 3 \right )\)</span> 表示 6 自由度的位姿，<span class="math inline">\(D \subseteqq R_{3}\)</span> 是 3 自由度的物体的尺寸；（在参考文献[21]中也有用椭圆体表示物体的形式）</li>
+<li><strong>平面</strong>表示：采用参考文献 [30] 中的<strong>无限平面（infinite plane）</strong>，将平面表示为四元数 <span class="math inline">\(\pi = \left ( n^{T},d \right )^{T}\)</span> ；<br />
+其中 <span class="math inline">\(\left \| \pi \right \| = 1\)</span> ，有利于进行图优化；<br />
+n 是三维的平面法向量，d 是原点到平面的距离；<br />
+在某些环境中，可以利用<strong>曼哈顿假设</strong>：平面法向量是固定的并且平行于世界坐标中的一个轴，故只需要用 d 表示。</li>
+</ul></li>
+</ul>
+<h3 id="测量误差">4.2 测量误差</h3>
+<ul>
+<li>提出用这些地图元素之间的<strong>不同约束函数来进行因子图优化</strong>，其中<font color =red><strong>相机-点的测量模型依照标准的重投影误差</strong></font> <sup><strong>[4：ORB-SLAM]</strong></sup></li>
+<li>为应对异常值的鲁棒性，<strong>Huber loss 函数</strong>应用于本节的所有测量误差函数
+<ul>
+<li>Huber Loss 是一个用于回归问题的带参损失函数, 优点是<strong>能增强平方误差损失函数(MSE, mean square error)对离群点的鲁棒性</strong>（参考：https://www.cnblogs.com/nowgood/p/Huber-Loss.html ）。</li>
+</ul></li>
+</ul>
+<h4 id="相机-平面测量模型"><font color =red>4.2.1 相机-平面测量模型</font></h4>
+<ul>
+<li>与 <strong>RGB-D 相机</strong>的平面 SLAM 不同，它们<strong>直接从点云平面拟合得到平面的测量</strong> <sup><strong>[27,30]</strong></sup>，本文的<font color =red>单目相机需要<strong>弹出平面（pop up the plane）以获得局部平面测量</strong></font>，这些测量取决于相机的位姿；<br />
+</li>
+<li>文献 [26] 在图优化之后更新测量，并不是最佳的方案，本文选择<strong>在优化期间迭代更新测量</strong>；</li>
+<li>定义墙壁-地面的边缘为 <span class="math inline">\(l\)</span> ，将平面测量误差定义为： <span class="math display">\[
+{\color{Blue} e_{cp} = \left \| \log \left ( \pi _{obs}\left ( l,T_{c} \right ),\pi  \right ) \right \| \quad(4)}
+\]</span>   其中，<span class="math inline">\(\pi _{obs}\)</span> 表示<strong>将边缘 <span class="math inline">\(l\)</span> 投影到 3D 地面上</strong>的过程，如图 3a 中的蓝色线；误差也取决于相机位姿 <span class="math inline">\(T_{c}\)</span> ，然后使用文献 [30] 中定义的<strong>对数四元数误差将生成的平面 <span class="math inline">\(\pi _{obs}\left ( l,T_{c} \right )\)</span> 与路标平面 <span class="math inline">\(\pi\)</span> 进行比较</strong><br />
+
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/fig3.PNG?raw=true" title="fig3" width="700" />
+</center></li>
+</ul>
+<h4 id="相机-物体测量模型"><font color =red>4.2.2 相机-物体测量模型</font></h4>
+<ul>
+<li>参照文献 [22 Cube SLAM] 的相机-物体测量模型，<strong>将 3D 立方体路标投影到图像平面以获得 2D 边界框</strong>，如图 3b 中红色框所示；</li>
+<li><font color =red><strong>将投影得到的红色的 2D 边界框与 2D 检测的蓝色边界框进行比较作为相机-物体的观测模型</strong></font>： <span class="math display">\[
+{\color{Blue} e_{2D} = \left \| \left ( c,d \right ) - \left ( c_{m} ,d_{m}\right )\right \|_{2} \quad (5)}
+\]</span></li>
+<li>这样的 2D 测量误差比文献 [22] 中的 3D 测量误差的不确定性要小得多；</li>
+<li>为使得优化更鲁棒，给不同的物体误差赋予不同的权重，<strong>对语义表达上更确切和几何距离上更近的目标赋予更大的权重</strong>。 #### <font color =red>4.2.3 物体-平面测量模型</font></li>
+<li>根据不同的环境假设可以存在不同形式的物体-平面约束 ，比如<strong>平面支持对象</strong> <sup><strong>[27]</strong></sup> 或者<strong>物体方向与附近平面的法向量匹配</strong>；</li>
+<li>本文设计一个约束较弱但更通用的约束关系，如图 3c 所示，<font color =red><strong>物体没有被附近的平面遮挡</strong></font>；</li>
+<li>如果<strong>平面法向量的方向指向相机</strong>，则<strong>物体-平面的遮挡误差</strong>定义为： <span class="math display">\[
+{\color{Blue} e_{op}= \sum_{i=1:8}^{ } \max \left ( 0,-\pi P_{oi} \right )  \quad (6)}
+\]</span>   其中 <span class="math inline">\(P_{oi}\)</span> 表示立方体的 8 个顶角，<strong>如果立方体位于平面的正前方（朝向相机），则误差 <span class="math inline">\(e_{op}\)</span> 为 0</strong>；</li>
+</ul>
+<h4 id="点-平面测量模型"><font color =red>4.2.4 点-平面测量模型</font></h4>
+<ul>
+<li>通常<font color =red><strong>难以从单目 2D 图像精确地检测点是否属于平面</strong>，因为<strong>布局平面通常作为背景并且点有可能附属于它的前景物体</strong></font>；</li>
+<li>为提高鲁棒性，首先<strong>选择 2D 墙壁平面多边形的点，然后滤除距离 3D 平面更远（大于设定的阈值）的点</strong>；</li>
+<li>定义<strong>点与平面的测量误差</strong>为： <span class="math display">\[
+{\color{Blue} e_{pp} = \left \| \pi P \right \| \quad(7)}
+\]</span></li>
+</ul>
+<h3 id="数据关联">4.3 数据关联</h3>
+<ul>
+<li>跨帧之间的数据关联；</li>
+<li>对于多帧之间的特征的关联，使用 ORB-SLAM 中的点特征匹配；</li>
+<li><font color =red><strong>物体关联</strong></font>遵循文献 [22 Cube SLAM]；
+<ul>
+<li>每个物体包含一组所属于它的点，找到多帧之间具有超过阈值（实验中为 10 ）的最多的<strong>共享地图点数的物体匹配</strong>；这种方式易于实现，并且可以较为轻松地检<strong>测动态物体</strong>；</li>
+</ul></li>
+<li><font color =red><strong>平面关联</strong></font>（判断两帧的平面是同一个）包含以下两个标准：
+<ul>
+<li>几何信息，<strong>平面法向量的角度差以及彼此平面之间的距离</strong>；</li>
+<li>与物体关联类似的<strong>共享特征点的匹配</strong>，当在公式（7）中计算点与平面的测量误差时，也使用这种点-平面所属关系。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实验">5. 实验</h2>
+<h3 id="具体实现">5.1 具体实现</h3>
+<ul>
+<li><strong>目标与平面检测</strong>
+<ul>
+<li>对于物体检测，采用与文献 [22 Cube SLAM] 类似的设置；</li>
+<li><strong>对于平面提案，首先检测并合并线段，然后移除长度小于 50 像素且距离超过地-墙分隔线超过 50 像素的线</strong>；</li>
+</ul></li>
+<li><strong>SLAM 部分</strong>，在基于特征点的 ORB-SLAM 的基础上加入物体和平面；
+<ul>
+<li>首先计算<strong>新创建的观测函数的 Jacobian ，而后使用 g2o 库进行 BA 优化</strong>；由于物体及平面的数量比特征带你的数量少得多，因此对整体的 BA 影响不大，可以实时地运行；</li>
+<li><strong>不启用</strong> ORB-SLAM 中基于显式图像识别的<strong>闭环检测</strong>，以更好地显式物体级平面对系统的改进；</li>
+<li><font color =red>与异常点相比，物体和平面异常点的影响更严重，需要对<strong>物体及平面提供更严格的异常值剔除</strong>；
+<ul>
+<li>如果在物体和平面在被创建后的最近 15 帧中没有被观察到 3 次以上，或者与其关联的特征带你对少于 10 对，则将其剔除（除了最初创建的具有少量 2D 特征的白色墙壁）；</li>
+<li>实验中大多数情况下，使用 4.1 节中具有固定平面法线的曼哈顿平面表示来改善性能，如果初始生成的墙面和曼哈顿方向的角度差异大于 30 度，则将其视为异常值。</font></li>
+</ul></li>
+</ul></li>
+<li><font color =red>物体和平面除了作为 SLAM 的路标之外，还可以<strong>为特征点提供深度初始化</strong>，当内部特征点比例（与地图相匹配的特征点数除以总特征点数）低于 0.3 时，使用物体和平面的深度直接创建一些新的地图点，可以在低纹理和较大旋转的场景中改善单目 SLAM 的性能。</font></li>
+<li>不同于文献 [26 Pop-up slam]，<strong>本文不使用地平面，因为没有对应于地平面的边缘测量</strong>；</li>
+<li>物体和平面同样有利于SLAM 稠密建图，直接<font color =red><strong>将平面区域的像素（不包括物体区域）反投影到优化的平面路标上</strong></font>；
+<ul>
+<li>对于属于物体的特征点，<font color =red><strong>在 3D 空间中创建三角形网格来获得稠密的地图</strong></font>；</li>
+<li>注意：在 SLAM 优化中，平面表示为无限平面，但出于可视化的目的，<strong>需要跟踪平面边界多边形</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="单视图布局平面与物体检测">5.2 单视图布局平面与物体检测</h3>
+<ul>
+<li>从单个图像中检测布局平面与立方体目标，如图 4 是提案生成与 CRF 优化的实例，b 和 c 显示 CRF 优化之前与之后的物体提案的顶视图，<font color =red><strong>CRF 能选择非重叠的墙边和更好的立方体提案，以最大限度地减少遮挡和交叉</strong></font>；<br />
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/fig4+5.PNG?raw=true" alt="fig4+5" /><br />
+</li>
+<li>如图 5 所示，该算法可以在房间和走廊的不同环境中工作，但像图 5 右侧的一些<strong>物体被遮挡和边缘不清晰</strong>的情况下仍有可能检测不到墙面和物体；</li>
+<li>本文定量评估了 <strong>SUN RGBD 数据集</strong>下 CRF 的优化性能，与文献 [22 Cube SLAM] 不考虑平面仅选择最佳的立方体提案的方法相比，<font color =red><strong>本文对物体和平面的 CRF 联合推理改进了 3D 物体 IoU（intersection over union） 5%</strong></font>，如表 1 所示；
+<ul>
+<li>注意：为强调优化效果，本文仅评估与文献 [22] 中单视图检测相比 CRF 产生不用结果的图像（无论好坏），这是由<strong>于很多图像没有可见的地面边缘，或者离物体较远并对物体没有实质性的约束，因此 CRF 优化对这些物体检测没有影响</strong>。</li>
+</ul></li>
+</ul>
+<figure>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/tab1+2+3.PNG?raw=true" alt="" /><figcaption>tab1+2+3</figcaption>
+</figure>
+<h3 id="slam-结果">5.3 SLAM 结果</h3>
+<ul>
+<li>在 <strong>ICL-NUIM</strong> <sup><strong>[<a href="http://eprints.maynoothuniversity.ie/8309/1/JM-Benchmark-2014.pdf">31</a>]</strong></sup> 、<strong>TAMU Indoor</strong> <sup><strong>[32]</strong></sup> 和 <strong>TUM mono</strong> <sup><strong>[33]</strong></sup> 公共数据集和实际场景下 KinectV2 传感器采集的数据集评估 SLAM 的跟踪与建图性能</li>
+</ul>
+<h4 id="slam-定性结果">5.3.1 SLAM 定性结果</h4>
+<ul>
+<li>在 ICL-NUIM 序列下的示例如图 6 所示，（a）(b)图为<strong>叠加有布局预测和语义分割的原始图像</strong>，它们都含有噪声和 CRF 优化，（c）图展示了大致正确的 3D 模型，但<strong>无法完全检测到被遮挡的墙角线</strong>，在<strong>经过多视图的 SLAM 优化之后，算法能够构建如图 1 所示的更加一致和完整地地图映射</strong>；
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/fig6.PNG?raw=true" title="fig6" width="700" />
+</center>
+<center>
+<img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/fig1+7.PNG?raw=true" title="fig1+7" width="800" />
+</center></li>
+<li>在 SLAM 的 <strong>BA 优化之后，与单视图物体和平面检测相比，位置更加准确</strong>，并且大多数物体都位于室内；</li>
+<li>不够完善之处：
+<ul>
+<li><font color =red><strong>并非所有的物体的参与了建图，因为 2D 检测器可能会遗漏一些物体，并且由于观察不一致，SLAM 阶段也可能将器中一些物体视为异常值剔除了；</strong></font></li>
+<li>在一些情况下，例如图 7 中左上角的数据集，由于存在严重的物体遮挡，算法无法检测到整个墙面；</li>
+<li>为了提高可视化的鲁棒性，如果平面多边形某个区域中没有观察到足够的地图点，则不会投影稠密像素，比如图 7 中间图像的空白段。</li>
+</ul></li>
+</ul>
+<h4 id="slam-定量结果">5.3.2 SLAM 定量结果</h4>
+<ul>
+<li>与 ORB-SLAM 和 DSO 进行定量比较，本文和 ORB-SLAM 的初始地图是<strong>根据初始相机的高度来缩放的</strong>，从而<strong>可以不用在尺度上对齐位姿而直接评估绝对平移误差</strong>，来表明物体和平面可以改善位姿估计和单目漂移；</li>
+<li>评估数据如表 2 所示，每个序列运行 5 次求取平均误差，在大多数场景中添加了物体和平面约束明显改善了位姿；</li>
+<li>两个主要的原因：
+<ul>
+<li><font color = red><strong>虽然禁用了闭环检测线程，但由于物体和平面在远距离上的可观测性，算法依然可以与旧平面相关联来减少最终的漂移；</strong></font></li>
+<li><font color = red><strong>二是为特征点提供了深度初始化</strong>，特别是在旋转较大的场景中；</font></li>
+</ul></li>
+<li>由于严格的物体、平面异常剔除机制和强大的 BA 优化，及时最后没有起到积极的作用但也不至于降低原来 ORB-SLAM 的精度。</li>
+<li>TUM mono 定量评估效果如表 3 所示，<strong>由于没有真实的相机高度，因此需要评估单目尺度对齐误差[参考文献 5 DSO]</strong>；
+<ul>
+<li>其中 DSO 与 ORB-SLAM 的数据直接来自文献 [5] 的补充材料；</li>
+<li>本文的语义 SLAM 可以在具有挑战性的数据集中稳定运行，即使相机存在较大旋转（甚至颠倒）；</li>
+<li>在 Room 37 数据集中，只有少数平面在少数帧下能观测到，所以本文算法也几乎仅仅利用点特征，也达到了类似的效果；</li>
+<li>在 Corridor 38 走廊数据集中，本文算法比 ORB 好很多，但不如 DSO，由于白墙特征太少，本方法也是基于特征点法；</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">6. 总结</h2>
+<ul>
+<li>本文提出了首个<strong>通过高级别物体和平面路标结合的单目 SLAM 和稠密建图算法</strong>，并通过<strong>紧耦合的联合 BA</strong> 进行优化。</li>
+<li>对于<font color = red><strong>单视图的检测</strong></font>，本文提出了<strong>对一般结构化室内环境的快速 3D 物体和布局平面检测</strong>理解方法；
+<ul>
+<li>首先从 2D 图像中的物体和边缘检测生成立方体和平面提案；</li>
+<li>然后提出<strong>快速稀疏的高阶 CRF 推理来选择最佳的提案</strong>。</li>
+</ul></li>
+<li>对于 <font color = red><strong>SLAM 部分</strong></font>，<strong>为物体和平面设计了新的测量模型</strong>，与单纯特征点的相比，<strong>物体和平面提供了更远距离和更长时间的几何和语义约束</strong>（比如交叉和支持关系）来改善姿态估计；
+<ul>
+<li><strong>为了提高鲁棒性，对物体和平面提出了严格的异常值提出机制</strong>和鲁棒的优化方法。</li>
+</ul></li>
+<li><h2 id="展望除了墙壁平面之外还需要考虑更多的普通平面以生成更密集更完整地地图动态物体和和物体表面映射也可以提高鲁棒性和可视化"><font color = red><strong>展望</strong></font>：除了墙壁平面之外，<strong>还需要考虑更多的普通平面，以生成更密集更完整地地图</strong>；<strong>动态物体和和物体表面映射也可以提高鲁棒性和可视化</strong>。</h2></li>
+</ul>
+<h2 id="附录关于-3.3-节的高阶-crf-推理">7. 附录：关于 3.3 节的高阶 CRF 推理</h2>
+<ul>
+<li>加入在集合 <span class="math inline">\(\mathbf{x}_{c}\)</span> 中有 N 个变量 <span class="math inline">\(x_{1},x_{2},\cdots ,x_{n}\)</span>，其中总共有 N+1 个有用状态，对于每个状态 <span class="math inline">\(y_{k}\)</span> ，定义：<span class="math inline">\(s_{k} = \sum_{j\epsilon y_{k}}^{ }m_{j\rightarrow c}^{t-1}\left ( x_{j} \right )\)</span>；
+<ul>
+<li>注意 <span class="math inline">\(s_{k}\)</span> 都可以在 <span class="math inline">\(O_{N}\)</span> 中迭代计算，因为相邻的 <span class="math inline">\(y_{k}\)</span> 几何相同；</li>
+</ul></li>
+<li><span class="math inline">\(s_{k}\)</span> 的最小值和次小值可以被记录下来，然后可以通过下面的方式<strong>计算从团到变量 i 的信息</strong>： <img src="https://github.com/wuxiaolang/pictures_share_link/blob/master/Paper/2019/20190105/f8.PNG?raw=true" alt="f8" /><br />
+</li>
+<li>当 <span class="math inline">\(x_{i}=1\)</span> 时，只有 <span class="math inline">\(y_{i}\)</span> 一个状态是可用的；否则，需要比较所有 N+1 个状态找到最小值；</li>
+<li><strong>由于已经记录下了最小和次小值，因此评估公式（8）只需要进行 <span class="math inline">\(O_{1}\)</span> 计算即可</strong>。</li>
+</ul>
+<hr />
+<h2 id="r-参考文献">【R】 参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>[2]</strong> Vijay Badrinarayanan, Alex Kendall, and Roberto Cipolla. <a href="https://arxiv.org/pdf/1511.00561.pdf"><strong>Segnet: A deep convolutional encoder-decoder architecture for image segmentation</strong></a>. IEEE transactions on pattern analysis and machine intelligence,39(12):2481–2495, <strong>2017</strong><br />
+<font color = gray> 图 6b 的语义分割</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[3]</strong> Lee C Y, Badrinarayanan V, Malisiewicz T, et al. <a href="https://arxiv.org/pdf/1703.06241.pdf"><strong>Roomnet: End-to-end room layout estimation</strong></a>[C]//Computer Vision (ICCV), 2017 IEEE International Conference on. IEEE, <strong>2017</strong>: 4875-4884.<br />
+<font color = gray> 端到端的室内布局分布</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[6]</strong> Kundu A, Li Y, Dellaert F, et al. <a href="https://smartech.gatech.edu/bitstream/handle/1853/53675/HybridSFM-ECCV14.pdf?sequence=1&amp;isAllowed=y"><strong>Joint semantic segmentation and 3d reconstruction from monocular video</strong></a>[C]//European Conference on Computer Vision. Springer, Cham, <strong>2014 ECCV</strong>: 703-718.<br />
+<font color = gray> 三维视频帧联合<strong>语义分割与三维重建</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[7]</strong> Shichao Yang, Yulan Huang, and Sebastian Scherer. <a href="https://arxiv.org/pdf/1707.07388"><strong>Semantic 3d occupancy mapping through efficient high order crfs</strong></a>. In IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, <strong>2017</strong>.<br />
+<font color = gray> 作者前期工作，通过有效的高阶CRF进行语义3D占用地图</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[8]</strong> Sudeep Pillai and John Leonard. <a href="https://arxiv.org/pdf/1506.01732.pdf"><strong>Monocular slam supported object recognition</strong></a>. Robotics: Science and systems, <strong>2015</strong>.<br />
+<font color = gray> <strong>支持物体识别的单目 SLAM</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[9]</strong> Bao S Y, Furlan A, Fei-Fei L, et al. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.680.6225&amp;rep=rep1&amp;type=pdf"><strong>Understanding the 3D layout of a cluttered room from multiple images</strong></a>[C]//Applications of Computer Vision (WACV), <strong>2014</strong> IEEE Winter Conference on. IEEE, 2014: 690-697.<br />
+<font color = gray> <strong>多视图理解室内 3D 环境</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[10]</strong> Salas-Moreno R F, Newcombe R A, Strasdat H, et al. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2013/papers/Salas-Moreno_SLAM_Simultaneous_Localisation_2013_CVPR_paper.pdf"><strong>Slam++: Simultaneous localisation and mapping at the level of objects</strong></a>[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. <strong>2013</strong>: 1352-1359.<br />
+<font color = gray> 需要有先验模型的 SLAM ++</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[<strong>11</strong>] Gálvez-López D, Salas M, Tardós J D, et al. <a href="https://arxiv.org/pdf/1504.02398.pdf"><strong>Real-time monocular object slam</strong></a>[J]. Robotics and Autonomous Systems, <strong>2016</strong>, 75: 435-449.<br />
+<font color = gray> <strong>需要有先验模型的单目目标级 SLAM</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[14]</strong> Lim J J, Pirsiavash H, Torralba A. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2013/papers/Lim_Parsing_IKEA_Objects_2013_ICCV_paper.pdf"><strong>Parsing ikea objects: Fine pose estimation</strong></a>[C]//Proceedings of the IEEE International Conference on Computer Vision. <strong>ICCV 2013</strong>: 2992-2999.<br />
+<font color = gray>基于边缘信息进行物体检测，家具物体精确检测</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[15]</strong> Bugra Tekin, Sudipta N Sinha, and Pascal Fua. <a href="http://openaccess.thecvf.com/content_cvpr_2018/papers_backup/Tekin_Real-Time_Seamless_Single_CVPR_2018_paper.pdf"><strong>Real-time seamless single shot 6d object pose prediction</strong></a>. In IEEE Conference on Computer Vision and Pattern Recognition (CVPR), <strong>2018</strong>.<br />
+<font color = gray>深度学习单图像位姿预测</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[16]</strong> Hedau V, Hoiem D, Forsyth D. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.149.9603&amp;rep=rep1&amp;type=pdf"><strong>Recovering the spatial layout of cluttered rooms</strong></a>[C]//Computer vision, 2009 IEEE 12th international conference on. IEEE, <strong>2009</strong>: 1849-1856.<br />
+<font color = gray><strong>基于消失点检测室内平面布局</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[17]</strong> Ren Y, Li S, Chen C, et al. <a href="https://arxiv.org/pdf/1607.00598.pdf"><strong>A coarse-to-fine indoor layout estimation (cfile) method</strong></a>[C]//Asian Conference on Computer Vision. Springer, Cham, <strong>2016</strong>: 36-51.<br />
+<font color = gray>深度学习精细化室内布局</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[18]</strong> Lin D, Fidler S, Urtasun R. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2013/papers/Lin_Holistic_Scene_Understanding_2013_ICCV_paper.pdf"><strong>Holistic scene understanding for 3d object detection with rgbd cameras</strong></a>[C]//Proceedings of the IEEE International Conference on Computer Vision. 2013: 1417-1424.<br />
+<font color = gray>RGBD相机检测3D目标进行室内场景理解</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[20]</strong> Bao S Y, Bagra M, Chao Y W, et al. <a href="http://cvgl.stanford.edu/papers/bao_cvpr2012_ssfm.pdf"><strong>Semantic structure from motion with points, regions, and objects</strong></a>[C]//Computer Vision and Pattern Recognition (<strong>CVPR</strong>), 2012 IEEE Conference on. IEEE, <strong>2012</strong>: 2703-2710.<br />
+<font color = gray><strong>首个语义 SFM 来联合优化相机位姿、物体、点和平面测量</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[21]</strong> Nicholson L, Milford M, Sünderhauf N. <a href="https://ieeexplore.ieee.org/abstract/document/8440105"><strong>Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam</strong></a>[J]. IEEE Robotics and Automation Letters, <strong>2019</strong>, 4(1): 1-8.<br />
+<font color = gray><strong>不需要先验模型，将目标检测中的二次曲面作为 SLAM 路标，椭圆体表示</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[25]</strong> Hsiao M, Westman E, Zhang G, et al. <a href="https://frc.ri.cmu.edu/~kaess/pub/Hsiao17icra.pdf"><strong>Keyframe-based dense planar SLAM</strong></a>[C]//IEEE International Conference on Robotics and Automation, <strong>ICRA</strong>, Singapore. <strong>2017</strong>.<br />
+<font color = gray><strong>浙大章国锋 稠密平面 SLAM（18年在此基础上加入惯导：http://frc.ri.cmu.edu/~kaess/pub/Hsiao18icra.pdf ）</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[26]</strong> Yang S, Song Y, Kaess M, et al. <a href="https://arxiv.org/pdf/1703.07334"><strong>Pop-up slam: Semantic monocular plane slam for low-texture environments</strong></a>[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 1222-1229.<br />
+<font color = gray><strong>作者前期工作，低纹理下平面级 SLAM</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[27]</strong> Hosseinzadeh M, Latif Y, Pham T, et al. <a href="https://arxiv.org/pdf/1804.09111.pdf"><strong>Towards Semantic SLAM: Points, Planes and Objects</strong></a>[J]. arXiv preprint arXiv:1804.09111, 2018.<br />
+<font color = gray><strong>RGBD 相机姿态联合优化物体、点和平面；平面支持对象的物体-平面约束方式</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[30]</strong> Kaess M. <a href="https://www.ri.cmu.edu/pub_files/2015/5/Kaess15icra.pdf"><strong>Simultaneous localization and mapping with infinite planes</strong></a>[C]//ICRA. 2015, 1: 2.<br />
+<font color = gray><strong>基于无限平面的 SLAM；RGB-D相机直接获取平面测量；定义了对数四元数的平面误差</strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[31]</strong> Handa A, Whelan T, McDonald J, et al. <a href="http://eprints.maynoothuniversity.ie/8309/1/JM-Benchmark-2014.pdf"><strong>A benchmark for RGB-D visual odometry, 3D reconstruction and SLAM</strong></a>[C]//Robotics and automation (ICRA), 2014 IEEE international conference on. IEEE, 2014: 1524-1531.<br />
+<font color = gray>ICL-NUIM 数据集</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[32]</strong> Lu Y, Song D. <a href="http://faculty.cs.tamu.edu/dzsong/pdfs/Lu-lineslam-IROS2015-v36.pdf"><strong>Robustness to lighting variations: An RGB-D indoor visual odometry using line segments</strong></a>[C]//Intelligent Robots and Systems (IROS), 2015 IEEE/RSJ International Conference on. IEEE, 2015: 688-694.<br />
+<font color = gray>TAMU Indoor 数据集；线检测</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[33]</strong> Engel J, Usenko V, Cremers D. <a href="https://arxiv.org/pdf/1607.02555.pdf"><strong>A photometrically calibrated benchmark for monocular visual odometry</strong></a>[J]. arXiv preprint arXiv:1607.02555, 2016.<br />
+<font color = gray>TUM mono 数据集；单目视觉里程计</font></li>
+</ul>
+<h2 id="q-问题">【Q】 问题</h2>
+<ul>
+<li>3.2 节中公式（1） 第二项的 ij 怎么理解，为什么 i &lt; j，第三项的高阶势能什么作用，当x_i求和大于1时趋于无穷，岂不是对 E 造成了很大的影响？</li>
+<li>3.3 节中公式（3）表示变量从节点i到团c，这个公式是什么作用呢？变量是指什么？</li>
+<li>4.1 节中表示平面的四元数 <span class="math inline">\(\left \| \pi \right \| = 1\)</span> 这个约束是什么意义呢？为什么要这样？</li>
+<li>4.2.3 节中物体-平面的测量误差，公式表示当物体位于平面的正前方（并垂直于其法向量）的时候误差为0，也就是 <span class="math inline">\(\pi P_{oi}\)</span> 为正？这个公式不太理解， <span class="math inline">\(\pi P_{oi}\)</span> 表示什么呢？这样是不是假设了场景中所有的物体都垂直于平面摆放的呢？要是物体有倾斜呢？</li>
+<li>4.2.4 节中的点-平面测量误差中，公式（7）怎么理解呢？将点投影到平面上？将什么作为误差呢，怎样叫做有误差？</li>
+<li>5.1 节中，“不使用地平面，因为没有对应于地平面的实际边缘测量”，为什么地面没有实际边缘测量呢？</li>
+<li>5.1 节中，“对于属于物体的特征点，在 3D 空间中创建三角形网格来获得稠密的地图”三角形网格是什么？目的是重建物体吗？怎么实现的呢？</li>
+<li>墙面稠密建图的信息是来自点云特征还只是图像的像素信息呢？</li>
+</ul>
+<h2 id="t-思考">【T】 思考</h2>
+<ul>
+<li>5.3.1 SLAM 定性结果中，图 7 建图存在漏检物体和像素不投影的情况是否可以解决？</li>
+<li>5.3.2 定量评估中，表示了平面及物体在远距离上的可观测性，所以不用闭环检测效果也不错，那加上闭环检测岂不是更好了？为什么作者的很多工作都是没有闭环呢？是不是加闭环更复杂还要考虑物体平面之间的重识别与定位？可不可以考虑加上？</li>
+<li>本文基于高级别物体（大型，规则物体），可否考虑小型物体的作用？</li>
+<li>平面和物体确实可以提供更多的几何和语义约束，但也仅仅用在跟踪过程中，像重定位和闭环还是需要用特征点来进行场景重识别，可否对物体和平面产生类似于特征点的标记？可以存放在视觉词典中的，用于重定位。</li>
+</ul>
+<blockquote>
+<p>2019.01.06<br />
+wuyanminmax@gmail.com</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-01-11-pup-up-slam/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2018-11-30-cubeslam/">
+            <span class="next-text nav-default"> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

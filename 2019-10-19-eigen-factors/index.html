@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 特征因子：多帧和时间连续点云对齐的平面估计
+Ferrer G. Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment[C]. IROS 2019
+俄罗斯斯科尔科沃科技学院，三星 代码开源 演示视频
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-10-19-eigen-factors/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计" />
+<meta property="og:description" content="
+特征因子：多帧和时间连续点云对齐的平面估计
+Ferrer G. Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment[C]. IROS 2019
+俄罗斯斯科尔科沃科技学院，三星   代码开源   演示视频
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-10-19-eigen-factors/" />
+<meta property="article:published_time" content="2019-10-19T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-10-19T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计">
+<meta itemprop="description" content="
+特征因子：多帧和时间连续点云对齐的平面估计
+Ferrer G. Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment[C]. IROS 2019
+俄罗斯斯科尔科沃科技学院，三星   代码开源   演示视频
+">
+<meta itemprop="datePublished" content="2019-10-19T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-19T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="6953">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计"/>
+<meta name="twitter:description" content="
+特征因子：多帧和时间连续点云对齐的平面估计
+Ferrer G. Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment[C]. IROS 2019
+俄罗斯斯科尔科沃科技学院，三星   代码开源   演示视频
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-10-19 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 6953 字 </span>
+          <span class="more-meta"> 预计阅读 14 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>特征因子：多帧和时间连续点云对齐的平面估计</strong><br />
+Ferrer G. <a href="http://sites.skoltech.ru/app/data/uploads/sites/50/2019/07/ferrer2019planes.pdf"><strong>Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment</strong></a>[C]. <strong>IROS 2019</strong><br />
+俄罗斯斯科尔科沃科技学院，三星   <a href="https://gitlab.com/gferrer/eigen-factors-iros2019"><strong>代码开源</strong></a>   <a href="https://www.youtube.com/watch?v=_1u_c43DFUE&amp;feature=youtu.be">演示视频</a></p>
+</blockquote>
+<h1 id="eigen-factors-plane-estimation-for-multi-frame-and-time-continuous-point-cloud-alignment">Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>如何解决<strong>多帧、连续时间上的点云对齐</strong>问题，同时保持合理的计算量。</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>提出特征因子方法，<strong>不需要平面的明确参数化，只需要点云和传感器姿态</strong>，在这方面，EFs 表现为平面的非参数地标；</li>
+<li>EFs 重新制定平面估计值，减少拟合平面中的误差，并对相应的相对传感器<strong>位姿的特征值进行优化</strong>，提高了轨迹精度；</li>
+<li>使用 SE（3）和李代数对 EFs 的梯度进行闭式推导；</li>
+<li>使用<strong>流形中的插值</strong>对 EFs 进行时间连续推导。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>在误差和时间上都<strong>优于 ICP 点-点和 ICP 点-面</strong>的方法；</li>
+<li>EFs 优化的<strong>复杂性与点云数无关，但取决于平面和姿势的数目</strong>。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>虽然不受限于点云数量，但是<strong>计算的时间与位姿的数量成正比</strong>；</li>
+<li>简介中提到需要<strong>平面语义分割预处理</strong>？</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>在本文中，我们介绍了 <font color = red><strong>特征因子 Eigen-Factor（EF）方法</strong>，该方法可<strong>从一组点云估计平面</strong></font>，这些点是从不同的姿态（即传感器描述的不同轨迹）下观测到的；</li>
+<li>我们建议使用多个 Eigen-Factor（EFs）或不同平面的估计，以解决一系列观察到的点云在多帧上对齐的问题；</li>
+<li>此外，<font color = red><strong>EF 优化的复杂性</strong>与点云数无关，但<strong>取决于平面和姿势的数目</strong>，为此，通过<strong>对姿势的最小特征值求微分来得出梯度的封闭形式</strong></font>，因此得名特征因子；</li>
+<li>另外，提出了 EFs 的<strong>时间连续轨迹版本</strong>，EFs 方法在模拟环境中进行了评估，并与 ICP 的两个变体进行了比较，表明<strong>可以对所有点误差进行优化，从而提高了准确性和计算时间</strong>。</li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><font color = red><strong>针对的问题：</strong></font>机器人能够在移动时收集信息，这使机器人技术与其他相关领域脱颖而出，在本文中，我们提出了一种新的<strong>特征因子</strong>（EFs），用于<strong>计算一系列观测值或点云（PCs）的对齐方式，其复杂性与点云数无关</strong>；
+<ul>
+<li>我们将我们提出的方法称为特征因子（EFs），因为<strong>需要多个平面来计算一个适当的对齐问题</strong>。</li>
+</ul></li>
+<li><font color = red><strong>问题描述：</strong></font><strong>对齐问题</strong>通常是<strong>在一对姿态之间提出的</strong>，大部分贡献来自图形界[1]–[7]；
+<ul>
+<li>所有这些方法和变体广泛用于 3D 对齐的<strong>多个机器人应用</strong>程序中，但它们的初始设计条件略有不同，例如感应误差，点的密度或离散度。</li>
+</ul></li>
+<li><font color = red><strong>当前不足：</strong></font><strong>深度传感器</strong>的进展是惊人的，然而，它们仍然不能免受限制；
+<ul>
+<li>当前的<strong>激光雷达呈现出非均匀的光束模式，这增加了光子晶体上的色散</strong>。激光雷达上的<strong>点密度随着距离的减小而减小</strong>，导致区域采样点较少；</li>
+<li>另一方面，<strong>RGBD 相机输出稠密的低精度信息</strong>；</li>
+<li>通过<strong>移动传感器</strong>可以减轻这些限制，从而<strong>从不同的角度对相同的表面进行更丰富的采样</strong>。</li>
+</ul></li>
+<li><font color = red><strong>本文方法的优化：</strong></font>当前的挑战是<strong>如何处理所有这些观测数据，同时保持计算量负担得起</strong>；
+<ul>
+<li>我们的方法能够<strong>聚合所有信息，同时大大降低复杂性</strong>；</li>
+<li>为了实现这一目标，EFs 需要一个<strong>预处理步骤来进行平面语义分割</strong>，这在室内、城市和半城市环境中都很常见；</li>
+<li>不足为奇的是，平面已经被用于机器人领域的多项工作 [8]-[12]；</li>
+<li><strong>EFs 不需要平面的明确参数化，只需要点云和传感器姿态，在这方面，EFs 表现为平面的非参数地标。</strong></li>
+</ul></li>
+<li><font color = red><strong>本文方法的思想：</strong></font>EFs 背后的<strong>主要思想</strong>是<strong>重新制定平面估计值，以减少拟合平面中的误差</strong>，并对相应的相对传感器位姿的特征值进行优化，以提高轨迹精度；
+<ul>
+<li>此外，EFs 能够<strong>存储属于同一平面的点云的紧凑表示</strong>并进行处理，而不会丢失任何信息。</li>
+</ul></li>
+<li><font color = red><strong>主要贡献：</strong></font>
+<ul>
+<li>① EFs 是<strong>多帧点云对齐的平面估计</strong>的一个重新公式化，EFs 的复杂性与点数无关；</li>
+<li>② 使用 SE（3）和李代数对 EFs 的<strong>梯度进行闭式推导</strong>；</li>
+<li>③ 使用流形中的插值对 EFs 进行<strong>时间连续推导</strong>；</li>
+<li>④ 此外公式能很容易地转换到 <strong>2D 领域</strong>，这是<strong>特征因子用于估计直线而不是平面</strong>，从而优化 2D 机器人的轨迹。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<ul>
+<li><strong>迭代最近点（ICP）</strong>[1]，是有关<strong>点云对准或配准</strong>的最具影响力的论文之一；
+<ul>
+<li>ICP 在两对点云或其他表面表示上找到<strong>欧几里得距离中最接近的点</strong>，这项工作为最先进的方法奠定了基础，这些方法由于其简单性和性能而正在使用类似的方法。</li>
+</ul></li>
+<li>点云对齐也可以使用直接方法计算，例如使用<strong>四元数</strong>的方法 [2,3] 和使用 <strong>SVD 分解</strong> [4], [5]引入了一种<strong>点-面</strong>的 ICP 方法，该方法改进了点-点的 ICP 方法，而 [6] 针对<strong>曲线和曲面</strong>上的工作，文献 [7] 研究了点关联的多种变化。</li>
+<li>大多数技术都是针对<strong>稠密点云</strong>的，在稠密点云上，<strong>采样点上的密度和离散度</strong>与点云的所有区域相似，另外还有许多点用于<strong>曲面估计</strong>；
+<ul>
+<li>这些不同的关联技术对于算法的正确收敛是必不可少的，没有一个算法能够收敛到一个数据差的解，因此 <strong>EFs使用所有可用的数据</strong>。</li>
+</ul></li>
+<li>机器人学界也对<strong>扫描匹配</strong>感兴趣，它显示了<strong>大量的收敛区域</strong>，正如 [13] 所做的工作，尽管同样的技术不容易转化为 3d 技术。</li>
+<li>文献 [9] 引入<strong>广义 ICP（gicp）</strong>，它<strong>有效地寻求点对之间的平面到平面关系</strong>，这是通过提出<strong>虚拟协方差来模拟平面</strong>来实现的，通过这样做，可以<strong>增加关联距离，寻找比 icp 更进一步的对应密度</strong>；
+<ul>
+<li>文献 [10] 提出了 gicp 的一个变体，该变体还考虑了<strong>法线对齐（nicp）</strong>；</li>
+<li>这些 ICP 变体在开发局部几何结构方面向前迈进了一步，然而，这些方法<strong>需要处理所有的点</strong>。</li>
+</ul></li>
+<li>其他 3D 对齐方法<strong>将概率点关联视为 ICP 的改进输入</strong>，例如 [14,15]，在频谱的另一端是 3d 描述符 [16,17]，但它们不是像图像那样的默认方法。</li>
+<li><strong>SLAM 领域中还建议使用平面特征</strong> [8]，[12]，[20]，[21] 或<strong>点-平面</strong>的混合[11]，这些方法中的大多数在平面数不足时会受到影响，因此，有基于平面的 V-I SLAM [22]，[23]。</li>
+</ul>
+<hr />
+<h2 id="背景">3. 背景</h2>
+<h3 id="平面估计">3.1 平面估计</h3>
+<ul>
+<li>通常平面可以用<strong>法向量</strong> <span class="math inline">\(\eta\)</span> 和<strong>平面到远点的距离</strong> <span class="math inline">\(d\)</span> 来确定，记做： <span class="math inline">\(\pi=\left[\eta^{\top}, d\right]^{\top}\)</span> ，总共四个变量和一个约束，一个点 <span class="math inline">\(p=[x, y, z]^{\top}\)</span> 如果满足以下约束说明<strong>点属于平面</strong> <span class="math inline">\(\pi\)</span>（不管这个点是笛卡尔坐标系表示的 <span class="math inline">\(p\)</span> 还是其次坐标表示的 <span class="math inline">\(\tilde{p}\)</span> ） <span class="math display">\[
+\eta^{\top} p+d=0 \quad \text { or } \quad \pi^{\top}\left[\begin{array}{l}{p} \\ {1}\end{array}\right]=\pi^{\top} \tilde{p}=0 \qquad(1)
+\]</span></li>
+<li>我们最关心的是<strong>三维平面</strong>，但是给定从一个平面采样的一组包含 <strong>N 个点云</strong>的 <span class="math inline">\(P=\left\{p_{n}\right\}\)</span>，有多种方法可以估计它；
+<ul>
+<li>最流行的平面估计方法（我们称之为<strong>居中方法</strong>）使用中心点集，根据公式（1）这些<strong>点的期望值</strong>为： <span class="math display">\[
+  \begin{array}{c}{E\left\{\eta^{\top} p+d\right\}=0} \\ {E\left\{\eta^{\top} p\right\}=-d}\end{array}
+  \]</span></li>
+</ul></li>
+<li><font color = red><strong>点云平面估计方法一</strong></font>：因此可以得到<strong>优化的目标函数</strong>：
+<ul>
+<li>其中 <span class="math inline">\(C \in \mathbb{R}^{3 \times 3}\)</span> 类似于<strong>中心点内积或协方差</strong>；</li>
+<li>公式（2）的<strong>通解对应于 C 的最小特征值相关的特征向量</strong>；</li>
+<li>对于对称和半正定矩阵，特征分解与奇异值分解（SVD）一致，通过构造 C；</li>
+<li>在第二步中将参数 d 表示为 <span class="math inline">\(d=-\eta^{\top} E\{p\}\)</span>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f2.PNG" title="f2" width="450" />
+</center></li>
+</ul></li>
+<li><strong>缺点</strong>是，<strong>每次添加或修改新样本时</strong>，例如由于姿势更新（见下文），<strong>C 也会随着改变，并且需要再次执行所有计算</strong>。</li>
+<li><font color = red><strong>点云平面估计方法二</strong></font>：有一种替代方法，即<strong>齐次法</strong>，允许<strong>计算平面参数</strong>，而无需将数据点居中
+<ul>
+<li>利用 4 * 4 矩阵 S 的 SVD 分解再次计算公式（3）；</li>
+<li>如果我们要寻找公式（1）中定义的平面，则有必要对该解进行缩放，以使 <span class="math inline">\(\eta\)</span> 的前三个元素是统一的。</li>
+<li>这种方法最大的优点是 S 允许增量更新。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f3.PNG" title="f3" width="450" />
+</center></li>
+</ul></li>
+<li><font color = red><strong>点云平面估计方法三</strong></font>：从一组点估计一个平面有第三种方法，它基于<strong>正交原理</strong>，如公式（4）：
+<ul>
+<li>文献 [24] 关于这种方法和其他平面估计方法的性能做了报告； <span class="math display">\[
+  \eta \propto E\left\{\left(p_{n^{\prime}}-p_{n}\right) \times\left(p_{n^{\prime \prime}}-p_{n}\right)\right\} \qquad(4)
+  \]</span></li>
+</ul></li>
+<li>二维空间中的直线相当于三维空间中的平面，<strong>直线的齐次方程</strong>表示为公式（5）；
+<ul>
+<li>从这里我们可以得到<strong>二维特征因子的类似推导</strong>。 <span class="math display">\[
+  \left[m_{x}, m_{y}, d\right][x, y, 1]^{\top}=0 \qquad(5)
+  \]</span></li>
+</ul></li>
+</ul>
+<h3 id="刚体变换及其李代数">3.2 刚体变换及其李代数</h3>
+<p>  （这部分暂略）</p>
+<hr />
+<h2 id="具体实现">4. 具体实现</h2>
+<h3 id="问题公式化">4.1 问题公式化</h3>
+<ul>
+<li>给定一组在时间间隔 <span class="math inline">\(t \in[1, H]\)</span> 内的观测值或点云 <span class="math inline">\(P_{t}=\left\{p_{t}^{n}\right\}\)</span>，问题在于<strong>估计从这些观测值得到的 3D 姿态 <span class="math inline">\(\xi_{t} \in S E(3)\)</span> 的轨迹</strong>，这样，<strong>轨迹可以将某些目标最小化</strong>；
+<ul>
+<li>问题可以表述为下面的公式（9）；</li>
+<li>其中 <span class="math inline">\(\xi=\left[\xi_{1}^{\top}, \ldots, \xi_{H}^{\top}\right]^{\top}\)</span> 表示包含轨迹中所有姿态的列向量；</li>
+<li>在以下各节中，我们将定义<strong>目标 J 是什么以及如何最小化</strong>此表达式。 <span class="math display">\[
+  \min _{\xi} J\left(\xi_{1}, \ldots, \xi_{H}\right) \qquad(9)
+  \]</span></li>
+</ul></li>
+</ul>
+<h3 id="特征因子">4.2 特征因子</h3>
+<ul>
+<li><strong>单特征因子是平面的最优估计</strong>，给定一组从不同姿态 <span class="math inline">\(\xi_{t}\)</span> 观测到的点 <span class="math inline">\(P_{t}\)</span>，从单特征因子或平面估计来看，对齐问题是不适定的；
+<ul>
+<li>另一方面，如果满足某些条件，<strong>多重特征因子（EFs）会导致一个适定问题</strong>；</li>
+<li>在这一节中，我们将推导单 EF 的解，考虑到<strong>对齐问题需要多个 EF</strong>，因此我们将我们的方法命名为 Eigen-Factors (EFs)。</li>
+</ul></li>
+<li>根据公式（3）中的齐次方法，可以<strong>推导出一个考虑每个点和平面误差的表达式</strong>；
+<ul>
+<li>现在，这些齐次的点都是从不同的参考系中观察到的，这样得到： <span class="math display">\[
+  \min _{\pi} \sum_{n=1}^{N}\left\|\pi^{\top} T_{t} \tilde{p}_{t}^{n}\right\|^{2} \qquad(10)
+  \]</span></li>
+<li>其中 <span class="math inline">\(T_{t}\)</span> 与某个时刻的位姿 <span class="math inline">\(\xi_{t}\)</span> 相关；</li>
+<li>该公式等价于公式（3），其中某个时刻 <span class="math inline">\(t\)</span> 的点云 <span class="math inline">\(\left\{\tilde{p}_{t}^{n}\right\}=\tilde{P}_{t}\)</span> 由 <span class="math inline">\(T_{t}\)</span> 变换，因此可以将此求和重写为 <span class="math inline">\(\tilde{P}_{t}\)</span> 的矩阵乘积（公式 11）：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f11.PNG" title="f11" width="500" />
+</center></li>
+<li>用<strong>奇异值分解 SVD 法</strong>求解这一问题的方法是<strong>将参数从一个局部坐标系粗略地旋转到另一个坐标系的平面上</strong>；</li>
+<li>注意， <span class="math inline">\(Q_{t}\)</span> 只需要计算一次从所有原始齐次点获得的平方项 <span class="math inline">\(S_{t}\)</span>，然后更新矩阵 <span class="math inline">\(Q_{t}\)</span> 只需要两个乘法；</li>
+<li>不需要存储所有点，只需要存储矩阵 <span class="math inline">\(S_{t}\)</span>，因此，<strong>复杂性不再取决于点 N 的数量，而是取决于平面和姿势的数量</strong>，点 <span class="math inline">\(N_{t}\)</span>的数目可以随 t 而变化，并且不存在信息丢失。</li>
+</ul></li>
+<li>对于<strong>多个姿态</strong>，<strong>总误差</strong>为： <span class="math display">\[
+  \min _{\pi} \sum_{t=1}^{H} \sum_{n=1}^{N(t)}\left\|\pi^{\top} T_{t} \tilde{p}_{t}^{n}\right\|^{2} \qquad(12)
+  \]</span>
+<ul>
+<li>也可以写成： <span class="math display">\[
+  \min _{\pi} \sum_{t=1}^{H} \pi^{\top} T_{t} S_{t} T_{t}^{\top} \pi \qquad(13)
+  \]</span></li>
+</ul></li>
+<li>由于<strong>平面向量 <span class="math inline">\(\pi\)</span> 与时间 t 无关</strong>，因此可以将其移出总和， <span class="math inline">\(Q=\sum Q_{t}\)</span> 为平面估计提供了解决方案，具体的<strong>矩阵 Q</strong> 为： <span class="math display">\[
+  Q=\sum_{t=1}^{H} Q_{t}=S_{1}+^{1} T_{2} S_{2}^{1} T_{2}^{\top}+\ldots+^{1} T_{H} S_{H}^{1} T_{H}^{\top} \qquad(14)
+  \]</span>
+<ul>
+<li>其中我们在<strong>初始姿态下选择了一个固定的参考系</strong>：<span class="math inline">\(T_{1}=I\)</span> ，所有其余的变换都相对于第一帧。</li>
+</ul></li>
+<li>对于平面估计的<strong>居中方法</strong>公式（2）获得的等效推导<strong>需要在每次更改/更新 <span class="math inline">\(T_{t}\)</span>之后重新计算平均值</strong>，这使得经典平面估计的效率大大降低。</li>
+<li>此外<font color = red>如果需要<strong>惩罚点</strong>，我们可以构造一个<strong>加权平方矩阵</strong></font>： <span class="math inline">\(S=\tilde{P} W \tilde{P}^{\top}\)</span>；
+<ul>
+<li>在本项工作中我们认为所有点都是<strong>等价的</strong>，他们是同一传感器的输出，因此我们将 W 设置为标准<strong>恒定式</strong> <span class="math inline">\(\frac{1}{\sigma_{z}^{2}} I\)</span>，其中 <span class="math inline">\(\sigma_{z}\)</span> 是传感器深度的标准差。</li>
+</ul></li>
+<li>与<strong>平面估计相应的误差</strong>为： <span class="math display">\[
+  \min _{\pi}\left(\pi^{\top} Q \pi\right)=\lambda_{\min }(Q) \qquad(15)
+  \]</span>
+<ul>
+<li>这等价于 Q 的最小特征值，注意 <strong>Q 取决于轨迹</strong> <span class="math inline">\(\xi\)</span> ，因此可以定义<strong>代价函数</strong>为 <span class="math inline">\(J(\xi)=\pi^{\top} Q \pi\)</span> ，关注下面的公式： <span class="math display">\[
+  \left\{\xi_{1}, \xi_{2}, \ldots, \xi_{H}\right\}=\arg \min J(\xi) \qquad(16)
+  \]</span></li>
+<li>该公式不包括待估计的状态变量的平面参数；</li>
+<li>平面只是连接轨迹中所有姿态观察到相同几何实体（采样点）的一种手段，作为评估当前轨迹的隐式结果，<font color = red><strong>我们获得了平面参数，这些参数根本不需要作为状态变量，因此 EF 是非参数路标</strong></font>。这是 EFs 方法的另一个优点，不需要存储点云和平面参数。</li>
+</ul></li>
+<li><span class="math inline">\(\lambda_{\min }(Q)\)</span> 的另一个重要特性是，它恰好说明了与平面拟合的<strong>每个点的平方误差的总和</strong> <span class="math inline">\(\lambda_{\min }(Q)=\sum e_{n}^{2}\)</span> ，其中 <span class="math inline">\(e_{n}=\pi^{\top} \tilde{p}_{n}\)</span>，这个误差<strong>遵循卡方分布</strong>；</li>
+</ul>
+<h3 id="时间序列上的梯度">4.3 时间序列上的梯度</h3>
+<ul>
+<li>在定义完 EF 之后，再<strong>计算其梯度以优化轨迹</strong>，根据定义，<strong>特征分解</strong>表示为：<span class="math inline">\(Q \pi=\lambda \pi\)</span>，参数向量 <span class="math inline">\(\pi\)</span> 是一个<strong>单位向量</strong>，满足 <span class="math inline">\(\|\pi\|^{2}=\pi^{\top} \pi=1\)</span> 。</li>
+<li>假设存在小扰动 <span class="math inline">\(Q=Q_{o}+\mathrm{d} Q, \lambda=\lambda_{o}+\mathrm{d} \lambda, \pi=\pi_{o}+\mathrm{d} \pi\)</span> ，则特征向量定义为： <span class="math display">\[
+\begin{array}{c}{Q \mathrm{d} \pi+\mathrm{d} Q \pi=\lambda \mathrm{d} \pi+\mathrm{d} \lambda \pi \qquad(17)} \\ {\text { s.t. } \pi^{\top} \mathrm{d} \pi=0 \qquad(18)}\end{array} 
+\]</span></li>
+<li>考虑到 Q 构造的是一个对称矩阵，所以有： <span class="math display">\[
+Q=Q^{\top} \quad \Longrightarrow \quad \pi^{\top} Q=\lambda \pi^{\top} \qquad(19)
+\]</span></li>
+<li>可以将表达式（17）乘以 <span class="math inline">\(\pi^{\top}\)</span>，然后替换（19）并进行一些操作：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f20.PNG" title="f20" width="500" />
+</center></li>
+<li>这个紧凑的结果通过 <span class="math inline">\(\lambda=\lambda_{o}+\pi^{\top} \mathrm{d} Q \pi\)</span> 表达<strong>对代价函数的小扰动</strong>，我们可以<strong>通过流型 <span class="math inline">\(\xi_{t} \in \mathbb{R}^{6}\)</span> 来微分这种小扰动</strong> <span class="math display">\[
+  \frac{\partial \lambda}{\partial \xi_{t}}=\frac{\partial}{\partial \xi_{t}}\left(\lambda_{o}+\pi^{\top} \mathrm{d} Q \pi\right)=\pi^{\top} \frac{\partial Q}{\partial \xi_{t}} \pi \qquad(21)
+  \]</span>
+<ul>
+<li>表达式 <span class="math inline">\(\frac{\partial Q}{\partial \xi_{t}}\)</span> 是 4×4 矩阵的偏导数，得出张量 4×4×6，利用李代数极大地简化了闭式导数的计算。</li>
+</ul></li>
+<li>矩阵 <span class="math inline">\(Q_t\)</span> 是 Q 的每个组成部分，如公式（14）所定义，此外，它通过构造是对称的，因此 <span class="math inline">\(Q_t\)</span> 的<strong>列向量</strong>可以写成： <span class="math display">\[
+Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top}} \\ {q_{2}^{\top}} \\ {q_{3}^{\top}} \\ {q_{4}^{\top}}\end{array}\right]_{4 \times 4} \qquad(22)
+\]</span></li>
+<li>根据公式（14）和对当前变换 <span class="math inline">\(_{ }^{1}\textrm{T}_t = Exp(\xi_{t})\)</span> 的无穷小更新 <span class="math inline">\(\Delta \xi_{t}\)</span> 得到
+<ul>
+<li>其中 K 与 <span class="math inline">\(\Delta \xi_{t}\)</span> 无关；</li>
+<li>然后根据左乘原则来拓展和更新公式（8）。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f23.PNG" title="f23" width="500" />
+</center></li>
+</ul></li>
+<li>现在需要导出每个分量的生成矩阵（公式 7），再将其乘以（23），为简便起见，省去了时间索引（即公式 22 中的）
+<ul>
+<li>下式中每一列 <span class="math inline">\(A_{t}^{L}(i)\)</span> 都是一个 4 * 4 的矩阵，其中索引 i = 1,2，……，6 代表流行中姿态的每个变量。 <span class="math display">\[
+  A_{t}^{L}=\left[\begin{array}{c|c|c|c|c|c|}{0} &amp; {q_{3}^{\top}} &amp; {-q_{2}^{\top}} &amp; {q_{4}^{\top}} &amp; {0} &amp; {0} \\ {-q_{3}^{\top}} &amp; {0} &amp; {q_{1}^{\top}} &amp; {0} &amp; {q_{4}^{\top}} &amp; {0} \\ {q_{2}^{\top}} &amp; {-q_{1}^{\top}} &amp; {0} &amp; {0} &amp; {0} &amp; {q_{4}^{\top}} \\ {0} &amp; {0} &amp; {0} &amp; {0} &amp; {0} &amp; {0}\end{array}\right]_{4 \times 4 \times 6} \qquad(24)
+  \]</span></li>
+</ul></li>
+<li>再次利用<strong>矩阵 <span class="math inline">\(Q_t\)</span> 的对称性</strong>，重写表达式（23）：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f25.PNG" title="f25" width="500" />
+</center></li>
+<li>最后整体的梯度定义为公式（26）
+<ul>
+<li>这是一个列向量，由关于 <span class="math inline">\(\Delta \xi_{t}\)</span> 的每个梯度组成。</li>
+</ul></li>
+</ul>
+<h3 id="基于梯度的优化">4.4 基于梯度的优化</h3>
+<ul>
+<li>一旦在姿态序列上 <span class="math inline">\(\xi=\left[\xi_{1}, \xi_{2}, \ldots, \xi_{H}\right]\)</span> 获得了<strong>梯度</strong> <span class="math inline">\(\frac{\partial \lambda}{\partial \Delta \xi}\)</span>，<strong>根据平面估计的极小化，选择一种优化方法来计算最优轨迹</strong>；
+<ul>
+<li>对于这项任务，我们选择了一种简化方法，而不是使用 NAG 方法[29][30]；</li>
+<li>虽然原始 NAG 是针对凸函数的，其主要贡献在于实现超线性收敛，但对于这个问题，我们不能假设凸性和 Lipschisz 连续性等强条件。</li>
+</ul></li>
+<li>文献 [30] 将 NAG 方法描述为基于动量梯度的优化，我们考虑<strong>流形中姿势的特殊更新</strong>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f27_28.PNG" title="f27_28" width="500" />
+</center>
+<ul>
+<li>其中 k 表示优化序列上的迭代索引；</li>
+<li>在大量使用符号情况下，操作符 更新所有的姿态（如公式 8）；</li>
+<li>要求速度项 <span class="math inline">\(v_k\)</span> 在公式（28）之前计算。</li>
+</ul></li>
+</ul>
+<h3 id="时间连续轨迹作为-se3-上的插值">4.5 时间连续轨迹作为 SE(3) 上的插值</h3>
+<ul>
+<li>我们将连续时间轨迹定义为在<strong>流行上的直接插值</strong>；
+<ul>
+<li>一般情况下任一对姿态 <span class="math inline">\(T_{o}, T_{f} \in S E(3)\)</span> 的 RBT 插值 <span class="math inline">\(T(\tau):[0,1] \rightarrow S E(3)\)</span> 可以表达为： <span class="math display">\[
+  T(\tau)=Exp\left(\tau Ln\left(T_{f} T_{o}^{-1}\right)\right) T_{o} \qquad(29)
+  \]</span></li>
+</ul></li>
+<li>如果将初始帧的变换设置为单位矩阵，则公式（29）变为 <span class="math display">\[
+  T(\tau)=Exp\left(\tau Ln\left(T_{f}\right)\right) \qquad(30)
+  \]</span></li>
+<li>相对于唯一要优化的姿态 <span class="math inline">\(\xi_{f} = Ln(T_f)\)</span> 我们推导了<strong>插值过程对应的梯度</strong>，使用先前在公式（26）中的梯度和链式规则表示<strong>时间 t 处的姿态与最终姿态 <span class="math inline">\(\xi_{f}\)</span> 之间的梯度</strong>：
+<ul>
+<li>其中 <span class="math inline">\(\tau(t)\)</span> 是从 <span class="math inline">\(\tau(1) = 0\)</span> 到 <span class="math inline">\(\tau(H) = 1\)</span> 的值的序列。 <span class="math display">\[
+  \frac{\partial \lambda}{\partial \Delta \xi_{f}}=\sum_{t=1}^{H} \pi^{\top} \frac{\partial Q}{\partial \Delta \xi_{t}} \frac{\partial \Delta \xi_{t}}{\partial \Delta \xi_{f}} \pi=\sum_{t=1}^{H} \tau(t) \pi^{\top} \frac{\partial Q}{\partial \Delta \xi_{t}} \pi \qquad(31)
+  \]</span></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="评估">5. 评估</h2>
+<ul>
+<li>评估环境生成一个随机轨迹，并<strong>模拟对应于不同平面的合成数据</strong>；
+<ul>
+<li>平面上的点在 XY 平面上采样，并根据随机变换进行变换，轨迹由流形中的采样生成；</li>
+<li>与姿态 <span class="math inline">\(\xi=\left[w^{\top}, v^{\top}\right]^{\top}\)</span> 相对应的<strong>采样值</strong>从均匀分布 <span class="math inline">\(w \sim U(-\pi, \pi)\)</span> 和 <span class="math inline">\(v \sim U(-4, 4)\)</span> 中获取；</li>
+<li>图 2 显示了此类轨迹之一的示例。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig2.PNG" title="fig2" width="800" />
+</center></li>
+</ul></li>
+<li>虽然我们给出了姿态序列的推导，但结果表明，它们<strong>与观测值过拟合，从而增加了轨迹上的不连续性</strong>；
+<ul>
+<li>这是预期的结果，因为我们没有以其他因素或任何其他正则化形式提供额外的约束；</li>
+<li>尽管如此，EFs 依然能够以移动轨迹为代价来计算非常平滑的平面，因此，我们仅评估了 EFs 的连续时间插值版本。</li>
+</ul></li>
+<li>第二个考虑因素是<strong>初始化</strong>。EF 对初始化敏感，因此我们提供了一个<strong>粗略的初始对齐方式</strong>，该对齐方式是在姿势对之间进行计算的，主要是从原点到后续姿势；
+<ul>
+<li>结果如图 2 所示，但是，它仍然是一个粗糙的初始化，变换或姿势之间的距离定义为流形 <span class="math inline">\(d\left(T_{i}, T_{j}\right)=\left\|Ln\left(T_{i} T_{j}^{-1}\right)\right\|_{2}\)</span> 中组件的<strong>欧式距离</strong>。</li>
+</ul></li>
+<li>首先我们选择用于<strong>优化的超参数</strong> <span class="math inline">\(\alpha=\frac{0.2}{N_{a l l} H} \text { and } \beta=0.7\)</span>，其中点数记做 <span class="math inline">\(N_{a l l}\)</span>；
+<ul>
+<li>成本函数考虑所有观察到的点，所以对 <span class="math inline">\(N_{a l l}\)</span> 进行梯度归一化是很自然的，这是通过运行一些<strong>实验并遍历参数来实现</strong>的；</li>
+<li>对于 <span class="math inline">\(\beta = 0\)</span> 表现为没有动量的梯度下降；</li>
+<li>平面的数量范围为 [3, 8]，观测点的数量为 [400, 6400]，姿态的数量范围为 [2, 40]；</li>
+<li>平面上的每个点都是根据 <span class="math inline">\(d_{e} \sim \mathcal{N}\left(0,0.01^{2}\right)\)</span> 来采样的。</li>
+</ul></li>
+<li>一旦获得了可能的最佳参数集，我们就将 NAG 与 Gradient Descent（GD）进行了比较,总共进行了 20k 次仿真；
+<ul>
+<li>图 3 左图显示了相对于姿态数的<strong>迭代次数</strong>，右图显示了使用先前距离的轨迹 <strong>RMSE</strong>，<strong>随着我们增加观察数量，EFs 不断改进</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig3.PNG" title="fig3" width="800" />
+</center></li>
+</ul></li>
+<li>在下一阶段的评估中，我们将 EFs 和 NAG 与上述类似设置下的 ICP 点-点和 ICP 点-面基准进行比较；
+<ul>
+<li>这两种 ICP 算法都是在 open3d 库 [31] 上实现的，并且看起来效率很高，两种 ICP 都在校准初始点和最终点，丢弃所有其他观测信息；</li>
+<li>我们对 3 种方法使用了相同的初始化；</li>
+<li>图 4 描绘了支持 EFs 的主要结果，<strong>对于非常短的轨迹（2 - 4 个姿态），ICP-plane 的表现优于 EFs，对于更大的轨迹，从而评估更多的点云，EFs的误差减小</strong>；</li>
+<li>图 4 中显示了最后的位姿误差，<strong>特征因子通过在轨迹上增加姿态来提高其准确性</strong>，ICP-plane（红色）可以达到很高的精度并且优化 EFs，但它只考虑一对姿态，具有隐式误差，在初始条件下，ICP-point（绿色）的性能较差。</li>
+</ul></li>
+<li>EFs 的<strong>执行时间</strong>如图 5 所示，它指出 EFs 比 ICP 或基于计算点误差的任何其他方法更有效，ICP 使用多个内核，而 EFs 是单线程进程，但 EFs 仍胜过它们。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig4_5.PNG" title="fig4_5" width="800" />
+</center></li>
+</ul>
+<hr />
+<h2 id="总结">6. 总结</h2>
+<ul>
+<li>我们提出了特征因子，这是一种<strong>在多帧和时间连续轨迹上进行点云对齐</strong>的新方法；
+<ul>
+<li><strong>EFs 通过估计平面的拟合度来优化轨迹，并在每次迭代时计算不同姿势之间的误对齐</strong>；</li>
+<li>我们的公式考虑了所有点，但不需要保留它们，甚至不需要重新计算点误差，因为这些误差保持为 4 * 4 的 <span class="math inline">\(S_t\)</span> 的矩阵；</li>
+<li>我们还推导了<strong>流形特征值梯度的封闭形式</strong>，这是操纵<strong>刚体变换</strong>的一种非常有效的方法。</li>
+</ul></li>
+<li>据我们所知，这是<strong>通过最小化平面上的特征值来优化轨迹</strong>的首次尝试；
+<ul>
+<li>在<strong>连续的插值轨迹</strong>上，我们已经在模拟环境中证明了 EFs 可以减少平面和轨迹的误差，尽管对于多帧来说，它可能过度拟合，解决这个问题需要更多的限制。</li>
+</ul></li>
+<li>在这项工作中，我们<strong>在固定的时间窗口上优化上使用 EFs 进行点云对齐</strong>，但是确实存在与其他 SLAM 应用程序的直接链接，我们打算在不久的将来进行探索。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig1.PNG" title="fig1" width="500" />
+</center></li>
+</ul>
+<hr />
+<h2 id="r参考文献">【R】参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>[8]</strong> Weingarten J, Siegwart R. <a href="https://ieeexplore.ieee.org/abstract/document/4058863"><strong>3D SLAM using planar segments</strong></a>[C]//2006 IEEE/RSJ International Conference on Intelligent Robots and Systems. IEEE, <strong>2006</strong>: 3062-3067.<br />
+<font color = gray><strong>平面 SLAM 早期研究</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[10]</strong> Serafin J, Grisetti G. <a href="https://iris.uniroma1.it/retrieve/handle/11573/845175/183425/Serafin_NICP_Preprint_2015.pdf"><strong>NICP: Dense normal based point cloud registration</strong></a>[C]//2015 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2015</strong>: 742-749.<br />
+<font color = gray><strong>平面应用，基于点云的稠密法线注册</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[11]</strong> Taguchi Y, Jian Y D, Ramalingam S, et al. <a href="https://merl.com/publications/docs/TR2013-031.pdf"><strong>Point-plane SLAM for hand-held 3D sensors</strong></a>[C]//2013 IEEE International Conference on Robotics and Automation. IEEE, <strong>ICRA2013</strong>: 5182-5189.<br />
+<font color = gray><strong>平面应用，应用于手持式 3D 传感器的点-平面 SLAM</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[12]</strong> Kaess M. <a href="https://www.ri.cmu.edu/pub_files/2015/5/Kaess15icra.pdf"><strong>Simultaneous localization and mapping with infinite planes</strong></a>[C]//ICRA. <strong>2015</strong>, 1: 2.<br />
+<font color = gray> <strong>因子图 iSAM 的作者；基于无限平面的 SLAM；RGB-D相机直接获取平面测量；定义了对数四元数的平面误差</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[20]</strong> Ma L, Kerl C, Stückler J, et al. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=7487260"><strong>CPA-SLAM: Consistent plane-model alignment for direct RGB-D SLAM</strong></a>[C]//2016 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2016</strong>: 1285-1291.<br />
+<font color = gray> <strong>一致性平面模型对齐的直接法 RGB-D SLAM</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[21]</strong> Yang S, Song Y, Kaess M, et al. <a href="https://arxiv.org/pdf/1703.07334"><strong>Pop-up slam: Semantic monocular plane slam for low-texture environments</strong></a>[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2016</strong>: 1222-1229.<br />
+<font color = gray> <strong>CMU yangshichao Pop-up slam</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[22]</strong> Geneva P, Eckenhoff K, Yang Y, et al. <a href="https://ieeexplore.ieee.org/abstract/document/8594463"><strong>LIPS: Lidar-inertial 3d plane slam</strong></a>[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2018</strong>: 123-130.<br />
+<font color = gray> <strong>雷达-惯导平面 SLAM</strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[23]</strong> Hsiao M, Westman E, Kaess M. <a href="http://www.cs.cmu.edu/~kaess/pub/Hsiao18icra.pdf"><strong>Dense planar-inertial slam with structural constraints</strong></a>[C]//2018 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2018</strong>: 6521-6528.<br />
+<font color = gray> <strong>具有结构约束的稠密平面惯性 SLAM</strong> </font></li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li><strong>1.</strong> 公式（17）（19） ？</li>
+<li><strong>2.</strong> 需要提前进行语义平面分割？需要已知点云时属于平面的？</li>
+</ul>
+<hr />
+<h2 id="t思考">【T】思考</h2>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2019.09.09</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2020-03-13-building-models/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-07-12-nonparametric-statistics-and-clustering/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

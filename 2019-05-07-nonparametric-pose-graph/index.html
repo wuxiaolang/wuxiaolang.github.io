@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 使用非参数位姿图的物体 SLAM - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 使用非参数位姿图的物体 SLAM
+Mu B, Liu S Y, Paull L, et al. Slam with objects using a nonparametric pose graph[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 4602-4609.
+作者：麻省理工学院航空航天控制实验室
+开源代码 演示视频
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-05-07-nonparametric-pose-graph/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 使用非参数位姿图的物体 SLAM" />
+<meta property="og:description" content="
+使用非参数位姿图的物体 SLAM
+Mu B, Liu S Y, Paull L, et al. Slam with objects using a nonparametric pose graph[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 4602-4609.
+作者：麻省理工学院航空航天控制实验室
+开源代码   演示视频
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-05-07-nonparametric-pose-graph/" />
+<meta property="article:published_time" content="2019-05-07T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-05-07T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 使用非参数位姿图的物体 SLAM">
+<meta itemprop="description" content="
+使用非参数位姿图的物体 SLAM
+Mu B, Liu S Y, Paull L, et al. Slam with objects using a nonparametric pose graph[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 4602-4609.
+作者：麻省理工学院航空航天控制实验室
+开源代码   演示视频
+">
+<meta itemprop="datePublished" content="2019-05-07T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-07T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="11964">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 使用非参数位姿图的物体 SLAM"/>
+<meta name="twitter:description" content="
+使用非参数位姿图的物体 SLAM
+Mu B, Liu S Y, Paull L, et al. Slam with objects using a nonparametric pose graph[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, 2016: 4602-4609.
+作者：麻省理工学院航空航天控制实验室
+开源代码   演示视频
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 使用非参数位姿图的物体 SLAM</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-07 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 11964 字 </span>
+          <span class="more-meta"> 预计阅读 24 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>使用非参数位姿图的物体 SLAM</strong><br />
+Mu B, Liu S Y, Paull L, et al. <a href="https://arxiv.org/pdf/1704.05959.pdf"><strong>Slam with objects using a nonparametric pose graph</strong></a>[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (<strong>IROS</strong>). IEEE, <strong>2016</strong>: 4602-4609.<br />
+<strong>作者</strong>：<a href="http://acl.mit.edu/publications">麻省理工学院航空航天控制实验室</a><br />
+<a href="https://github.com/BeipengMu/objectSLAM">开源代码</a>   <a href="https://www.youtube.com/watch?v=YANUWdVLJD4&amp;feature=youtu.be">演示视频</a></p>
+</blockquote>
+<blockquote>
+<p>其他文章：<br />
+ICRA 2019：Robust Object-Based SLAM for High-Speed Autonomous Navigation<br />
+ICRA 2019：<a href="https://arxiv.org/pdf/1809.09646.pdf">Efficient Constellation-Based Map-Merging for Semantic SLAM</a><br />
+IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Graphs for SLAM</a><br />
+<a href="http://acl.mit.edu/projects/resource-aware-collaborative-slam">Resource-aware collaborative SLAM</a></p>
+</blockquote>
+<h1 id="slam-with-objects-using-a-nonparametric-pose-graph">SLAM with Objects using a Nonparametric Pose Graph</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>同时考虑目标检测的数据关联和 SLAM，并如何采用非参数（物体数量、模型）的方式构造物体级的 SLAM</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>在<strong>目标检测</strong>方面，利用包含更多城市、室内环境物体的 ImageNet 2014 数据集训练 R-CNN 模型进行目标检测；</li>
+<li>在物体测量方面，用深度图像剔除背景点云，用<strong>点云的质心表示物体的质心</strong>；</li>
+<li>将数据关联和 SLAM 问题建模成<strong>非参数的因子图 SLAM</strong>，通过输入里程计信息、物体测量<strong>最大化对数似然来优化相机位姿、物体数量、位置和类别</strong>，交替地执行数据关联的推断以及机器人和物体姿势的优化。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font></li>
+<li>本文<strong>非参数位姿图的方法与 FbF、OL、R-SLAM 进行了对比</strong>：
+<ul>
+<li>在<strong>仿真</strong>数据中，NP-Graph 方法获得了<strong>准确的物体数量、较小的物体位置方差和轨迹累计误差</strong>，利用了所有对象测量共同推断机器人姿势和数据关联；</li>
+<li>在<strong>真实环境</strong>中，以物体的 <strong>liner 比例、物体数量、假阳物体数量、物体变动比例（检测错误）作为指标</strong>，NP-Graph 方法均达到了最好的效果，并且可以针对单个物体进行简单的可视化恢复。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>以点云质心作为物体位置的表达方式不准确；</li>
+<li>以深度作为依据剔除背景点的方法太粗糙，比如图 11 左下角的键盘所在的桌面无法滤除，从而也间接影响到了物体质心的计算；</li>
+<li>没有在公开数据集测试，模拟数据集结果太简单，真实数据集也没太多遮挡等干扰。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>在未知环境中进行建图和自身定位是许多机器人应用程序的基本功能；
+<ul>
+<li>这些任务通常涉及<strong>将物体标记为唯一特征或地标</strong>，这要求同时检测对象，然后<strong>分配唯一的标识符</strong>，当从不同的视角和不同的图像中查看时，可以保持这些标识符。</li>
+</ul></li>
+<li>在相关文献中分别对<strong>数据关联和 SLAM</strong> 进行了独立且充分的研究；
+<ul>
+<li>但实际上这两个这两个问题是精密结合的，并且没有得到很好的解决；</li>
+<li>如果没有准确的 SLAM 位姿估计，数据关联可能是混乱的，并且很容易变得难以处理；如果没有准确的数据关联，SLAM 算法的错误很容易发生。</li>
+</ul></li>
+<li>本文提出了一种<strong>新的非参数姿态图，它在单一框架中对数据关联和 SLAM 进行建模</strong>；
+<ul>
+<li>进一步引入算法以<strong>在推断数据关联和执行 SLAM 之间交替</strong>。</li>
+</ul></li>
+<li>实验结果表明，我们的方法具有<strong>同时关联物体检测和定位物体</strong>的新功能，导致数据关联和 SLAM 问题的性能明显优于仅考虑一个并忽略另一个的缺陷。</li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li><font color = red><strong>SLAM：</strong></font>在许多机器人应用中，例如救灾，行星探测和监控，机器人需要在没有准确的先前地图或全球位置参考（例如 GPS）的情况下<strong>自主探索未知空间</strong>；
+<ul>
+<li>机器人面临的一个基本挑战是仅<strong>使用从环境中提取的信息来有效的定位</strong>；</li>
+<li>例如，<strong>识别对象实例并将它们与唯一标识符相关联</strong>的功能将使机器人能够构建环境地图并在其中进行定位；</li>
+<li>构建全局地图和对机器人进行定位的问题被称为同时定位和建图（<strong>SLAM</strong>）。</li>
+</ul></li>
+<li><font color = red><strong>传感器：</strong></font> 具有<strong>场景各种表现形式</strong>和<strong>不同传感器</strong>的 SLAM 已经在文献中得到了彻底的研究；
+<ul>
+<li>采用激光雷达或激光测距仪的<strong>占优网格地图</strong>可以追溯到 20 世纪 80 年代 <sup><strong>[1-4]</strong></sup>
+<ul>
+<li>在基于占有的方法中，世界由自由空间和占用空间组成的 2D / 3D 网格表示；</li>
+<li>来自 LiDAR 或激光测距仪的新扫描的信息与先前的扫描进行比较和匹配，以增量式地构建这样的地图；</li>
+<li>这种<strong>简化的世界表示</strong>有助于高效计算，因此可以在具有单个 CPU 的相对较大的场景上达到实时性能。</li>
+<li>但是，两次扫描的成功匹配依赖于几何特征，例如角点，在缺乏这些特征的地方，例如长走廊，使用占用网格地图的 SLAM 往往会失败；</li>
+</ul></li>
+<li>近年来，具有 <strong>3D 密集建图</strong>和 RGB-D 相机的 SLAM 变得越来越流行 <sup><strong>[5-7]</strong></sup>；
+<ul>
+<li>这一系列工作能够利用来自深度相机的几何信息和来自 RGB 相机的颜色信息来重构环境的 3D 地图；</li>
+<li>将<strong>入射深度和彩色图像转换为体积或变形表面</strong> <sup><strong>[5. Elasticfusion: Dense slam without a pose graph. 2015]</strong></sup>，然后与先前构建的体积或曲面相匹配，以<strong>递增地构建地图</strong>;</li>
+<li>3D 稠密地图提供具有<strong>数百万个体积或表面的环境的图像细节</strong>，但是它们严重依赖 GPU 启用的并行计算，并且不能很好地扩展。</li>
+</ul></li>
+</ul></li>
+<li><font color = red><strong>因子图：</strong></font><font color = red><strong>因子图</strong>是 SLAM 问题的不同的表示 <sup><strong>[8, 11]</strong></sup>，<strong>不是使用诸如网格、体积或表面之类的小单位来表示空间</strong>，而是<strong>使用因子图来编码机器人的姿态和沿着轨迹所观察到的路标</strong>；</font>
+<ul>
+<li>在因子图中，每个<strong>因子</strong>表示对<strong>两个连续机器人姿态之间</strong>或者<strong>姿态与路标之间</strong>的<strong>相对姿态的约束</strong>；</li>
+<li>机器人的<strong>姿态</strong>和路标的<strong>位置</strong>被建模为<strong>随机变量</strong>，并通过<strong>最大化联合似然</strong>来优化他们；</li>
+<li>可以设计机制使得<strong>仅当存在显着的姿势更新或有新的目标测量时才添加新因子</strong>，以简化表示；</li>
+<li>因此，因子图 SLAM 比具有占用网格或 3D 稠密地图的 SLAM 表示方法具有更强的拓展性；</li>
+<li>然而，<strong>因子图 SLAM 算法的收敛很大程度上依赖于路标的准确数据关联</strong>，即使是单个错误关联也可能导致算法发散 <sup><strong>[12, 13]</strong></sup>。</li>
+</ul></li>
+<li><font color = red><strong>Object SLAM：</strong></font>本文对通过识别物体并利用他们的位姿（<strong>物体级 SLAM</strong>）的位置环境中的 SLAM 进行了重点关注；
+<ul>
+<li>因子图是自然的表示，因为<strong>物体可以很容易地表示为地标</strong>，并且由物体表示的地图是理想的，因为<strong>物体具有非常丰富的语义含义</strong>；</li>
+<li>通过使用物体信息，机器人可以<strong>执行语义级别的任务和操作</strong>，例如在搜索森林中的人、抓取对象以及检测街道上的移动汽车；</li>
+<li>Object SLAM 要求机器人能够检测物体，生成测量值，并<strong>将这些测量值与唯一标识符相关联</strong>；
+<ul>
+<li>在本文中，<strong>物体检测</strong>是指识别图像中某些预定义对象的出现的问题；</li>
+<li><strong>物体测量</strong>是检测到的物体相对于机器人姿势的 3D 位置。</li>
+</ul></li>
+</ul></li>
+<li><font color = red><strong>数据关联：</strong></font><strong>数据关联</strong>是指<strong>将物体测量值与图像间的唯一标识符相关联的问题</strong>，目标检测问题一直是计算机视觉领域的一个重要课题。
+<ul>
+<li>深度学习方法在<strong>单图像目标测</strong>方面取得了显著效果 <sup><strong>[14-18]</strong></sup>，这些方法还具的能力：一旦检测器被训练以识别对象类，例如椅子，检测器即使在不同的形状，颜色和背景设置中也可以检测<strong>同一类的不同实例</strong>；</li>
+<li>最近关于基于区域的卷积神经网络 <sup><strong>[15,19]</strong></sup>的一些工作在训练深度学习模型以<strong>检测单个图像中的多个对象实例</strong>方面取得了重大成功；</li>
+<li>但是，目标检测仅给出在图像中存在某些预定义对象类的对象，但<font color = red><strong>不提供图像之间的数据关联</strong>，如果在两个图像中检测到某个类的对象，则对象检测器<strong>不提供关于两个图像中的检测到的对象是否是同一对象的信息</strong></font>；</li>
+<li>这对于 SLAM 是有问题的，<strong>尤其是当环境中存在相同目标类的多个实例时，仅使用这些模糊目标检测来实现 SLAM 的可靠性仍然是一个未解决的问题</strong>；</li>
+<li>如图 1 所示，存在相同对象类的多个实例，例如椅子，机器人<strong>需要在不同视图的图像之间建立目标检测的数据关联</strong>；</li>
+<li>注意，数据关联和 SLAM 本质上是耦合问题：<font color = red><strong>良好的数据关联保证了 SLAM 算法的收敛，良好的 SLAM 解决方案提供了良好的数据关联初始化</strong></font>。</li>
+</ul></li>
+<li><font color = red><strong>方法：</strong></font>本文提出了一种新的世界表示，即<strong>非参数姿态图，共同执行数据关联和 SLAM</strong>；
+<ul>
+<li>在所提出的模型中，<strong>因子图</strong>用于<strong>定位机器人和目标物体</strong>，DP（Dirichlet process，<strong>非参数模型先验</strong>）用于<strong>将检测与场景中的唯一目标标识符相关联</strong>；</li>
+<li>在该算法中<strong>交替地执行数据关联的推断以及机器人和物体姿势的优化</strong>，该耦合框架达到了数据关联和 SLAM 的更好性能；</li>
+</ul></li>
+<li><font color = red><strong>主要贡献：</strong></font>
+<ul>
+<li>① 创建一个<strong>将数据关联和 SLAM 耦合起来的非参数位姿图模型</strong>；</li>
+<li>② 提出一种在非参数位姿图上<strong>联合推断数据关联和优化机器人位姿/目标位置的算法</strong>；</li>
+<li>③ 开发一种通过深度学习<strong>目标检测从三维空间中的 RGB 和深度图像生成物体测量</strong>的方法；</li>
+<li>④ 通过模拟和现实数据展示所提出的方法的性能。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">1. 相关研究</h2>
+<ul>
+<li>物体和 SLAM 的数据关联通常作为<strong>解耦问题</strong>来解决
+<ul>
+<li>文献 <strong>[20]</strong> 表明，当 SLAM 解决方案已知时，<strong>不存在机器人姿态的不确定性，其姿态提供了物体位置的良好先验信息</strong>，并且可以实现比逐帧检测更好的回召；</li>
+<li>文献 <strong>[21]</strong> 使用 SLAM 求解器构建房间的 3D 地图，然后修复地图并在房间中<strong>手动标记目标</strong>；</li>
+<li>此外<strong>物体检测也可以改善位姿</strong>，文献 <strong>[22]</strong> <strong>预先对门和椅子建模为路标</strong>，在导航阶段，在线检测这些预置的物体，并使用它们的位置信息来定位机器人。</li>
+</ul></li>
+<li>然而，在这里考虑的场景中，<font color = red><strong>物体和机器人姿势的数据关联都不是完全已知的</strong>，算法<strong>必须关联对象检测并同时执行 SLAM</strong></font>，解决物体检测和 SLAM 联合的算法可以分为<strong>前端方法</strong>和<strong>后端方法</strong>。</li>
+</ul>
+<h3 id="前端数据关联">1.1 前端数据关联</h3>
+<ul>
+<li>在前端方法中，将<strong>新图像中检测到的物体与先前图像进行比较</strong>，如果找到新旧图像之间的匹配，则相应的物体与相同的唯一标识符相关联；
+<ul>
+<li>这些匹配通常是可靠的，<strong>因为两个连续图像之间的差异通常很小</strong>；</li>
+<li>当机器人在经过长距离后回到先前访问过的地方时，必须执行高成本的<strong>全局优化以实现全局闭环</strong>；</li>
+<li><strong>前端程序的这些数据关联被认为是可靠和真实的</strong>，然后传递给 SLAM 求解器 <sup><strong>[23，24]</strong></sup>；</li>
+<li><strong>SLAM ++</strong> <sup><strong>[23]</strong></sup> 就是这样一种前端方法，创建椅子和桌子的 3D 扫描并用作模板，在测试期间观察到新的点云时，它们<strong>与预先构建的模板匹配</strong>，成功匹配的检测通常具有很高的可信度，然后<strong>在这些可靠的检测上运行 SLAM 求解器以优化对象位置和相机姿势</strong>；</li>
+<li>在语义 SLAM 中，文献 <strong>[24]</strong> 创建了一个包含六个对象的库，使用 SURF 特征检测这些对象，然后运行 EKF 以同时定位机器人和地图中的物体。</li>
+</ul></li>
+<li>在本文的工作中<strong>不是为物体创建精确的模板</strong>，而是使用深度学习来检测环境中的物体；
+<ul>
+<li><strong>深度学习相较于基于模板的方式有更强的概括性</strong>，可以利用开源软件（数百万图像已经在线存在以创建模型），可以轻松拓展到数百个对象类而不是少数预制的模板，并且<strong>不需要场景中的物体与模板完全匹配</strong>；</li>
+<li>然而，检测具有显着的<strong>误报率和部分遮挡率</strong>，因此对于产生可靠数据关联的<strong>前端算法</strong>而言是非常具有挑战性的。</li>
+</ul></li>
+</ul>
+<h3 id="后端鲁棒性-slam">1.2 后端鲁棒性 SLAM</h3>
+<ul>
+<li>鲁棒的 SLAM 是一系列的研究，明确<strong>使用后端方法来处理数据中的异常值</strong>；
+<ul>
+<li>在 SLAM 中，大多数物体测量已经正确地与唯一标识符相关联，<strong>当某些测量值不正确关联时，它将与同一标识符的其他对象测量值不一致</strong>；</li>
+<li>相反，鲁棒 <strong>SLAM 最大化了一组在标识符和预测位置中彼此一致的测量，只有一致的测量值才会插入到 SLAM 求解器中</strong>，以恢复机器人姿势和地标位置。</li>
+</ul></li>
+<li>本质上，鲁棒的 SLAM 依赖于以下<strong>假设：与异常值测量相比，具有唯一标识符关联的内部测量占大多数</strong>；
+<ul>
+<li>在此假设下，<strong>消除异常值</strong>之后仍然可以提供良好的 SLAM 结果；</li>
+<li>但是，在物体级 SLAM 中，通常情况是<strong>存在同一对象类的多个实例</strong>，如果具有相同类的所有对象测量都与相同的标识符相关联，<strong>则不同的对象实例将始终给出不一致的测量</strong>，换言之，在物体 SLAM 中，异常值是普遍存在的；</li>
+<li><strong>如果只保留每个对象类的一组一致测量值，则该算法将消除大部分数据，并且无法识别同一类的任何重复实例</strong>。</li>
+</ul></li>
+<li><strong>本文提出的算法是一种后端方法</strong>，其中存在同一对象类的多个实例，对象测量与唯一标识符的数据<strong>关联被是未知的</strong>，并且必须在进行 SLAM 时建立，我们<strong>利用数据关联和 SLAM 之间的耦合，共同优化两者，并在两者上实现更好的性能</strong>。</li>
+<li>（总结：也就是说前端数据关联是采用模板进行匹配，并认为这些测量信息是完全准确的，后端鲁棒 SLAM 是指在 SLAM 阶段对测量进行决策，确定是否数据关联，并不完全相信这些信息，还需要参与优化）</li>
+</ul>
+<hr />
+<h2 id="利用深度学习进行物体测量">2. 利用深度学习进行物体测量</h2>
+<p>  本节设置了通过深度学习生成物体测量的方法，并在末尾讨论了这种方法的局限性，<strong>强调了后端数据关联和 SLAM 算法的必要性</strong>。</p>
+<h3 id="基于深度学习的目标检测">2.1 基于深度学习的目标检测</h3>
+<ul>
+<li><strong>目标检测</strong>是指<strong>识别某些类的对象的存在并在单个图像中找到它们的边界框</strong>的问题；
+<ul>
+<li>过去十年中的物体检测主要基于 SIFT 和 HOG 特征的使用；</li>
+<li>尽管研究人员已经开发出了对单类物体检测（例如行人）表现出良好性能的算法，但是多类物体检测问题仍然很困难；</li>
+<li>特别是，在 2012 年之前，最先进的方法（deformable part models）在 PASCAL VOC 2010 数据集 <sup><strong>[15]</strong></sup> 上实现了 33.4％ 的准确性，其中包含 20 个对象类别。</li>
+</ul></li>
+<li>基于区域的<strong>卷积神经网络</strong>（R-CNN） <sup><strong>[15]</strong></sup> 是使用 CNN 进行物体检测的首批工作之一;
+<ul>
+<li>该算法使用选择性搜索 <sup><strong>[27]</strong></sup> 算法生成边界框提议，然后使用每个提议裁剪图像块，随后缩放图像块并通过 CNN 模型运行以进行对象检测；</li>
+<li>这种方法在 PASCAL VOC 数据集上实现了 53.7％ 的准确率，R-CNN 非常慢（每个图像13秒），因为所有图像块都需要单独通过 CNN；</li>
+</ul></li>
+<li>Faster R-CNN <sup><strong>[19]</strong></sup> 使用 VOC 数据集 <sup><strong>[14]</strong></sup> 进行训练，VOC 数据集中的大多数类别在城市或室内环境中比较少见，例如牛，马，绵羊，飞机和船只；
+<ul>
+<li>本文的工作在 <strong>ImageNet 2014 数据集</strong> <sup><strong>[17]</strong></sup> 上训练了一个更快的 R-CNN 模型，其中包含与室内/城市环境更相关的类别，包括汽车，摩托车，自行车，交通信号灯，电视，椅子，花盆，杯子和键盘；</li>
+<li>请注意，<strong>可以轻松修改此框架以从 ImageNet 数据集中解析出与特定应用程序相关的任何其他类子集</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="物体测量">2.2 物体测量</h3>
+<ul>
+<li>物体测量指的是相对于机器人姿势的路标的 3D 位置，为了生成这样的测量，<strong>除了物体检测之外，还需要相对于机器人的位置信息</strong>，在本文中，<strong>通过查询深度图像中的相应像素来完成</strong>的：
+<ul>
+<li>① 裁剪边界框在深度图像中对应于 RGB 图像；</li>
+<li>② 过滤掉太远的背景像素；</li>
+<li>③ 从 RGB 和深度图中生成点云；</li>
+<li>④ <font color = red><strong>计算点云的质心作为物体的中心</strong></font>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig2.PNG" title="fig2" width="700" />
+</center></li>
+</ul></li>
+<li>如图 2a 中可以清楚地看出，具有深度学习目标检测的<strong>物体 SLAM 具有两个主要挑战</strong>；
+<ul>
+<li>首先，存在<strong>对象类的多个实例</strong>，例如图 2a 中的“椅子”，如果没有正确的数据关联，很难区分不同的对象实例，<strong>标准位姿图 SLAM 算法只能优化具有精确数据关联的姿势</strong>，例如 g2o <sup><strong>[28]</strong></sup> ，isam <sup><strong>[10]</strong></sup> ，gtsam <sup><strong>[29]</strong></sup> ；</li>
+<li>第二个挑战是高误报率，如图 2a 中检测到的椅子，深度学习算法现在报告对象，下一帧可能又没有出现，<strong>盲目地在标准 SLAM 算法中使用这些未经过滤的检测将导致“不存在”节点并导致闭环失败</strong>。</li>
+</ul></li>
+<li>注意，在这种情况下，质心用作对象的中心，当从不同视图查看<strong>物体被部分遮挡时，质心将不是物体位置的一致度量</strong>；
+<ul>
+<li>根据我们的经验，误差可能是10-20厘米，但是我们将展示在办公室设置中，即使在明显的遮挡和视点噪声下，我们的算法仍然会收敛。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="位姿图背景">3. 位姿图背景</h2>
+<p>  本节设置 SLAM 问题中使用的图模型的背景，下一节将把当前位姿图扩展为一个新的非参数位姿图，并引入一种算法来对其进行推理。</p>
+<h3 id="因子图">3.1 因子图</h3>
+<ul>
+<li><strong>图模型</strong>是表示<strong>随机变量之间的条件依赖结构的概率模型</strong>；
+<ul>
+<li>图模型使用基于图的表示来<strong>编码高维空间上的完整分布</strong>；</li>
+<li>常用的图形模型包括<strong>贝叶斯网络</strong>，<strong>马尔可夫随机场</strong>和<strong>因子图</strong>；</li>
+<li>因子图是在 SLAM 问题中广泛使用的图模型， 图 3 给出了因子图的一个例子，<strong>圆圈代表随机变量，方块代表因子</strong>；</li>
+<li>定义 <span class="math inline">\(\mathbf{X} = {X_{1},X_{2},\cdots ,X_{n}}\)</span> 为<strong>随机变量</strong>，将<span class="math inline">\(\psi _{a}\left ( X_{\left \{ a \right \}} \right )\)</span>表示为集合 {a} 中<strong>随机变量的一个因子</strong>，<font color =red><strong>联合概率</strong></font>可以表示为<strong>因子的乘积</strong>，如公式（1）
+<ul>
+<li>其中 A 是所有因子的集合；</li>
+<li>每个因子 <span class="math inline">\(\psi _{a}\left ( X_{\left \{ a \right \}} \right )\)</span> 将随机变量 X 的值映射为一个<strong>表示变量似然</strong>的严格正实数，它也表示了<strong>因子中变量之间的概率依赖性</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f1.PNG" title="f1" width="350" />
+</center></li>
+</ul></li>
+</ul></li>
+<li>因子图是一种有效的表示，因为它<strong>捕获变量之间的稀疏性</strong>：<strong>当且仅当两个变量不属于同一因子时，给定所有其他变量，两个变量是相互独立的</strong>;
+<ul>
+<li><font color =red><strong>对数似然</strong></font> <span class="math inline">\(\log p\left ( x \right )\)</span> 可以用一系列的因子写成：<span class="math inline">\(\log p\left ( x \right ) \propto \sum_{a\in A} \phi _{a}\left ( x_{\left \{ a \right \}} \right )\)</span>，其中 A 是所有因子的集合；</li>
+<li>每个因子 <span class="math inline">\(\psi _{a}\left ( X_{\left \{ a \right \}} \right )\)</span> 将随机变量的值映射为表示变量的对数似然的严格正实数；</li>
+<li>使用图模型，存在快速算法来计算统计属性，例如<strong>边缘化、期望和最大似然</strong> <sup><strong>[30]</strong></sup> 。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig3.PNG" title="fig3" width="600" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="因子图-slam">3.2 因子图 SLAM</h3>
+<ul>
+<li>由于其高效性，因子图已经在 SLAM 中得到了成功的应用和普及 <sup><strong>[10，29]</strong></sup> ，首要假设机器人能通过静态路标来定位自身。</li>
+<li><font color =red><strong>假设 1</strong>：<strong>存在用于在环境中定位机器人的静态路标数据库</strong>，这些路标的数量和位置<strong>没有先验</strong>信息。</font></li>
+<li>通过具有路标的假设，机器人在环境中移动时可以<strong>获得这些路标的测量值</strong>；
+<ul>
+<li>给定数据集，机器人的轨迹表示为<strong>离散的位姿序列</strong>，定义 T 为<strong>时间步长</strong>的总数，定义 <span class="math inline">\(\mathbf{X}_{0:T} = \left \{ X_{0},X_{1},\cdots ,X_{T} \right \}\)</span> 为机器人从开始到结束的<strong>轨迹</strong>；</li>
+<li>机器人的每个位姿由位置和方向组成，SE(2) 表示为 <strong>2D 位姿空间</strong>， SE(3) 表示为 <strong>3D 位姿空间</strong>；因此将 <span class="math inline">\(X_{t}\in SE\left ( 2 \right )\)</span> 应用于 2D 空间， <span class="math inline">\(X_{t}\in SE\left ( 3 \right )\)</span> 应用于 3D 空间；</li>
+<li>在不使用 GPS 的环境中，这些位姿不能直接观察到，但是机器人可以通过 IMU 或车轮编码器测量两个连续姿态之间的增量变化，这称之为<strong>里程计</strong>；</li>
+<li>定义 <span class="math inline">\(x_{t-1}\)</span> 和 <span class="math inline">\(x_{t}\)</span> 之间的里程计测量为 <span class="math inline">\(o_{t}\)</span> ，在添加<strong>高斯噪声</strong>的标准假设下，<strong>t 时刻的里程计测量</strong>可以表示为公式（2）
+<ul>
+<li>其中 <span class="math inline">\(\ominus\)</span> 是在 SE(2) 或 SE(3) 空间中取两个时刻<strong>相对位姿</strong>的操作符， Q 是里程计的噪声协方差；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f2.PNG" title="f2" width="350" />
+</center></li>
+</ul></li>
+<li>然后给出两个位姿之间里程计 <span class="math inline">\(o_{t}\)</span> 的<strong>似然</strong>为公式（3）
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f3.PNG" title="f3" width="350" />
+</center></li>
+</ul></li>
+<li>在导航过程中，机器人还会观察环境中的路标，假设环境中存在 M 个路标（这可能是未知的），<strong>路标的位置</strong>表示为 <span class="math inline">\(\mathbf{L} = \left \{ L_{1},L_{2},\cdots , L_{N}\right \}\)</span>，在2D 空间中 <span class="math inline">\(L_{i}\in \mathbb{R}^{2}\)</span>，在 3D 空间中 <span class="math inline">\(L_{i}\in \mathbb{R}^{3}\)</span>；
+<ul>
+<li>在 t 时刻，机器人获得 <span class="math inline">\(K_{t}\)</span> 个<strong>路标的测量值</strong>，表示为：<span class="math inline">\(z_{t} = \left \{ z_{t}^{1}, z_{t}^{2},\cdots , z_{t}^{K_{t}} \right \}\)</span>；</li>
+<li><strong>每个测量值与唯一的路标标识符相关联</strong>，关联被定义为 <span class="math inline">\(y_{t} = \left \{ y_{t}^{1}, y_{t}^{2},\cdots , y_{t}^{K_{t}} \right \}\)</span>，其中 <span class="math inline">\(y_{t}^{i}\in \left \{ 1,\cdots ,M \right \}\)</span> ，比如在 0 时刻，物体获得了<strong>两个测量</strong> <span class="math inline">\(z_{0} = \left \{ z_{0}^{1}, z_{0}^{2}\right \}\)</span> ，并且这两个测量来自于路标 5 和 7，所以 0 时刻的<strong>数据关联</strong>为 <span class="math inline">\(y_{0} = \left \{ y_{0}^{1}, y_{0}^{2}\right \} = \left \{ 5, 7 \right \}\)</span> ；</li>
+</ul></li>
+<li>使用标准模型，<strong>物体测量</strong> <span class="math inline">\(z_{t}^{k}\)</span> 被加性高斯噪声干扰，表示为公式（4）；给定机器人位姿、路标关联和路标位姿情况下，<strong>测量</strong> <span class="math inline">\(z_{t}^{k}\)</span> <strong>的似然</strong>为公式（5）
+<ul>
+<li>其中 R 是测量的噪声矩阵；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f4_f5.PNG" title="f4_f5.PNG" width="400" />
+</center></li>
+</ul></li>
+<li>通过联立公式（2）和（4），<font color = red><strong>里程计和路标测量的联合对数似然</strong></font>为公式（6），根据高斯噪声的概率分布公式，可知两个因子都是服从<strong>二次型</strong>的，如公式（7）；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f6_f7.PNG" title="f6_f7.PNG" width="600" />
+</center></li>
+<li><font color = red>位姿图 SLAM 问题通过<strong>最大化对数似然</strong>公式（8）来优化机器人位姿 <span class="math inline">\(\mathbf{X}_{0:T}\)</span> 和物体位置 <span class="math inline">\(\mathbf{L}\)</span></font>；
+<ul>
+<li>注意对数似然在 <span class="math inline">\(X_{t}\)</span> 和 <span class="math inline">\(L_{t}\)</span> 中是<strong>非线性</strong>的，因为 <span class="math inline">\(\ominus\)</span> 在公式（2）（4）中是非线性运算。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f8.PNG" title="f8.PNG" width="400" />
+</center></li>
+</ul></li>
+<li>SLAM 的因子图表示也称为位姿图，图 4 展示了这种位姿图，<strong>变量表示机器人或路标的位置，因子包括里程计和路标测量</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig4.PNG" title="fig4.PNG" width="600" />
+</center></li>
+</ul>
+<hr />
+<h2 id="非参数位姿图">4. 非参数位姿图</h2>
+<p>  本章通过将当前位姿图扩展为新的<strong>非参数位姿图来建立联合数据关联和 SLAM 问题</strong>，该姿势图<strong>将物体关联与机器人位姿紧密耦合</strong>，还引入了一种<strong>新算法来联合推断数据关联</strong>并使用这种新模型执行 SLAM。</p>
+<h3 id="具有多类别物体的因子图">4.1 具有多类别物体的因子图</h3>
+<ul>
+<li>在进入<strong>不完全数据关联的非参数因子图</strong>之前，首先需要注意的是，在 SLAM 中<strong>除了测量物体的三维位置之外，还需要观察物体的类别</strong>，并且所观察到的<strong>类别并不总是可靠的</strong>，因此<strong>首先建立物体类别的概率模型</strong>：
+<ul>
+<li>假设总共有 <strong>N 个物体类</strong>，对于物体 i，定义 <strong>u 表示对物体类别的观测</strong>；</li>
+<li><strong>u 的似然使用分类分布来建模</strong>为公式（9）
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f9.PNG" title="f9.PNG" width="400" />
+</center>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig5.PNG" title="fig5.PNG" width="550" />
+</center></li>
+</ul></li>
+<li>注意 1 ≤ u ≤ N，但本文特别设计了 <span class="math inline">\(\pi _{i} \left ( 0 \right )\)</span> 来表示<strong>误报的概率</strong>，这种设计<strong>有助于算法在实际实验中过滤掉不存在的物体检测</strong>。</li>
+<li>为了获得<strong>封闭的更新形式</strong>，对类别 i 的似然 <span class="math inline">\(\pi _{i}\)</span> 应用 <strong>Dirichlet 先验</strong>，见公式（10）
+<ul>
+<li>当观察到类 j， 即 u = j 时， <span class="math inline">\(\pi _{i}\)</span> 的<strong>后验分布</strong>为公式（11），其中 <span class="math inline">\(e_{j}\)</span> 表示第 j 个元素为 1 的单位向量
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f10_f11.PNG" title="f10_f11.PNG" width="350" />
+</center></li>
+</ul></li>
+<li>注意 <span class="math inline">\(\beta _{i}\left ( 0 \right )\)</span> 表示<strong>物体 i 为假阳性的初始似然</strong>；
+<ul>
+<li>由于<strong>观测不能为 0</strong>，当物体 i 的观察越来越多时，后验 <span class="math inline">\(\beta _{i}\left ( 0 \right )\)</span> 将单调递减，这与直觉相一致，即<strong>如果从某个对象获得重复观察，则它具有较低的假阳性</strong>。</li>
+</ul></li>
+<li>将<strong>多类别概率设置与原始 SLAM 问题相结合</strong>：
+<ul>
+<li>每个<strong>物体测量</strong>将<strong>成对</strong> <span class="math inline">\(\left \{ z_{t}^{k},u_{t}^{k} \right \}\)</span> ，其中<strong>连续变量</strong> <span class="math inline">\(z_{t}^{k}\)</span> 表示 <strong>3D 位置测量</strong>，<strong>离散变量</strong> <span class="math inline">\(u_{t}^{k}\)</span> 表示观察到的<strong>物体类</strong>；</li>
+<li>回忆前面， <span class="math inline">\(y_{t}^{k} = i\in \left \{ 1,\cdots ,M \right \}\)</span> 表示<strong>在 t 时刻的第 k 次测量来自物体 i</strong>；</li>
+<li><span class="math inline">\(u_{t}^{k}\)</span> 是来自<strong>后验分布</strong> <span class="math inline">\(\pi _{y_{t}^{k}}\)</span> （公式 12）的样本：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f12.PNG" title="f12.PNG" width="450" />
+</center></li>
+</ul></li>
+<li><font color =red><strong>里程计、路标测量、物体类别的联合对数似然</strong></font>变成公式（13）
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f13.png" title="f13.png" width="650" />
+</center></li>
+<li>新的<strong>优化问题</strong>变成了<font color = red><strong>通过优化相机位姿、物体测量和物体类别来最大化对数似然</strong></font>，见公式（14）
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f14.PNG" title="f14.PNG" width="400" />
+</center></li>
+<li>与公式（8）相比，公式（14）中的<strong>观测数据还包括物体观察</strong> <span class="math inline">\(u_{0:T}\)</span> ，并且在<strong>要估计的变量还包括物体类别</strong> <span class="math inline">\(\pi\)</span>
+<ul>
+<li>根据公式（13），给定数据关联 <span class="math inline">\(y_{0:T}\)</span> ，联合似然可以被分解为 <span class="math inline">\(\mathbf{z}_{0:T}\)</span> 和 <span class="math inline">\(\mathbf{o}_{0:T}\)</span> 的似然之和和 <span class="math inline">\(\mathbf{u}_{0:T}\)</span> 的似然；</li>
+<li>因此，<strong>物体类别独立于机器人的位姿和物体的位置</strong>；</li>
+<li><font color = red>公式（14）的优化<strong>等同于解决问题（8）并独立地计算物体类别的后验</strong></font>。</li>
+</ul></li>
+</ul>
+<h3 id="非参数位姿图-1">4.2 非参数位姿图</h3>
+<p>  现在研究<strong>数据关联</strong> <span class="math inline">\(y_{t}^{k}\)</span> <strong>未知且必须建立的情况</strong>。</p>
+<ul>
+<li>基于深度学习的算法将每个物体标记为某一个类，但不区分同一类的不同实例，当存在<strong>同一对象类的多个实例</strong>时，例如房间中的多个椅子，数据关联变得具有挑战性；
+<ul>
+<li>本文使用<strong>后端框架来联合推断数据关联和物体位置，而不是依赖可靠的前端过程来关联对象</strong>；</li>
+<li>注意，由于数据关联的模糊，<strong>物体的总数 M 提前未知</strong>，因此也需要建立；</li>
+<li><font color = red><strong>非参数模型</strong>是一组<strong>使模型复杂性适应数据</strong>的工具，它具有<strong>嵌入机制</strong>，<strong>当观察到新数据时，模型参数可以增长</strong>；</font></li>
+<li>特别地，<strong>Dirichlet Process (DP)</strong> 是这样的<strong>非参数随机过程</strong>，其模拟离散分布但具有灵活的参数大小，它可以作为具有无限维的 Dirichlet 分布的推广；</li>
+<li>与 Dirichlet 分布相同的是<strong>分类分布的共轭先验</strong>，DP 可以被视为无限非参数离散分布的共轭先验 <sup><strong>[31]</strong></sup> ；</li>
+<li>本文中使用 DP 作为数据关联 <span class="math inline">\(y_{t}^{k}\)</span> 的先验，假设在任何点上，总共检测到 M 个物体， <span class="math inline">\(y_{t}^{k}\)</span> <strong>属于物体 i 的概率为公式（15）</strong>
+<ul>
+<li><font color =red>这个模型后背的思想是：<span class="math inline">\(y_{t}^{k}\)</span> 来<strong>自于某个现有物体</strong> i ≤ M 的概率<strong>与物体 i 的测量次数成正比</strong>；来<strong>自于新物体</strong>的概率<strong>与 DP 先验的浓度参数</strong> <span class="math inline">\(\alpha\)</span> <strong>成正比</strong>。</font><br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f15.PNG" title="f15.PNG" width="550" />
+</center></li>
+</ul></li>
+</ul></li>
+<li><strong>里程计</strong> <span class="math inline">\(\mathbf{o}_{0:T}\)</span>、<strong>物体测量</strong> <span class="math inline">\(\mathbf{z}_{0:T}\)</span> 和<strong>给定数据关联</strong> <span class="math inline">\(\mathbf{y}_{0:T}\)</span> <strong>的物体类别</strong> <span class="math inline">\(\mathbf{u}_{0:T}\)</span> 的<strong>联合对数似然</strong>可以写成以下形式，其形式与公式（13）相似，但在这个公式中，<font color = red>物体测量 <span class="math inline">\(\mathbf{z}_{0:T}\)</span> 的似然与物体类别 <span class="math inline">\(\mathbf{u}_{0:T}\)</span> 的似然<strong>通过数据关联</strong> <span class="math inline">\(\mathbf{y}_{0:T}\)</span> <strong>联系起来</strong></font>。<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f15.5.PNG" title="f15.5.PNG" width="550" />
+</center></li>
+<li><strong>新的优化</strong>问题涵盖了<strong>里程计、物体测量和给定数据关联的物体类别的联合对数似然</strong>：<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f16.PNG" title="f16.PNG" width="550" />
+</center></li>
+<li>与公式（8）相比，新的优化问题公式（16）<strong>更具挑战性</strong>，因为<strong>数据关联是未知的</strong>，从而物体测量的对数概率不再具有简单形式，并且问题公式（16）变为混合整数非线性问题（不再像之前可以独立）；
+<ul>
+<li>其次，<strong>环境中的真实对象的数量 M 不一定是先验已知的</strong>，公式（16）还必须同时推断 M。</li>
+</ul></li>
+</ul>
+<h3 id="非参数-slam">4.3 非参数 SLAM</h3>
+<ul>
+<li>本章最后一部分，对于时间 <span class="math inline">\(t=1,\cdots ,T\)</span> 和时间 t 下观察到的物体 <span class="math inline">\(k=1,\cdots ,K_{t}\)</span> 生成以下的问题模型
+<ul>
+<li>其中 <span class="math inline">\(\alpha ,\beta ,Q,R\)</span> 是给定的参数；</li>
+<li><strong>机器人的位姿</strong> <span class="math inline">\(X_{0:T}\)</span>、<strong>路标的位置</strong> L、<strong>物体的类别分布</strong> <span class="math inline">\(\pi_{1:M}\)</span> 和<strong>物体数据关联</strong> <span class="math inline">\(y_{0:T}\)</span> 是需要<strong>估计的变量</strong>；</li>
+<li><strong>里程计</strong> <span class="math inline">\(o_{0:T}\)</span> 、<strong>物体测量</strong> <span class="math inline">\(z_{0:T},u_{0:T}\)</span> 是<strong>观测数据</strong>。<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f17.PNG" title="f17.PNG" width="550" />
+</center></li>
+</ul></li>
+<li>与规范的 DP 混合模型不同，<font color = red><strong>观测数据</strong> <span class="math inline">\(o_{0:T}, z_{0:T}, u_{0:T}\)</span> 不是给定变量 <span class="math inline">\(X_{0:T}, L, \pi\)</span> 的独立样本，而<strong>是通过因子图相关联的</strong></font>；
+<ul>
+<li>因此，推论涉及<strong>计算因子图上的最大似然</strong>，当要<strong>建立关联和变量</strong>时，标准方法<strong>在分配数据和优化变量之间交替</strong>；</li>
+<li>在已知物体编号 M 的情况下，<strong>K-means 具有确定性数据关联</strong>，而<strong>期望最大化以概率方式关联数据</strong> <sup><strong>[30]</strong></sup>；</li>
+<li>当知道先验物体数量并且使用 DP 作为先验时，广泛使用马尔可夫链蒙特卡罗方法（例如，吉布斯采样）或变分推理算法 <sup><strong>[30]</strong></sup>；</li>
+<li>然而，在这些算法中，需要始终计算和跟踪每个标签 <span class="math inline">\(y_{t}^{k}\)</span> 为任何潜在对象 L 的似然，<strong>算法需要多次遍历所有数据以收敛到稳态分布，而数据在我们的问题中的大规模和强烈依赖性使这些方法不合适</strong>。</li>
+</ul></li>
+<li>在文献 [32] 中显示，在<strong>小方差假设下，吉布斯采样可以简化为 DPmeans</strong>；
+<ul>
+<li>如果<strong>似然在某个特定阈值内</strong>，则将 <span class="math inline">\(y_{t}\)</span> 指定为<strong>最大似然对象</strong>，而不是对后验分布进行采样；<strong>不在该阈值则将其分配给新对象</strong>；</li>
+<li>直观地，在这种情况下，<strong>小方差意味着测距，物体测量和物体类别中的噪声相对较小</strong>，因此 <span class="math inline">\(y_{t}\)</span> 的<strong>后验分布是最高的</strong>。</li>
+</ul></li>
+<li><font color = red><strong>假设 2</strong>：<strong>里程计，物体测量和物体类别的差异很小，因此数据关联的后验分布具有很小的方差和唯一的最大似然值</strong>。</font></li>
+<li><strong>DPmeans 算法</strong>在两个步骤之间交替：① 通过变量 <span class="math inline">\(X_{0:T},L,\pi\)</span> <strong>最大化似然</strong>；② 并将数据关联 <span class="math inline">\(y_{0:T}\)</span> <strong>分配给它们的最大似然对象</strong>。算法 1 显示了该方法的总体流程，以下解释了算法的步骤：</li>
+<li><strong>步骤一：初始化（line 1）</strong>
+<ul>
+<li>在初始化中，所有 <span class="math inline">\(y_{t}^{k}\)</span> 都被设置为它自己的对象；</li>
+<li>机器人位姿 <span class="math inline">\(X_{0:T}\)</span> 和物体的位置 L 初始化他们的开环估计；</li>
+<li>对象类的 <strong>Dirichlet 分布先验</strong>被设置为某个初始值 <span class="math inline">\(\beta _{0}\)</span>。</li>
+</ul></li>
+<li><strong>步骤二：优化数据关联（line 3）</strong>
+<ul>
+<li>在执行主循环时，算法在<strong>优化数据关联</strong> <span class="math inline">\(y_{t}^{k}\)</span> 和<strong>优化变量</strong> <span class="math inline">\(X_{0:T},L,\pi\)</span> 之间<strong>交替进行</strong>；</li>
+<li>在优化物体关联时，修正 <span class="math inline">\(X_{0:T},L,\pi\)</span> ，计算 <span class="math inline">\(y_{t}^{k}\)</span> 的后验作为 <strong>DP 先验</strong>（公式 15）和<strong>测量</strong> <span class="math inline">\(\left ( u_{t}^{k} ,z_{t}^{k}\right )\)</span> <strong>似然</strong>（公式 2,21）的乘积，如公式（18）</li>
+<li>然后将<strong>数据关联</strong> <span class="math inline">\(y_{t}^{k}\)</span> <strong>分配给最大似然对象</strong>，见公式（19）。<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f18_f19.PNG" title="f18_f19.PNG" width="500" />
+</center></li>
+</ul></li>
+<li><strong>步骤三：位姿优化（line 10）</strong>
+<ul>
+<li>在优化位姿时，<strong>数据关联是固定的</strong>，可以用公式（20）来<strong>更新物体类的 Dirichlet 分布的后验参数</strong><br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f20.PNG" title="f20.PNG" width="500" />
+</center></li>
+<li>利用 Dirichlet 先验 <span class="math inline">\(Dir\left ( \beta _{i} \right )\)</span>，每个物体类别的最大似然（ML）与参数 <span class="math inline">\(\beta _{i}\)</span> 成正比，如公式（21）所示；<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f21.PNG" title="f21.PNG" width="400" />
+</center></li>
+<li>然后<strong>通过标准 SLAM 求解器获得机器人位姿</strong> <span class="math inline">\(X_{0:T}\)</span> <strong>和物体位置 L 的最大似然</strong>（参见公式（8））。</li>
+</ul></li>
+<li><strong>步骤四：剔除假阳性（line 18）</strong>
+<ul>
+<li>前面已经设置了对于<strong>物体 i 为假阳性的概率</strong> <span class="math inline">\(\pi _{i}\left ( 0 \right )\)</span>；</li>
+<li>在初始化的时候 <span class="math inline">\(\beta _{i}\left ( 0 \right )\)</span> 被设置为某个正数；</li>
+<li>当物体 i 的新的测量被观测并且累积， <span class="math inline">\(\beta _{i}\)</span> 得到更新，使得 <span class="math inline">\(\beta _{i}\left ( j \right ),j&gt;0\)</span> 变得比 <span class="math inline">\(\beta _{i}\left ( 0 \right )\)</span> 大，结果 <span class="math inline">\(\pi _{i}\left ( 0 \right )\)</span> 单调递减；</li>
+<li>组后通过简单地<font color = red>在 <span class="math inline">\(\pi _{i}\left ( 0 \right )\)</span> 上设置阈值 <span class="math inline">\(\epsilon\)</span> 来<strong>剔除假阳检测</strong></font>。<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/a1.PNG" title="a1.PNG" width="600" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实验">5. 实验</h2>
+<h3 id="模拟数据集">5.1 模拟数据集</h3>
+<ul>
+<li>在模拟中，在 <strong>2D 平面中随机生成 15 个物体</strong>，它们被随机分配到 <strong>5 个不同的物体类别</strong>：红色菱形，蓝色圆形，绿色三角形，黄色星形和洋红色方块，<strong>手动设计机器人轨迹并多次穿过环境</strong>，图 7a 显示了生成的数据集的 ground truth；
+<ul>
+<li>在<strong>每个位姿</strong> <span class="math inline">\(X_{t}\)</span> <strong>处</strong>，机器人观察其视野内的相对<strong>位置</strong> <span class="math inline">\(o_{t}^{k}\)</span> 和<strong>物体的类别</strong> <span class="math inline">\(u_{t}^{k}\)</span> ；</li>
+<li><strong>高斯噪声</strong>被添加到里程计测量和物体测量中（见公式 2 和 4），表 1 列出了模拟数据集包含的参数。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/tab1_tab2.PNG" title="tab1_tab2.PNG" width="800" />
+</center></li>
+</ul></li>
+<li>实验结果：
+<ul>
+<li>图 6a 中显示了<strong>仅基于开环里程计</strong>的物体预测，这些预测的物体位置存在<strong>大量的方差和漂移</strong>，这模糊了环境中实际存在多少物体；</li>
+<li>图 6b 是<strong>第一次迭代</strong>的结果，非参数<strong>位姿图聚类测量并使用它来校正机器人位姿</strong>，物体数量减少到 33；</li>
+<li>图 6c 是<strong>第二次迭代</strong>的结果，进一步将物体的总数减少到 20；</li>
+<li>图 6d 是<strong>第三次迭代</strong>的结果，算法收敛到真实的物体数量 15 个。</li>
+</ul></li>
+<li>将提议的<strong>非参数位姿图方法（NP-Graph）的性能与三种方法比较</strong>：
+<ul>
+<li>① <strong>逐帧检测（FbF）</strong>：每帧中的物体都被视为一个新的观测，即<strong>没有数据关联</strong>（图 6a）；</li>
+<li>② <strong>开环目标检测（OL）</strong>：使用机器人里程计在图像之间执行数据关联，但<strong>不使用数据关联结果来纠正机器人位姿</strong>（图 7c）；</li>
+<li>③ <strong>鲁棒性 SLAM（R-SLAM）</strong>：后端算法，<strong>可以找到最大的一致性测量集，并消除不一致的测量</strong>（图 7b）。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig6_fig7.PNG" title="fig6_fig7.PNG" width="800" />
+</center></li>
+</ul></li>
+<li>图 7 和表 2 比较了<strong>四种不同算法的 SLAM 性能</strong>，图 8 展示了<strong>机器人轨迹与 ground truth 相比的累积位置误差</strong>，而图 9 对 R-SLAM 和 OL 方法的各种参数进行了设置<strong>比较其物体数量和它们的定位误差</strong>；
+<ul>
+<li>FbF 和 OL 纯粹依赖于里程计并且不能纠正机器人姿势，因此具有最大的误差;</li>
+<li>R-SLAM 使用物体测量的子集来达到机器人位姿的闭环，因此误差较小；</li>
+<li>本文 NP-Graph 的方法利用了所有物体测量，因此在机器人姿态和物体位置上具有最小的误差；</li>
+<li>FbF 不进行任何数据关联，因此显著高估了对象的数量；</li>
+<li>OL 方法不优化机器人位姿，当机器人返回到原点时，里程计显著漂移，因此 OL 方法无法将物体与之前观察到的对象相关联，同时 OL 方法也过度估计了对象的总数；</li>
+<li><strong>R-SLAM 仅为每个对象类保留一组一致的度量，因此它只能为每个对象类检测一个实例，并且显着低估了对象的总数</strong>；</li>
+<li>另一方面，<strong>NP-Graph 利用所有对象测量并共同推断机器人姿势和数据关联</strong>，因此可以准确地推断出正确的物体数量。<br />
+
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig8_fig9.PNG" title="fig8_fig9.PNG" width="800" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="办公室环境">5.2 办公室环境</h3>
+<ul>
+<li>为了测试真实场景中的性能，收集了办公环境的数据集，并使用深度学习来检测物体，如椅子，屏幕，杯子等。有关办公室数据集的统计信息如表 3 所示。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/tab3_tab4.PNG" title="tab3_tab4.PNG" width="700" />
+</center></li>
+<li>表 4 和图 10 比较了 FbF，R-SLAM，OL 和本文 NP-Graph 的性能，虽然物体位置的 ground truth 不适用于此数据集，但比较了<strong>有效物体</strong>的数量，<strong>inlier 测量</strong>数量和物体位置方差的性能；
+<ul>
+<li>当一个物体的<strong>误报概率</strong> <span class="math inline">\(\pi _{i}\left ( 0 \right )\)</span> <strong>低于一个阈值（ 2％）时，该对象被定义为有效</strong>，否则它被标记为误报；</li>
+<li><strong>当测量与有效物体相关联时，测量结果表示为 inlier</strong>；</li>
+<li>物体方差由物体的预测位置的不确定性与其相关测量值确定；</li>
+<li>从表 4 可以看出，<strong>NP-Graph 具有最高的 inlier 测量比例</strong>，最接近真实的物体数量，以及<strong>物体位置上具有最小方差</strong>。</li>
+</ul></li>
+<li>虽然没有机器人位姿的 ground truth，但我们也<strong>定性地比较了性能</strong>;
+<ul>
+<li>图 1 显示了环境的俯视图以及机器人轨迹；</li>
+<li>图 10 比较了 4 种方法的结果。 FbF 和 OL 估计是开环方法并且过度估计物体的总数，R-SLAM 仅使用物体测量的子集，它只能为每个对象类识别一个实例，并且即使机器人位姿产生闭环也会有错误的估计；</li>
+<li>另一方面，<strong>NP-Graph 能够使轨迹闭环并恢复角落的转弯</strong>；</li>
+<li>虽然办公室数据集中没有计算物体定位误差的 ground truth，但值得注意的是，在最左下角的衣架上挂着毛衣，我们的算法能够<strong>恢复其距离</strong>而其他方法则失败。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig10.PNG" title="fig10.PNG" width="800" />
+</center></li>
+</ul></li>
+<li>图 11 展示了检测到的和良好关联的物体的一些<strong>示例</strong>，其包括椅子，屏幕，键盘，玩具车和悬挂在角落的毛衣；
+<ul>
+<li>这些图是从<strong>与相应物体相关联的单个边界框的点云中提取</strong>的；</li>
+<li>请注意，这些点云仅用于说明目的，但不在算法中维护，<strong>该算法仅使用这些点云的质心作为对象测量</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig11.PNG" title="fig11.PNG" width="450" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">6. 总结</h2>
+<ul>
+<li><strong>物体 SLAM 具有挑战性，因为数据关联是模糊的，位置测量未知</strong>；
+<ul>
+<li><strong>数据关联和SLAM本质上是耦合问题</strong>，这项工作提出了一种新的<strong>非参数位姿图方法，它紧密地耦合了这两个问题</strong>，并开发了一种算法<strong>在推断数据关联和执行 SLAM 之间交替进行</strong>；</li>
+<li>仿真和真实数据集都表明我们的新方法具有<strong>同时进行数据关联和 SLAM</strong> 的能力，并且在将<strong>物体检测与唯一标识符和定位物体相关联</strong>时实现了更好的性能。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="r参考文献">【R】参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+[11] Kaess M, Johannsson H, Roberts R, et al. <a href="https://smartech.gatech.edu/bitstream/handle/1853/44931/Kaess12ijrr.pdf?sequence=1&amp;isAllowed=y"><strong>iSAM2: Incremental smoothing and mapping using the Bayes tree</strong></a>[J]. The International Journal of Robotics Research, <strong>2012</strong>, 31(2): 216-235.<br />
+<font color = gray> <strong>因子图，iSAM2：使用贝叶斯树进行增量平滑和建图</strong></font></li>
+<li><input type="checkbox" disabled="" />
+[14] Everingham M, Van Gool L, Williams C K I, et al. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.167.6629&amp;rep=rep1&amp;type=pdf"><strong>The pascal visual object classes (voc) challenge</strong></a>[J]. International journal of computer vision, <strong>2010</strong>, 88(2): 303-338. <font color = gray> VOC 数据集</font></li>
+<li><input type="checkbox" disabled="" />
+[15] Girshick R, Donahue J, Darrell T, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2014/papers/Girshick_Rich_Feature_Hierarchies_2014_CVPR_paper.pdf"><strong>Rich feature hierarchies for accurate object detection and semantic segmentation</strong></a>[C]//Proceedings of the IEEE conference on computer vision and pattern recognition. <strong>2014</strong>: 580-587. <font color = gray> 区域的卷积神经网络（R-CNN）,使用 CNN 进行物体检测的首批工作之一</font></li>
+<li><input type="checkbox" disabled="" />
+[19] Ren S, He K, Girshick R, et al. <a href="http://219.216.82.193/cache/11/03/papers.nips.cc/bd3b0308f776f18fcde88fffa66f4a0e/5638-faster-r-cnn-towards-real-time-object-detection-with-region-proposal-networks.pdf"><strong>Faster r-cnn: Towards real-time object detection with region proposal networks</strong></a>[C]//Advances in neural information processing systems. <strong>2015</strong>: 91-99. <font color = gray> Faster r-cnn</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[20] S Pillai and J. Leonard. <a href="https://arxiv.org/pdf/1506.01732.pdf"><strong>Monocular slam supported object recognition</strong></a>. In Proceedings of Robotics: Science and Systems, Rome, Italy, July <strong>2015</strong>.<br />
+<font color = gray> <strong>支持物体识别的单目 SLAM，相机位姿为物体位置提供先验</strong></font></li>
+<li><input type="checkbox" disabled="" />
+[21] S. Song, L. Zhang, and J. Xiao. <a href=""><strong>Robot in a room: Toward perfect object recognition in closed environments</strong></a>. CoRR, abs/1507.02703, <strong>2015</strong>. <font color = gray> 在室内环境中实现完美的物体识别</font></li>
+<li><input type="checkbox" disabled="" />
+[22] Atanasov N, Zhu M, Daniilidis K, et al. <a href="http://roboticsproceedings.org/rss10/p43.pdf"><strong>Semantic Localization Via the Matrix Permanent</strong></a>[C]//Robotics: Science and Systems. <strong>2014</strong>, 2. <font color = gray> 预置物体作为路标约束 SLAM 的位姿</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+[29] Dellaert F. <a href="https://smartech.gatech.edu/bitstream/handle/1853/45226/Factor%20Graphs%20and%20GTSAM%20A%20Hands-on%20Introduction%20GT-RIM-CP%26R-2012-002.pdf?sequence=1&amp;isAllowed=y"><strong>Factor graphs and GTSAM: A hands-on introduction</strong></a>[R]. Georgia Institute of Technology, <strong>2012</strong>. <font color = gray><strong>开源因子图优化框架 GTSAM 代码：http://borg.cc.gatech.edu/</strong></font></li>
+<li><input type="checkbox" disabled="" />
+[31] Ferguson T S. <a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1176342360"><strong>A Bayesian analysis of some nonparametric problems</strong></a>[J]. The annals of statistics, <strong>1973</strong>: 209-230. <font color = gray>一类非参数问题的贝叶斯分析</font></li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li>4.1 节中 <span class="math inline">\(\pi _{i} \left ( 0 \right )\)</span> 是如何表示误报的概率的？</li>
+<li>公式（10）的 Dirichlet 先验？还有随后的 Dirichlet Process (DP) ，categorical distribution；</li>
+<li>公式（13）是不是少写了个 π？</li>
+<li>里程计/SLAM 部分采用的什么框架方法呢？全文也没提到；</li>
+<li>物体路标如何校正轨迹漂移也没提，把物体质心当做点来处理作为观测？</li>
+<li>5.1 节的模拟数据是如何生成的？有什么工具吗？</li>
+</ul>
+<hr />
+<h2 id="t思考">【T】思考</h2>
+<ul>
+<li>文章要求解的两个问题建模成了联合似然公式（6）和公式（13）（联合里程计、物体测量和物体类别），通过优化变量最大化联合似然</li>
+</ul>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2019.05.07</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-05-15-skim1/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">2019 年 5 月论文泛读（上） Geometric SLAM（16篇）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-04-27-orb-slam2-tracking/">
+            <span class="next-text nav-default"> 😀 ORB-SLAM2 代码解读（二）：跟踪线程</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

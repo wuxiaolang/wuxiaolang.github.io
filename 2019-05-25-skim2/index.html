@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇） - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 二、AR &amp;amp; MR &amp;amp; VR	DAQRI 智能眼镜远程稠密重建交互 基于三维点云真实环境的虚拟对象替换 网易开源单目深度估计、稠密重建增强现实
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-05-25-skim2/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）" />
+<meta property="og:description" content="
+二、AR &amp; MR &amp; VR		
+DAQRI 智能眼镜远程稠密重建交互    基于三维点云真实环境的虚拟对象替换    网易开源单目深度估计、稠密重建增强现实
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-05-25-skim2/" />
+<meta property="article:published_time" content="2019-05-25T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-05-25T00:00:00+08:00" />
+<meta itemprop="name" content="2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）">
+<meta itemprop="description" content="
+二、AR &amp; MR &amp; VR		
+DAQRI 智能眼镜远程稠密重建交互    基于三维点云真实环境的虚拟对象替换    网易开源单目深度估计、稠密重建增强现实
+">
+<meta itemprop="datePublished" content="2019-05-25T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-25T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="4484">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）"/>
+<meta name="twitter:description" content="
+二、AR &amp; MR &amp; VR		
+DAQRI 智能眼镜远程稠密重建交互    基于三维点云真实环境的虚拟对象替换    网易开源单目深度估计、稠密重建增强现实
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-25 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/ar-mr-vr/"> AR &amp; MR &amp; VR </a>
+            </div>
+          <span class="more-meta"> 约 4484 字 </span>
+          <span class="more-meta"> 预计阅读 9 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#17-基于自适应关键帧选择的移动增强现实应用的实时视觉惯性-slam">17. 基于自适应关键帧选择的移动增强现实应用的实时视觉惯性 SLAM</a></li>
+        <li><a href="#18-基于最近增强现实平台的稀疏视觉信息定位服务">18. 基于最近增强现实平台的稀疏视觉信息定位服务</a></li>
+        <li><a href="#19-具有稠密重建的增强现实远程协作">19. 具有稠密重建的增强现实远程协作</a></li>
+        <li><a href="#20-虚拟现实和增强现实中的非对称协作交互">20. 虚拟现实和增强现实中的非对称协作交互</a></li>
+        <li><a href="#21-基于真实环境的虚拟对象替换在增强现实系统中的潜在应用">21. 基于真实环境的虚拟对象替换：在增强现实系统中的潜在应用</a></li>
+        <li><a href="#22-基于增强现实的抛光表面在线质量评估方法">22. 基于增强现实的抛光表面在线质量评估方法</a></li>
+        <li><a href="#23-单视图中学习深度的在线单目密集重建">23. 单视图中学习深度的在线单目密集重建</a></li>
+        <li><a href="#24-探索混合现实空间的通信配置">24. 探索混合现实空间的通信配置</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>二、AR &amp; MR &amp; VR</strong>		
+DAQRI 智能眼镜<strong>远程稠密重建</strong>交互    基于三维点云真实环境的<strong>虚拟对象替换</strong>    <strong>网易开源单目深度估计、稠密重建增强现实</strong></p>
+</blockquote>
+<h3 id="17-基于自适应关键帧选择的移动增强现实应用的实时视觉惯性-slam">17. 基于自适应关键帧选择的移动增强现实应用的实时视觉惯性 SLAM</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[17]</strong> Piao J C, Kim S D. <a href="https://ieeexplore.ieee.org/abstract/document/8698793"><strong>Real-time Visual-Inertial SLAM Based on Adaptive Keyframe Selection for Mobile AR Applications</strong></a>[J]. IEEE Transactions on Multimedia, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->基于自适应关键帧选择的<strong>移动增强现实</strong>应用的实时视觉惯性 SLAM<!-- raw HTML omitted --></li>
+<li>中国延边大学，韩国延世大学   期刊 中科院二区，JCR Q2，IF 4.368</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要">摘要</h4>
+<ul>
+<li>SLAM 技术用于许多应用例如 AR ,VR,机器人，无人机和自动驾驶车辆,在 <strong>AR 应用中</strong>，<strong>快速相机运动估计，实际尺寸和比例</strong>是重要问题；</li>
+<li>在本研究中，我们引入了<strong>基于自适应关键帧选择的实时视觉惯性 SLAM</strong>，用于<strong>移动 AR 应用</strong>；
+<ul>
+<li>具体地，SLAM 系统是基于自适应关键帧选择视觉-惯性里程计设计的，该方法包括自适应关键帧选择方法和<strong>轻量级视觉-惯性里程计</strong>；</li>
+<li>惯性测量单元（IMU）数据用于预测当前帧的运动状态；</li>
+<li>并且<strong>通过基于学习和自动设置的自适应选择方法判断当前帧是否是关键帧</strong>；</li>
+<li>使用<strong>轻量级视觉惯性里程计</strong>方法处理相对<strong>不重要的帧（不是关键帧）</strong> 以提高效率和实时性能；</li>
+</ul>
+</li>
+<li>我们在 PC 环境中对其进行模拟，并将其与最先进的方法进行比较，实验结果表明，在没有 groundtruth 尺度匹配的情况下，关键帧轨迹的平均平方根平方误差 <strong>（RMSE）为 0.067 m</strong>，EuRoC 数据集的尺度误差为 <strong>0.58％</strong>；
+<ul>
+<li>此外，<strong>移动设备</strong>的实验结果表明，使用所提出的方法，性能提高了 34.5％ 至 53.8％。</li>
+</ul>
+</li>
+</ul>
+<h4 id="实现方法">实现方法</h4>
+<ul>
+<li><strong>1.</strong> <strong>自适应的关键帧选择</strong>
+<ul>
+<li>IMU 预积分</li>
+<li>基于学习和自动设置的<strong>自适应选择方法</strong>
+<ul>
+<li>自适应选择模块使用 IMU 预积分测量来在每次帧到达时将<strong>当前帧与参考帧进行比较，以确定当前帧是否是重要帧</strong>；</li>
+<li>自适应选择模块通过<strong>连续地学习预集成 IMU 数据的值和输入帧的结果是否是关键帧来自动更新学习模型</strong>。</li>
+</ul>
+</li>
+<li>自适应执行策略</li>
+</ul>
+</li>
+<li><strong>2.</strong> <strong>轻量级的 VIO</strong>
+<ul>
+<li>自适应 KLT 特征跟踪方法；</li>
+<li>运动估计。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="18-基于最近增强现实平台的稀疏视觉信息定位服务">18. 基于最近增强现实平台的稀疏视觉信息定位服务</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[18]</strong> Puigvert J R, Krempel T, Fuhrmann A. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=8699237"><strong>Localization Service Using Sparse Visual Information Based on Recent Augmented Reality Platforms</strong></a>[C]//2018 IEEE  International Symposium on Mixed and Augmented Reality Adjunct (ISMAR-Adjunct). IEEE, <strong>2019</strong>: 415-416.
+<ul>
+<li><!-- raw HTML omitted -->基于最近增强现实平台的稀疏视觉信息定位服务<!-- raw HTML omitted --></li>
+<li>Cologne Intelligence    ISMAR：AR 领域顶级会议</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-1">摘要</h4>
+<ul>
+<li>将设备或用户精确地定位在已知空间内的能力，在<strong>基于位置的增强现实</strong>环境中使用许多用例；</li>
+<li>本文使用 ARCore [4] 提出了一种<strong>基于稀疏视觉信息</strong>的定位服务，这是一种用于移动设备的最先进的增强现实平台；</li>
+<li>我们的服务由两部分组成：前端和后端；
+<ul>
+<li>在前端，使用A RCore 生成的<strong>点云作为特征点</strong>，计算相应的二进制关键点描述符算法，如 ORB [6] 或 FREAK [1] 来描述该位置；</li>
+<li>在后端，使用二进制字技术[3]的包在<strong>地图中搜索这个二进制描述符</strong>，响应识别位置的位置。</li>
+</ul>
+</li>
+<li><strong>此文没用。</strong></li>
+</ul>
+<hr>
+<h3 id="19-具有稠密重建的增强现实远程协作">19. 具有稠密重建的增强现实远程协作</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[19]</strong> Zillner J, Mendez E, Wagner D. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=8699225"><strong>Augmented Reality Remote Collaboration with Dense Reconstruction</strong></a>[C]//2018 IEEE International Symposium on Mixed and Augmented Reality Adjunct (ISMAR-Adjunct). IEEE, <strong>2019</strong>: 38-39.
+<ul>
+<li><!-- raw HTML omitted -->具有稠密重建的增强现实远程协作<!-- raw HTML omitted --></li>
+<li>DAQRI 智能眼镜：https://daqri.com/products/smart-glasses/    ISMAR：CCF 计算机图形学与多媒体 B 类会议</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-2">摘要</h4>
+<ul>
+<li>本文介绍了一种<strong>增强现实远程协作系统</strong>，该系统<strong>利用高保真、密集的场景重建来实现直观和精确的远程制导</strong>；</li>
+<li>需要帮助的<strong>本地</strong>工作人员可以使用我们的系统<strong>自动生成环绕的 3D 网格</strong>并将其传输给远程专家；</li>
+<li>远程专家可以独立于六个自由度的本地工作人员来导航和探索重建的环境；</li>
+<li>世界系中<strong>稳定的文本和图像注释</strong>可以放置在场景中，并且在表面上<strong>绘制的笔划可以智能地定位在世界中</strong>；</li>
+<li>此外，<strong>重建允许远程专家从网格中分割彩色对象</strong>，并<strong>使用生成的 3D 模型创建简单的动画</strong>，以传达精确的指令。</li>
+</ul>
+<h4 id="实现方法-1">实现方法</h4>
+<ul>
+<li>首先使用增强现实眼镜姿态估计和深度传感器进行<strong>高质量、稠密的场景重建</strong>，同时本地工作人员可以继续与环境进行交互（左图）；</li>
+<li>远程专家可以在<strong>第一人称视频流</strong>和<strong>无约束的第三人称视图</strong>之间切换，以独立于本地工作人员探索场景（中图）；</li>
+<li>远程专家可以<strong>绘制到重建的环境上，将文本和图像放置在场景中</strong>并<strong>从重建的网格中分割 3D 模型</strong>以创建新的指令，例如，关于如何使用特定对象或工具（右图）。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="20-虚拟现实和增强现实中的非对称协作交互">20. 虚拟现实和增强现实中的非对称协作交互</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[20]</strong> Grandi, Jerônimo &amp; Debarba, Henrique &amp; Maciel, Anderson. <a href="https://www.researchgate.net/profile/Jeronimo_Grandi/publication/332353699_Characterizing_Asymmetric_Collaborative_Interactions_in_Virtual_and_Augmented_Realities/links/5cafa2b492851c8d22e51246/Characterizing-Asymmetric-Collaborative-Interactions-in-Virtual-and-Augmented-Realities.pdf"><strong>Characterizing Asymmetric Collaborative Interactions in Virtual and Augmented Realities</strong></a>. IEEE Conference on Virtual Reality and 3D User Interfaces. <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->虚拟现实和增强现实中的非对称协作交互<!-- raw HTML omitted --></li>
+<li>巴西南里奥格兰德联邦大学   <a href="https://www.youtube.com/watch?v=6RbXc222spc">演示视频</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-3">摘要</h4>
+<ul>
+<li>我们提出了<strong>协作虚拟环境（CVE）中不对称交互的评估</strong>；</li>
+<li>在我们的非对称设置中，两个共同定位的用<strong>户与虚拟 3D 对象交互</strong>，一个在**沉浸式虚拟现实（VR）<strong>中，另一个在</strong>移动增强现实（AR）**中；</li>
+<li>我们与 36 位参与者进行了一项研究，以评估配对工作的性能和协作方面，并将其与两个对称方案进行比较，无论是沉浸式 VR 还是移动 AR 中的用户；</li>
+<li>为了进行这个实验，我们采用文献中的<strong>协作 AR 操作技术</strong>，开发和评估我们自己的 VR 操作技术；</li>
+<li>我们的结果表明，<strong>非对称 VR-AR 比 AR 对称条件获得了明显更好的性能，并且与 VR 对称性能相似</strong>，无论条件如何，即使参与者之间存在可视化和交互不对称，对也具有类似的工作参与，表明高合作水平。</li>
+</ul>
+<hr>
+<h3 id="21-基于真实环境的虚拟对象替换在增强现实系统中的潜在应用">21. 基于真实环境的虚拟对象替换：在增强现实系统中的潜在应用</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[21]</strong> Chen Y S, Lin C Y. <a href="https://www.mdpi.com/2076-3417/9/9/1797"><strong>Virtual Object Replacement Based on Real Environments: Potential Application in Augmented Reality Systems</strong></a>[J]. Applied Sciences, <strong>2019</strong>, 9(9): 1797.
+<ul>
+<li><!-- raw HTML omitted -->基于真实环境的虚拟对象替换：在增强现实系统中的潜在应用<!-- raw HTML omitted --></li>
+<li>台湾科技大学   Applied Sciences 开源期刊，中科院三区，JCR Q3，IF 1.855</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-4">摘要</h4>
+<ul>
+<li>增强现实（AR）是一种新兴技术，允许用户与虚拟环境进行交互，包括模拟现实世界中的场景；</li>
+<li>大多数当前的 AR 技术涉及<strong>在这些场景中放置虚拟对象</strong>，然而，<strong>对现实世界对象进行建模的困难</strong>极大地限制了模拟的范围，从而极大地限制了用户体验的深度；</li>
+<li>在本文研究中，我们开发了一个过程，通过该过程<strong>实现完全基于现实世界中的场景的虚拟环境</strong>；</li>
+<li>在对现实世界进行建模时，所提出的方案<!-- raw HTML omitted --><strong>将场景划分为离散对象，然后将其替换为虚拟对象</strong><!-- raw HTML omitted -->，这使用户可以无限制地在虚拟环境中进行交互；</li>
+<li>RGB-D 相机与 SLAM 技术结合使用以获得用户的移动轨迹并获得<strong>与真实环境相关的信息</strong>；</li>
+<li>在对环境进行建模时，<!-- raw HTML omitted --><strong>基于图形的分割用于分割点云并执行对象分割，以便随后用等效的虚拟实体替换对象</strong><!-- raw HTML omitted -->；</li>
+<li><!-- raw HTML omitted --><strong>超二次曲面用于从分割结果中导出形状参数和位置信息</strong>，以<strong>确保虚拟对象的比例与现实世界中的原始对象匹配</strong><!-- raw HTML omitted -->；</li>
+<li>只有在将对象替换为其真实环境中的虚拟对应物后才能<strong>转换为虚拟场景</strong>；</li>
+<li>涉及模拟真实世界位置的实验证明了所提出的渲染方案的可行性，最后提出了一种攀岩应用场景，以说明所提出的系统在 AR 应用中的潜在用途。</li>
+</ul>
+<h4 id="主要贡献">主要贡献</h4>
+<ul>
+<li>开发了一个<strong>综合的渲染系统</strong>，结合了<strong>建图，点云分割和形状拟合</strong>；</li>
+<li>在<strong>点云分割</strong>中，<strong>局部闭环</strong>优化用于减少局部误差，并且<strong>全局闭环消除了与原点和目的地有关的位置的误差</strong>，而不影响分割建图；</li>
+<li>在点云分割之前，<strong>超体素生成和平面检测</strong>用于旨在减少分割和总计算时间的预处理方法。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="22-基于增强现实的抛光表面在线质量评估方法">22. 基于增强现实的抛光表面在线质量评估方法</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[22]</strong> Ferraguti F, Pini F, Gale T, et al. <a href="https://www.sciencedirect.com/science/article/pii/S0736584518305131"><strong>Augmented reality based approach for on-line quality assessment of polished surfaces</strong></a>[J]. Robotics and Computer-Integrated Manufacturing, <strong>2019</strong>, 59: 158-167.
+<ul>
+<li><!-- raw HTML omitted -->基于<strong>增强现实</strong>的抛光表面在线质量评估方法<!-- raw HTML omitted --></li>
+<li>意大利摩德纳大学   中科院二区，JCR Q1，IF 4.031</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-5">摘要</h4>
+<ul>
+<li>增强现实被认为是工业 4.0 计划内外<strong>第四次工业革命的支持技术之一</strong>，实际上，增强现实解决方案可以提高工作质量和生产率，并可以更好地利用人力资源，该技术可以在过程的关键阶段帮助操作员进行工业应用；</li>
+<li>由于<strong>表面质量评估被认为是抛光过程中的关键阶段</strong>，因此本文提出了一种利用增强现实技术支持操作员的新方法；</li>
+<li>由表面测量系统测量的<strong>计量数据</strong>通过操作员佩戴的<strong>增强现实眼镜直接投射到抛光部件上</strong>，并用于<strong>评估工作表面的质量</strong>，而不是想象某个参数变化如何影响所获得的结果，<strong>信息直接存在于组件的表面上</strong>；</li>
+<li>用户可以从数据中看到需要改进的地方，并做出更好，更快的决策，这超越了工业抛光的潜力；</li>
+<li>所提出的方法在工业单元上实现和验证，其中机器人自动执行抛光任务并<strong>沿表面移动表面测量系统的头部以测量计量参数</strong>；</li>
+<li>由于所提出的方法，最终用户和操作者可以<strong>直接在组件上看到所达到的质量是否满足规格</strong>，或者表面的某些部分是否需要通过额外的抛光步骤进一步改进。</li>
+</ul>
+<h4 id="实现方法-2">实现方法</h4>
+<ul>
+<li>首先，将<strong>真实元件的数字表示</strong>，或至少是待评估曲面的数字表示<strong>提取为三维模型</strong>；</li>
+<li>几何描述要求参考系统根据真实构件的特征对<strong>数字模型进行对齐</strong>，从而<strong>提供真实构件与数字构件之间的精确关系</strong>；</li>
+<li>利用数字数据，可以<strong>提取出曲面空间中的一组数据点(即点云)</strong> ，并根据所选表面测量装置的要求<strong>进行分布</strong>；</li>
+<li>测量阶段需要一台专用的机器，将<strong>表面测量设备</strong>沿着组件在表面数字描述提供的点上移动，因此，需要通过定义数字模型中使用的参考系统的位置来<strong>对齐实部上的点云</strong>；</li>
+<li>检查操作开始<strong>收集数据</strong>；</li>
+<li>创建并可视化<strong>表面的 3D 地图</strong>；</li>
+<li>为了有效地了解表征曲面及其在曲面<strong>上分布的每个几何参数的值是多少</strong>，利用 AR 技术提供了直接投影在实分量相关曲面上的<strong>三维数据地图</strong>；
+<ul>
+<li>这需要首先<strong>将 3D 表面地图对齐到真实表面</strong>(步骤7)，然后在真实表面上<strong>直接重叠和可视化质量数据</strong>(步骤8)；</li>
+<li>为了向用户显示所有感兴趣的参数，通过 AR 设备在身临其境的视图中<strong>添加了一个虚拟界面</strong>，允许用户通过菜单直接在参数之间切换。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="23-单视图中学习深度的在线单目密集重建">23. 单视图中学习深度的在线单目密集重建</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[23]</strong> Wang J, Liu H, Cong L, et al. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=8699273"><strong>CNN-MonoFusion: Online Monocular Dense Reconstruction Using Learned Depth from Single View</strong></a>[C]//2018 IEEE International Symposium on Mixed and Augmented Reality Adjunct (ISMAR-Adjunct). IEEE, <strong>2019</strong>: 57-62.
+<ul>
+<li><!-- raw HTML omitted -->单视图中学习深度的在线单目密集重建<!-- raw HTML omitted --></li>
+<li><strong>网易 AR 研究所</strong>   ISMAR：AR 领域顶级会议，CCF 计算机图形学与多媒体 B 类会议   <a href="https://github.com/NetEaseAI-CVLab/CNN-MonoFusion">代码开源</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-6">摘要</h4>
+<ul>
+<li><strong>在线稠密重建</strong>是增强现实(AR)应用的一项主要任务，特别是对于<strong>碰撞和遮挡等现实交互</strong>；</li>
+<li>单目相机在 AR 设备上应用最为广泛，但由于<strong>缺乏真实深度</strong>，现有的<strong>单目稠密重建方法在实际应用中表现较差</strong>；</li>
+<li>本文提出了一种<strong>基于深度学习的在线单目稠密重建框架</strong>，克服了<strong>低纹理区域或纯旋转运动重建</strong>的固有困难；</li>
+<li>首先，我们设计了一个<strong>结合自适应损耗的深度预测网络</strong>，使我们的网络<strong>可以扩展到训练具有各种内在参数的混合数据集</strong>；</li>
+<li>然后我们将<strong>深度预测与单目 SLAM 框架点云融合</strong>松散地结合起来，构建场景的<strong>稠密三维模型</strong>；</li>
+<li>实验证明，我们的<strong>单视图深度预测</strong>在不同基准上达到了最先进的精度，所提出的框架可以使用专用的点云融合方案在各种场景下<strong>重建光滑、表面清晰和稠密的模型</strong>；</li>
+<li>此外，在 AR 应用程序中使用我们的<strong>稠密模型测试碰撞和遮挡检测</strong>，这表明所提出的框架特别适用于  AR场景；</li>
+<li>我们的代码将与我们的室内 RGB-D 数据集一起公开提供：https://github.com/NetEaseAI-CVLab/CNN-MonoFusion</li>
+</ul>
+<h4 id="主要贡献-1">主要贡献</h4>
+<ul>
+<li>首先，为了解决<strong>不同焦距的图像深度的尺度不一致性</strong>，我们提出了一种<strong>自适应损失函数</strong>，通过将该参数结合到损耗中来<strong>避免网络被焦距变化混淆</strong>，这使得<strong>网络甚至可以从不同的来源训练数据集</strong>，从而实现更好的泛化；</li>
+<li>其次，我们提出了一种<strong>在线单目稠密重建框架</strong>，该框架具有<strong>改进的深度预测网络和点云融合</strong>，易于与任何主流<strong>单目 SLAM 系统相结合</strong>；
+<ul>
+<li>同时，我们的室内 RGB-D 数据集将在 74 个场景中具有 207k 图像对，涵盖足够的动作；</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="24-探索混合现实空间的通信配置">24. 探索混合现实空间的通信配置</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[24]</strong> He Z, Rosenberg K T, Perlin K. <a href="https://dl.acm.org/citation.cfm?id=3312761"><strong>Exploring Configuration of Mixed Reality Spaces for Communication</strong></a>[C]//Extended Abstracts of the 2019 CHI Conference on Human Factors in Computing Systems. ACM, <strong>2019</strong>: LBW0222.
+<ul>
+<li><!-- raw HTML omitted -->探索混合现实空间的通信配置<!-- raw HTML omitted --></li>
+<li>纽约大学   CHI：CCF 人机交互与普适计算 A 类会议   <a href="https://www.youtube.com/watch?v=O0SLG4XOujk">演示视频</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-7">摘要</h4>
+<ul>
+<li>混合现实(mix-reality, MR)使用户能够在现实世界中探索无法实现的场景，这使得用户可以<strong>借助数字内容进行交流</strong>；</li>
+<li>我们研究参与者和内容的不同配置如何<strong>影响共享沉浸式环境中的通信</strong>；</li>
+<li>在我们的<strong>多用户 MR 环境</strong>中并排设计和实现了镜像面对面和裸眼配置，并对镜像面对面配置进行了初步的用户研究，评估了一对一交互、<strong>流畅的焦点转移</strong>和使用<strong>交互式粉笔交谈系统</strong>的 3D 演示中的眼神交流。</li>
+<li><strong>没啥用。</strong></li>
+</ul>
+<hr>
+<blockquote>
+<p><a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a> <br>
+2019.05.25</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-05-27-skim3/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-05-15-skim1/">
+            <span class="next-text nav-default">2019 年 5 月论文泛读（上） Geometric SLAM（16篇）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

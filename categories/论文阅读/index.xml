@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>论文阅读 on 吴言吴语</title>
+    <link>https://wuyanmin.coding.me/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</link>
+    <description>Recent content in 论文阅读 on 吴言吴语</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>wu</copyright>
+    <lastBuildDate>Fri, 13 Mar 2020 00:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://wuyanmin.coding.me/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title> 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位</title>
+      <link>https://wuyanmin.coding.me/2020-03-13-building-models/</link>
+      <pubDate>Fri, 13 Mar 2020 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2020-03-13-building-models/</guid>
+      <description>&lt;h1 id=&#34;towards-slam-based-outdoor-localization-using-poor-gps-and-2.5-d-building-models&#34;&gt;Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位&lt;/strong&gt;&lt;br /&gt;
+Liu R, Zhang J, Chen S, et al. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8943728/&#34;&gt;&lt;strong&gt;Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models&lt;/strong&gt;&lt;/a&gt;[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (&lt;strong&gt;ISMAR&lt;/strong&gt;). IEEE, &lt;strong&gt;2019&lt;/strong&gt;: 1-7.&lt;br /&gt;
+浙江工业大学、汉堡大学；&lt;a href=&#34;https://github.com/lauchlry/Buiding-GPS-SLAM&#34;&gt;&lt;strong&gt;代码开源&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+前期研究：Arth C, Pirchheim C, Ventura J, et al. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/7164332/&#34;&gt;&lt;strong&gt;Instant outdoor localization and slam initialization from 2.5 d maps&lt;/strong&gt;&lt;/a&gt;[J]. IEEE transactions on visualization and computer graphics, &lt;strong&gt;2015&lt;/strong&gt;, 21(11): 1309-1318.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计</title>
+      <link>https://wuyanmin.coding.me/2019-10-19-eigen-factors/</link>
+      <pubDate>Sat, 19 Oct 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-10-19-eigen-factors/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;特征因子：多帧和时间连续点云对齐的平面估计&lt;/strong&gt;&lt;br /&gt;
+Ferrer G. &lt;a href=&#34;http://sites.skoltech.ru/app/data/uploads/sites/50/2019/07/ferrer2019planes.pdf&#34;&gt;&lt;strong&gt;Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment&lt;/strong&gt;&lt;/a&gt;[C]. &lt;strong&gt;IROS 2019&lt;/strong&gt;&lt;br /&gt;
+俄罗斯斯科尔科沃科技学院，三星   &lt;a href=&#34;https://gitlab.com/gferrer/eigen-factors-iros2019&#34;&gt;&lt;strong&gt;代码开源&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://www.youtube.com/watch?v=_1u_c43DFUE&amp;amp;feature=youtu.be&#34;&gt;演示视频&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位</title>
+      <link>https://wuyanmin.coding.me/2019-07-12-nonparametric-statistics-and-clustering/</link>
+      <pubDate>Fri, 12 Jul 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-07-12-nonparametric-statistics-and-clustering/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;在非参数和聚类的 SLAM 中使用类别物体进行定位&lt;/strong&gt;&lt;br /&gt;
+Iqbal A, Gans N R. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8593541/&#34;&gt;&lt;strong&gt;Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering&lt;/strong&gt;&lt;/a&gt;[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2018&lt;/strong&gt;: 161-168.&lt;br /&gt;
+德克萨斯大学计算机工程学院&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>2019 年 6 月论文泛读（21篇）</title>
+      <link>https://wuyanmin.coding.me/2019-06-10-skim/</link>
+      <pubDate>Mon, 10 Jun 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-06-10-skim/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;6 项开源代码工作&lt;/strong&gt;：用于跟踪与建图的模块化优化框架    用于室内 RGB-D 重建的基于平面的几何和纹理优化    ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建    学习双目，推断单目：用于自我监督，单目，深度估计的连体网络    用于地面机器人的 RGBD-惯导轨迹估计与建图    从单个深度图像完成语义场景理解			
+&lt;strong&gt;其他&lt;/strong&gt;：将基于线的特定类别物体模型集成到单目 SLAM 中    基于鲁棒的物体 SLAM 的高速导航系统    无组织点云中平面检测的定向点采样&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</title>
+      <link>https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/</link>
+      <pubDate>Sun, 09 Jun 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;将基于线的特定类别物体模型集成到单目 SLAM 中&lt;/strong&gt;&lt;br /&gt;
+Joshi N, Sharma Y, Parkhiya P, et al. &lt;a href=&#34;https://arxiv.org/pdf/1905.04698.pdf&#34;&gt;&lt;strong&gt;Integrating Objects into Monocular SLAM: Line Based Category Specific Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1905.04698, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
+作者：印度海德拉巴大学   &lt;a href=&#34;https://robotics.iiit.ac.in/publications.html&#34;&gt;实验室主页&lt;/a&gt;&lt;br /&gt;
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. &lt;a href=&#34;https://arxiv.org/pdf/1802.09292.pdf&#34;&gt;&lt;strong&gt;Constructing Category-Specific Models for Monocular Object-SLAM&lt;/strong&gt;&lt;/a&gt;[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化</title>
+      <link>https://wuyanmin.coding.me/2019-06-06-plane-reconstruction/</link>
+      <pubDate>Thu, 06 Jun 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-06-06-plane-reconstruction/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;用于室内 RGB-D 重建的基于平面的几何和纹理优化&lt;/strong&gt;&lt;br /&gt;
+Wang C, Guo X. &lt;a href=&#34;https://arxiv.org/pdf/1905.08853.pdf&#34;&gt;&lt;strong&gt;Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1905.08853, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
+作者：德克萨斯大学达拉斯分校   &lt;a href=&#34;https://scholar.google.com/citations?user=PXm3u3gAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;Google Scholor&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;https://github.com/chaowang15/plane-opt-rgbd&#34;&gt;&lt;strong&gt;代码开源&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）</title>
+      <link>https://wuyanmin.coding.me/2019-05-27-skim3/</link>
+      <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-05-27-skim3/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Learning SLAM &amp;amp; Others&lt;/strong&gt;		
+多视角立体重建的条件&lt;strong&gt;单视图外形生成&lt;/strong&gt; 代码开源    Pointflownet：从点云学习&lt;strong&gt;刚体运动估计&lt;/strong&gt;的表示 代码开源    		
+三维点云的无监督稳定&lt;strong&gt;兴趣点检测&lt;/strong&gt; 代码开源    基于图的视觉惯性导航的&lt;strong&gt;封闭式预积分&lt;/strong&gt;方法 代码开源    事件相机&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）</title>
+      <link>https://wuyanmin.coding.me/2019-05-25-skim2/</link>
+      <pubDate>Sat, 25 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-05-25-skim2/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;二、AR &amp;amp; MR &amp;amp; VR&lt;/strong&gt;		
+DAQRI 智能眼镜&lt;strong&gt;远程稠密重建&lt;/strong&gt;交互    基于三维点云真实环境的&lt;strong&gt;虚拟对象替换&lt;/strong&gt;    &lt;strong&gt;网易开源单目深度估计、稠密重建增强现实&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>2019 年 5 月论文泛读（上） Geometric SLAM（16篇）</title>
+      <link>https://wuyanmin.coding.me/2019-05-15-skim1/</link>
+      <pubDate>Wed, 15 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-05-15-skim1/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;一、Geometric SLAM&lt;/strong&gt;		
+日本国家先进工业科学技术研究所&lt;strong&gt;极密特征视觉 SLAM&lt;/strong&gt;    &lt;strong&gt;开源直接法稀疏建图&lt;/strong&gt;    &lt;strong&gt;线模型&lt;/strong&gt;约束单目漂移		
+快速 RGB-D 建图的相关&lt;strong&gt;粗糙 3D 表示&lt;/strong&gt;     &lt;strong&gt;苏黎世开源&lt;/strong&gt;室外大场景点云重建     CMU &lt;strong&gt;局部最小化求解&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 使用非参数位姿图的物体 SLAM</title>
+      <link>https://wuyanmin.coding.me/2019-05-07-nonparametric-pose-graph/</link>
+      <pubDate>Tue, 07 May 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-05-07-nonparametric-pose-graph/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;使用非参数位姿图的物体 SLAM&lt;/strong&gt;&lt;br /&gt;
+Mu B, Liu S Y, Paull L, et al. &lt;a href=&#34;https://arxiv.org/pdf/1704.05959.pdf&#34;&gt;&lt;strong&gt;Slam with objects using a nonparametric pose graph&lt;/strong&gt;&lt;/a&gt;[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2016&lt;/strong&gt;: 4602-4609.&lt;br /&gt;
+&lt;strong&gt;作者&lt;/strong&gt;：&lt;a href=&#34;http://acl.mit.edu/publications&#34;&gt;麻省理工学院航空航天控制实验室&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&#34;https://github.com/BeipengMu/objectSLAM&#34;&gt;开源代码&lt;/a&gt;   &lt;a href=&#34;https://www.youtube.com/watch?v=YANUWdVLJD4&amp;amp;feature=youtu.be&#34;&gt;演示视频&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位</title>
+      <link>https://wuyanmin.coding.me/2019-04-06-privacy-preserving/</link>
+      <pubDate>Sat, 06 Apr 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-04-06-privacy-preserving/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;基于图像隐私保护的定位&lt;/strong&gt;&lt;br /&gt;
+Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. &lt;a href=&#34;https://arxiv.org/pdf/1903.05572.pdf&#34;&gt;&lt;strong&gt;Privacy Preserving Image-Based Localization&lt;/strong&gt;&lt;/a&gt;[J] &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
+&lt;strong&gt;作者&lt;/strong&gt;：&lt;strong&gt;苏黎世&lt;/strong&gt;联邦理工、微软，&lt;a href=&#34;http://people.inf.ethz.ch/sppablo/&#34;&gt;作者主页&lt;/a&gt;，&lt;a href=&#34;https://www.cvg.ethz.ch/research/secon/&#34;&gt;工程地址&lt;/a&gt;， 实验室主页：&lt;a href=&#34;https://www.cvg.ethz.ch/publications/&#34;&gt;计算机视觉与几何课题组&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>2019 年 4 月论文泛读（17 篇）</title>
+      <link>https://wuyanmin.coding.me/2019-04-01-skim/</link>
+      <pubDate>Mon, 01 Apr 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-04-01-skim/</guid>
+      <description>1. SlamCraft：单目平面稠密 SLAM [1] Rambach J, Lesur P, Pagani A, et al. SlamCraft: Dense Planar RGB Monocular SLAM[C]. International Conference on Machine Vision Applications MVA 2019. + ==SlamCraft：单目平面稠密 SLAM== + Jason Rambach</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 视觉 SLAM 的可学习线段描述符</title>
+      <link>https://wuyanmin.coding.me/2019-03-14-learnable-line/</link>
+      <pubDate>Thu, 14 Mar 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-03-14-learnable-line/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;视觉 SLAM 的可学习线段描述符&lt;/strong&gt;&lt;br /&gt;
+Vakhitov A, Lempitsky V. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8651490/&#34;&gt;&lt;strong&gt;Learnable Line Segment Descriptor for Visual SLAM&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Access, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
+&lt;strong&gt;作者&lt;/strong&gt;：&lt;strong&gt;Alexander Vakhitov&lt;/strong&gt; &lt;a href=&#34;https://scholar.google.com/citations?user=g_2iut0AAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;   &lt;strong&gt;Victor Lempitsky&lt;/strong&gt; &lt;a href=&#34;https://scholar.google.com/citations?user=gYYVokYAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+三星 AI 实验室（莫斯科） &lt;a href=&#34;https://sites.google.com/site/alexandervakhitov/&#34;&gt;&lt;strong&gt;作者主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8651490/media#media&#34;&gt;演示视频&lt;/a&gt;&lt;br /&gt;
+&lt;strong&gt;期刊&lt;/strong&gt;：IEEE Access  开源期刊，JCR分区：Q1   IF：4.199&lt;br /&gt;
+作者另外几篇&lt;strong&gt;点线结合&lt;/strong&gt;的论文：&lt;br /&gt;
+ECCV 2016：&lt;a href=&#34;https://link.springer.com/chapter/10.1007/978-3-319-46478-7_36&#34;&gt;Accurate and linear time pose estimation from points and lines&lt;/a&gt;&lt;br /&gt;
+ICRA 2017：&lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/7989522&#34;&gt;PL-SLAM: Real-time monocular visual SLAM with points and lines&lt;/a&gt;&lt;br /&gt;
+ECCV 2018：&lt;a href=&#34;http://openaccess.thecvf.com/content_ECCV_2018/html/Alexander_Vakhitov_Stereo_relative_pose_ECCV_2018_paper.html&#34;&gt;Stereo relative pose from line and point feature triplets&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</title>
+      <link>https://wuyanmin.coding.me/2019-02-27-object-ba/</link>
+      <pubDate>Wed, 27 Feb 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-02-27-object-ba/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度&lt;/strong&gt;&lt;br /&gt;
+Frost D, Prisacariu V, Murray D. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8353862&#34;&gt;&lt;strong&gt;Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Transactions on Robotics, &lt;strong&gt;2018&lt;/strong&gt;, 34(3): 736-747.&lt;br /&gt;
+&lt;strong&gt;作者&lt;/strong&gt;：&lt;strong&gt;Duncan Frost&lt;/strong&gt;：牛津大学2017年博士毕业，好像是 PTAM 那个组的  &lt;a href=&#34;https://scholar.google.com/citations?user=P9l4zHIAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+&lt;strong&gt;期刊&lt;/strong&gt;：IEEE Transactions on Robotics  JCR 类别：ROBOTICS  排序：2/26   JCR分区：Q1   IF：4.684&lt;br /&gt;
+&lt;strong&gt;文章&lt;/strong&gt;：作者 2016 年 &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/7487680/&#34;&gt;Object-aware bundle adjustment for correcting monocular scale drift&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</title>
+      <link>https://wuyanmin.coding.me/2019-01-28-quadric-slam/</link>
+      <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-01-28-quadric-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标&lt;/strong&gt;&lt;br /&gt;
+Nicholson L, Milford M, Sünderhauf N. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8440105&#34;&gt;&lt;strong&gt;Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Robotics and Automation Letters, &lt;strong&gt;2019&lt;/strong&gt;, 4(1): 1-8.&lt;br /&gt;
+关于&lt;strong&gt;作者&lt;/strong&gt;：&lt;br /&gt;
+&lt;a href=&#34;https://www.roboticvision.org/&#34;&gt;昆士兰科技大学澳大利亚机器人视觉中心&lt;/a&gt;&lt;br /&gt;
+一作：&lt;strong&gt;Lachlan Nicholson&lt;/strong&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=DkyLABAAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+二作：&lt;strong&gt;Michael Milford&lt;/strong&gt;（Rat SLAM 的提出者）  &lt;a href=&#34;https://scholar.google.com/citations?user=TDSmCKgAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+三作：&lt;strong&gt;Niko Sünderhauf&lt;/strong&gt; (Suenderhauf)（感觉这个更大佬）  &lt;a href=&#34;https://scholar.google.com/citations?user=WnKjfFEAAAAJ&amp;amp;hl=zh-CN&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://nikosuenderhauf.github.io/publications/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</title>
+      <link>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</link>
+      <pubDate>Fri, 11 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM&lt;/strong&gt;&lt;br /&gt;
+Yang S, Song Y, Kaess M, et al. &lt;a href=&#34;https://arxiv.org/pdf/1703.07334&#34;&gt;&lt;strong&gt;Pop-up slam: Semantic monocular plane slam for low-texture environments&lt;/strong&gt;&lt;/a&gt;[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2016&lt;/strong&gt;: 1222-1229.&lt;br /&gt;
+作者：&lt;strong&gt;YangShichao&lt;/strong&gt;：&lt;a href=&#34;http://www.frc.ri.cmu.edu/~syang/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;Google Scholar&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://github.com/shichaoy&#34;&gt;&lt;strong&gt;Github&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+卡内基梅隆大学机器人研究所：&lt;a href=&#34;https://www.ri.cmu.edu/&#34;&gt;&lt;strong&gt;The Robotics Institute of CUM&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+演示视频：&lt;a href=&#34;https://www.youtube.com/watch?v=TOSOWdxmtkw&#34;&gt;https://www.youtube.com/watch?v=TOSOWdxmtkw&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</title>
+      <link>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</link>
+      <pubDate>Sun, 06 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;结构化环境中单目物体级与平面级的SLAM&lt;/strong&gt;&lt;br /&gt;
+Yang S, Scherer S. &lt;strong&gt;&lt;a href=&#34;https://arxiv.org/pdf/1809.03415.pdf&#34;&gt;Monocular Object and Plane SLAM in Structured Environments&lt;/a&gt;&lt;/strong&gt;[J]. arXiv preprint arXiv:1809.03415, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
+作者：YangShichao：&lt;a href=&#34;http://www.frc.ri.cmu.edu/~syang/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;Google Scholar&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://github.com/shichaoy&#34;&gt;&lt;strong&gt;Github&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+卡内基梅隆大学机器人研究所：&lt;a href=&#34;https://www.ri.cmu.edu/&#34;&gt;&lt;strong&gt;The Robotics Institute of CUM&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+演示视频：&lt;a href=&#34;https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;amp;t=11s&#34;&gt;https://www.youtube.com/watch?v=jzBMsKCm0uk&amp;amp;t=11s&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</title>
+      <link>https://wuyanmin.coding.me/2018-11-30-cubeslam/</link>
+      <pubDate>Fri, 30 Nov 2018 00:00:00 +0800</pubDate>
+      
+      <guid>https://wuyanmin.coding.me/2018-11-30-cubeslam/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM&lt;/strong&gt;&lt;br /&gt;
+Yang S, Scherer S. &lt;a href=&#34;https://arxiv.org/abs/1806.00557&#34;&gt;&lt;strong&gt;CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1806.00557, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
+作者： YangShichao：&lt;a href=&#34;http://www.frc.ri.cmu.edu/~syang/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://scholar.google.com/citations?user=xWtRvrMAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;Google Scholar&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://github.com/shichaoy&#34;&gt;&lt;strong&gt;Github&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+卡内基梅隆大学机器人研究所：&lt;a href=&#34;https://www.ri.cmu.edu/&#34;&gt;&lt;strong&gt;The Robotics Institute of CUM&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
+演示视频：&lt;a href=&#34;https://www.youtube.com/watch?v=QnVlexXi9_c&#34;&gt;https://www.youtube.com/watch?v=QnVlexXi9_c&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

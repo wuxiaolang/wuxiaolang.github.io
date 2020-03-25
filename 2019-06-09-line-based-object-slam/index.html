@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 将基于线的特定类别物体模型集成到单目 SLAM 中
+Joshi N, Sharma Y, Parkhiya P, et al. Integrating Objects into Monocular SLAM: Line Based Category Specific Models[J]. arXiv preprint arXiv:1905.04698, 2019.
+作者：印度海德拉巴大学 实验室主页
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. Constructing Category-Specific Models for Monocular Object-SLAM[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中" />
+<meta property="og:description" content="
+将基于线的特定类别物体模型集成到单目 SLAM 中
+Joshi N, Sharma Y, Parkhiya P, et al. Integrating Objects into Monocular SLAM: Line Based Category Specific Models[J]. arXiv preprint arXiv:1905.04698, 2019.
+作者：印度海德拉巴大学   实验室主页
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. Constructing Category-Specific Models for Monocular Object-SLAM[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/" />
+<meta property="article:published_time" content="2019-06-09T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-06-09T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中">
+<meta itemprop="description" content="
+将基于线的特定类别物体模型集成到单目 SLAM 中
+Joshi N, Sharma Y, Parkhiya P, et al. Integrating Objects into Monocular SLAM: Line Based Category Specific Models[J]. arXiv preprint arXiv:1905.04698, 2019.
+作者：印度海德拉巴大学   实验室主页
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. Constructing Category-Specific Models for Monocular Object-SLAM[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.
+">
+<meta itemprop="datePublished" content="2019-06-09T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-06-09T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8188">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中"/>
+<meta name="twitter:description" content="
+将基于线的特定类别物体模型集成到单目 SLAM 中
+Joshi N, Sharma Y, Parkhiya P, et al. Integrating Objects into Monocular SLAM: Line Based Category Specific Models[J]. arXiv preprint arXiv:1905.04698, 2019.
+作者：印度海德拉巴大学   实验室主页
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. Constructing Category-Specific Models for Monocular Object-SLAM[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-06-09 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 8188 字 </span>
+          <span class="more-meta"> 预计阅读 17 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>将基于线的特定类别物体模型集成到单目 SLAM 中</strong><br />
+Joshi N, Sharma Y, Parkhiya P, et al. <a href="https://arxiv.org/pdf/1905.04698.pdf"><strong>Integrating Objects into Monocular SLAM: Line Based Category Specific Models</strong></a>[J]. arXiv preprint arXiv:1905.04698, <strong>2019</strong>.<br />
+作者：印度海德拉巴大学   <a href="https://robotics.iiit.ac.in/publications.html">实验室主页</a><br />
+前期工作：Parkhiya P, Khawad R, Murthy J K, et al. <a href="https://arxiv.org/pdf/1802.09292.pdf"><strong>Constructing Category-Specific Models for Monocular Object-SLAM</strong></a>[C]//2018 IEEE International Conference on Robotics and Automation (ICRA). IEEE, 2018: 1-9.</p>
+</blockquote>
+<h1 id="integrating-objects-into-monocular-slam-line-based-category-specific-models">Integrating Objects into Monocular SLAM: Line Based Category Specific Models</h1>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>如何<strong>将物体集成到单目 SLAM 中</strong>实现物体级的 SLAM；</li>
+<li>如何<strong>克服作者前期研究的基于关键点方法需要训练和注释的局限性</strong>。</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>提出一种<strong>基于线的参数化方法</strong>，对特定类别的物体（桌子、椅子和笔记本电脑）用线段参数化表示；</li>
+<li>利用 <strong>Render for cnn 网络进行视点估计</strong>作为先验；</li>
+<li>利用 yolo 进行目标检测，获取检测框，再用 <strong>LSD 算法进行线段检测</strong>，然后进行<strong>边缘对齐</strong>，与前面构造的线模型关联；</li>
+<li>在 <strong>3D-2D 边缘关联</strong>模块使用 Ceres <strong>优化物体形状和位姿</strong>；</li>
+<li>然后将<strong>物体模型作为路标集成到 SLAM 中</strong>，采用因子图进行优化。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>对典型室内环境中各种物体进行了参数化，<strong>将物体模型集成到了 SLAM 的轨迹地图中</strong>，有利于机器人完成导航和交互任务；</li>
+<li><strong>不影响 ORB-SLAM 性能</strong>的前提下对地图中的目标进行定位，并在一定程度上改善了轨迹；</li>
+<li><strong>与前期工作的关键点方法</strong>相比<strong>不需要提前训练和注释</strong>，且<strong>速度提高了两倍以上</strong>。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>视角估计需要提前训练，不是来自于实时的 SLAM 系统；</li>
+<li>对 ORB-SLAM2 的性能没有改善，甚至有恶化；</li>
+<li>作为路标的物体有限，只有桌子椅子和笔记本电脑。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>我们提出了一种新的<strong>基于线的参数化特定类别的 CAD 物体模型</strong>；</li>
+<li>所提出的参数化使用<strong>基于字典的 RANSAC 方法</strong>将<strong>特定于 3D 类别的 CAD 模型</strong>和所考虑的物体关联起来，该方法使用<strong>物体视点作为先验</strong>并且在场景的相应强度图像中<strong>检测到边缘</strong>；</li>
+<li><strong>关联问题</strong>被认为是一个经典的<strong>几何问题</strong>，而不是数据集驱动的问题，从而节省了注释数据集以训练不同类别对象的关键点网络[1，2]所花费的时间和人力；</li>
+<li>除了<strong>消除了数据集准备的需要</strong>，该方法还加快了整个过程，因为该方法<strong>对所有物体只处理一次图像</strong>，从而<strong>消除了在所有图像中对图像中的每个对象调用网络的需要</strong>；</li>
+<li><font color = red>使用 <strong>3D-2D 边缘关联</strong>模块，然后<strong>使用线的切除算法来恢复物体姿势</strong></font>；
+<ul>
+<li>该公式<strong>对物体的形状和姿态进行了优化</strong>，从而有助于更精确地恢复物体的三维结构；</li>
+</ul></li>
+<li>最后，利用<strong>因子图公式将物体姿态与相机里程计相结合</strong>，建立了一个 SLAM 问题。</li>
+</ul>
+<hr />
+<h2 id="简介">1. 简介</h2>
+<ul>
+<li>SLAM 是各种移动机器人应用中最重要的环节，包括地面机器人[3]、空中机器人[4]和水下机器人[5];
+<ul>
+<li>单目 SLAM 因其重量轻、携带方便而成为一种受欢迎的选择，尤其是在微型飞行器(MAV)和手持相机平台等受限的有效载荷系统中。</li>
+</ul></li>
+<li>SLAM 已经演化出多种风格，比如结合路径该规划的 <strong>Active SLAM</strong> [6]，重构运动对象的<strong>动态 SLAM</strong> [7]，鲁棒 SLAM [8]；
+<ul>
+<li><strong>物体级 SLAM</strong> [9 SLAM++]是一个相对较新的方式，其中 <strong>SLAM 信息以物体姿态的形式进行增强，以实现更具语义意义的地图</strong>，从而提高 SLAM 系统的准确性；</li>
+</ul></li>
+<li><font color = red><strong>物体级 SLAM</strong> 以两个流行的方式呈现</font>；
+<ul>
+<li>一种是假设<strong>实例特定模型是先验已知</strong>的 [10]；</li>
+<li>另一种是使用了一个<strong>对象的一般模型，如椭圆体和长方体</strong> [11 Cube SLAM] 和 [9 SLAM++]。</li>
+<li>依赖于场景中各种对象的实例级模型使得<strong>第一种难以拓展到场景中的所有对象</strong>；</li>
+<li>而诸如立方体的一般模型<strong>无法在物体部分级别上提供了有意义的信息</strong>，并且限制了其在<strong>抓取和处理物体</strong>的相关应用中。</li>
+</ul></li>
+<li><font color = red><strong>作者前期研究</strong>：</font>为了克服以上两个限制，文献 [2] 将他们的研究定位为<strong>结合两者的优势的研究</strong>；
+<ul>
+<li>特别是，开发了<strong>特定类别模型来代替实例级别模型</strong>，其<strong>保留了前者的语义潜力以及后者在对象类别级别的通用性质</strong>；</li>
+<li>然而，文献 [2] <strong>对特定类别的关键点训练网络</strong>的依赖限制了其表达能力，因为<strong>每个新对象类别都需要估计该类别的新网络模型以及注释</strong>，并伴随着注释、GPU需求和数据集准备等问题；</li>
+<li>更具体地，在包含三个对象类别的场景中，需要调用对应于每个类别的三个单独的网络模型以求解对象的相应类别的姿势和形状。</li>
+</ul></li>
+<li><font color = red><strong>线参数化思想：</strong></font>由于<strong>许多对象可以表示为线结构</strong>这一事实，本文提出了一种新的对象类对象的<strong>线参数化</strong>；
+<ul>
+<li>通过<strong>将描述三维物体类别的三维直线与二维直线段形式的图像观察相结合</strong>，以<strong>解耦的形式求解物体的姿态和形状</strong>。</li>
+</ul></li>
+<li>值得注意的是，当我们将方案扩展到新的类别时，这种方法<strong>绕过了对关键点注释的需要</strong>，以及为各种类别的对象估计和维护各种网络模型的需求；
+<ul>
+<li>它通过<font color = red><strong>依赖线段检测器来观察图像中的目标线段，而不是依赖于针对语义关键点训练的网络模型</strong></font>。</li>
+</ul></li>
+<li>本文<strong>将线参数化对象扩展到椅子、桌子和笔记本电脑三类</strong>，并成功地<font color = red><strong>将物体形状和姿态优化与基于因子图的后端位姿优化相结合</strong></font>；
+<ul>
+<li>因此，它成功地<strong>将三维物体嵌入到场景中，同时估计出相机的轨迹</strong>；</li>
+<li>对<strong>相机轨迹和目标姿态</strong>的高保真估计证明了该框架的有效性和新颖性。</li>
+</ul></li>
+<li>图 1 显示了一个典型的物体 SLAM 运行效果，其中<strong>物体姿态以 3D 形式呈现为最接近的 CAD 模型</strong>，其对应于图像中所示的优化的线框网格；
+<ul>
+<li>来自轨迹采样的相机位置以粉色圆圈显示，相机轨迹本身以黑色虚线显示。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig1.PNG" title="fig1" width="500" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="相关研究">2. 相关研究</h2>
+<ul>
+<li>大多数情况下，所有最先进的 SLAM 系统 [12-15] 和使用 IMU [16,17] 的重建方法都依赖于<strong>位姿图/因子图优化[18,19]或 BA 优化</strong>；
+<ul>
+<li>在下面的部分中，我们将讨论物体级 SLAM 的相关工作，并讨论它们中的一些限制以及<strong>基于关键点的方法</strong>，正是这种方法激发了所提议的方法；</li>
+<li>有一些方法试图<strong>将经典几何的属性与深度学习模型融合以改善对象姿势和形状</strong>，这类实现的最新工作有 [20]，它使用非常少的有限视图观察来恢复全局相机姿态和基于 3D 点云的形状。</li>
+</ul></li>
+</ul>
+<h3 id="object-slam">2.1 Object-SLAM</h3>
+<ul>
+<li>近些年来的发展和对 SLAM 系统的后续稳定，使得<strong>将物体纳入 SLAM 框架</strong>，并<strong>在一个统一的框架中解决物体姿态和形状以及机器人姿态</strong>；
+<ul>
+<li>最近一些面向物体的 SLAM 方法 [9，21，22]，大多数基于物体的 SLAM 依赖于来自 RGB-D 或立双目相机的<strong>深度信息</strong>；</li>
+<li>在 [10，23] 中，假设实例级模型，称为<strong>形状先验模型</strong>，在 [10] 中，提出了一种多机器人物体 SLAM 框架，但同样具有<strong>形状先验和 RGB-D 传感器</strong>；</li>
+<li>在另一个范例中，<strong>没有实例级模型</strong>，可以作为先验；</li>
+<li>在 [21] 中，再次借助于 rgb-d 相机，在<strong>因子图框架中共同求解关联和物体姿态</strong>；</li>
+<li>在单眼物体 SLAM / SFM 方法中，[22，23] 属于这种模式，在这种方法中，对象被建模为<strong>边界框</strong> [22，24] 或<strong>椭圆体</strong> [23].</li>
+</ul></li>
+<li>因此，<font color = red><strong>我们提出的方法属于第三种范式，假设基于线段的类别模型，而不是实例级模型</strong></font>。</li>
+</ul>
+<h3 id="object-category-models">2.2 Object-Category Models</h3>
+<ul>
+<li>近年来，研究人员逐渐开始<font color = red><strong>在对象类模型中重新引入越来越多的几何结构</strong></font>，并提高其性能 [25]；
+<ul>
+<li><strong>基于物体类别模型</strong>的方法被用来<strong>解决单目视觉中的各种问题</strong>，事实上 [26]-[27] <strong>利用类别模型从单幅图像中重建对象</strong>；</li>
+<li>文献 [11 Cube SLAM] 提出了一种无先验对象模型的三维长方体目标检测和多视图物体 SLAM 方法，提出了一种高效、准确的单幅图像三维长方体拟合方法，不需要事先知道目标模型或方向。</li>
+</ul></li>
+<li><strong>基于物体类别模型</strong>的方法提倡在处理单目图像时，<strong>结合对象的类别特定形状先验来补偿信息损失</strong>；
+<ul>
+<li>我们使用这些模型（图2），通过<strong>用同一模型表示一个类别的所有实例</strong>，将目标观测因子纳入单目 SLAM 中。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig2.PNG" title="fig2" width="550" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="object-detection-and-view-point-estimation">2.3 Object Detection and View Point Estimation</h3>
+<ul>
+<li><strong>卷积神经网络</strong>是近年来在<strong>目标检测</strong>方面取得进展的驱动因素 [28-30]，这些CNNs不仅精度高，而且速度也非常快；
+<ul>
+<li>事实上，当在 GPU 上运行时，它们可以以 100-300 毫秒的延迟处理每帧图像；</li>
+<li>估计属于特定类别的对象的良好边界框标志着我们体系结构的开始。</li>
+</ul></li>
+<li>其中一个基于 CNN 的模型是为CNN [31] 渲染的，我们提出的解决方案是<strong>用同样的方法来估计图像中物体的视点</strong>；
+<ul>
+<li>CNN 的渲染已经训练了几个对象的大型、类别特定的数据集，使用可用的 3D CAD 模型 [32] 渲染，很容易访问；</li>
+<li>当对包含真实图像 [33] 的大数据集进行微调时，经过训练的模型在呈现数据集上进行<strong>目标视点预测</strong>的效果非常好。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实现方法">3. 实现方法</h2>
+<ul>
+<li>在这一节中将描述<strong>基于线段的端到端的功能</strong>。</li>
+</ul>
+<h3 id="方法概述">3.1 方法概述</h3>
+<ul>
+<li><font color = red><strong>CNN 模块</strong></font> [31] 的渲染训练用于<strong>特定类别物体的视点估计</strong>；
+<ul>
+<li>当出现图像时，yolo 检测器 [28] 会对感兴趣的对象上的<strong>边界框进行回归</strong>，<strong>LSD 线检测器</strong> [34] 输出 YOLO <strong>边界框内的线段</strong>；</li>
+<li>CNN 模型的渲染优先输出视点；</li>
+</ul></li>
+<li><font color = red><strong>数据关联</strong>模块</font>将<strong>三维平均线框模型的线与边界框内线段的 LSD 观测值相关联</strong>；</li>
+<li>在数据关联之后，使用 Ceres Solver [8] 的<font color = red><strong>位姿形状优化模块</strong></font>输出这些对象的姿态和形状；
+<ul>
+<li>在物体级 SLAM 运行中，姿态形状优化的输出<strong>构成相机位姿-路标约束</strong>；</li>
+<li>而使用最先进的 <strong>SLAM 模块估计相机运动</strong> [35 ORB-SLAM2]，这些约束最终通过 <strong>GTSAM [36] 作为后端引擎进行优化</strong>，以<strong>输出相机轨迹</strong>以及嵌入<strong>场景中的物体</strong>。</li>
+</ul></li>
+<li>整体框架如下图所示
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig3.PNG" title="fig3" width="800" />
+</center></li>
+</ul>
+<h3 id="基于线段的类别级模型">3.2 基于线段的类别级模型</h3>
+<ul>
+<li>在我们的方法中，我们<font color = red><strong>强调使用类别级模型而不是对象的实例级模型</strong></font>；
+<ul>
+<li>为了<strong>构建基于线段的类别级别模型</strong>，首先<font color = red><strong>将每个物体表征为在该类别的所有实例中共同的一组 3D 线</strong></font>；</li>
+<li>例如，用于椅子类别的这种线可以是<strong>椅子的腿，椅子靠背的边缘</strong>，对于笔记本电脑，它们可以是<strong>显示屏周围的边缘</strong>以及构成键盘的轮廓，构成基座等。</li>
+</ul></li>
+<li>每个基于<strong>线的模型都是由 6 * m 维的向量 X 表示</strong>的，其中 m 是参数化模型中出现的<strong>线的数量</strong>，每条线段 <span class="math inline">\(L_i\)</span> 对应一个表示物体模型的<strong>关键边</strong>；
+<ul>
+<li>m 中的每条线都由一个<font color = red><strong>三维方向 D 和一个在直线上的三维点 M 表示</strong></font>，虽然该 3D 点可以是线上的任意点，但大致选择为 3D CAD 模型的中点；</li>
+<li>各参数关系如下
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f1_f4.PNG" title="f1_f4" width="400" />
+</center></li>
+</ul></li>
+<li>如果<strong>没有已知的关于物体的先验信息</strong>，那么搜索空间是一个 6 * m 的空间，它代表物体的形状；
+<ul>
+<li>但是，<strong>基于 CAD 模型的三维标注</strong>，可以减少搜索空间，以便在优化形状的同时，<strong>只查看该对象中可能出现的变形</strong>，而不是任何任意的线变形；</li>
+<li>对带注释的 CAD 模型数据集进行简单的主成分分析 [37] ，以<strong>获得变形的前七个线性无关的主方向</strong>；</li>
+<li>这些特征向量<strong>根据其特征值进行排序</strong>，根据特征向量的覆盖范围选择数字 7。</li>
+</ul></li>
+<li>在<strong>求解形状</strong>时，用<font color = red><strong>平均形状加变形方向的加权线性组合来表示物体</strong></font>；
+<ul>
+<li>在这种形状表示中，<strong>每个椅子可以由每个主要变形方向的权重（或形状参数，λi）表示</strong>；</li>
+<li>该线性子空间模型具有比 <span class="math inline">\(\mathbb{R}^{6m}\)</span> 低得多的维度，这很容易看出，因为<strong>物体中存在各种平面条件和对称性</strong>。</li>
+</ul></li>
+<li>数学上，如果 <span class="math inline">\(\bar{X}\)</span> 是类别的<strong>平均形状</strong>，而 <strong>Vi</strong> 是从 PCA 通过本节所述的对齐的有序三维 CAD 模型集合获得的<strong>变形基础</strong>，则<font color = red><strong>使用形状参数 λi 获得的任何对象 X 可以表示为</strong></font>公式（5）
+<ul>
+<li>其中 B 是基础向量（PCA 之后的 top-B 特征向量）；</li>
+<li>$$ 是由所有 λi 组成的向量。 <span class="math display">\[
+X=\bar{X}+\sum_{B}^{i=1}\lambda _{i}V_{i}=\bar{X}+V\Lambda \qquad(5)
+\]</span></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="边缘对应">3.3 边缘对应</h3>
+<ul>
+<li>与在非机器学习方法中寻找突出的关键点相比，目标不变线检测更容易，我们<strong>使用 LSD 边缘检测器[34]</strong> 来实现同样的效果；
+<ul>
+<li>这里的主要问题是<strong>将所有检测到的正确的 2D 线与相应的 3D 线关联起来</strong>；</li>
+<li>在这种情况下，寻找关联是一个鸡和蛋的问题；</li>
+<li>我们<font color =red><strong>需要一个良好的姿态估计来找到三维 CAD 模型和图像之间的对应关系</strong>，<strong>又需要一个良好的关联来估计物体的姿态</strong></font>。</li>
+<li>我们利用 RenderForCNN 视点网络[31] <strong>得到了物体的近似视点</strong>，并介绍了一种<strong>计算物体近似平移的方法</strong>；</li>
+<li>我们<strong>将这一视点和平移作为基于字典的 RANSAC 方法的初始化，以获得最合适的边缘对应</strong>。</li>
+</ul></li>
+<li>3.2 节中讨论的参数化<strong>允许用一组向量表示 CAD 模型，其中每个向量表示一条直线</strong>；
+<ul>
+<li>正式地说，我们找到了从 n 条 3 D线到 m 条 2D 线段的对应映射 Z；</li>
+<li>首先，使用来自 yolo 目标检测器的<strong>边界框数据对图像中的线段进行过滤</strong>，我们使用<font color = red><strong>自定义成本函数给 3D-2D 对应打分</strong></font>，其中 C1 表示角度， C2，C3 线和线段之间的距离； <span class="math display">\[
+C = C_{1} + k_{1}\times C_{2}+ k_{2}\times C_{3} \qquad(6)
+\]</span></li>
+</ul></li>
+</ul>
+<h4 id="计算平移">3.3.1 计算平移</h4>
+<ul>
+<li><strong>除了视点初始化之外，投影还需要近似的平移值</strong> <span class="math inline">\(\left (T_{x},T_{y},T_{z} \right )\)</span>；
+<ul>
+<li>获得<strong>精确的平移需要线段的 3D 长度和投影 2D 长度，但由于对象的精确 3D 信息未知，我们需要依赖于特定类别对象的 3D 模型的近似</strong>；</li>
+</ul></li>
+<li>我们<font color = red>使用<strong>边界框和均值 3D 模型</strong>中可用的信息来求平移近似</font>；
+<ul>
+<li>如果<strong>物体的平均 3D 模型的高度和宽度分别与平均模型匹配</strong>，则边界框的高度和宽度独立地足以获得 <span class="math inline">\(T_{z}\)</span> 的良好估计；</li>
+<li>在物体高度和宽度均<strong>偏离平均模型</strong>的一般情况下，为了得到更好的估计，我们<strong>对这两种估计取平均值</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f7.PNG" title="f7" width="500" />
+</center></li>
+</ul></li>
+</ul>
+<h4 id="从公式3中计算-c1c2c3">3.3.2 从公式（3）中计算 C1，C2，C3</h4>
+<ul>
+<li>在公式（3）中有 <span class="math display">\[
+L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \langle \bar{M},\bar{D} \right \rangle
+\]</span></li>
+<li><strong>3D 边缘线段到图像平面的 2D 投影</strong>可以通过<strong>从 3D 线上投影两个任意点然后取其方向和中点</strong>来找到（如下图 5 所示），R 和 T 是 3D 线的旋转和平移。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig4.png" title="fig4" width="700" />
+</center></li>
+<li>直接在代价函数中添加角度会产生带有角度的距离的复杂性，观察到 <span class="math inline">\(\left | p_{2}-p_{1} \right |\)</span> 捕获两条线之间的角度变化，记做 <span class="math inline">\(C_{1}\)</span>；</li>
+<li><span class="math inline">\(\frac{p1+p2}{2}\)</span> 表示 <span class="math inline">\(\bar{x1x2}\)</span> 的中点投影到线 <span class="math inline">\(\bar{I_{p1}I_{p2}}\)</span>d的垂直距离，记做 <span class="math inline">\(C_{2}\)</span>；</li>
+<li>最后，最小化 <span class="math inline">\(M_{p}\)</span> 和 <span class="math inline">\(\frac{x1+x2}{2}\)</span> 之间的距离，以选取里投影线较近的直线，记做 <span class="math inline">\(C_{3}\)</span>；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f10.PNG" title="f10" width="500" />
+</center></li>
+<li>从而公式（6）的<strong>代价函数</strong>可以写成
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f15.PNG" title="f15" width="500" />
+</center></li>
+</ul>
+<h4 id="关联伪代码">3.3.3 关联伪代码</h4>
+<ul>
+<li>为每个物体对象类别生成 3-5 个具有代表性的 CAD 模型字典（手动选择），记做 <span class="math inline">\(X_{D}\)</span> ；
+<ul>
+<li>此外，我们还<font color = red><strong>采样了方位角初始化周围的视点和 RANSAC 计算的 T 周围的平移视点</strong></font>，记做采样 <span class="math inline">\(V_{p},T_{s}\)</span></li>
+</ul></li>
+<li>现在，我们可以为<strong>基于 RANSAC 的关联算法编写伪代码</strong>，该算法<strong>遍历字典模型和采样的视图点</strong>，对它们<strong>进行投影</strong>，并计算关联线和关联成本；
+<ul>
+<li>具有视点和平移的<strong>模型中的线</strong>的关联是<strong>图像中的线段</strong>，其具有与模型中的该线对应的最小成本，最终<strong>选择关联成本最低的关联</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/a1.PNG" title="a1" width="500" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="位姿和形状优化">3.4 位姿和形状优化</h3>
+<ul>
+<li>一旦获得了关联信息，便可以制定一个<strong>优化问题</strong>来找到物体的姿态和形状，利用 Ceres 求解工具，最终的代价函数为： <span class="math display">\[
+\Phi = \Phi_{pose} + \Phi_{normal} + \Phi_{shape} \qquad(16)
+\]</span></li>
+</ul>
+<h4 id="位姿约束项">3.4.1 位姿约束项</h4>
+<ul>
+<li>如图 6 中所示， 3D 线 AB 在图像平面的投影得到 2D 线 ab，<strong>由 oa 和 ob 的叉积得到发现 N ，其垂直于 3D 线 AB</strong>，假设 M 是线上的一个点，D 是线的方向，满足公式（17）；
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig6.PNG" title="fig6" width="550" />
+</center></li>
+<li>取同一条线上取两个点 M1 和 M2 之差，满足公式（18）
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f18.PNG" title="f18" width="450" />
+</center></li>
+<li>从而<font color = red><strong>代价函数中的位姿约束项</strong></font>可以写成公式（19），其中 R 和 T 是需要优化的项。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f19.PNG" title="f19" width="500" />
+</center></li>
+</ul>
+<h4 id="法向约束项">3.4.2 法向约束项</h4>
+<ul>
+<li>每个类别对象都有一个基底，例如用于坐的椅子底座，我们<font color = red><strong>将物体的底面定义为当物体保持在正常位置时与地平面平行的平面</strong></font>；</li>
+<li>我们使用这个观察并加入约束来<strong>迫使物体的基部平行于地面</strong>，我们认为地平面的法线是 y 轴
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f20.PNG" title="f20" width="500" />
+</center></li>
+</ul>
+<h4 id="形状约束项">3.4.3 形状约束项</h4>
+<ul>
+<li>最后使用 3.2 节中讨论的<strong>特征向量公式来优化物体的形状</strong>（公式（5））：<span class="math inline">\(X=\bar{X}+V\Lambda\)</span></li>
+<li>对于<strong>物体形状中的任意一条线</strong> <span class="math inline">\(L_{i} = \left \langle M_{i},D_{i} \right \rangle \in X\)</span> 满足：
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f21.PNG" title="f21" width="500" />
+</center></li>
+<li>带入公式（19）中获得<font color = red><strong>形状约束</strong></font>
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f23.PNG" title="f23" width="800" />
+</center></li>
+</ul>
+<h4 id="优化位姿和形状">3.4.4 优化位姿和形状</h4>
+<ul>
+<li>优化器被调用来<strong>优化物体的位姿 R 和 T</strong>，其代价函数为： <span class="math display">\[
+\Phi =\left \| \Phi _{pose} \right \|^{2}+\left \| \Phi _{normal} \right \|^{2} \qquad(24)
+\]</span></li>
+<li>然后调用优化器<strong>优化形状</strong> <span class="math inline">\({\lambda}&#39;s\)</span>，其代价函数为公式（25）：
+<ul>
+<li>其中 <span class="math inline">\(\rho \left ( \Lambda \right )\)</span> 是一个正则化器，可以防止形状参数 <span class="math inline">\(\left ( \Lambda \right )\)</span> 偏离类别模型 <span class="math display">\[
+\Phi =\left \| \Phi _{shape} \right \|^{2}+\rho \left ( \Lambda  \right ) \qquad(25)
+\]</span></li>
+</ul></li>
+<li><font color = red><strong>形状的改善可以导致物体姿态的改善</strong>，反之亦然，因此，迭代地调用这两种优化以获得更好的结果。</font></li>
+</ul>
+<h3 id="将物体集成到单目-slam-中">3.5 将物体集成到单目 SLAM 中</h3>
+<ul>
+<li><strong>使用基于线的方法学习分类模型，并将其集成到单目 SLAM 的后端</strong>，存在 <span class="math inline">\(Z_{ij} = Z_{j}Z_{i}^{-1}\)</span>，其中 <span class="math inline">\(Z_{ij}\in SE\left ( 3 \right )\)</span> 表示<strong>相对于时间 j 时相机在时间 i 处相机帧中 3D 点的刚体变换</strong>，<span class="math inline">\(Z_{ij}\)</span> 是由下式表示的一个 4 * 4 的矩阵
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f26.PNG" title="f26" width="500" />
+</center></li>
+<li>如果世界坐标系中一个点 <span class="math inline">\(_{}^{w}\textrm{}X\)</span> 相对于帧 i 时刻的相机坐标系的 3D 坐标是 <span class="math inline">\(_{}^{i}\textrm{}X\)</span>，则使用变换 <span class="math inline">\(Z_{ij}\)</span>，可以将其相对于相机帧 j 的表示为 <span class="math inline">\(_{}^{j}\textrm{X}=Z_{ij}^{i}X\)</span>；</li>
+<li>对于所有帧 <span class="math inline">\(\forall ij \in \left \{ 1\cdots F \right \}\)</span> 中机器人的一组给定的相对位姿测量 <span class="math inline">\(\bar{Z}_{ij}\)</span> ，我们将<strong>位姿 SLAM 问题</strong>定义为估计 <span class="math inline">\(Z_{i}\forall i \in \left \{ 1\cdots F \right \}\)</span> <strong>最大化相对位姿测量的对数似然</strong>，可作为<strong>最小化观测误差（最小化对数似然的负值）</strong> 的问题来构建；
+<ul>
+<li>为了最大限度地解决问题（公式 27），<strong>采用因子图[28]使用公开的 GTSAM 框架[36]</strong> 来构建和优化所提出的因子图模型
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f27.PNG" title="f27" width="500" />
+</center></li>
+</ul></li>
+<li>以交替的方式最小化误差函数（24, 25）的形状和位姿参数，<strong>得到给定帧 i 的估计的形状 <span class="math inline">\(\left ( \Lambda \right )\)</span> 和位姿 <span class="math inline">\(\bar{Z}_{i}^{O}\)</span></strong>；
+<ul>
+<li>在形状和位姿误差最小化之后获得的 <strong>位姿观测作为 SLAM 因子图中的附加因子</strong> ，因此对于因子图中的每个物体节点，如果物体 <span class="math inline">\(O_{\phi \left ( m \right )}\)</span> 的姿态由 <span class="math inline">\(Z^{O_{\phi \left ( m \right )}}\)</span> 表示，则最小化以下误差（28）；
+<ul>
+<li>其中 <span class="math inline">\(\phi \left ( m \right )\)</span> 表示到目前为止观察到对象 <span class="math inline">\(O_m\)</span> 的唯一关联函数。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f28.PNG" title="f28" width="500" />
+</center></li>
+</ul></li>
+</ul></li>
+<li>最后使用相对物体姿态观测，<font color =red><strong>联合估计机器人位姿和物体位姿的物体级 SLAM 的误差</strong></font>可以表示为 <span class="math display">\[
+{\color{Blue} \varepsilon =\varepsilon _{pose}+\varepsilon _{obj} \qquad(29)}
+\]</span></li>
+</ul>
+<hr />
+<h2 id="结果">4. 结果</h2>
+<ul>
+<li>在本节中，我们将展示多个<strong>真实世界序列</strong>的实验结果，这些序列包括与<strong>椅子，桌子和笔记本电脑</strong>相对应的不同类别对象；
+<ul>
+<li>我们评估了基于物体的 SLAM 的使用线的方法的性能；</li>
+<li>我们还强调了我们的方法的性质，<font color = red><strong>该方法利用物体中的关键边缘，对应于相应的线框模型以获得对象轨迹并在各种真实场景中精确估计它们的姿势</strong></font>；</li>
+<li>图 10 显示了在 PASCAL VOC [33] 数据集的基于线的方法的结果。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig10.PNG" title="fig10" width="1000" />
+</center></li>
+</ul></li>
+<li>在表 1 中，我们的方法与 ORB-SLAM 产生的轨迹进行了比较;
+<ul>
+<li>对每一个目标计算定位误差，并报告最佳、最差和平均值;</li>
+<li>我们的对象 CAD 模型是公制的，我们<font color = red><strong>使用轨迹端点之间的平移比例来缩放轨迹</strong></font>，完成此操作后，生成的结果以米为单位；</li>
+<li>通过在目标位置<strong>放置标记</strong>来收集 groundtruth；</li>
+<li>本表强调的是，<font color = red><strong>我们的方法能够在三维空间中嵌入物体，而不会恶化（甚至稍微改善）ORB SLAM 产生的轨迹</strong></font>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/tab1.PNG" title="tab1" width="600" />
+</center></li>
+</ul></li>
+<li>最后，我们<strong>通过比较执行时间来针对关键点方法[2]评估</strong>我们的方法；
+<ul>
+<li>评估过程中<strong>关键点方法</strong>的时间<strong>瓶颈在于网络的正向传递</strong>。</li>
+</ul></li>
+<li>这里，我们比较了包含 3 个对象的 856×480 图像的两种方法的帧处理时间；
+<ul>
+<li><strong>关键点方法</strong>的硬件规格是具有 12 GB 内存的 TitanX GPU；</li>
+<li>用于 8GB 内存的<strong>基于线路的方法</strong> intel i5处理器；</li>
+<li>对于同一过程，<font color = red><strong>本文基于线的方法速度提高了 2 倍以上</strong></font>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/timecost.PNG" title="timecost" width="500" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="自制数据集测试">4.1 自制数据集测试</h3>
+<ul>
+<li>使用本文的方法在室内环境中演示了物体级的 SLAM，包括<strong>办公空间和实验室</strong>，构成了我们的数据集；
+<ul>
+<li>我们使用微型飞行器(MAV)在地面上以恒定的高度飞行来收集数据集；</li>
+<li>我们的数据序列的序列 1 和 2 具有 2 个平行边的轮廓线，遵循显着的直线运动，而序列 3 是 360°旋转，没有原点的平移；</li>
+<li><strong>对于 ORB-SLAM[12] 和我们基于直线的物体SLAM，在有或无对象回路闭合的情况下，这些运行的估计机器人（MAV）轨迹和对象位置已在图 8 中可视化</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig8.PNG" title="fig8" width="1000" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="实例检索">4.2 实例检索</h3>
+<ul>
+<li>我们使用<strong>主成分分析[37]来选择代表 3.2 节中对象空间的特征向量</strong>；
+<ul>
+<li>在3.4节中，我们提出了<strong>求解物体形状的优化问题，该优化的解给出了表示物体形状的顶特征向量的系数</strong>；</li>
+<li>现在我们从 <strong>3D CAD 模型集合中检索最近的实例，该实例通过运行 K 最近邻搜索</strong>，最好地定义了对象的形状；</li>
+<li>在图 9 中，我们通过运行 5 近邻搜索，然后手动选择最近的实例，给出了<strong>三维 CAD 模型实例检索结果</strong>；</li>
+<li>我们<strong>使用这些检索到的实例来可视化机器人轨迹中的物体</strong>。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig9.PNG" title="fig9" width="1000" />
+</center></li>
+</ul></li>
+</ul>
+<h3 id="法向校正">4.3 法向校正</h3>
+<ul>
+<li>在位姿优化公式中，<strong>在解决物体的姿态 R T 时，还包括了校正法向成本项</strong> <span class="math inline">\(\phi _{normal}\)</span>；
+<ul>
+<li>如图 7 中，<font color = red><strong>加入了法向校正项（公式 20）之后可以看出物体的俯仰角和滚转角明显改进</strong></font>；</li>
+<li>这里使用凉亭可视化数据集序列 3 相对应的轨迹来演示。
+<center>
+<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig7.PNG" title="fig7" width="700" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="总结">5. 总结</h2>
+<ul>
+<li>介绍了一种新的<strong>基于线的参数化方法，对室内环境中常见的各种物体进行参数化</strong>；
+<ul>
+<li>我们提供了一个完整的管道，<strong>利用相机位姿和形状优化找到物体的姿态</strong>，然后将目标嵌入到地图与单目 SLAM 轨迹，使用因子图优化后端，在<strong>可导航空间中以合理的精度定位目标</strong>。</li>
+</ul></li>
+<li>我们展示了在不同的现实世界场景中使用该方案，其中包含多个类别的对象；
+<ul>
+<li><strong>能够在不影响 ORB-SLAM 性能的前提下对地图中的目标进行定位，并在一定程度上改善了轨迹</strong>。</li>
+</ul></li>
+<li><strong>在难以获得关键点信息的情况下，基于线的参数化可以证明是有用的</strong>；
+<ul>
+<li>它绕过了训练和数据收集阶段，<strong>加快了关联的评估过程</strong>。</li>
+</ul></li>
+<li>方案的性能取决于协同算法的鲁棒性，我们计划实现基于图的优化方法，以给出物体的关联，并进一步提高所提出方案的性能和稳健性。</li>
+</ul>
+<hr />
+<h2 id="r参考文献">【R】参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[2]</strong> Parkhiya P, Khawad R, Murthy J K, et al. <a href="https://arxiv.org/pdf/1802.09292.pdf"><strong>Constructing Category-Specific Models for Monocular Object-SLAM</strong></a>[C]//2018 IEEE International Conference on Robotics and Automation (<strong>ICRA</strong>). IEEE, <strong>2018</strong>: 1-9.<br />
+<font color = gray><strong>前期工作，基于关键点的方法，本文对比文献</strong></font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[10]</strong> Choudhary S, Carlone L, Nieto C, et al. <a href="https://link.springer.com/chapter/10.1007%2F978-3-319-50115-4_63"><strong>Multi robot object-based slam</strong></a>[C]//International Symposium on Experimental Robotics. Springer, Cham, 2016: 729-741.<br />
+<font color = gray><strong>假设实例特定模型是先验已知的物体级 SLAM，<a href="https://www.youtube.com/watch?v=nXJamypPvVY&amp;feature=youtu.be">演示视频</a></strong></font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[20]</strong> Zhu R, Wang C, Lin C H, et al. <a href="https://arxiv.org/pdf/1711.01470.pdf"><strong>Object-centric photometric bundle adjustment with deep shape prior</strong></a>[C]//2018 IEEE Winter Conference on Applications of Computer Vision (WACV). IEEE, <strong>2018</strong>: 894-902.<br />
+<font color = gray>使用非常少的有限视图观察来恢复全局相机姿态和基于 3D 点云的形状</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[21]</strong> Mu B, Liu S Y, Paull L, et al. <a href="https://arxiv.org/pdf/1704.05959.pdf"><strong>Slam with objects using a nonparametric pose graph</strong></a>[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, <strong>2016</strong>: 4602-4609.<br />
+<font color = gray>基于 RGB-D 的物体 SLAM</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[22]</strong> Gálvez-López D, Salas M, Tardós J D, et al. <a href="https://arxiv.org/pdf/1504.02398.pdf"><strong>Real-time monocular object slam</strong></a>[J]. Robotics and Autonomous Systems, <strong>2016</strong>, 75: 435-449.<br />
+<font color = gray>基于 RGB-D 的物体 SLAM，物体建模为边界框</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[23]</strong> Crocco M, Rubino C, Del Bue A. <a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Crocco_Structure_From_Motion_CVPR_2016_paper.html"><strong>Structure from motion with objects</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2016</strong>: 4141-4149.<br />
+<font color = gray>形状先验，物体建模为椭圆体</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[24]</strong> Sünderhauf N, Dayoub F, McMahon S, et al. <a href="https://eprints.qut.edu.au/109668/1/109668.pdf"><strong>Slam–quo vadis? in support of object oriented and semantic slam</strong></a>[J]. <strong>2015</strong>.<br />
+<font color = gray>物体建模为边界框</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[26]</strong> Murthy J K, Krishna G V S, Chhaya F, et al. <a href="https://arxiv.org/pdf/1609.09468.pdf"><strong>Reconstructing vehicles from a single image: Shape priors for road scene understanding</strong></a>[C]//2017 IEEE International Conference on Robotics and Automation (ICRA). IEEE, <strong>2017</strong>: 724-731.<br />
+<font color = gray>利用类别模型从单幅图像中重建对象</font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[27]</strong> Tulsiani S, Kar A, Carreira J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/7482798"><strong>Learning category-specific deformable 3d models for object reconstruction</strong></a>[J]. IEEE transactions on pattern analysis and machine intelligence, <strong>2016</strong>, 39(4): 719-731.<br />
+<font color = gray>利用类别模型从单幅图像中重建对象</font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[31]</strong> Su H, Qi C R, Li Y, et al. <a href="https://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Su_Render_for_CNN_ICCV_2015_paper.pdf"><strong>Render for cnn: Viewpoint estimation in images using cnns trained with rendered 3d model views</strong></a>[C]//Proceedings of the IEEE International Conference on Computer Vision. <strong>2015</strong>: 2686-2694.<br />
+<font color = gray><strong>本文所使用的视点估计网络，<a href="https://shapenet.cs.stanford.edu/projects/RenderForCNN/">项目主页</a>，<a href="https://github.com/shapenet/RenderForCNN">代码开源</a></strong> </font></li>
+<li><input type="checkbox" disabled="" checked="" />
+<strong>[36]</strong> D. Frank et al., “Gtsam,” URL: https://borg.cc.gatech.edu, <strong>2012</strong>.<br />
+<font color = gray><strong>采用的后端因子图优化 Gtsam</strong> </font></li>
+<li><input type="checkbox" disabled="" />
+<strong>[37]</strong> Jolliffe I. <a href="http://www.ccs.neu.edu/home/vip/teach/MLcourse/5_features_dimensions/lecture_notes/PCA/PCA.pdf"><strong>Principal component analysis</strong></a>[M]. Springer Berlin Heidelberg, <strong>2011</strong>.<br />
+<font color = gray>对 CAD 模型进行主成分分析</font></li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li><strong>1.</strong> 位姿估计用的是 ORB-SLAM2，后端优化用的是因子图？那 OBR-SLAM2 本身的 BA 优化呢？</li>
+<li><strong>2.</strong> C2 和 C3 的含义？</li>
+<li><strong>3.</strong> 关联？</li>
+<li><strong>4.</strong> 公式（29）展示了误差的两个来源，一个是相机位姿，一个是物体的形状和位姿（3.3,3.4节）</li>
+<li><strong>5.</strong> 法向采样？</li>
+</ul>
+<hr />
+<h2 id="t思考">【T】思考</h2>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2019.06.09</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-06-10-skim/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">2019 年 6 月论文泛读（21篇）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-06-06-plane-reconstruction/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

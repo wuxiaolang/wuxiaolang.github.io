@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw," /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-02-22-cubeslam/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿" />
+<meta property="og:description" content="注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw," />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-02-22-cubeslam/" />
+<meta property="article:published_time" content="2019-02-22T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-02-22T00:00:00+08:00" />
+<meta itemprop="name" content=" 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿">
+<meta itemprop="description" content="注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,">
+<meta itemprop="datePublished" content="2019-02-22T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-02-22T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="6912">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿"/>
+<meta name="twitter:description" content="注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-02-22 </span>
+        <div class="post-category">
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            <a href="/categories/cube-slam/"> cube slam </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 6912 字 </span>
+          <span class="more-meta"> 预计阅读 14 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-函数">0. 函数</a>
+      <ul>
+        <li><a href="#01-函数调用">0.1. 函数调用</a></li>
+        <li><a href="#02-函数定义">0.2. 函数定义</a></li>
+      </ul>
+    </li>
+    <li><a href="#1-线段信息排序">1. 线段信息排序</a></li>
+    <li><a href="#2-ground-wall-边界线">2. ground-wall 边界线</a></li>
+    <li><a href="#3-2d-检测框高度采样">3. 2D 检测框高度采样</a>
+      <ul>
+        <li><a href="#31-yolo-2d-检测框原始信息">3.1 YOLO 2D 检测框原始信息</a></li>
+        <li><a href="#32-扩大边界框大小">3.2 扩大边界框大小</a></li>
+        <li><a href="#33-边界距离宽度">3.3 边界距离宽度</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-物体偏航角-yaw-采样">4. 物体偏航角 yaw 采样</a></li>
+    <li><a href="#5-上边缘点采样">5. 上边缘点采样</a></li>
+    <li><a href="#6-线段的处理">6. 线段的处理</a>
+      <ul>
+        <li><a href="#61-保留在扩大后边界内的线段">6.1 保留在扩大后边界内的线段</a></li>
+        <li><a href="#62-线段合并与剔除">6.2 线段合并与剔除</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-线段边缘检测距离变换">7. 线段、边缘检测、距离变换</a>
+      <ul>
+        <li><a href="#71-计算筛选之后的线段角度和中点">7.1 计算筛选之后的线段角度和中点</a></li>
+        <li><a href="#72-canny-边缘检测">7.2 Canny 边缘检测</a></li>
+        <li><a href="#73-构建距离图">7.3 构建距离图</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-立方体提案生成">8. 立方体提案生成</a>
+      <ul>
+        <li><a href="#81-采样相机的翻滚角-roll-和俯仰角-pitch">8.1 采样相机的翻滚角 roll 和俯仰角 pitch</a></li>
+        <li><a href="#82-计算三个消失点">8.2 计算三个消失点</a></li>
+        <li><a href="#83-寻找形成消失点的边">8.3 寻找形成消失点的边</a></li>
+        <li><a href="#84-计算物体-8-个点的-2d坐标">8.4 计算物体 8 个点的 2D坐标</a></li>
+        <li><a href="#85-误差计算一">8.5 误差计算（一）</a></li>
+        <li><a href="#86-生成-3d-立方体提案">8.6 生成 3D 立方体提案</a></li>
+        <li><a href="#87-误差计算二">8.7 误差计算（二）</a></li>
+        <li><a href="#88-绘制提案">8.8 绘制提案</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>注：<a href="https://www.wuxiaolang.cn/slam/"><!-- raw HTML omitted --><strong>🌐 Cube SLAM 系列论文，代码注释、总结汇总</strong><!-- raw HTML omitted --></a></p>
+<h2 id="0-函数">0. 函数</h2>
+<h3 id="01-函数调用">0.1. 函数调用</h3>
+<ul>
+<li><code>main_obj.cpp</code> 文件中 <code>detect_cuboid_obj.detect_cuboid();</code> <strong>开始进行物体立方体结构检测</strong>；
+<ul>
+<li><code>detect_cuboid_obj</code> 是立方体检测类（定义在 <code>detect_3d_cuboid.h</code> 中） <code>detect_3d_cuboid</code> 的一个对象；</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">detect_cuboid_obj</span><span class="p">.</span><span class="n">detect_cuboid</span><span class="p">(</span><span class="n">raw_rgb_img</span><span class="p">,</span><span class="n">transToWolrd</span><span class="p">,</span><span class="n">raw_2d_objs</span><span class="p">,</span><span class="n">all_lines_raw</span><span class="p">,</span> <span class="n">frames_cuboids</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="02-函数定义">0.2. 函数定义</h3>
+<ul>
+<li><code>detect_cuboid()</code> 函数定义在 <code>box_proposal_detail.cpp</code> 文件中。</li>
+<li><strong>输入</strong>：原始图像 <code>rgb_img</code> ； 相机位姿 <code>transToWolrd</code> ； 2D 检测框信息 <code>obj_bbox_coors</code> ； 线检测的边缘线信息 <code>all_lines_raw</code> ；</li>
+<li><strong>输出</strong>：立方体提案：<code>std::vector&lt;ObjectSet&gt;&amp; all_object_cuboids</code> （提案个数等于图像帧数）</li>
+</ul>
+<hr>
+<h2 id="1-线段信息排序">1. 线段信息排序</h2>
+<ul>
+<li><strong>首先需要保证作为输入的线段</strong>信息矩阵 <code>MatrixXd all_lines_raw</code> 中存储的所有线段的<strong>两个端点是从左到右排序</strong>的（<code>x</code>坐标）；</li>
+<li><code>align_left_right_edges()</code> 函数在 <code>object_3d_util.cpp</code> 文件中；</li>
+<li>比如，排序前后：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># all_lines_raw 排序前：
+    x_1         y_1        x_2        y_2      
+   33.6847    18.1416    25.6146   0.173099
+   36.4537 -0.0483192    38.5934    20.0433
+    65.885  0.0112345    68.7188    29.0275
+   103.954    37.9624    102.454 -0.0179376
+   78.8074    48.5287    102.018    39.0428
+   532.903    149.891    363.809    12.2352
+   475.029    337.319    532.423    152.131
+   314.382    391.152    473.163    338.492
+   229.763    193.524    312.705    389.125
+   210.468    25.1893    231.075    191.991
+   307.014    188.992    214.057    32.9661
+# all_lines_raw 排序后：
+   25.6146   0.173099    33.6847    18.1416
+   36.4537 -0.0483192    38.5934    20.0433
+    65.885  0.0112345    68.7188    29.0275
+   102.454 -0.0179376    103.954    37.9624
+   78.8074    48.5287    102.018    39.0428
+   363.809    12.2352    532.903    149.891
+   475.029    337.319    532.423    152.131
+   314.382    391.152    473.163    338.492
+   229.763    193.524    312.705    389.125
+   210.468    25.1893    231.075    191.991
+   214.057    32.9661    307.014    188.992
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>在原图上绘制检测到的线段：<code>plot_image_with_edges()</code> 函数
+<img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/Raw_detected_Edges.png?raw=true" alt="Raw_detected_Edges"></li>
+</ul>
+<hr>
+<h2 id="2-ground-wall-边界线">2. ground-wall 边界线</h2>
+<ul>
+<li>用 <code>(0,0,1,0)</code> 表示地平面 <code>ground_plane_world</code>
+<ul>
+<li>平面的表示：一个<strong>平面可以用一个齐次向量表示</strong>：$\pi = \left ( \pi _{1},\pi _{2},\pi _{3},\pi _{4} \right )^{T} = \left ( n^{T},d \right )^{T}$ ，其中 n 是平面的法向量，d 是它到原点的距离；</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector4d ground_plane_world(0,0,1,0);
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>计算传感器（相机）的平面 <code>ground_plane_sensor</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector4d ground_plane_sensor = cam_pose.transToWolrd.transpose() * ground_plane_world;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>相机系中的平面</strong>与世界系平面的转换关系为：
+$$\pi_{w}=\left(T_{w, c}^{-}\right)^{T} \cdot \pi_{c}$$</li>
+</ul>
+<hr>
+<h2 id="3-2d-检测框高度采样">3. 2D 检测框高度采样</h2>
+<h3 id="31-yolo-2d-检测框原始信息">3.1 YOLO 2D 检测框原始信息</h3>
+<ul>
+<li>左上角坐标：<code>(left_x_raw, top_y_raw)</code></li>
+<li>宽：<code>obj_width_raw</code></li>
+<li>高：<code>obj_height_raw</code></li>
+<li>右下角坐标：<code>(right_x_raw, down_y_raw)</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">obj_bbox_coors：
+# x1    y1       宽      高
+175	24	385	373	0.42
+201	40	341	386	0.32
+208	54	351	371	0.54
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="32-扩大边界框大小">3.2 扩大边界框大小</h3>
+<ul>
+<li>2D 目标检测的检测框可能不准确，是否对检测框的高度进行采样：<code>std::vector&lt;int&gt; down_expand_sample_all;</code>
+<ul>
+<li>不采样的话： <code>down_expand_sample_all = 0</code>；</li>
+<li>如果采样高度： <code>down_expand_sample_all = 0，10，20;</code></li>
+<li>开关 <code>whether_sample_bbox_height</code> 在 <code>detect_3d_cuboid.h</code> 和 <code>main_obj.cpp</code> 中；</li>
+</ul>
+</li>
+<li>事实上，开启了高度采样之后好像效果更差了？</li>
+<li><code>down_expand_sample_all</code> 的 size 是需要计算的次数，不采样时计算一次，采样 10 像素再计算一次，采样 20 像素再计算一次。</li>
+</ul>
+<h3 id="33-边界距离宽度">3.3 边界距离宽度</h3>
+<ul>
+<li>如下图所示，黄色的框是 YOLO 原始的 2D 检测框，其他颜色的框是拓宽 20 像素的边界框；
+<ul>
+<li>蓝色、绿色和红色的检测框分别是采样了高度之后，也就是高度采样只往 y 下方进行采样了。
+<img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/extend_box.png?raw=true" alt="extend_box"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-物体偏航角-yaw-采样">4. 物体偏航角 yaw 采样</h2>
+<ul>
+<li>物体的偏航角直接<strong>初始化</strong>为面向相机，与光轴对齐</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">double yaw_init = cam_pose.camera_yaw - 90.0 / 180.0 * M_PI;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>然后以初始化的 yaw 角为中心的 - 45° 到 + 45° 的 90 ° 范围内，每隔 6 ° 采样一个值，<strong>采样得到 15 个偏航角</strong>。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">std::vector&lt;double&gt; obj_yaw_samples; 
+// BRIEF linespace()函数从 a 到 b 以步长 c 产生采样的 d.
+linespace&lt;double&gt;(yaw_init - 45.0/180.0*M_PI, yaw_init + 45.0/180.0*M_PI, 6.0/180.0*M_PI, obj_yaw_samples);
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="5-上边缘点采样">5. 上边缘点采样</h2>
+<ul>
+<li>为确定物体的“顶点”需要从原始边界框的最左边 <code>left_x_raw+5</code> 到最右边 <code>right_x_raw-5</code> 每隔 <code>top_sample_resolution</code>（20像素）的距离采样一个点 <code>top_x_samples[i]</code>.</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">int top_sample_resolution = round(min(20,obj_width_raw/10 )); //  20 pixels
+std::vector&lt;int&gt; top_x_samples; 
+linespace&lt;int&gt;(left_x_raw+5, right_x_raw-5, top_sample_resolution, top_x_samples);
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>为确定物体的顶部，<strong>提供至少 10 个采样点（后期通过最小误差得到最合适的点）</strong>，对于越小的物体需要越精细的采样。上边缘采样点如下图所示：   <br>
+<img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/top_sample.png?raw=true" alt="top_sample"></li>
+<li><!-- raw HTML omitted -->**疑问：为什么在原始检测框的顶部采样？不在拓宽边界之后的顶部采样呢？效果是否会更好。**<!-- raw HTML omitted --></li>
+</ul>
+<hr>
+<h2 id="6-线段的处理">6. 线段的处理</h2>
+<h3 id="61-保留在扩大后边界内的线段">6.1 保留在扩大后边界内的线段</h3>
+<ul>
+<li>线检测得到的所有线段：<code>all_lines_raw</code>，筛选之后在范围内的线段：<code>all_lines_inside_object</code>；</li>
+<li><code>check_inside_box()</code> 函数检测线段是否在矩形框内，位于 <code>object_3d_util.cpp</code> 文件中；</li>
+<li>要求线段的两个端点需要同时都在框内（<!-- raw HTML omitted -->是否可改进呢<!-- raw HTML omitted -->）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">for (int edge_id = 0; edge_id &lt; all_lines_raw.rows(); edge_id++)
+// 判断 all_lines_raw 矩阵中第 edge_id 线段的一个端点.head&lt;2&gt; 是否在区域中.
+if (check_inside_box(all_lines_raw.row(edge_id).head&lt;2&gt;(), expan_distmap_lefttop, expan_distmap_rightbottom ))
+// 判断 all_lines_raw 矩阵中第 edge_id 线段的另一个端点.tail&lt;2&gt; 是否在区域中.
+if (check_inside_box(all_lines_raw.row(edge_id).tail&lt;2&gt;(),expan_distmap_lefttop, expan_distmap_rightbottom ))
+{
+	// 存储所有在扩大后的边界框内的线段.
+	all_lines_inside_object.row(inside_obj_edge_num) = all_lines_raw.row(edge_id);
+	inside_obj_edge_num++;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="62-线段合并与剔除">6.2 线段合并与剔除</h3>
+<ul>
+<li>短边合并与剔除在 <code>merge_break_lines()</code> 函数中实现，位于 <code>object_3d_util.cpp</code> 文件中；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">void merge_break_lines( const MatrixXd&amp; all_lines,  /*输入的所有在矩阵框内的线段矩阵*/
+                        MatrixXd&amp; merge_lines_out,  /*输出的合并后的线段矩阵*/
+                        double pre_merge_dist_thre, /*两条线段之间的距离阈值 20 像素*/
+		        double pre_merge_angle_thre_degree, /*角度阈值 5°*/
+                        double edge_length_threshold)       /*长度阈值 30*/
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="621-线段合并">6.2.1 线段合并</h4>
+<ul>
+<li><strong>首先要求两条线段的角度误差小于 5 °</strong>；
+<ul>
+<li><code>atan2_vector()</code> 函数根据线段的水平和竖直投影<strong>计算线段的角度</strong> [-90, 90] 范围内；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// BRIEF 根据线段的 水平和竖直长度x_vec y_vec 计算出角度 all_angles
+void atan2_vector(const VectorXd&amp; y_vec, const VectorXd&amp; x_vec, VectorXd&amp; all_angles)
+{
+    all_angles.resize(y_vec.rows());
+    for (int i=0;i&lt;y_vec.rows();i++)
+        all_angles(i)=std::atan2(y_vec(i),x_vec(i));  // don&#39;t need normalize_to_pi, because my edges is from left to right, always [-90 90]
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>计算两条线段的角度差</strong>，并保证角度差小于阈值 <code>pre_merge_angle_thre</code> （5 °）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 相邻两条选段的角度差 angle_diff.
+double diff = std::abs(all_angles(seg1) - all_angles(seg2));
+double angle_diff = std::min(diff, M_PI - diff);
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>然后要求两条线段的距离差小于 20 像素</strong>；
+<ul>
+<li>计算两条线段的距离：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// dist_1ed_to_2：线1尾到线2头的距离；
+// dist_2ed_to_1：线2尾到线1头的距离；
+double dist_1ed_to_2 = (merge_lines_out.row(seg1).tail(2) - merge_lines_out.row(seg2).head(2)).norm();
+double dist_2ed_to_1 = (merge_lines_out.row(seg2).tail(2) - merge_lines_out.row(seg1).head(2)).norm();
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>要求“线1尾到线2头的距离”<strong>或</strong>“线2尾到线1头的距离”小于阈值 <code>pre_merge_dist_thre</code>（20像素）</li>
+</ul>
+</li>
+<li>同时满足以上两个条件的<strong>两条线段进行合并</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector2d merge_start, merge_end;
+if (merge_lines_out(seg1,0) &lt; merge_lines_out(seg2,0))
+     merge_start = merge_lines_out.row(seg1).head(2);
+else
+     merge_start = merge_lines_out.row(seg2).head(2);
+if (merge_lines_out(seg1,2) &gt; merge_lines_out(seg2,2))
+     merge_end = merge_lines_out.row(seg1).tail(2);
+else
+     merge_end = merge_lines_out.row(seg2).tail(2);
+// 融合之后的新的线段的角度 merged_angle.
+double merged_angle = std::atan2(merge_end(1)-merge_start(1),merge_end(0)-merge_start(0));
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/merge_line.png?raw=true" alt="merge_line"></p>
+<h4 id="622-线段剔除">6.2.2 线段剔除</h4>
+<ul>
+<li>计算每条线段的长度，并要求大于长度阈值 <code>edge_length_threshold</code> （30 像素）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 重新计算合并之后的线段向量：所有线段的右边点的坐标 - 左边点的坐标 = 每条线段的水平x长度和竖直y长度.
+MatrixXd line_vectors = merge_lines_out.topRightCorner(total_line_number,2) - merge_lines_out.topLeftCorner(total_line_number,2);
+// @PARAM line_lengths 存储每条线段的长度
+VectorXd line_lengths = line_vectors.rowwise().norm();
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>最终经过线段合并与筛选之后的效果   <br>
+<img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/merge_lines_img.png?raw=true" alt="merge_lines_img"></li>
+</ul>
+<hr>
+<h2 id="7-线段边缘检测距离变换">7. 线段、边缘检测、距离变换</h2>
+<h3 id="71-计算筛选之后的线段角度和中点">7.1 计算筛选之后的线段角度和中点</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 计算每条边缘线段的角度和中点.
+// @PARAM lines_inobj_angles	线段角度.
+// @PARAM edge_mid_pts			线段的中点.
+VectorXd lines_inobj_angles(all_lines_merge_inobj.rows());
+MatrixXd edge_mid_pts(all_lines_merge_inobj.rows(),2);
+for (int i=0; i &lt; all_lines_merge_inobj.rows(); i++)
+{
+	lines_inobj_angles(i) = std::atan2(all_lines_merge_inobj(i,3)-all_lines_merge_inobj(i,1), all_lines_merge_inobj(i,2)-all_lines_merge_inobj(i,0));   // [-pi/2 -pi/2]
+	edge_mid_pts.row(i).head&lt;2&gt;() = (all_lines_merge_inobj.row(i).head&lt;2&gt;()+all_lines_merge_inobj.row(i).tail&lt;2&gt;())/2;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="72-canny-边缘检测">7.2 Canny 边缘检测</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cv::Mat im_canny; 
+// @PARAM		object_bbox		扩大后的检测框.
+cv::Rect object_bbox = cv::Rect(left_x_expan_distmap, top_y_expan_distmap, width_expan_distmap, height_expan_distmap);
+cv::Canny(gray_img(object_bbox), im_canny, 80, 200); // low thre, high thre    im_canny 0 or 255   [80 200  40 100]
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="73-构建距离图">7.3 构建距离图</h3>
+<ul>
+<li>2D 长方体边缘应与实际图像的边缘匹配。利用 Canny 边缘检测方法构建距离图，然后再长方体边缘倒角距离（Chamfer distance）进行累加求和，再通过 2D 框的大小进行归一化。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">cv::Mat dist_map; 
+cv::distanceTransform(255 - im_canny, dist_map, CV_DIST_L2, 3); // dist_map is float datatype
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/canny_dist_map.png?raw=true" alt="canny_dist_map"></p>
+<hr>
+<h2 id="8-立方体提案生成">8. 立方体提案生成</h2>
+<h3 id="81-采样相机的翻滚角-roll-和俯仰角-pitch">8.1 采样相机的翻滚角 roll 和俯仰角 pitch</h3>
+<ul>
+<li>以相机偏角为中心的<strong>正负 6 ° 范围内，每隔 3 ° 采样一个值</strong>（如果不采样的话就直接使用相机的 roll 和 pitch 角），也就是分别采样了 5 个角度；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">std::vector&lt;double&gt; cam_roll_samples; 
+std::vector&lt;double&gt; cam_pitch_samples;
+if (whether_sample_cam_roll_pitch)
+{
+	linespace&lt;double&gt;(cam_pose_raw.euler_angle(0)-6.0/180.0*M_PI, cam_pose_raw.euler_angle(0)+6.0/180.0*M_PI, 3.0/180.0*M_PI, cam_roll_samples);
+	linespace&lt;double&gt;(cam_pose_raw.euler_angle(1)-6.0/180.0*M_PI, cam_pose_raw.euler_angle(1)+6.0/180.0*M_PI, 3.0/180.0*M_PI, cam_pitch_samples);
+}
+else
+{
+	cam_roll_samples.push_back(cam_pose_raw.euler_angle(0));
+	cam_pitch_samples.push_back(cam_pose_raw.euler_angle(1));
+}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>同时，保存<strong>新的相机位姿</strong>，计算新的<strong>相机平面</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 将当前角度值转换成旋转矩阵. 
+// NOTE 这里yaw为什么不用采样的值而用相机的值？：yaw 采样是真对物体的，并没有对相机的 yaw 值进行采样。
+transToWolrd_new.topLeftCorner&lt;3,3&gt;() = euler_zyx_to_rot&lt;double&gt;(cam_roll_samples[cam_roll_id], cam_pitch_samples[cam_pitch_id], cam_pose_raw.euler_angle(2));
+set_cam_pose(transToWolrd_new);
+// TODO 平面？？
+ground_plane_sensor = cam_pose.transToWolrd.transpose() * ground_plane_world;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="82-计算三个消失点">8.2 计算三个消失点</h3>
+<ul>
+<li>消失点计算函数为 <code>getVanishingPoints()</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">void getVanishingPoints(const Matrix3d&amp; KinvR,  /* Kalib*invR */
+                        double yaw_esti,        /* 采样的物体偏航角 */
+                        Vector2d&amp; vp_1,         /* 输出的消失点 */
+                        Vector2d&amp; vp_2, 
+                        Vector2d&amp; vp_3)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>消失点计算方法：
+$$v p_{x}=K \cdot R^{-1} \cdot(\cos (y a w),  \sin (y a w), 0)^T$$
+$$v p_{y}=K \cdot R^{-1} \cdot(-\sin (y a w), \cos (y a w), 0)^T$$
+$$v p_{z}=K \cdot R^{-1} \cdot(0,0,1)^T$$</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">vp_1 = homo_to_real_coord_vec&lt;double&gt;( KinvR * Vector3d(cos(yaw_esti), sin(yaw_esti), 0) );     // for object x axis
+vp_2 = homo_to_real_coord_vec&lt;double&gt;( KinvR * Vector3d(-sin(yaw_esti), cos(yaw_esti), 0) );    // for object y axis
+vp_3 = homo_to_real_coord_vec&lt;double&gt;( KinvR * Vector3d(0,0,1) );                               // for object z axis
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/VanishingPoints.png?raw=true" alt="VanishingPoints"></p>
+<h3 id="83-寻找形成消失点的边">8.3 寻找形成消失点的边</h3>
+<ul>
+<li>在函数 <code>VP_support_edge_infos()</code> 中实现
+<ul>
+<li>输入：消失点的坐标； 每条线段的中点； 每条线段的角度； 角度偏差阈值；</li>
+<li>消失点 1, 2 的角度偏差阈值为 15 °，消失点 3 的角度偏差阈值为 10 °；</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Eigen::MatrixXd VP_support_edge_infos(  Eigen::MatrixXd&amp; VPs,                   /* 消失点矩阵 3*2 */
+                                        Eigen::MatrixXd&amp; edge_mid_pts,          /* 每条线段的中点 n×2 */
+                                        Eigen::VectorXd&amp; edge_angles,           /* 每条线段的偏角 n×1 */
+				        Eigen::Vector2d vp_support_angle_thres) /* 消失点与边的夹角阈值*/
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>思想：计算消失点-线段中点所构成线段的角度，与检测到的线段的角度进行比较，如果角度差在阈值内，则该条线段可能是形成消失点的线段（理论上消失点和所支持的线段的中点是在一条线上的），记录下这条边的偏角和线段 ID。如下图所示：</li>
+</ul>
+<p><img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/VP_support_edge.png?raw=true" alt="VP_support_edge"></p>
+<ul>
+<li>角度平滑 <code>smooth_jump_angles()</code></li>
+<li>“支撑线”选择，如果检测到多条满足角度要求的边，则选择角度最大和最小的，作为形成消失点的两条“支撑线”，存储在 <code>MatrixXd all_vp_bound_edge_angles</code> 矩阵中。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// NOTE 如果有多条边满足要求（可能检测到多条支撑线），比较得到角度最大和最小的，作为两条支撑线.
+// 角度最大和最小的边的id
+int vp1_low_edge_id;	
+vp1_edge_midpt_angle_raw_inlier_shift.maxCoeff(&amp;vp1_low_edge_id);
+int vp1_top_edge_id;	
+vp1_edge_midpt_angle_raw_inlier_shift.minCoeff(&amp;vp1_top_edge_id);
+// TODO 第 2 3 个消失点时交换最大和最小值
+if (vp_id &gt; 0)
+    std::swap(vp1_low_edge_id, vp1_top_edge_id);  // match matlab code
+// NOTE 输出：消失点两边的夹角.
+all_vp_bound_edge_angles(vp_id,0) = edge_angles(vp_inlier_edge_id[vp1_low_edge_id]);   // it will be 0*1 matrix if not found inlier edges.
+all_vp_bound_edge_angles(vp_id,1) = edge_angles(vp_inlier_edge_id[vp1_top_edge_id]);
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="84-计算物体-8-个点的-2d坐标">8.4 计算物体 8 个点的 2D坐标</h3>
+<p><img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/box_corners_2d.png?raw=true" alt="box_corners_2d"></p>
+<h4 id="841-顶部点-1">8.4.1 顶部点 1</h4>
+<ul>
+<li><strong>顶部第一个点</strong>由上边缘采样的点确定，<strong>可能在检测框顶部的某一个位置</strong>，可以参考上面顶边采样的图。</li>
+</ul>
+<h4 id="842-顶部点-2">8.4.2 顶部点 2</h4>
+<ul>
+<li><strong>检查消失点 1 在左边还是在右边</strong>
+<ul>
+<li><code>seg_hit_boundary()</code> 函数两个点构成的射线是否与一条边有交点，没有交集则返回 [-1 -1]</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector2d seg_hit_boundary(  const Vector2d&amp; pt_start, 
+                            const Vector2d&amp; pt_end, 
+                            const Vector4d&amp; line_segment2 )
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果消失点 1 与上边缘采样点的射线与边界框的右边界有交点，则位于左边；</li>
+<li>如果消失点 1 与上边缘采样点的射线与边界框的左边界有交点，则位于右边；</li>
+<li>参数 <code>vp_1_position</code> 表示消失点的左右位置：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">int vp_1_position = 0;  // 0 initial as fail,  1  on left   2 on right
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>顶部第二个点：即上一步射线与左右边界的交点</li>
+</ul>
+<h4 id="843-第一种情形下的顶部第-3-4-个点">8.4.3 第一种情形下的顶部第 3, 4 个点</h4>
+<ul>
+<li>第一种情形：可以观察到物体的三个面；</li>
+<li><strong>顶部点 4</strong> ：消失点 2 与上边缘采样点的射线与检测框左边（或右边）界的交点；
+<ul>
+<li>如果没有产生交点，则中断本次检测，说明采样的上边缘点不准确。</li>
+<li>点 1 与点 4 的距离小于阈值 <code>shorted_edge_thre</code> （默认为 20 ），也失败；</li>
+</ul>
+</li>
+<li><strong>顶部点 3</strong>：消失点 1 和点 3 构成的射线与消失点 2 和点 2 构成的射线的交点；
+<ul>
+<li>函数 <code>lineSegmentIntersect()</code> 计算<strong>两条射线的交点</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector2d lineSegmentIntersect(  const Vector2d&amp; pt1_start, const Vector2d&amp; pt1_end,     /* 线段 1*/
+                                const Vector2d&amp; pt2_start, const Vector2d&amp; pt2_end,     /* 线段 2*/
+                                bool infinite_line)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果交点不在检测框内，则失败；</li>
+<li>如果点 3-4 或点 3-2 的长度小于阈值，则失败；</li>
+</ul>
+</li>
+</ul>
+<h4 id="844-第二种情形下的顶部第-3-4-个点">8.4.4 第二种情形下的顶部第 3, 4 个点</h4>
+<ul>
+<li>第二种情形：可以观察到物体的两个面；</li>
+<li><strong>顶部点 3</strong>：消失点 2 与顶部点 2 的连线与检测框左边界（或右）的交点；
+<ul>
+<li>若没有交点，则失败；</li>
+<li>若点 2-3 的距离小于阈值，则失败；</li>
+</ul>
+</li>
+<li><strong>顶部点 4</strong>：消失点 1 和顶部点 3 构成的射线与消失点 2 和顶部点 1 构成的射线的交点；
+<ul>
+<li>若交点不在检测框内，则失败；</li>
+<li>如果点 3-4 或点 4-1 的长度小于阈值，则失败；</li>
+</ul>
+</li>
+</ul>
+<h4 id="845-底部点-5">8.4.5 底部点 5</h4>
+<ul>
+<li>底部点情形 1， 2 的计算方法相同；</li>
+<li><strong>底部点 5</strong>：消失点 3 和顶部点 3 的连线与检测框底边（是否进行了高度采样）的交点；
+<ul>
+<li>如果没有交点，则失败；</li>
+<li>如果点 3-5 的距离小于阈值，则失败。</li>
+</ul>
+</li>
+</ul>
+<h4 id="846-底部点-6">8.4.6 底部点 6</h4>
+<ul>
+<li><strong>底部点 6</strong>：消失点 2 和底部点 5 的连线与消失点 3 与顶部点 2 连线的交点；
+<ul>
+<li>若交点不在检测框内，则失败；</li>
+<li>若点 6-2 或点 6-5 的距离小于阈值，则失败；</li>
+</ul>
+</li>
+</ul>
+<h4 id="847-底部点-7">8.4.7 底部点 7</h4>
+<ul>
+<li><strong>底部点 7</strong>：消失点 1 和底部点 6 的连线与消失点 3 与顶部点 1 连线的交点；
+<ul>
+<li>若交点不在检测框内，则失败；</li>
+<li>若点 7-1 或点 7-6 的距离小于阈值，则失败；</li>
+</ul>
+</li>
+</ul>
+<h4 id="848-底部点-8">8.4.8 底部点 8</h4>
+<ul>
+<li><strong>底部点 8</strong>：消失点 1 和底部点 5 的连线与消失点 2 与顶部点 7 连线的交点；
+<ul>
+<li>若交点不在检测框内，则失败；</li>
+<li>若点 8-4 或点 8-5 的距离小于阈值，则失败；</li>
+</ul>
+</li>
+<li>物体 <strong>8 个点的 2D坐标</strong>存储在 <code>box_corners_2d_float</code> 矩阵中</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">MatrixXd box_corners_2d_float(2,8);
+box_corners_2d_float &lt;&lt; corner_1_top, corner_2_top, corner_3_top, corner_4_top, 
+                        corner_5_down, corner_6_down, corner_7_down, corner_8_down;
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="85-误差计算一">8.5 误差计算（一）</h3>
+<h4 id="850-误差存储">8.5.0 误差存储</h4>
+<ul>
+<li>前四项</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector4d(   config_id, 	        /* 模式情形 */
+            vp_1_position,      /* vp1的位置 */
+            obj_yaw_esti,       /* 采样的物体偏航角 */
+            sample_top_pt_id);	/* 上边缘采样点 */
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>往后三项</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector3d(   sum_dist/obj_diaglength_expan, 	/* 平均距离误差？ */
+            total_angle_diff, 			/* 角度误差 */
+            down_expand_sample);		/* 高度采样，是否扩充底部 0， 10， 20 */
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>后两项，采样的相机 roll pitch 角（不采样则直接取相机的角度）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector2d(   cam_roll_samples[cam_roll_id],	/* 采样相机 roll 角 */
+            cam_pitch_samples[cam_pitch_id]);	/* 采样相机 pitch 角 */
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="851-距离误差">8.5.1 距离误差</h4>
+<ul>
+<li>距离误差计算函数为：<code>box_edge_sum_dists()</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">double box_edge_sum_dists(  const cv::Mat&amp; dist_map,            /* 距离变换图 */
+                            const MatrixXd&amp; box_corners_2d,     /* 8 个顶点的 2D坐标(以检测框为轴) */
+                            const MatrixXi&amp; edge_pt_ids,        /* 可见的边 */
+                            bool  reweight_edge_distance)
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>将 8 个点在图像中的坐标转换成在<strong>检测框中的坐标</strong>（<strong>以检测框左上角为坐标原点</strong>）</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">MatrixXd box_corners_2d_float_shift(2,8);
+box_corners_2d_float_shift.row(0) = box_corners_2d_float.row(0).array() - left_x_expan_distmap;
+box_corners_2d_float_shift.row(1) = box_corners_2d_float.row(1).array() - top_y_expan_distmap;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>情形 1</strong>：
+<ul>
+<li>情形 1 下可观察到 3 个面，共 9 条<strong>可见边</strong>：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">visible_edge_pt_ids.resize(9,2); 
+visible_edge_pt_ids &lt;&lt; 1,2,  2,3,  3,4,  4,1,  2,6,  3,5,  4,8,  5,8,  5,6;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>形成消失点的线段</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 三个消失点所需要的两条边					
+vps_box_edge_pt_ids.resize(3,4); 
+// 1_2 与 8_5 交点得到vp1	4_1 与 5_6 交点得到vp1	
+vps_box_edge_pt_ids &lt;&lt; 1,2,8,5,  4,1,5,6,  4,8,2,6; 
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>情形 2</strong>：
+<ul>
+<li>情形 2 下可观察到 2 个面，共 7 条<strong>可见边</strong>：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">visible_edge_pt_ids.resize(7,2); 
+visible_edge_pt_ids&lt;&lt;1,2, 2,3, 3,4, 4,1, 2,6, 3,5, 5,6;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>形成消失点的线段</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 三个消失点所需要的两条边					
+vps_box_edge_pt_ids.resize(3,4); 
+vps_box_edge_pt_ids&lt;&lt;1,2,3,4, 4,1,5,6, 3,5,2,6; 
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>距离误差计算</strong>：采样可见边上的点，计算点在距离变换得到的图中的值，累加得到误差值；
+<ul>
+<li>从前面的距离图中可以看出，距离图显示图像中每一个非零点距离离自己最近的零点的距离，<strong>图像上越亮的点，代表了离零点（边缘）的距离越远</strong>；（<!-- raw HTML omitted -->疑问：canny检测没检测出边，导致距离图不准确，但没检测出的边被LSD边缘检测出了呢？那这条边岂不是误差会特别大？？<!-- raw HTML omitted -->）</li>
+<li>在<strong>可见边</strong>（不是检测到的线段，是绘制的边）上<strong>采样不同的点</strong>：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">Vector2d sample_pt = sample_ind/10.0 * corner_tmp1 + (1-sample_ind/10.0) * corner_tmp2;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>计算<strong>每个点的距离值</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">float dist1 = dist_map.at&lt;float&gt;(int(sample_pt(1)),int(sample_pt(0)));
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>是否<strong>加权</strong>，然后<strong>累加</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 是否重新加权
+// TODO 第5,6,7条边的测量更值得信赖？？
+if (reweight_edge_distance)
+ {
+     if ((4&lt;=edge_id) &amp;&amp; (edge_id&lt;=5))       // 对第 5,6 条边 × 1.5
+          dist1 = dist1 * 3.0 / 2.0;
+     if (6==edge_id)                         // 对第 7 条边  × 2
+          dist1 = dist1 * 2.0;
+ }
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>误差累加，并求<strong>平均</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sum_dist = sum_dist + dist1;
+mean_dist = sum_dist / obj_diaglength_expan； //obj_diaglength_expan是边界框对角线长度.
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="852-角度误差">8.5.2 角度误差</h4>
+<ul>
+<li>角度误差函数：<code>box_edge_alignment_angle_error()</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">double box_edge_alignment_angle_error(  const MatrixXd&amp; all_vp_bound_edge_angles,   /* 消失点与边的两个角度 */
+                                        const MatrixXi&amp; vps_box_edge_pt_ids,        /* 每个消失点来源的两条边 */
+                                        const MatrixXd&amp; box_corners_2d)             /* 8 个顶点的 2D坐标 */
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>角度误差</strong> = | 形成消失点的边（2D 点构成）的角度 - 线检测得到的对应边的角度 |</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">for (int i = 0; i &lt; vp_bound_angles_valid.size(); i++)
+{
+    // NOTE 【计算角度误差】，形成消失点的边的角度-消失点与检测到的边缘的角度.
+    double temp = std::abs(box_edge_angle - vp_bound_angles_valid[i]);
+    temp = std::min( temp, M_PI-temp );
+    if (temp&lt;angle_diff_temp)
+        angle_diff_temp = temp;
+}
+total_angle_diff = total_angle_diff + angle_diff_temp;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>如果没有找到形成消失点的边，则赋予固定的偏差 15 °：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">double not_found_penalty = 30.0/180.0*M_PI*2;
+total_angle_diff = total_angle_diff + not_found_penalty;
+</code></pre></td></tr></table>
+</div>
+</div><p><img src="https://github.com/wuxiaolang/Cube_SLAM_wu/blob/master/wu/pic/angle_dist_error.png?raw=true" alt="angle_dist_error"></p>
+<h4 id="853-距离-角度综合评分">8.5.3 距离-角度综合评分</h4>
+<ul>
+<li>归一化误差函数：<code>fuse_normalize_scores_v2()</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// BRIEF 加权不同的误差评估 weighted sum different score
+void fuse_normalize_scores_v2(  const VectorXd&amp; dist_error,         /* 距离误差 */           
+                                const VectorXd&amp; angle_error,        /* 角度误差 */
+                                VectorXd&amp; combined_scores,          /* 综合得分 */    
+                                std::vector&lt;int&gt;&amp; final_keep_inds,  /* 最终纳入计算的测量的ID */
+			        double weight_vp_angle,             /* 角度误差的权重 */
+                                bool whether_normalize)             /* 是否归一化两个误差 */
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>分别对距离误差和角度误差以递增的方式取<strong>所有测量次数的 2/3</strong>；</li>
+<li>再寻找这<strong>两个序列的交集</strong>，即两个误差都在前 2/3 的测量；</li>
+<li>对交集中每一次测量<strong>归一化两个误差</strong>：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// STEP 误差归一化.
+if (whether_normalize &amp;&amp; (new_data_size &gt; 1))
+{
+    // 距离误差             （所有的距离 - 最小距离值）/ (最大距离 - 最小距离)
+    combined_scores  = (dist_kept.array() - min_dist_error) / (max_dist_error - min_dist_error);
+    if ((max_angle_error - min_angle_error) &gt; 0)
+    {
+	// 角度误差        （所有角度误差 - 最小角度误差） / （最大角度误差 - 最小角度误差）
+	angle_kept = (angle_kept.array() - min_angle_error) / (max_angle_error - min_angle_error);
+
+	// NOTE 联合评分，（距离误差 + 角度权重×角度误差）/（1 + 角度权重）
+		combined_scores = (combined_scores + weight_vp_angle * angle_kept) / (1 + weight_vp_angle);
+    }
+    else
+	combined_scores = (combined_scores + weight_vp_angle*angle_kept)/(1+weight_vp_angle);
+}
+else
+	combined_scores = (dist_kept + weight_vp_angle * angle_kept) / (1 + weight_vp_angle);    
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="86-生成-3d-立方体提案">8.6 生成 3D 立方体提案</h3>
+<ul>
+<li>2D 顶点恢复 3D立方体信息：<code>change_2d_corner_to_3d_object()</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// BRIEF    由2D顶点恢复出 3D 立方体信息.
+void change_2d_corner_to_3d_object( const MatrixXd&amp; box_corners_2d_float,   /* 8 个点的 2D 坐标*/
+                                    const Vector3d&amp; configs,                /* 模式，vp1的位置，偏航角*/
+                                    const Vector4d&amp; ground_plane_sensor,    /* 法平面？*/
+				    const Matrix4d&amp; transToWolrd,           /* 相机旋转 */
+                                    const Matrix3d&amp; invK,                   /* 相机内参的逆矩阵 */
+                                    Eigen::Matrix&lt;double, 3, 4&gt;&amp; projectionMatrix,  /* 投影矩阵 */
+				    cuboid&amp; sample_obj)                     /* 3D提案 */
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="861-计算立方体底部四个-3d点">8.6.1 计算立方体底部四个 3D点</h4>
+<ul>
+<li><code>plane_hits_3d()</code> 函数参数：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// @PARAM obj_gnd_pt_world_3d   计算世界坐标系中的 3D 点（立方体底部） .
+Matrix3Xd obj_gnd_pt_world_3d; 
+plane_hits_3d(  transToWolrd,                      /* 相机旋转矩阵 */
+                invK,                              /* 相机内参的逆矩阵 */
+                ground_plane_sensor,               /* 相机系下的地平面*/
+                box_corners_2d_float.rightCols(4), /* 立方体底部的 4 个 2D 点 */
+                obj_gnd_pt_world_3d);              /* 立方体底部的 4 个 3D 点 */
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>首先将 2 * 4 的 4 个 <strong>2D 坐标</strong>转换成<strong>齐次形式 3 × 4</strong>;</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">齐次像素点：
+344.614   528.2  429.72 255.345
+    424 281.372 233.359 340.603
+      1       1       1       1
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>计算像素点对应的<strong>投影射线</strong>（ Z 不确定就是一条射线，确定 Z 了就是一个确定的 3D 点）:
+$$
+l_{ray} = K^{-1}\begin{pmatrix}
+u,v,1\end{pmatrix}^T
+$$</li>
+<li>通过相机平面<strong>确定底部 3D 点</strong>
+<ul>
+<li>计算相机系下的平面</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 相机系下的地平面
+ground_plane_sensor = cam_pose.transToWolrd.transpose()*ground_plane_world;
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>计算射线与平面的交点，确定 3D 点：<code>ray_plane_interact()</code> 函数</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">ray_plane_interact( pts_ray,        /* 投影射线 */
+                    plane_sensor,   /* 相机系下的平面 */
+                    pts_3d_sensor); /* 输出的 3D 点 */
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>函数</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// BRIEF 射线为 3×n ，每列都是从原点开始的一条射线  平面（4*1），计算射线的交点 3×n.
+//rays is 3*n, each column is a ray staring from origin  plane is (4，1） parameters, compute intersection  output is 3*n 
+void ray_plane_interact(const MatrixXd &amp;rays,           
+                        const Eigen::Vector4d &amp;plane,
+                        MatrixXd &amp;intersections)
+{
+    VectorXd frac = -plane[3] / (plane.head(3).transpose() * rays).array();   //n*1 
+    intersections = frac.transpose().replicate&lt;3,1&gt;().array() * rays.array();
+}
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="862-计算立方体顶部四个-3d点">8.6.2 计算立方体顶部四个 3D点</h4>
+<ul>
+<li><code>Matrix3Xd obj_top_pt_world_3d</code>，同上调用上面的函数计算；</li>
+</ul>
+<h4 id="863-物体的-9-自由度表示">8.6.3 物体的 9 自由度表示</h4>
+<ul>
+<li>x, y 坐标取四个点的平均值； z 坐标取 z 的一半；</li>
+<li>方向：取最终提案对应的偏航角采样值；</li>
+<li>尺度：长宽高；</li>
+<li>模式：几个面，消失点 1 的位置。</li>
+</ul>
+<h4 id="864-计算-8-个点的-3d世界坐标">8.6.4 计算 8 个点的 3D世界坐标</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">sample_obj.box_corners_3d_world = compute3D_BoxCorner(sample_obj);
+</code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// BRIEF  计算立方体的 3D 坐标.
+Matrix3Xd compute3D_BoxCorner(const cuboid&amp; cube_obj)
+{
+    //@PARAM    corners_body    存储立方体的3D坐标.
+    MatrixXd corners_body;
+    corners_body.resize(3,8);
+    // 八个3D点       1   2   3   4   5   6   7   8
+    corners_body &lt;&lt;   1,  1, -1, -1,  1,  1, -1, -1,
+		      1, -1, -1,  1,  1, -1, -1,  1,
+		     -1, -1, -1, -1,  1,  1,  1,  1;
+
+    // 计算 3D 坐标                                         相似变换
+    MatrixXd corners_world = homo_to_real_coord&lt;double&gt;(similarityTransformation(cube_obj) * real_to_homo_coord&lt;double&gt;(corners_body));
+    
+    return corners_world;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="87-误差计算二">8.7 误差计算（二）</h3>
+<h4 id="871-歪斜比">8.7.1 歪斜比</h4>
+<ul>
+<li>歪斜比 = 长度 / 宽度；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// NOTE 歪斜比：长/宽.
+// head(2).maxCoeff()：尺度的前两项xy中较大者：长
+// head(2).minCoeff()：尺度的前两项xy中较小者：宽
+double skew_ratio = sample_obj-&gt;scale.head(2).maxCoeff()/sample_obj-&gt;scale.head(2).minCoeff();
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="872-计算所有误差">8.7.2 计算所有误差</h4>
+<ul>
+<li>归一化提案的<strong>总体误差：距离+角度+歪斜比误差</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// 计算总体误差
+for (int box_id = 0; box_id &lt; raw_obj_proposals.size(); box_id++)
+{
+	cuboid* sample_obj = raw_obj_proposals[box_id];
+	// 计算歪斜比误差 skew_ratio - 1，要求大于0
+	double skew_error = weight_skew_error*std::max(sample_obj-&gt;skew_ratio - nominal_skew_ratio,0.0);
+				
+	// TODO 若大于最大歪斜比 3 ，则误差为100
+	if (sample_obj-&gt;skew_ratio &gt; max_cut_skew)
+	skew_error = 100;
+
+	// NOTE 新的误差：距离+角度+歪斜比误差
+	double new_combined_error = sample_obj-&gt;normalized_error + weight_skew_error*skew_error;	// TODO 这里还乘了一个权重？前面也乘了.
+	all_combined_score(box_id) = new_combined_error;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="873-确定最终提案">8.7.3 确定最终提案</h4>
+<ul>
+<li>对误差进行排序，<strong>选择误差最小的一个作为最终提案</strong>；</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// STEP 保留误差最小的提案.
+// 提案的索引（ID）并从 0 开始递增赋值.
+std::vector&lt;int&gt; sort_idx_small(all_combined_score.rows());   
+iota(sort_idx_small.begin(), sort_idx_small.end(), 0);
+
+// 对 all_combined_score 的前 actual_cuboid_num_small（1） 项进行递增.
+sort_indexes(	all_combined_score, 		/* 检索比较的序列 */
+                sort_idx_small,				/* 按照all_combined_score中误差从小到达排序误差对应的ID */
+		actual_cuboid_num_small);
+
+for (int ii = 0; ii &lt; actual_cuboid_num_small; ii++) // use sorted index
+{
+    all_object_cuboids[object_id].push_back(raw_obj_proposals[sort_idx_small[ii]]);
+    //std::cout &lt;&lt; &#34;sort_idx_small[ii]：&#34; &lt;&lt; sort_idx_small[ii] &lt;&lt; std::endl;
+}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="88-绘制提案">8.8 绘制提案</h3>
+<ul>
+<li><code>plot_image_with_cuboid()</code> 函数完成。</li>
+</ul>
+<hr>
+<blockquote>
+<p>2019.02.22     <br>
+<a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a></p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-02-27-object-ba/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-01-28-quadric-slam/">
+            <span class="next-text nav-default"> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

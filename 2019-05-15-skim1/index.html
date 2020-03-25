@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>2019 年 5 月论文泛读（上） Geometric SLAM（16篇） - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" 一、Geometric SLAM	日本国家先进工业科学技术研究所极密特征视觉 SLAM 开源直接法稀疏建图 线模型约束单目漂移	快速 RGB-D 建图的相关粗糙 3D 表示 苏黎世开源室外大场景点云重建 CMU 局部最小化求解
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-05-15-skim1/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="2019 年 5 月论文泛读（上） Geometric SLAM（16篇）" />
+<meta property="og:description" content="
+一、Geometric SLAM		
+日本国家先进工业科学技术研究所极密特征视觉 SLAM    开源直接法稀疏建图    线模型约束单目漂移		
+快速 RGB-D 建图的相关粗糙 3D 表示     苏黎世开源室外大场景点云重建     CMU 局部最小化求解
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-05-15-skim1/" />
+<meta property="article:published_time" content="2019-05-15T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-05-15T00:00:00+08:00" />
+<meta itemprop="name" content="2019 年 5 月论文泛读（上） Geometric SLAM（16篇）">
+<meta itemprop="description" content="
+一、Geometric SLAM		
+日本国家先进工业科学技术研究所极密特征视觉 SLAM    开源直接法稀疏建图    线模型约束单目漂移		
+快速 RGB-D 建图的相关粗糙 3D 表示     苏黎世开源室外大场景点云重建     CMU 局部最小化求解
+">
+<meta itemprop="datePublished" content="2019-05-15T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-05-15T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="10078">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="2019 年 5 月论文泛读（上） Geometric SLAM（16篇）"/>
+<meta name="twitter:description" content="
+一、Geometric SLAM		
+日本国家先进工业科学技术研究所极密特征视觉 SLAM    开源直接法稀疏建图    线模型约束单目漂移		
+快速 RGB-D 建图的相关粗糙 3D 表示     苏黎世开源室外大场景点云重建     CMU 局部最小化求解
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">2019 年 5 月论文泛读（上） Geometric SLAM（16篇）</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-05-15 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 10078 字 </span>
+          <span class="more-meta"> 预计阅读 21 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#1-用于移动城市环境的双目里程计">1. 用于移动城市环境的双目里程计</a></li>
+        <li><a href="#2-用于结构化低纹理的平面-rgb-d-视觉里程计">2. 用于结构化低纹理的平面 RGB-D 视觉里程计</a></li>
+        <li><a href="#3-基于动力学模型的连续时间的双目视觉里程计">3. 基于动力学模型的连续时间的双目视觉里程计</a></li>
+        <li><a href="#摘要-2">摘要</a></li>
+        <li><a href="#实现方法-1">实现方法</a></li>
+        <li><a href="#4-具有概率数据关联的动态物体级-slam">4. 具有概率数据关联的动态物体级 SLAM</a></li>
+        <li><a href="#5-大型室内环境的快速-rgb-d-slam-方法">5. 大型室内环境的快速 RGB-D SLAM 方法</a></li>
+        <li><a href="#6-具有极密度特征点的视觉跟踪与建图">6. 具有极密度特征点的视觉跟踪与建图</a></li>
+        <li><a href="#7-直接法稀疏建图">7. 直接法稀疏建图</a></li>
+        <li><a href="#8-基于线模型的室内单目定位漂移估计方法">8. 基于线模型的室内单目定位漂移估计方法</a></li>
+        <li><a href="#9通过约束-合作策略实现高效的机载双目-slam">9.通过约束-合作策略实现高效的机载双目 SLAM</a></li>
+        <li><a href="#10-应用于快速-rgb-d-建图的相关-粗糙-3d-表示">10. 应用于快速 RGB-D 建图的相关 粗糙 3D 表示</a></li>
+        <li><a href="#11-鲁棒的室外大场景点云重建">11. 鲁棒的室外大场景点云重建</a></li>
+        <li><a href="#12-利用稀疏语义三维地图进行可视化定位">12. 利用稀疏语义三维地图进行可视化定位</a></li>
+        <li><a href="#13-稠密重建的概率投影关联和语义引导重定位">13. 稠密重建的概率投影关联和语义引导重定位</a></li>
+        <li><a href="#14-基于深度学习的动态环境单目-slam">14. 基于深度学习的动态环境单目 SLAM</a></li>
+        <li><a href="#15-不要忽略局部最小化一种完整的-3d-对应姿态估计解决方案">15. 不要忽略局部最小化：一种完整的 3D 对应姿态估计解决方案</a></li>
+        <li><a href="#16-三维多视角对齐中微型闭环的最小求解器">16. 三维多视角对齐中微型闭环的最小求解器</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>一、Geometric SLAM</strong>		
+日本国家先进工业科学技术研究所<strong>极密特征视觉 SLAM</strong>    <strong>开源直接法稀疏建图</strong>    <strong>线模型</strong>约束单目漂移		
+快速 RGB-D 建图的相关<strong>粗糙 3D 表示</strong>     <strong>苏黎世开源</strong>室外大场景点云重建     CMU <strong>局部最小化求解</strong></p>
+</blockquote>
+<h3 id="1-用于移动城市环境的双目里程计">1. 用于移动城市环境的双目里程计</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[1]</strong> Delmas P, Gee T. <a href="https://content.iospress.com/articles/integrated-computer-aided-engineering/ica190598"><strong>Stereo camera visual odometry for moving urban environments</strong></a>[J]. Integrated Computer-Aided Engineering, <strong>2019</strong> (Preprint): 1-14.
+<ul>
+<li><!-- raw HTML omitted -->用于移动城市环境的双目里程计<!-- raw HTML omitted --></li>
+<li><strong>根据像素聚类，计算像素簇的匹配来剔除运动像素簇</strong></li>
+<li>奥克兰大学   期刊 Integrated Computer-Aided Engineering 中科院二区，JCR Q1，IF 3.667</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要">摘要</h4>
+<ul>
+<li>本文提出了一种用于估计<strong>同步校准双目相机</strong>在包含<strong>适量运动物体场景</strong>中<strong>自我运动估计</strong>的系统，这在繁忙的道路场景和人口稠密的城市地区特别有用；
+<ul>
+<li>所提出方法的关键新颖性在于它<!-- raw HTML omitted --><strong>估计双目帧之间的像素簇的运动</strong>，这允许明确地剔除运动中的簇<!-- raw HTML omitted -->；</li>
+</ul>
+</li>
+<li>这与当前最先进的算法形成对比，后者倾向于<strong>将移动元素视为异常值</strong>，使用诸如 <strong>RANSAC</strong> 或 M 估计器之类的策略将其移除；
+<ul>
+<li>但不幸的是，<strong>当运动表示像素的很大一部分时，将移动像素视为异常值会产生较差的性能</strong>；</li>
+</ul>
+</li>
+<li>如果运动是由许多<strong>独立移动的物体</strong>（例如人或汽车）引起的，则本文所提出的方法克服了这一点，我们的实验在各种城市环境中显示出有较好的结果。</li>
+</ul>
+<h4 id="实现方法">实现方法</h4>
+<ul>
+<li>本文提出的策略是<strong>在图像之间找到几个对应的像素簇</strong>，然后，使用<strong>直接线性变换(DLT)，每个集群都能够产生相机在图像之间的独立运动估计</strong>；
+<ul>
+<li>如果场景是在一般的静态背景下，含有一些或许多的独立运动物体，则<strong>预计会有各种运动估计</strong>；</li>
+<li>然而，<strong>与背景元素关联的元素应该是相对一致的，而与几个独立移动的前景元素关联的元素通常不是</strong>；</li>
+<li>因此，在这种情况下，<!-- raw HTML omitted --><strong>相机的估计运动可以由一组相应的像素簇来确定，这些像素簇在相机的估计运动方面具有最大的一致性</strong><!-- raw HTML omitted -->。</li>
+</ul>
+</li>
+<li>步骤：
+<ul>
+<li><strong>步骤一：特征聚类</strong>
+<ul>
+<li>步骤 1：确定图像梯度；</li>
+<li>步骤 2：提取具有最大梯度的区域作为候选特征点；</li>
+<li>步骤 3：执行深度过滤移除边缘周围的特征；</li>
+<li>步骤 4：执行聚类以识别每个聚类特征；</li>
+</ul>
+</li>
+<li><strong>步骤二：聚类特征匹配</strong>
+<ul>
+<li>提出的聚类特征的主要目的是<strong>在假设帧间存在少量刚体运动的情况下，找出连续帧间的鲁棒对应关系</strong>；从<!-- raw HTML omitted --><strong>多个像素构造一个特征，目的是产生比基于特征描述符或光流匹配单个像素更强的鲁棒匹配</strong><!-- raw HTML omitted -->；提出的聚类特征的另一个优点是，它由 7 个或更多像素组成，这意味着<strong>可以根据其内部对应关系估计聚类特征在图像之间的运动</strong>。</li>
+</ul>
+</li>
+<li><strong>步骤三：位姿估计</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-用于结构化低纹理的平面-rgb-d-视觉里程计">2. 用于结构化低纹理的平面 RGB-D 视觉里程计</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[2]</strong> Guo R, Zhou D, Peng K, et al. <a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=8679500"><strong>Plane Based Visual Odometry for Structural and Low-Texture Environments Using RGB-D Sensors</strong></a>[C]//<strong>2019</strong> IEEE International Conference on Big Data and Smart Computing (BigComp). IEEE, 2019: 1-4.
+<ul>
+<li><!-- raw HTML omitted -->用于结构化低纹理的平面 RGB-D 视觉里程计<!-- raw HTML omitted --></li>
+<li><strong>3D 线、平面提取，平面匹配</strong></li>
+<li>宾夕法尼亚州立大学，国防科大</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-1">摘要</h4>
+<ul>
+<li>本文利用<strong>平面特征</strong>而不是点特征，并提出了一种视觉测距方法来估计传感器<strong>对结构和低纹理环境的姿态</strong>；</li>
+<li>我们通过<strong>利用基于线特征的相关平面来构建因子图的约束</strong>，并且我们推导出<strong>平面最小表示的解析雅可比，以加速优化过程</strong>;</li>
+<li>实验证明了我们提出的方法的有效性和鲁棒性，并显示出其优于替代方法的优势。</li>
+</ul>
+<h4 id="主要贡献">主要贡献</h4>
+<ul>
+<li>提出了一种基于<strong>线-平面特征</strong>的视觉测距方法，用于估计结构和低纹理环境下的相机姿态；</li>
+<li>推导出<strong>平面最小表示的解析雅可比解</strong>，以加速姿态估计的迭代优化过程。</li>
+</ul>
+<h4 id="线约束的平面匹配">线约束的平面匹配</h4>
+<ul>
+<li><strong>3D 线提取</strong>：利用 LSD 提取 2D 线段，并获得 2D 线段集，并重建他们的 3D 点集；</li>
+<li><strong>3D 平面提取</strong>：<strong>快速平面提取算法</strong>，包括图像初始化、凝聚层次聚类（AHC）和分割细化，得到平面表示方程；
+<ul>
+<li>主要参考：Feng C, Taguchi Y, Kamat V R. <a href="http://www.merl.com/publications/docs/TR2014-066.pdf"><strong>Fast plane extraction in organized point clouds using agglomerative hierarchical clustering</strong></a>[C]//2014 IEEE International Conference on Robotics and Automation (ICRA). IEEE, <strong>2014</strong>: 6218-6225.</li>
+</ul>
+</li>
+<li><!-- raw HTML omitted --><strong>平面匹配</strong>：3D 平面可以由位于这些平面上的线确定（每个平面上的线数不小于2）,因此，<strong>3D 平面的匹配可以通过 3D 线的匹配来解决</strong>。<!-- raw HTML omitted --></li>
+</ul>
+<hr>
+<h3 id="3-基于动力学模型的连续时间的双目视觉里程计">3. 基于动力学模型的连续时间的双目视觉里程计</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[3]</strong> X Wang, F Xue, Z Yan, W Dong, Q Wang, H Zha. <a href="https://www.researchgate.net/profile/Wang_Xin122/publication/332103736_Continuous-time_Stereo_Visual_Odometry_Based_on_Dynamics_Model/links/5ca04e17299bf11169521b1e/Continuous-time-Stereo-Visual-Odometry-Based-on-Dynamics-Model.pdf"><strong>Continuous-time Stereo Visual Odometry Based on Dynamics Model⋆</strong></a>[C]. Asian Conference on Computer Vision (ACCV) <strong>2018</strong>
+<ul>
+<li><!-- raw HTML omitted -->基于动力学模型的连续时间的双目视觉里程计<!-- raw HTML omitted --></li>
+<li>北京大学，上海交大 ACCV：CCF 人工智能 <strong>C 类会议</strong></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h3 id="摘要-2">摘要</h3>
+<ul>
+<li>提出了一种动力学模型来表示相机轨迹作为时间和力的连续函数，配备这样的表示，我们<!-- raw HTML omitted --><strong>将经典视觉测距问题转换为分析应用于相机的力</strong><!-- raw HTML omitted -->；</li>
+<li>与传统的离散时间估计策略相反，<strong>相机运动的连续性质</strong>在框架中固有地表示，并且可以在时间间隔内仅用少量参数简单地建模相机运动；</li>
+<li><!-- raw HTML omitted --><strong>动力学模型保证了连续的速度</strong>，因此确保了<strong>平滑的轨迹</strong><!-- raw HTML omitted -->，该轨迹对噪声具有鲁棒性并且避免了姿态漂移；</li>
+<li>对真实世界基准数据集的评估表明，我们的方法<strong>优于其他连续时间方法</strong>。</li>
+</ul>
+<h3 id="实现方法-1">实现方法</h3>
+<ul>
+<li>在本文中，我们介绍了一种<strong>动力学模型</strong>，<strong>以连续时间的方式表示相机轨迹</strong>;
+<ul>
+<li>通过<strong>检测力的变化</strong>，轨迹被分割成碎片，在每个段中，动态参数被假定为常数；</li>
+<li><strong>相机位姿</strong>未显式存储，但表示为<strong>可在任何时间戳评估的函数</strong>，该表示不仅产生<strong>平滑且连续的相机运动</strong>，而且在每个小段内仅需要很少的参数；</li>
+<li>由于我们的方法使轨迹平滑，因此可以将其视为具有有效物理解释的<strong>低通滤波器</strong>；</li>
+<li>系统的惯性可防止突然跳跃并禁止身体上的非理性移动,这保证了连续的速度，从而确保了平滑且物理上合理的轨迹；</li>
+<li>这些约束可以减少 VO 中的误差，并增强系统的稳定性，尤其是自动驾驶和混合现实渲染的有益效果；</li>
+</ul>
+</li>
+<li>如图所示，应用<strong>批量优化</strong>来更新常数参数，其中可以容易地<strong>建模相机轨迹</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="4-具有概率数据关联的动态物体级-slam">4. 具有概率数据关联的动态物体级 SLAM</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[4]</strong> Strecke M, Stückler J. <a href="https://arxiv.org/pdf/1904.11781.pdf"><strong>EM-Fusion: Dynamic Object-Level SLAM with Probabilistic Data Association</strong></a>[J]. arXiv preprint arXiv:1904.11781, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->具有概率数据关联的<strong>动态物体级 SLAM</strong><!-- raw HTML omitted --></li>
+<li><strong>Mask R-CNN 实例分割 + 概率数据关联 + EM 算法</strong></li>
+<li>德国马克斯普朗克智能系统研究所   <a href="https://ev.is.tuebingen.mpg.de/">实验室主页</a></li>
+<li>Usenko V, Demmel N, Schubert D, et al. <a href="https://arxiv.org/pdf/1904.06504.pdf">Visual-Inertial Mapping with Non-Linear Factor Recovery</a>[J]. arXiv preprint arXiv:1904.06504, 2019.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-3">摘要</h4>
+<ul>
+<li>使用 RGB-D 相机获取稠密 3D 环境地图的大多数方法都采用静态环境或将移动物体作为异常值剔除，然而，<!-- raw HTML omitted --><strong>移动物体的表示和跟踪对于机器人或增强现实中的应用具有显著的潜力</strong><!-- raw HTML omitted -->；</li>
+<li>在本文中，我们提出了一种具有<strong>稠密物体级表示的动态 SLAM 的新方法</strong>；
+<ul>
+<li>我们在局部体积<strong>有符号距离函数</strong>（SDF）图中表示<strong>刚体对象</strong>，并<strong>将多目标跟踪表示为 RGB-D 图像与 SDF 表示的直接对齐</strong>；</li>
+<li>我们的主要创新性是<strong>概率公式</strong>，有自然的<strong>数据关联和遮挡处理</strong>的策略；</li>
+</ul>
+</li>
+<li>在实验中分析了我们的方法，并证明我们的方法在<strong>稳健性和准确性</strong>方面与最先进的方法相比是有利的。</li>
+</ul>
+<h4 id="主要贡献-1">主要贡献</h4>
+<ul>
+<li>提出了用于<!-- raw HTML omitted --><strong>动态对象级 SLAM 的概率 EM 公式</strong>，其自然地产生数据关联和遮挡处理策略<!-- raw HTML omitted -->；</li>
+<li>基于我们的 EM 公式，我们将多目标跟踪视为 RGB-D 图像与 SDF 对象表示的直接对齐，并评估这种跟踪方法用于稠密动态 SLAM；</li>
+<li>我们的方法在动态对象级 SLAM 的几个数据集上实现了最先进的性能。</li>
+</ul>
+<hr>
+<h3 id="5-大型室内环境的快速-rgb-d-slam-方法">5. 大型室内环境的快速 RGB-D SLAM 方法</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[5]</strong> Guclu O, Can A B. <a href="https://www.sciencedirect.com/science/article/pii/S107731421930058X"><strong>k-SLAM: A fast RGB-D SLAM approach for large indoor environments</strong></a>[J]. Computer Vision and Image Understanding, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->大型室内环境的快速 RGB-D SLAM 方法<!-- raw HTML omitted --></li>
+<li>土耳其哈西德佩大学   <a href="https://scholar.google.com/citations?user=SbRj1qwAAAAJ&amp;hl=zh-CN&amp;oi=sra"><strong>Google Scholor</strong></a>   中科院三区，JCR Q2，IF 2.776</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-4">摘要</h4>
+<ul>
+<li>我们提出了一种<strong>基于 RGB-D 的 SLAM 系统</strong>，能够构建<strong>大型室内环境一致性的 3D 地图</strong>；</li>
+<li>系统通过使用<strong>帧之间的关键点对应</strong>来执行运动估计；</li>
+<li>开发了一种新的<!-- raw HTML omitted --><strong>数据关联</strong>方法——<strong>关键帧自相关数据库和自适应阈值</strong><!-- raw HTML omitted -->，用于通过稳健的闭环检测进行精确建图；
+<ul>
+<li><strong>关键帧自相关数据库</strong>基于空间颜色相关性对帧进行索引和聚类，并通过使用可以有效处理高维数据的数据结构<strong>将短闭环候选和长闭环候选帧作为大小为 k 的簇返回</strong>；</li>
+<li>在我们之前的工作中引入的<strong>自适应阈值</strong>技术<strong>在簇中过滤掉更多的异常值并选择更好的闭环候选者</strong>；</li>
+</ul>
+</li>
+<li>所提出的方法<strong>增量式地生成环境地图而无需任何训练步骤</strong>；</li>
+<li>该系统在广泛使用的具有大量序列的公共数据集上进行测试，实验结果表明，与其他最先进的系统相比，我们的系统在具有挑战性的条件下具有稳健性和高效性；</li>
+<li>该系统可为中型和大型环境生成精确的地图，并在 <strong>CPU 上能达到足够的稳定性和实时性</strong>；</li>
+<li>本文是<!-- raw HTML omitted --><strong>第一个使用图像自相关图和 k 均值树索引结构用于 SLAM 中的闭环检测问题</strong><!-- raw HTML omitted -->，用于增加闭环检测的鲁棒性，前期工作 [<a href="https://scholar.google.com/scholar_lookup?title=Fast%20and%20effective%20loop%20closure%20detection%20to%20improve%20SLAM%20performance&amp;publication_year=2017&amp;author=O.%20Guclu&amp;author=A.B.%20Can">文献</a>]。</li>
+</ul>
+<h4 id="方法">方法</h4>
+<ul>
+<li>通过<strong>稀疏特征匹配来估计帧间运动</strong>；</li>
+<li>利用关键帧自相关数据库和自适应阈值方法进行闭环检测；
+<ul>
+<li><strong>关键帧自相关图数据库</strong> [<a href="https://scholar.google.com/scholar_lookup?title=Image%20indexing%20using%20color%20correlograms&amp;publication_year=1997&amp;author=J.%20Huang&amp;author=S.R.%20Kumar&amp;author=M.%20Mitra&amp;author=W.-J.%20Zhu&amp;author=R.%20Zabih">文献</a>]通过使用<strong>描述了图像中颜色空间相关性的图像自相关图</strong>对关键帧进行索引；</li>
+<li>使用<strong>优先级搜索 k 均值树索引</strong> [<a href="https://scholar.google.com/scholar_lookup?title=Scalable%20nearest%20neighbor%20algorithms%20for%20high%20dimensional%20data&amp;publication_year=2014&amp;author=M.%20Muja&amp;author=D.G.%20Lowe">文献</a>]自相关图，其允许将关键帧聚类为 k 大小的组，并以稳健且快速的方法获得闭环候选帧；</li>
+</ul>
+</li>
+<li>此方法调整每个闭环搜索的动态查询阈值，并有助于消除更多的异常候选。</li>
+</ul>
+<hr>
+<h3 id="6-具有极密度特征点的视觉跟踪与建图">6. 具有极密度特征点的视觉跟踪与建图</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[6]</strong> Yokozuka M, Oishi S, Simon T, et al. <a href="https://arxiv.org/pdf/1904.10324.pdf"><strong>VITAMIN-E: VIsual Tracking And Mapping with Extremely Dense Feature Points</strong></a>[J]. arXiv preprint arXiv:1904.10324, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->具有<strong>极密度特征点</strong>的视觉跟踪与建图<!-- raw HTML omitted --></li>
+<li>日本国家先进工业科学技术研究所   <a href="https://www.youtube.com/watch?v=yfKccCmmMsM&amp;feature=youtu.be">演示视频</a>    最近开源了 <a href="https://github.com/xdspacelab/openvslam"><strong>OpenVSLAM</strong></a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-5">摘要</h4>
+<ul>
+<li>本文提出了一种新的<strong>非直接法单目 SLAM 算法 VITAMIN-E</strong> ，该算法由于<strong>跟踪了非常密集的特征点</strong>，具有很高的精度和鲁棒性；</li>
+<li>典型的非直接法由于<strong>对特征点的精确匹配进行了细致的筛选</strong>，在<strong>重构稠密几何形状</strong>时存在一定的困难；</li>
+<li>与传统方法不同的是，本方法<!-- raw HTML omitted -->通过<strong>跟踪由主流估计(dominant flow estimation)提供的局部曲率极值</strong>来处理<strong>大量的特征点</strong><!-- raw HTML omitted -->；</li>
+<li>由于 BA 计算量大，本文提出了一种<!-- raw HTML omitted --><strong>新的优化方法——子空间高斯牛顿法</strong>(subspace GaussNewton method)，通过<strong>局部更新变量</strong><!-- raw HTML omitted -->，极大地提高了 BA 的计算效率；</li>
+<li>同时<!-- raw HTML omitted --><strong>从重建的点生成网格，并将它们合并为一个完整的三维模型</strong><!-- raw HTML omitted -->；</li>
+<li>在 <strong>EuRoC</strong> 上的实验结果表明，该方法在轨迹估计的精度和鲁棒性方面<strong>均优于 DSO、ORB-SLAM 和 LSD-SLAM</strong> 等最先进的 SLAM 方法；</li>
+<li>该方法只需要一个 <strong>CPU</strong>，就可以从密集的特征点中<strong>实时</strong>生成非常详细的<strong>三维几何图形</strong>。</li>
+</ul>
+<h4 id="主要贡献-2">主要贡献</h4>
+<ul>
+<li>① 首先提出了一种新的<strong>基于主流估计和曲率极值跟踪的稠密特征点</strong>跟踪算法；
+<ul>
+<li>这使得系统能够处理大量的特征点，但维护他们又会造成很高的计算成本；</li>
+</ul>
+</li>
+<li>② 提出一种<strong>新的优化方法——子空间高斯牛顿法</strong>，用于 BA 优化；
+<ul>
+<li>通过局部更新变量，显著提高 BA 的效率；</li>
+</ul>
+</li>
+<li>③ <strong>从重建的特征点中生成网格，并使用 TSDF</strong> 将他们集成在一起；
+<ul>
+<li>与传统方法比较本方法只需要再 CPU 上就能实时地重建三维几何结构。</li>
+</ul>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="7-直接法稀疏建图">7. 直接法稀疏建图</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[7]</strong> Zubizarreta J, Aguinaga I, Montiel J M M. <a href="https://arxiv.org/pdf/1904.06577.pdf"><strong>Direct Sparse Mapping</strong></a>[J]. arXiv preprint arXiv:1904.06577, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted --><strong>直接法稀疏建图</strong><!-- raw HTML omitted --></li>
+<li>西班牙萨拉戈萨大学   <a href="https://github.com/jzubizarreta/dsm">代码开源</a>（还未放出）   <a href="https://www.youtube.com/watch?v=sj1GIF-7BYo&amp;feature=youtu.be">演示视频</a></li>
+<li>作者 2018 年 ECCV 一篇文章：可变形贴图中 SLAM 的相机跟踪 <a href="http://openaccess.thecvf.com/content_ECCVW_2018/papers/11129/Lamarca_Camera_Tracking_for_SLAM_in_Deformable_Maps_ECCVW_2018_paper.pdf">Camera Tracking for SLAM in Deformable Maps</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-6">摘要</h4>
+<ul>
+<li>Photometric bundle adjustment，准确地从视频序列中估计几何信息，但是<strong>当前的 PBA 系统的临时地图无法管理场景重新观察</strong>；</li>
+<li>本文提出 DSM ，一个基于 PBA 的完整的单目 SLAM 系统，其<strong>持久性地图处理重新观测</strong>，以<strong>直接法</strong>在 Euroc 上获得了准确的结果。</li>
+</ul>
+<h4 id="主要贡献-3">主要贡献</h4>
+<ul>
+<li>持久性地图，允许<strong>直接使用光度公式重用现有地图信息</strong>；</li>
+<li><!-- raw HTML omitted --><strong>局部地图可视化窗口</strong>(LMCW)标准，用于<strong>选择观察相同场景区域的活动关键帧</strong>(即使它们没有及时关闭)和<strong>地图点重新观测</strong>；<!-- raw HTML omitted --></li>
+<li>粗略到精细的优化方案，<strong>增加了 PBA 的收敛半径</strong>，该策略允许利用<strong>点重新观测提供的丰富的几何信息</strong>；</li>
+<li>一个鲁棒的影响函数和一个基于 t 分布的异常值管理策略，它<strong>确保了 PB A的一致性</strong>，以<strong>防止来自激活远程关键帧的伪观测</strong>；</li>
+<li>在公开的 EuRoC MAV 数据集中对 DSM 进行了实验验证，<!-- raw HTML omitted --><strong>首次报道了相机轨迹和重建图的定量结果</strong>，后者通常不在 VO/VSLAM 方法中报告，在<strong>单目直接法中，我们得到了迄今为止最准确的结果</strong>；<!-- raw HTML omitted --></li>
+<li>代码开源：https://github.com/jzubizarreta/dsm （还未放出）</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="8-基于线模型的室内单目定位漂移估计方法">8. 基于线模型的室内单目定位漂移估计方法</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[8]</strong> Feng G, Ma L, Tan X. <a href="https://ieeexplore.ieee.org/abstract/document/8690676"><strong>Line Model-Based Drift Estimation Method for Indoor Monocular Localization</strong></a>[C]//2018 IEEE 88th Vehicular Technology Conference (VTC-Fall). IEEE, <strong>2019</strong>: 1-5.
+<ul>
+<li><!-- raw HTML omitted -->基于<strong>线模型</strong>的室内单目定位漂移估计方法<!-- raw HTML omitted --></li>
+<li>哈工大    VTC 无线通信会议，一年两届</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-7">摘要</h4>
+<ul>
+<li>当前，<strong>单目定位</strong>作为一种基于视觉的室内定位方法因其在<strong>室内导航和增强现实</strong>中的应用而备受关注；</li>
+<li>在典型的单目定位系统中，利用<strong>绝对位置</strong>估计来获取查询相机的初始位置，然后采用<strong>相对位置</strong>估计来实现后续的相机位置；
+<ul>
+<li>然而，由<strong>相对位置估计引起的累积误差</strong>，即局部漂移严重影响定位性能；</li>
+</ul>
+</li>
+<li>因此，引入了<strong>包含拟合线段和一些视觉特征的线模型</strong>，并且<strong>线模型用于寻找用于漂移估计的内点</strong>;</li>
+<li>基于预先构建的稠密三维地图，<strong>提出了一种基于线模型的漂移估计方法来监测累积误差</strong>；</li>
+<li>作为切换机制，所提出的方法确定相对位置估计何时应切换到绝对位置估计以校正用户位置；</li>
+<li>与现有的单目定位方法相比，所提出的漂移估计方法显着地<strong>减少了累积误差</strong>，并且<strong>通过给出适当的漂移阈值将平均误差限制在期望的范围内</strong>；</li>
+<li>实验结果表明，在 50 cm 的漂移阈值下所提出的方法的平均定位误差在各种场景中被限制在 30 厘米以内。</li>
+</ul>
+<h4 id="实现方法-2">实现方法</h4>
+<ul>
+<li>本文提出了一种<strong>独立于闭环</strong>的基于<strong>线模型的漂移估计方法</strong>，以消除<strong>局部定位引起的累积误差</strong>；</li>
+<li>在漂移估计的过程中，首先<strong>在预先构建的 3D 地图的基础上建立一些线模型</strong>；</li>
+<li>然后，通过<strong>三角测量</strong>获得的具有估计位置的视觉特征被划分为<strong>内点和异常值</strong>，并且<strong>仅使用内点来计算漂移距离</strong>；</li>
+<li>所提出的漂移估计方法<strong>监视累积误差</strong>，一旦<strong>误差超过给定的漂移阈值，将激活全局定位以消除错误</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="9通过约束-合作策略实现高效的机载双目-slam">9.通过约束-合作策略实现高效的机载双目 SLAM</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[9]</strong> Castro G, Nitsche M A, Pire T, et al. <a href="https://www.sciencedirect.com/science/article/pii/S0921889018304500"><strong>Efficient on-board Stereo SLAM through constrained-covisibility strategies</strong></a>[J]. Robotics and Autonomous Systems, 2019.
+<ul>
+<li><!-- raw HTML omitted -->通过约束-合作策略实现高效的机载双目SLAM<!-- raw HTML omitted --></li>
+<li>阿根廷布宜诺斯艾利斯大学博士   双目 PTAM 作者 <a href="https://scholar.google.com/citations?user=q9nee0EAAAAJ&amp;hl=zh-CN&amp;oi=sra">Google Scholor</a>   RAS 中科院三区，JCR Q2</li>
+<li>SPTAM：https://github.com/lrse/sptam    Pire T, Fischer T, Castro G, et al. <a href="http://webdiis.unizar.es/~jcivera/papers/pire_etal_ras17.pdf">S-PTAM: Stereo parallel tracking and mapping</a>[J]. Robotics and Autonomous Systems, 2017, 93: 27-42.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-8">摘要</h4>
+<ul>
+<li>视觉 SLAM 是一项计算成本高昂的任务，<strong>随着探索区域大小的增加，其复杂性无限增长</strong>，当针对嵌入式应用时，这将成为一个问题，其中实时执行是必要满足的，而计算资源是限制因素；</li>
+<li>本文提出的方法引入了<strong>基于可见度图的地图表示</strong>，其<strong>允许视觉 SLAM 系统以不依赖于地图大小的复杂性来执行</strong>；</li>
+<li>所提<strong>以 S-PTAM 为基础</strong>，产生一个精确而鲁棒的双目 SLAM 系统，能够在有限的硬件限制下实时工作。</li>
+</ul>
+<h4 id="主要贡献-4">主要贡献</h4>
+<ul>
+<li>对系统中<strong>每个并行模块的更详细的描述</strong>，包括一系列并行化见解，并对所涉及的每个任务进行适当的评估；</li>
+<li><strong>围绕最近地图区域的有效局部优化策略</strong>，由<strong>跟踪过程</strong>中计算的共享协同信息决定；</li>
+<li>提供了一个<strong>功能齐全的双目 SLAM 系统</strong>，具有启用闭环的功能，能够在嵌入式低资源处理单元上<strong>实时运行</strong>。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="10-应用于快速-rgb-d-建图的相关-粗糙-3d-表示">10. 应用于快速 RGB-D 建图的相关 粗糙 3D 表示</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[10]</strong> Canovas B, Rombaut M, Nègre A, et al. <a href="https://hal.archives-ouvertes.fr/hal-02068740/document"><strong>A Coarse and Relevant 3D Representation for Fast and Lightweight RGB-D Mapping</strong></a>[C]//VISAPP 2019-International Conference on Computer Vision Theory and Applications. 2019.
+<ul>
+<li><!-- raw HTML omitted -->应用于快速 RGB-D 建图的相关粗糙 3D 表示<!-- raw HTML omitted --></li>
+<li>格勒诺布尔计算机科学实验室</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-9">摘要</h4>
+<ul>
+<li>本文提出了一种新颖的<strong>轻量级和简单的 3D 表示</strong>，用于使用 RGB-D 相机实现静态环境的实时密集 3D 建图；</li>
+<li>我们的方法构建并<strong>更新观察场景的低分辨率 3D 模型</strong>，作为一组称为<strong>超面元（supersurfels）</strong> 的无序新基元，可以<strong>看作是由超像素分段 RGB-D 实时测量生成的椭圆平面贴片</strong>；</li>
+<li>虽然大多数实际解决方案都侧重于重建的 3D 模型的准确性，但本文实施的方法非常适合在具有减少/有限的计算能力和存储器大小的机器人上运行，其不需要高度详细的环境地图但是可以适应近似的一个。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="11-鲁棒的室外大场景点云重建">11. 鲁棒的室外大场景点云重建</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[11]</strong> Ziquan Lan, Zi Jian Yew, Gim Hee Lee. <a href="http://219.216.82.193/cache/5/03/www.cvlibs.net/297109a6b31ef7d288d6637f31249bd2/Barsan2018ICRA.pdf"><strong>Robust Point Cloud Based Reconstruction of Large-Scale Outdoor Scenes</strong></a>[C], <strong>ICRA 2019</strong>.
+<ul>
+<li><!-- raw HTML omitted --><strong>鲁棒的室外大场景点云重建</strong><!-- raw HTML omitted --></li>
+<li>苏黎世联邦理工    <a href="https://github.com/ziquan111/RobustPCLReconstruction">代码开源</a>（还未放出）   <a href="https://siegedog.com/dynslam/">项目主页</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-10">摘要</h4>
+<ul>
+<li>提出了一种基于<strong>双目相机</strong>的<strong>稠密建图</strong>算法，用于<strong>大规模动态城市环境</strong>；</li>
+<li>与其他现有方法相比，我们同时分别重<strong>建静态背景</strong>，<strong>移动物体</strong>和<strong>可能移动但当前静止的物体</strong>，这对于高级移动机器人任务（例如拥挤环境中的路径规划）是有价值的；
+<ul>
+<li>使用<strong>实例感知语义分割</strong>和<strong>稀疏场景流</strong>来将对象分类为<strong>背景</strong>，<strong>移动</strong>或<strong>潜在移动</strong>，从而<strong>确保系统能够模拟具有从静态转变为动态的对象的模型</strong>，例如停放的汽车；</li>
+</ul>
+</li>
+<li><strong>给定从视觉里程计算估计的相机位姿</strong>，通过融合从<strong>双目相机计算的深度图</strong>，分别<strong>重建背景和（可能）移动物体</strong>;</li>
+<li>除了视觉里程计之外，<strong>稀疏场景流还用于估计检测到的移动物体的 3D 运动</strong>，以便精确地重建它们；</li>
+<li>进一步开发了一种<strong>地图修剪技术</strong>，以<strong>提高重构精度并减少内存消耗</strong>，从而提高可扩展性；</li>
+<li>在 KITTI 数据集上彻底评估我们的系统，能够在大约 2.5Hz 的 PC 上运行，主要瓶颈是实例感知语义分割，这是我们希望在未来工作中解决的限制，代码开源。</li>
+</ul>
+<h4 id="主要贡献-5">主要贡献</h4>
+<ul>
+<li>开发了一种基于双目相机的高效稠密建图的鲁棒算法；</li>
+<li>该系统以<strong>在线方式</strong>构建高质量的<strong>静态地图</strong>以及<strong>移动和潜在移动物体的单独 3D 重建</strong>；</li>
+<li>提出了一种<strong>地图修剪技术</strong>，以进一步提高建图精度，减少内存消耗，从而提高系统的可扩展性。</li>
+</ul>
+<h4 id="方法与流程">方法与流程</h4>
+<!-- raw HTML omitted -->
+<hr>
+<h3 id="12-利用稀疏语义三维地图进行可视化定位">12. 利用稀疏语义三维地图进行可视化定位</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[12]</strong> Shi T, Shen S, Gao X, et al. <a href="https://arxiv.org/pdf/1904.03803.pdf"><strong>Visual Localization Using Sparse Semantic 3D Map</strong></a>[J]. arXiv preprint arXiv:1904.03803, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->利用<strong>稀疏语义三维地图</strong>进行可视化定位<!-- raw HTML omitted --></li>
+<li>中国科学院自动化研究所模式识别国家重点实验室</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-11">摘要</h4>
+<ul>
+<li>在<strong>各种观看条件变化</strong>（包括季节和照明变化，以及天气和昼夜变化）下，精确和稳健的视觉定位是许多计算机视觉和机器人应用的关键组成部分，在这些条件下，大多数传统方法都无法定位相机；</li>
+<li>在本文中，我们提出了一种<strong>可视化定位算法</strong>，该算法<strong>将基于结构的方法和基于图像的方法与语义信息相结合</strong>；
+<ul>
+<li><strong>给定关于查询和数据库图像的语义信息</strong>，根据 3D 模型和查询图像的<strong>语义一致性对检索到的图像进行评分</strong>；</li>
+<li>然后<strong>将语义匹配得分用作 RANSAC 采样的权重</strong>，并通过标准 <strong>PnP 求解器求解姿势</strong>；</li>
+</ul>
+</li>
+<li>对具有挑战性的长期视觉定位基准数据集的实验表明，与现有技术相比，我们的方法有了显着的改进。</li>
+</ul>
+<h4 id="主要贡献-6">主要贡献</h4>
+<ul>
+<li>提出了一种新的定位方法，它<strong>结合了基于结构的方法和基于图像的方法，同时利用了语义信息</strong>;</li>
+<li>与最先进的<strong>语义视觉定位方法</strong>相比，我们<strong>不需要任何额外的限制（已知的相机高度和 groundtruth 的重力方向）</strong></li>
+</ul>
+<h4 id="实现方法-3">实现方法</h4>
+<ul>
+<li><strong>1.</strong> 首先根据标准的 <strong>SFM 算法构建场景的稀疏 3D 模型</strong>；</li>
+<li><strong>2.</strong> 给定每个数据库图像的<strong>语义分割</strong>，可以为每个 3D 点分配语义标签，是的标准的 3D 模型变为<strong>稀疏语义 3D 地图</strong>；</li>
+<li><strong>3.</strong> 然后使用图像检索方法获取一组候<strong>选数据库图像序列</strong>；</li>
+<li><strong>4.</strong> 通过当前帧与候选帧之间间接的 2D-2D 特征匹配，在<strong>当前帧和 3D 语义地图之间建立 2D-3D 匹配</strong>，并使用这些匹配<strong>估计临时的相机位姿</strong>；</li>
+<li><strong>5.</strong> 给定了该估计的位姿和语义分割结果，所有 3D 模型被投影到当前图像中，测量 3D 点和当前帧投影的语义一致性，并将其用作<strong>当前帧和所有候选帧的 2D-3D 匹配权重</strong>；</li>
+<li><strong>6.</strong> 使用与所有检索到的图像相关的 2D-3D 匹配以及它们的一致性权重在基于 RANSAC 位姿估计期间进行偏置采样。</li>
+</ul>
+<hr>
+<h3 id="13-稠密重建的概率投影关联和语义引导重定位">13. 稠密重建的概率投影关联和语义引导重定位</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[13]</strong> Yang S, Kuang Z F, Cao Y P, et al. <a href="https://cg.cs.tsinghua.edu.cn/papers/ICRA-2019-densemapping.pdf"><strong>Probabilistic Projective Association and Semantic Guided Relocalization for Dense Reconstruction</strong></a>[C]//<strong>ICRA 2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->稠密重建的<strong>概率投影关联</strong>和<strong>语义引导重定位</strong><!-- raw HTML omitted --></li>
+<li>清华大学   <a href="https://scholar.google.com/citations?user=50194vkAAAAJ&amp;hl=zh-CN&amp;oi=sra">谷歌学术</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-12">摘要</h4>
+<ul>
+<li>本文提出一个<strong>实时的稠密建图系统</strong>，使用<strong>预测的 2D 语义标签来优化重建的几何质量</strong>；</li>
+<li>将卷积神经网络(CNNs)与相机轨迹估计 SLAM 系统相结合，实现了<strong>三维场景的增量融合与标注</strong>，将这些语义预测结果结合起来，可以进一步提高重建的几何质量，而现有的方法并没有充分利用这些结果；</li>
+<li>本文提出使用语义信息来改进重建流程中的两大关键模块：跟踪和闭环检测，以<strong>相互促进几何重建和语义识别</strong>；
+<ul>
+<li>对于<strong>跟踪</strong>，我们使用新颖的<strong>概率投影关联方法来有效地挑选候选对应关系</strong>，其中这些<strong>对应关系的置信度被量化为关于所有可用的短期不变特征的相似性</strong>；</li>
+<li>对于<strong>闭环检测</strong>，我们通过 Randomized Ferns <strong>将这些语义标签合并到原始编码中</strong>，以生成用于<strong>检索候选闭环帧</strong>的更全面的表示。</li>
+</ul>
+</li>
+<li>在公开可用的合成数据集上对这两个修改后的模块和所提议的系统进行的评估表明，我们的方法是有效的，该方法<strong>将这些语义提示视为实现更高几何质量的可靠特征</strong>。</li>
+</ul>
+<h4 id="实现方法-4">实现方法</h4>
+<p><strong>1. 跟踪模块</strong></p>
+<ul>
+<li>通过将重建后的稠密地图投影到有组织的图像中，这<strong>三种类型的注册（帧-模型、帧-帧、模型-模型）</strong> 都可以以统一的对应搜索方式进行；</li>
+<li>本文提出一种<strong>新的概率投影关联</strong>方法来替代 KinectFusion 的原始投影关联，用于<strong>构造对应关系和注册图像</strong>；</li>
+<li>具体来说，在跟踪模块中，<strong>当执行帧到模型的配准时，输入帧的语义标签会随着估计的位姿迭代优化</strong>，最终在位姿估计完成后再发送到闭环模块。</li>
+</ul>
+<!-- raw HTML omitted -->
+<p> 左图是跟踪模块的概率投影关联原理图，原始的投影关联以红色表示，本文提出的绿色概率关联使用一个<strong>考虑传感器噪声的区域来寻找多个候选对应</strong>，每个对应的<strong>置信度根据像素之间的外观相似性来分配</strong> （青色和棕色代表两个不同的语义标签）。 <br>
+ 右图是本文方案（绿色）与 ElasticFusion（红色） 的比较，并在右下角的增量语义融合显示 3D 标记结果。   <br>
+<strong>2. 闭环优化模块</strong></p>
+<ul>
+<li>其他两种类型的注册，即原始 ElasticFusion 中的<strong>帧到帧</strong>和<strong>模型到模型</strong>的方法分别用于验证候选<strong>全局</strong>和<strong>局部</strong>闭环；
+<ul>
+<li>为了检测<strong>全局闭环</strong>，所提出的系统<strong>维护由历史关键帧组成的数据库</strong>，并且<strong>当找到类似的关键帧时，新帧将触发验证</strong>；</li>
+<li><!-- raw HTML omitted -->为了检测<strong>局部闭环</strong>，地图中的表面<strong>按其上次更新时间分为“活动”或“非活动”两种类型</strong>，并在这两个光线扫描帧之间执行验证，以检测和恢复由顺序跟踪的<strong>累积漂移</strong>引起的可能的错位；<!-- raw HTML omitted --></li>
+</ul>
+</li>
+<li>然后通过 Randomized Ferns（Real-time RGB-D camera relocalization via randomized ferns for keyframe encoding 2015） <strong>将更高级别的语义特征结合到原始编码中，以获得每个关键帧的代表性代码</strong>，以便有效地进行检索；</li>
+<li>此外，这些验证是基于联合概率，<strong>考虑所有可用的短期不变特征而不是仅评估几何收敛的原始 ICP 残差</strong>；</li>
+<li>对于如何将这些已建立的约束应用于场景，参考原始的 <strong>ElasticFusion</strong>。</li>
+</ul>
+<hr>
+<h3 id="14-基于深度学习的动态环境单目-slam">14. 基于深度学习的动态环境单目 SLAM</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[14]</strong> Xiao L, Wang J, Qiu X, et al. <a href="https://www.researchgate.net/profile/Linhui_Xiao/publication/332149941_Dynamic-SLAM_Semantic_monocular_visual_localization_and_mapping_based_on_deep_learning_in_dynamic_environment/links/5cb201d04585156cd7949b7b/Dynamic-SLAM-Semantic-monocular-visual-localization-and-mapping-based-on-deep-learning-in-dynamic-environment.pdf"><strong>Dynamic-SLAM: Semantic monocular visual localization and mapping based on deep learning in dynamic environment</strong></a>[J]. Robotics and Autonomous Systems, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->基于动态环境深度学习的单目 SLAM <!-- raw HTML omitted --></li>
+<li>中国科学院电子研究所传感器技术国家重点实验室   期刊 中科院三区 JCR Q2</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-13">摘要</h4>
+<ul>
+<li>在动态环境中工作时，传统的 SLAM 框架由于动态对象的干扰而表现不佳，通过利用物体检测的深度学习方法，提出了一种名为 Dynamic-SLAM 的<strong>语义 SLAM 框架</strong>，以解决动态环境中 SLAM 的问题；</li>
+<li>首先，基于卷积神经网络，构造<strong>组合先验知识的 SSD 目标检测器</strong>，以在语义级别检测新检测线程中的动态对象;</li>
+<li>然后，<!-- raw HTML omitted -->鉴于现有 SSD 目标检测网络的低召回率，提出了一种<strong>基于相邻帧速度不变性的漏检检测补偿算法，大大提高了检测的召回率</strong><!-- raw HTML omitted -->；</li>
+<li>最后，构建了基于特征点的视觉 SLAM 系统，该系统<strong>通过跟踪线程中的选择性跟踪算法处理动态物体的特征点</strong>，从而显着减少由不正确匹配引起的姿态估计误差。
+<ul>
+<li>与原始 SSD 网络相比，系统的召回率从 82.3％ 提高到 99.8％ ;</li>
+</ul>
+</li>
+</ul>
+<h4 id="主要贡献-7">主要贡献</h4>
+<ul>
+<li>鉴于现有 SSD 目标检测网络的召回率较低的问题，针对 SLAM 系统提出了<strong>基于相邻帧速度不变性的漏检检测补偿算法</strong>，大大提高了检测的召回率，为以下模块提供了良好的基础；</li>
+<li>提出了一种<strong>选择跟踪算法</strong>，以简单有效的方式<strong>消除动态对象</strong>，提高了系统的鲁棒性和准确性；</li>
+<li>构建基于特征点法的视觉动态 SLAM 系统，基于 SSD 卷积神经网络，将深度学习技术构建到一个新的目标检测线程，<strong>该线程结合了先验知识，实现了机器人定位和建图中语义层面动态对象的检测</strong>。</li>
+</ul>
+<hr>
+<h3 id="15-不要忽略局部最小化一种完整的-3d-对应姿态估计解决方案">15. 不要忽略局部最小化：一种完整的 3D 对应姿态估计解决方案</h3>
+<blockquote>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>[15]</strong> Zhou L, Wang S, Ye J, et al. <a href="https://arxiv.org/pdf/1904.01759.pdf"><strong>Do not Omit Local Minimizer: a Complete Solution for Pose Estimation from 3D Correspondences</strong></a>[J]. arXiv preprint arXiv:1904.01759, <strong>2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->不要忽略局部最小化：一种完整的 3D 对应姿态估计解决方案<!-- raw HTML omitted --></li>
+<li>CMU</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-14">摘要</h4>
+<ul>
+<li>从给定的 <strong>3D 对应关系中估计位姿</strong>，包括<strong>点对点，点到线和点到平面</strong>的相关性，是计算机视觉中许多应用的基本任务；</li>
+<li>我们为此任务提供了完整的解决方案，包括<strong>解决最小问题和此任务的最小二乘问题</strong>；</li>
+<li>以前的工作主要集中在<strong>寻找全局最小化器以解决最小二乘问题</strong>，然而，实现全局最小化器的能力的现有工作仍然<strong>不适用于实时应用</strong>；</li>
+<li>此外，作为本文的贡献之一，我们<strong>证明了对于任意数量的线和平面存在模糊的配置</strong>，这些配置理论上有几种解决方案，这使得<strong>正确的解决方案可能来自局部最小化器</strong>；</li>
+<li>我们的算法能够有效地揭示局部最小化，我们采用 Cayley-Gibbs-Rodriguez（CGR）旋转参数化来得出三种 3D 对应情形的一般合理成本；</li>
+<li>本文的主要贡献是<strong>求解最小问题的最终方程系统和最小二乘问题的一阶最优性条件</strong>，两者都是复杂的有理形式，我们<strong>算法的核心思想是引入中间未知数以简化问题</strong>；</li>
+<li>大量的实验结果表明，当对应关系的数量很少时，我们的算法明显优于以前的算法，此外，当全局最小化器是解决方案时，我们的算法实现了与先前保证全局最优性的算法相同的精度，但是我们的算法适用于实时应用。</li>
+</ul>
+<h4 id="主要贡献-8">主要贡献</h4>
+<ul>
+<li>首先，我们证明<strong>存在任意数量的平面和线对应的模糊配置</strong>，这导致多种解决方案，当配置<strong>近似模糊时</strong>，问题的<strong>正确解决方案可能来自局部最小值</strong>；
+<ul>
+<li>因此，在这种情况下，仅计算全局最小化器的先前工作[25,26,4]将失败，说明<strong>局部最小化器对于处理所有配置的算法至关重要</strong>；</li>
+</ul>
+</li>
+<li>其次，我们提出了一个<strong>有效和准确的解决最小二乘法三维配准问题的方法</strong>；
+<ul>
+<li>我们使用 <strong>CGR 参数来表示旋转</strong>，从而产生一个合理的成本函数；</li>
+<li>我们得到了它的<strong>一阶最优性条件</strong>，它们形成了一个高阶多项式系统，难以求解；</li>
+<li><strong>引入了四个中间未知数来松弛原问题</strong>，使得一阶最优性条件简单得多；</li>
+<li>采用grobner-basis方法[8]求解该方程组；</li>
+<li>然后我们用<strong>牛顿-拉斐逊方法</strong>对其进行了改进。</li>
+</ul>
+</li>
+<li>第三，我们<strong>为潜在的最小配置提供统一的解决方案</strong>，以前的算法被提出来逐案解决最小问题[6,32,31]；
+<ul>
+<li>我们还使用 CGR 参数化来表示旋转，它为最小化配置<strong>生成三阶方程系统</strong>；</li>
+<li>引入三个中间未知数以简化方程系统；</li>
+<li>引入一种新颖的隐变量方法[8]来求解旋转<strong>矩阵的第二阶方程系统</strong>，然后<strong>可以从线性系统计算平移</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="16-三维多视角对齐中微型闭环的最小求解器">16. 三维多视角对齐中微型闭环的最小求解器</h3>
+<blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> <strong>[16]</strong> Miraldo P, Saha S, Ramalingam S. <a href="https://arxiv.org/pdf/1904.03941.pdf"><strong>Minimal Solvers for Mini-Loop Closures in 3D Multi-Scan Alignment</strong></a>[C]. <strong>CVPR 2019</strong>.
+<ul>
+<li><!-- raw HTML omitted -->三维多视角对齐中<strong>微型闭环</strong>的最小求解器<!-- raw HTML omitted --></li>
+<li>美国犹他大学</li>
+<li>ICRA 2019：<a href="https://arxiv.org/pdf/1904.04858.pdf">POSEAMM: A Unified Framework for Solving Pose Problems using an Alternating Minimization Method</a></li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="摘要-15">摘要</h4>
+<ul>
+<li>在诸如 Kinect 和 Velodyne 之类的 3D 传感器的背景下，<strong>3D 扫描配准</strong>是经典但非常有用的问题，虽然存在若干现有方法，但是这些技术通常是<strong>增量式</strong>的，其中首先计算相邻扫描以获得初始姿势，然后进行<strong>运动平均和 BA 细化</strong>；</li>
+<li>在本文中，我们采用了一种不同的方法，并<strong>开发了最小的求解器</strong>，用于<strong>联合计算小闭环中相机的初始姿态</strong>；</li>
+<li>对于经典的两帧之间的匹配，可以使用最小 3 个点的匹配来计算 6 自由度的相对运动（P3p）；</li>
+<li>另一方面，为了<strong>共同计算 n 个周期中的三维注册</strong>，我们在<strong>前 n-1 连续对</strong>（即帧 1 和 2，n -1 和 n）和<strong>帧 1 和帧 n 之间进行 2 点匹配</strong>；</li>
+<li>总之，我们使用 5,7,10 点匹配进行 3,4,5 次闭环，并分别恢复 12,18,24 度的变换变量；</li>
+<li>使用模拟和实际数据，表明使用微型 n 循环的 3D 配准在计算上是有效的，并且<strong>与标准成对方法相比可以提供替代的和更好的初始位姿</strong>。</li>
+</ul>
+<h4 id="主要贡献-9">主要贡献</h4>
+<ul>
+<li>本文为 <strong>3D 点云注册</strong>中的<strong>微型 n−cycles 提出了新的最小化求解器</strong>；</li>
+<li>提出了三个解决方案，用于一般的 6 自由度和平面运动的 3 ，4 ，5-cycles；</li>
+<li>表 1 中显示了不同的 <strong>n−cycles 所需的点对应关系以及解决方案的数量</strong>；</li>
+<li>据我们所知，我们是第一个提出并解决这些案例的人。</li>
+</ul>
+<!-- raw HTML omitted -->
+<hr>
+<blockquote>
+<p><a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a> <br>
+2019.05.05</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-05-25-skim2/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-05-07-nonparametric-pose-graph/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 使用非参数位姿图的物体 SLAM</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

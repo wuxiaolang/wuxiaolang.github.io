@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models  使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位
+Liu R, Zhang J, Chen S, et al. Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (ISMAR). IEEE, 2019: 1-7.
+浙江工业大学、汉堡大学；代码开源
+前期研究：Arth C, Pirchheim C, Ventura J, et al. Instant outdoor localization and slam initialization from 2.5 d maps[J]. IEEE transactions on visualization and computer graphics, 2015, 21(11): 1309-1318.
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2020-03-13-building-models/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位" />
+<meta property="og:description" content="Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models
+
+使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位
+Liu R, Zhang J, Chen S, et al. Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (ISMAR). IEEE, 2019: 1-7.
+浙江工业大学、汉堡大学；代码开源
+前期研究：Arth C, Pirchheim C, Ventura J, et al. Instant outdoor localization and slam initialization from 2.5 d maps[J]. IEEE transactions on visualization and computer graphics, 2015, 21(11): 1309-1318.
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2020-03-13-building-models/" />
+<meta property="article:published_time" content="2020-03-13T00:00:00+08:00" />
+<meta property="article:modified_time" content="2020-03-13T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位">
+<meta itemprop="description" content="Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models
+
+使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位
+Liu R, Zhang J, Chen S, et al. Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (ISMAR). IEEE, 2019: 1-7.
+浙江工业大学、汉堡大学；代码开源
+前期研究：Arth C, Pirchheim C, Ventura J, et al. Instant outdoor localization and slam initialization from 2.5 d maps[J]. IEEE transactions on visualization and computer graphics, 2015, 21(11): 1309-1318.
+">
+<meta itemprop="datePublished" content="2020-03-13T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2020-03-13T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="5254">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位"/>
+<meta name="twitter:description" content="Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models
+
+使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位
+Liu R, Zhang J, Chen S, et al. Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (ISMAR). IEEE, 2019: 1-7.
+浙江工业大学、汉堡大学；代码开源
+前期研究：Arth C, Pirchheim C, Ventura J, et al. Instant outdoor localization and slam initialization from 2.5 d maps[J]. IEEE transactions on visualization and computer graphics, 2015, 21(11): 1309-1318.
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-03-13 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            </div>
+          <span class="more-meta"> 约 5254 字 </span>
+          <span class="more-meta"> 预计阅读 11 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="towards-slam-based-outdoor-localization-using-poor-gps-and-2.5-d-building-models">Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models</h1>
+<blockquote>
+<p><strong>使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位</strong><br />
+Liu R, Zhang J, Chen S, et al. <a href="https://ieeexplore.ieee.org/abstract/document/8943728/"><strong>Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models</strong></a>[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (<strong>ISMAR</strong>). IEEE, <strong>2019</strong>: 1-7.<br />
+浙江工业大学、汉堡大学；<a href="https://github.com/lauchlry/Buiding-GPS-SLAM"><strong>代码开源</strong></a><br />
+前期研究：Arth C, Pirchheim C, Ventura J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/7164332/"><strong>Instant outdoor localization and slam initialization from 2.5 d maps</strong></a>[J]. IEEE transactions on visualization and computer graphics, <strong>2015</strong>, 21(11): 1309-1318.</p>
+</blockquote>
+<h2 id="c-四问">【C】 四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>如何解决室外<strong>单目 SLAM 初始化</strong>？如何约束<strong>单目 SLAM 的尺度</strong>？</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>首先采用粗略的 GPS 信息得到相机的初始位姿，结合 2.5D 建筑模型创建建筑平面的伪深度图，给初始化第一帧的地图点赋予深度信息，保持单目 SLAM 与全局坐标系的尺度一致性；</li>
+<li>优化阶段最小化地图点与建筑平面的距离。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>初始化速度快，少于 0.3 秒；</li>
+<li>保证了单目 SLAM 创建的地图与真实世界的尺度一致；</li>
+<li>定位准确。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>离线完成，先采集图像和 GPS 数据，然后读取 2.5D 建筑模型；</li>
+<li>2.5D 建筑模型不容易获得，拓展性较差；</li>
+<li>建筑前面有树木遮挡的情况不适用，但往往大部分场景都是这样；</li>
+</ul></li>
+</ul>
+<h2 id="摘要">0. 摘要</h2>
+<ul>
+<li>讨论的<strong>问题</strong>：<strong>在 GPS 信号差的情况下，使用单目相机进行室外定位和跟踪</strong>；</li>
+<li>主要贡献：快速初始化方法和非线性优化方法
+<ul>
+<li>初始化将以<strong>绝对尺度</strong>提升 SLAM 的重建效果；</li>
+<li>非线性优化使用 <strong>2.5D 建筑模型进一步提升跟踪精度和尺度估计</strong>；</li>
+<li>姿态优化将同时基于视觉 SLAM 的相机位姿和 <strong>GPS 接收的位置信息</strong>，以解决漂移问题。</li>
+</ul></li>
+</ul>
+<h2 id="introduction">1. Introduction</h2>
+<ul>
+<li><strong>三维注册</strong>是增强现实的关键问题。</li>
+<li>从 2007 年 PTAM 开始， <strong>SLAM</strong> 构建局部环境模型并可用于跟踪和定位相机，为三维注册提供了解决方案。</li>
+<li>单目 <strong>SLAM 初始化</strong>是一个问题，一般需要平移相机通过稳定的三角化来初始化，RGB-D 相机通过引入深度来解决这个问题，但使用场景比较受限。</li>
+<li><strong>单目 SLAM 用于室外场景的挑战</strong>：
+<ul>
+<li>在室内可以通过手持相机移动来<strong>初始化</strong>问题不大，但在室外可能需要平移几米，不一定方便；</li>
+<li>除了相机带来的问题外，<strong>单目 SLAM 创建了一个与真实世界无关的坐标系</strong>：忽略了创建的模型与真实地理世界的尺度因子。（译者注：其实除了尺度还有方向也与地理世界无关）</li>
+</ul></li>
+<li>本文提出了一种利用常用的 2.5D 建筑物占地和较差的 GPS 传感器数据进行室外 SLAM 定位的方法，主要贡献：
+<ul>
+<li>① 一种基于<strong>混合的图优化方法，以较低的计算量融合 SLAM 和 2.5D 模型的数据</strong>，以提高重建和相机轨迹的精度，并减少漂移；</li>
+<li>② 次要贡献，我们采用一种新的<strong>快速初始化方法，应用新的方式从单一的图像和 2.5D 的地图合成深度图像</strong>。实验结果如图 1 所示。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/fig1.PNG" title="f1" width="600" />
+</center></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="related-work">2. Related Work</h2>
+<h3 id="基于数据库或重建数据的定位方法">2.1 基于数据库或重建数据的定位方法</h3>
+<ul>
+<li>比如数据库图像检索、点云，缺点是缺乏可延伸性，以及没有随环境变化的更新机制。</li>
+</ul>
+<h3 id="使用视觉和深度传感器的-slam">2.2 使用视觉和深度传感器的 SLAM</h3>
+<ul>
+<li>常用的<strong>单目 SLAM 初始化方法</strong>
+<ul>
+<li>① 对于平面场景使用八点法计算<strong>单应矩阵</strong>，对非平面场景使用五点法计算<strong>基本矩阵</strong>；</li>
+<li>② 利用卷积神经网络中的点、线、面甚至其他更丰富的信息来初始化。
+<ul>
+<li>文献 [16] 采用消失点初始化单目 SLAM，文献 [7,23,39] 通过基于深度学习的深度估计方法学习特征，最终得到新输入最佳深度估计模型。</li>
+</ul></li>
+</ul></li>
+<li>很多研究使用深度相机实现增强现实，但由于传感器的限制一般都用于室内 AR；</li>
+</ul>
+<h3 id="解决尺度模糊">2.3 解决尺度模糊</h3>
+<ul>
+<li>为<strong>确定单目 SLAM 的绝对尺度</strong>，可以在场景中加入包含已知尺寸的物体
+<ul>
+<li>文献 [8] 采用<strong>已知尺寸的三维测量模型</strong>进行初始化；</li>
+<li>文献 [22] 通过跟踪<strong>用户面部</strong>以估计手持式单目 SLAM 的绝对尺度；</li>
+<li>文献 [38] 联合使用<strong>地理标记、消失点和三维模型</strong>进行全局 SFM 注册；</li>
+<li>文献 [25] 视觉惯导融合获得绝对尺度。</li>
+</ul></li>
+</ul>
+<h3 id="室外跟踪与定位的混合系统">2.4 室外跟踪与定位的混合系统</h3>
+<ul>
+<li><strong>视惯融合</strong>为 AR 社区提供了解决方案：文献 [29] VIORB，文献 [32] VINS-mono，文献 [37] DSvio；</li>
+<li>文献 [18, 33] 视觉混合高质量的硬件传感器进行户外高精度定位；</li>
+<li>文献 [24] 使用<strong>相机+GPS 结合三维建筑模型提高定位精度</strong>；</li>
+<li>文献 [1] 训练 CNN 进行地理定位，给出输入图像的语义分割和 2.5D 模型。</li>
+</ul>
+<h3 id="与以往工作的区别">2.5 与以往工作的区别</h3>
+<ul>
+<li>与 ORB-SLAM2 不同，我们采用类似于文献 [3] 的 <strong>2.5D 模型，并且我们的方案并不是基于语义分割</strong>，而是将构建的模型的误差紧耦合地加入到优化方案中，使环境重建和给出的 2.5D 地图紧密地对齐；</li>
+<li>与文献 [24,26] 的方法相反，我们<strong>将误差直接集成到 SLAM 系统的基于二维图优化的方案中</strong>。</li>
+</ul>
+<hr />
+<h2 id="坐标系和初始化">3. 坐标系和初始化</h2>
+<ul>
+<li>建立三个坐标系，如图 2 所示
+<ul>
+<li>Global 坐标系：可以使用不同的地理坐标格式</li>
+<li>2.5D 地图坐标系：以米为单位的局部坐标系</li>
+<li>SLAM 坐标系：没有尺度信息的 SLAM 地图，相机在里面运动
+<ul>
+<li>由于基于经纬度的 WGS84 传感器不是公制的，通过 UTM 与 global 坐标系转换</li>
+<li>UTM 中的 global 坐标系是右手坐标系，其y轴指向北方，x轴指向东方，z轴指向天空。</li>
+</ul></li>
+</ul></li>
+<li>2.5D 地图坐标系实质上是实际环境的一部分，其坐标中心在 global 坐标系中具有固定位置，重要的是要注意，<strong>引入此坐标系主要是为了将所有地理参考信息带入适合视觉范围的坐标系</strong>。</li>
+<li>从 GPS 传感器中获得：时间戳、WGS84 格式的 3 自由度位置信息 GPS、从指南针和 IMU 中获得的 3 自由度旋转（四元数表示）。从而得到一个<strong>由 GPS 传感器 提供的相机位姿</strong> <span class="math display">\[
+  T_{\text {sensor }}(i)=\left[\begin{array}{cc}
+  R_{\text {sensor }}(i) &amp; t_{\text {sensor }}(i) \\
+  0 &amp; 1
+  \end{array}\right] \quad\quad(1)
+  \]</span></li>
+<li>在得到传感器的姿态之后，<strong>利用 2.5D 贴图生成伪深度图</strong> – 也就是为相机获取的图像中每个像素提供近似的距离值。创建这种伪深度图的简单方法就是建筑表面上的每个点 <span class="math inline">\(P_{2.5D}\)</span> 到相机中心 <span class="math inline">\(O_{cam} = (X_{cam},Y_{cam},Z_{cam})\)</span> 的距离： <span class="math display">\[
+  D=\sqrt{\left(X_{2.5 D}-X_{O_{c a m}}\right)^{2}+\left(Y_{2.5 D}-Y_{O_{c a n}}\right)^{2}+\left(Z_{2.5 D}-Z_{O_{c a n}}\right)^{2}} \quad(2)
+  \]</span></li>
+<li>所需的<strong>深度信息</strong>实际上是<strong>根据实际姿态估计值在建筑模型的 GPU 渲染的深度通道中编码的</strong>。因此，我们从当前位置渲染 2.5D 地图，并自动检索图像中每个像素的距离值： <span class="math display">\[
+  D^{\prime}=\frac{2.0+D_{\min }+D_{\max }}{D_{\max }+D_{\min }-(2.0 * D-1.0)} *\left(D_{\max }-D_{\min }\right) \quad(3)
+  \]</span>
+<ul>
+<li>其中选择 <span class="math inline">\(D_{max}, D_{min}\)</span> 为视锥截距（view frustum cut-off distances），初始深度如图 3 所示。</li>
+</ul></li>
+<li>提供深度通道的信息，然后检索图像蒙版，然后对图像中的 ORB 特征点利用公式 3 计算每个点的深度（距离）信息。<font color = red><strong>最后利用图像中的 2D 特征点 <span class="math inline">\(p(x, y)\)</span> 和距离信息创建 3D 地图点 <span class="math inline">\(P(X,Y,Z)\)</span>，</strong> 以正确的尺度<strong>初始化 SLAM 地图</strong>用于后续跟踪</font>。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/fig2_3.PNG" title="f2+3" width="650" />
+</center></li>
+</ul>
+<hr />
+<h2 id="优化">4. 优化</h2>
+<ul>
+<li>一方面，GPS 信息和 2.5D 地图为大型室外环境提供了<strong>全局度量标准</strong>，如今很容易从公共资源获取2.5D地图。从实用的角度来看，传感器体积小，价格便宜，功耗低，但存在误差；
+<ul>
+<li>另一方面，<strong>SLAM 有助于进行准确的本地注册和跟踪</strong>，但是几乎不能直接应用于室外环境。因此，需要以下面描述的<strong>通用优化方案融合所有信息</strong>。</li>
+</ul></li>
+<li>在初始化阶段，由于每个地图点只有单帧的观测，所以只优化相机位姿，也就是地图不断增长但保持位置不变；
+<ul>
+<li>当地图点被跟踪之后，也就是在不同帧中有多次观测，开始启动地图点优化，也就是回归了 SLAM 的通用状态，使用常规的重投影进行优化；</li>
+<li>最后，随着SLAM系统的建立，我们添加了基于建筑模型的误差，并将实际的传感器信息包括到优化中。</li>
+</ul></li>
+</ul>
+<h3 id="基于建筑模型的优化">4.1 基于建筑模型的优化</h3>
+<p>  建立基于模型的优化的主要目的是<strong>根据 7 自由度（即平移、旋转和尺度）使相机轨迹和相关的 SLAM 地图更接近 2.5D 地图</strong>。然而，随着时间的推移，提高 SLAM 的定位和跟踪的精度也同样重要，因为<strong>使用深度贴图渲染的初始化固有地增加了大量误差</strong>，这最终是由于传感器的不精确性造成的。为了解决这一问题，我们的解决方案是基于图优化，<strong>将重建的三维地图点与三维建筑模型立面之间的距离最小化</strong>，分三步进行。</p>
+<h4 id="确定相应的建筑平面">4.1.1 确定相应的建筑平面</h4>
+<ul>
+<li>定义当前帧相机的偏航角为 <span class="math inline">\(\theta\)</span>，位置为 <span class="math inline">\((x,y,z)\)</span>，<strong>相机的水平视野</strong> <span class="math inline">\(\Delta \theta_{H}\)</span> 可以根据相机焦距图像的宽度计算： <span class="math display">\[
+  \Delta \theta_{H}=2 * \frac{\arctan \left(\frac{W}{2}\right)}{f}  \quad(4)
+  \]</span></li>
+<li>然后在 <span class="math inline">\([\theta - \frac{\Delta \theta_{H}}{2}, \theta + \frac{\Delta \theta_{H}}{2}]\)</span> 区间里，我们间隔 4° 计算视线即光线轨迹，然后计算视线与所有建筑立面的交点，最后仅保留与建筑物有交集的交点，从而确定相应的建筑立面。</li>
+<li>令 <span class="math inline">\(\mathbf{B}=\left\{B_{11}, B_{12}, \ldots, B_{i j}, \ldots, B_{m l}\right\}\)</span> 表示在 2.5D 地图中所有建筑集合，<span class="math inline">\(B_{i j}\)</span> 表示第 <span class="math inline">\(i\)</span> 个建筑的第 <span class="math inline">\(j\)</span> 个平面，给定交点，创建一个布尔型向量，如果建筑平面可见设为 true，否则设为 false： <span class="math display">\[
+  \mathbf{B}_{\text {isvisible}}=\left\{B_{11_{\text {isvisible}}}, B_{12_{\text {isvisible}}}, \cdots , B_{i j_{\text {isvisible}}}, \cdots ,B_{m l_{\text {isvisible}}}\right\} \quad(5)
+  \]</span></li>
+</ul>
+<h4 id="点-面关联">4.1.2 点-面关联</h4>
+<ul>
+<li>为恢复重建的点云地图的尺度，只需要附属于至少一个平面的 3D 点云。在给定当前传感器姿态 <span class="math inline">\(T_{sensor}(i)\)</span> 的情况下，再次使用 2.5D 地图中的深度蒙版，以<strong>过滤掉不包含在建筑平面上的那些点</strong>；</li>
+<li>给定经过过滤之后的剩余的点云和建筑平面，计算每个 3D 点 <span class="math inline">\(P_i\)</span> 到建筑平面的距离 <span class="math inline">\(d\)</span>。将 <span class="math inline">\(P_i\)</span> 通过正交映射到地平面 <span class="math inline">\(p_i\)</span>，最后确定最接近的平面和距离，创建以下的目标函数： <span class="math display">\[
+\forall p_{i}, B_{i j_{visible}}={\arg \min}_{B_{i j_{visible}}\in{B_isvisible}} \left\|d\left(p_{i}, B_{i j_{v i s i b l e}}\right)\right\|^{2} \quad(6)
+\]</span></li>
+</ul>
+<h4 id="迭代图优化">4.1.3 迭代图优化</h4>
+<ul>
+<li>为减少残差，我们的图优化使用<strong>每个关键帧及其关联的地图点作为输入</strong>，它包括<strong>地图点的几何误差和关键帧姿势的重投影误差</strong>。</li>
+<li><font color = red><strong>1) 几何误差</strong></font>：我们使用 g2o 的一元边进行图优化，并对每个关键帧的每个地图点在进行点-平面关联之前执行非线性最小化 <span class="math display">\[
+  P_{i}={ }_{P_{i}}^{\arg \min } \sum_{i=1}^{n} \rho\left\|A x_{i}+B y_{i}+C z_{i}+D\right\|^{2} \quad(7)
+  \]</span>
+<ul>
+<li>其中 <span class="math inline">\(Ax + By + Cz + D = 0\)</span> 表示一个 3D 建筑平面，对于平面上任何一个点 <span class="math inline">\(P_{building}=(x_0,y_0,z_0)\)</span> 满足 <span class="math inline">\(D=-(Ax_0 + Ay_0 + Az_0)\)</span>。<strong>几何误差表示图优化中连接两个地图点的一条边</strong>。</li>
+</ul></li>
+<li><font color = red><strong>2) 重投影误差</strong></font>：就是正常的 3D 点重投影误差，用于优化相机位姿： <span class="math display">\[
+  T_{f_{k}}={\arg \min }_{T_{f_{k}}} \sum_{i=1}^{n} \rho\left\|\eta_{i}-K T_{f_{k}} P_{i}\right\|^{2} \quad(8)
+  \]</span>
+<ul>
+<li>重投影误差是在图优化中链接地图点和相机的一条边。</li>
+</ul></li>
+<li><font color = red><strong>3) GPS 传感器优化</strong></font>：由于在对齐过程中连续使用了来自实际传感器姿态估计值 <span class="math inline">\(T_{sensor}(i)\)</span> 的深度图像信息，因此可以通过比较后续帧之间的特征匹配次数来识别 GPS 信息中的漂移，这纯粹出于视觉验证的目的，图 3 中对此进行了说明。
+<ul>
+<li>在实践中，当相邻帧之间建筑掩膜面积变化大时（如图 3 的情况），我们创建深度图像时使用 SLAM 估计的位姿，而不是基于 GPS 传感器的原始位姿；</li>
+<li>由于 GPS 传感器测量值的不准确性，需要一个弱约束误差函数将 GPS 数据始终合并到 SLAM 系统中： <span class="math display">\[
+  T_{\text {slam}}(i)={\arg \min }_{T_{\text {slam}}(i)} \sum_{i}^{n}\left\|\Delta T_{\text {slam}}(i)-\Delta T_{\text {sensor}}(i)\right\|^{2} \quad(9)
+  \]</span>
+<ul>
+<li><span class="math inline">\(T_{\text {slam}}(i)\)</span> 和 <span class="math inline">\(T_{\text {sensor}}(i)\)</span> 被视为是图优化的两个定点，其差值为边，当优化之后的结果与 SLAM 的位姿之差超过一定阈值则丢弃优化的结果。</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实验">5. 实验</h2>
+<ul>
+<li>数据采集：Surface 平板配备传感器，RGB 图像、由传感器姿态估计生成的相应深度图像、粗略的 GPS 传感器信息和区域环境的 2.5D 地图；</li>
+<li>实验：3.2GHz 内核 i5 iMac2015 离线进行。</li>
+<li>可视化结果如图 6 所示。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/fig6.PNG" title="f1" width="700" />
+</center></li>
+</ul>
+<h3 id="初始化分析">5.1 初始化分析</h3>
+<ul>
+<li>首先，我们将我们的初始化方法的准确性和计算性能与我们场景中的标准ORBSLAM2实现进行比较。</li>
+</ul>
+<h4 id="运行时间性能比较">5.1.1 运行时间性能比较</h4>
+<ul>
+<li>ORB-SLAM2 由于过度的特征匹配花费了很多时间，DSO 由于光照变化不稳定因素初始化较慢，本文方法只需要不到 0.3 秒，如图 4 所示。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/fig4.PNG" title="f1" width="500" />
+</center></li>
+</ul>
+<h4 id="鲁棒性比较">5.1.2 鲁棒性比较</h4>
+<ul>
+<li>用初始化之后地图点与其他帧之间的匹配数作为鲁棒性的评估指标，如表 1 所示，我们的方法保留了初始化之后的绝大多数点，并且在优化之后还保存了大部分，从而随后帧中具有大量特征点的观测值；</li>
+<li>而 ORB-SLAM2 受限于基线较短，采用帧对帧匹配的初始化方法可以大大减少了地图点的数量。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/tab1.PNG" title="f1" width="800" />
+</center></li>
+</ul>
+<h4 id="gps-限制和初始化">5.1.3 GPS 限制和初始化</h4>
+<ul>
+<li>在极端情况下，来自常规 GPS/IMU 传感器设备的位姿误差一般在旋转上高达 45 度，平移高达 40 米。在实践中，我们遇到的误差更大，在几米范围内，并在任何轴上高达 20 度。我们的初始化过程能够处理这些错误，但是成功也取决于给定的环境。
+<ul>
+<li>一方面，我们方法的成败与用户的操作有关，当用户保持相机设备相对静止或避免快速移动时，我们的初始化更有可能成功；</li>
+<li>另一方面，一旦初始化成功，GPS/IMU 误差就不重要了，因为这些误差将在随后的优化中得到纠正。通过基于混合多模态图优化，<strong>主要依靠建筑模型的约束和投影误差来保证SLAM系统的精度和尺度是正确的</strong>。当 GPS/IMU 发生故障时，只要 GPS/IMU 的数据可以接受，系统就可以快速重新初始化。</li>
+</ul></li>
+</ul>
+<h3 id="重建图比较">5.2 重建图比较</h3>
+  如图 7a ，绿色的部分为 ORB-SLAM2 构建的地图，不存在尺度信息；蓝色和红色的部分为使用我们方法构建的地图，初始化之后的墙面点云还存在一些误差，在经过优化之后基本与真实模型对齐。<br />
+
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/fig7a.PNG" title="f1" width="1000" />
+</center>
+<h3 id="轨迹比较">5.3 轨迹比较</h3>
+  如图 7b 所示，绿色的轨迹为原始 ORB-SLAM2，依然是缺少尺度信息；粉色的为 GPS 粗略的轨迹，不但漂移大还很离散，有些帧没有对应的观测值；蓝色和红色是使用我们方法的初始轨迹和优化之后的轨迹。<br />
+
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200313/fig7b.PNG" title="f1" width="1000" />
+</center>
+<h3 id="固定位置比较">5.4 固定位置比较</h3>
+<p>  由于没有 groundtruth 来评估精度，我们选取固定运动起点和终点，量取两点之间的距离作为相机的运动长度，最终除了在 02-21 序列由于 GPS 噪声过大没有匹配固定点外，其他序列的误差约为 2 米。（译者注：你这也没给出运动了多长距离呀？看图 7 好像挺短的，要是运动 10 米，那误差就有 20% 了，也没给出定量数据表格？）</p>
+<hr />
+<h2 id="总结">6. 总结</h2>
+<ul>
+<li>本文提出了一种基于特征的单目 SLAM 实时初始化算法和一种室外 AR 平台多模态数据混合优化方法。我们的<strong>单帧初始化提供了一个精确的度量相机注册</strong>，而我们的<strong>优化方法基于容易获得的 2.5D 地图和较差的 GPS 传感器数据，对齐大规模 SLAM 重建和相关的相机轨迹</strong>。将我们的方法与最新发表的结果进行比较，我们的方法在精度、稳健性和计算工作量方面表现合理，并且相对容易实现。<br />
+</li>
+<li>虽然我们的方法有可能实现室外精准的 AR 可视化，但也存在一些<strong>局限性</strong>：
+<ul>
+<li>室外定位总体复杂，我们的方法一般面向城市环境；</li>
+<li>我们建立在地平线波动不大的假设上，对于像重庆这样的山城不太适用；</li>
+<li>基于特征点的方法容易受到动态干扰，比如车辆行人；</li>
+<li>建筑前的树木等静态特征也容易干扰，他们显然不应该归纳到建筑平面的掩膜中。</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+[5] Arth C, Pirchheim C, Ventura J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/7164332/"><strong>Instant outdoor localization and slam initialization from 2.5 d maps</strong></a>[J]. IEEE transactions on visualization and computer graphics, <strong>2015</strong>, 21(11): 1309-1318. &gt; 本文前期研究</li>
+<li><input type="checkbox" disabled="" />
+[8] Choi K, Park J, Kim Y H, et al. <a href="https://www.sciencedirect.com/science/article/pii/S0921889012000309"><strong>Monocular SLAM with undelayed initialization for an indoor robot</strong></a>[J]. Robotics and Autonomous Systems, <strong>2012</strong>, 60(6): 841-851. &gt; 使用已知尺寸的物体初始化单目 SLAM 系统</li>
+<li><input type="checkbox" disabled="" />
+[16] Huang J, Liu R, Zhang J, et al. <a href="https://ieeexplore.ieee.org/abstract/document/8324772/"><strong>Fast initialization method for monocular SLAM based on indoor model</strong></a>[C]//2017 IEEE International Conference on Robotics and Biomimetics (ROBIO). IEEE, <strong>2017</strong>: 2360-2365. &gt; 在室内环境利用消失点进行快速单目初始化</li>
+<li><input type="checkbox" disabled="" />
+[22] Knorr S B, Kurz D. <a href="https://ieeexplore.ieee.org/abstract/document/7781761/"><strong>Leveraging the user’s face for absolute scale estimation in handheld monocular slam</strong></a>[C]//2016 IEEE International Symposium on Mixed and Augmented Reality (ISMAR). IEEE, <strong>2016</strong>: 11-17. &gt; 跟踪用户面部估计单目 SLAM 的尺度</li>
+<li><input type="checkbox" disabled="" />
+[24] Larnaout D, Gay-Belllile V, Bourgeois S, et al. <a href="https://ieeexplore.ieee.org/abstract/document/7035855/"><strong>Vision-based differential gps: Improving vslam/gps fusion in urban environment with 3d building models</strong></a>[C]//2014 2nd International Conference on 3D Vision. IEEE, <strong>2014</strong>, 1: 432-439. &gt; 视觉 SLAM + GPS + 三维建筑模型提高定位精度</li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<ul>
+<li><strong>1.</strong> 公式（6）将地图点正交变换到地平面，怎么确定地平面？</li>
+<li><strong>2.</strong> 公式（7）什么意义？跟公式（6）目的不是一样的吗？</li>
+<li><font color = red><strong>3. 3D/2.5D 地图获取</strong></font>
+<ul>
+<li>https://wiki.openstreetmap.org/wiki/3D</li>
+<li>https://osmbuildings.org/documentation/viewer/</li>
+</ul></li>
+</ul>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2020.03.13</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        
+        <a class="next" href="/2019-10-19-eigen-factors/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

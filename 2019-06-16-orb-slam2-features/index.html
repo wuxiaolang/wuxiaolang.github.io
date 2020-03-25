@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😀 ORB-SLAM2 代码解读（三）：特征提取 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="特征匹配 1. 初始化时两帧之间的特征匹配 SearchForInitialization() 在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出图像金字塔第 0 层（即原图）的特征点" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+<meta name="google-site-verification" content="UA-160646347-1" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wuyanmin.coding.me/2019-06-16-orb-slam2-features/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😀 ORB-SLAM2 代码解读（三）：特征提取" />
+<meta property="og:description" content="特征匹配 1. 初始化时两帧之间的特征匹配 SearchForInitialization() 在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出图像金字塔第 0 层（即原图）的特征点" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wuyanmin.coding.me/2019-06-16-orb-slam2-features/" />
+<meta property="article:published_time" content="2019-06-16T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-06-16T00:00:00+08:00" />
+<meta itemprop="name" content=" 😀 ORB-SLAM2 代码解读（三）：特征提取">
+<meta itemprop="description" content="特征匹配 1. 初始化时两帧之间的特征匹配 SearchForInitialization() 在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出图像金字塔第 0 层（即原图）的特征点">
+<meta itemprop="datePublished" content="2019-06-16T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-06-16T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="1236">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😀 ORB-SLAM2 代码解读（三）：特征提取"/>
+<meta name="twitter:description" content="特征匹配 1. 初始化时两帧之间的特征匹配 SearchForInitialization() 在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出图像金字塔第 0 层（即原图）的特征点"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😀 ORB-SLAM2 代码解读（三）：特征提取</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-06-16 </span>
+        <div class="post-category">
+            <a href="/categories/orb-slam2/"> ORB-SLAM2 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/code/"> code </a>
+            </div>
+          <span class="more-meta"> 约 1236 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-初始化时两帧之间的特征匹配-searchforinitialization">1. 初始化时两帧之间的特征匹配 SearchForInitialization()</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <!-- raw HTML omitted -->
+<h1 id="特征匹配">特征匹配</h1>
+<h2 id="1-初始化时两帧之间的特征匹配-searchforinitialization">1. 初始化时两帧之间的特征匹配 SearchForInitialization()</h2>
+<p>  在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出<strong>图像金字塔第 0 层（即原图）的特征点进行匹配</strong>，返回<strong>匹配的点对数量</strong>，实现在 <!-- raw HTML omitted --><strong><code>ORBmatcher::SearchForInitialization()</code></strong><!-- raw HTML omitted --> 函数中</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">ORBmatcher</span><span class="o">::</span><span class="n">SearchForInitialization</span><span class="p">(</span><span class="n">Frame</span> <span class="o">&amp;</span><span class="n">F1</span><span class="p">,</span>          <span class="c1">// 参考帧.
+</span><span class="c1"></span>                                        <span class="n">Frame</span> <span class="o">&amp;</span><span class="n">F2</span><span class="p">,</span>          <span class="c1">// 当前帧.
+</span><span class="c1"></span>                                        <span class="n">vector</span><span class="o">&lt;</span><span class="n">cv</span><span class="o">::</span><span class="n">Point2f</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">vbPrevMatched</span><span class="p">,</span> <span class="c1">// 存储匹配点.
+</span><span class="c1"></span>                                        <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">vnMatches12</span><span class="p">,</span>           <span class="c1">// 匹配标志位.
+</span><span class="c1"></span>                                        <span class="kt">int</span> <span class="n">windowSize</span><span class="p">)</span>     <span class="c1">// 搜索窗口大小.
+</span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p><strong>步骤一：</strong> 用<strong>参考帧特征点</strong>的坐标<strong>在当前帧坐标附近区域</strong>中<strong>同层搜索可能匹配的特征点</strong>，实现在函数 <!-- raw HTML omitted --><strong><code>Frame::GetFeaturesInArea()</code></strong><!-- raw HTML omitted --> 中，作用是找到在以 (x,y) 为中心，半径为 r 的圆形内且在金字塔层 [minLevel, maxLevel] 之间的特征点，返回满足条件的特征点的序号。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">Frame</span><span class="o">::</span><span class="n">GetFeaturesInArea</span><span class="p">(</span><span class="k">const</span> <span class="kt">float</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">,</span> <span class="k">const</span> <span class="kt">float</span>  <span class="o">&amp;</span><span class="n">y</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">float</span>  <span class="o">&amp;</span><span class="n">r</span><span class="p">,</span> 
+                                        <span class="k">const</span> <span class="kt">int</span> <span class="n">minLevel</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">maxLevel</span><span class="p">)</span> <span class="k">const</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>步骤 1：</strong> <strong>检查该特征点周围的圆形区域是否在图像中</strong>，具体做法是分别求圆形搜索区域的上下左右四个边界是否能够满足图像的边界条件；
+<ul>
+<li>这里的边界条件以圆的左边界为例，就是首先求出左边界所在的图像网格列，然后判断这个网格列位置是否超过了图像网格的上限；</li>
+<li>同理求其他三个边界是否在图像中，如果不符合要求则说明找不到特征点。</li>
+</ul>
+</li>
+<li><strong>步骤 2：</strong> 遍历圆形区域内的所有网格
+<ul>
+<li><strong>步骤 ①：</strong> 逐次<strong>获取每个网格中的特征点</strong></li>
+<li><strong>步骤 ②：</strong> 如果该网格中有特征点则<strong>遍历该网格中所有特征点</strong>
+<ul>
+<li><strong>步骤 A：</strong> 逐个读取网格中的特征点；</li>
+<li><strong>步骤 B：</strong> 如果给定的搜索图层范围合法，则<strong>检查这个特征点是否是在给定搜索图层范围内生成的</strong>；</li>
+<li><strong>步骤 C：</strong> 计算这个特征点到指定的搜索中心的距离（x方向和y方向），查看<strong>是否是在这个圆形区域之内</strong>，如果符合要求则保存该特征点的索引到 <code>vector&lt;size_t&gt; vIndices</code> 中。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>结束，返回对应于参考帧中某个特征点<strong>在当前帧中一定大小圆形区域内的特征点索引</strong>。
+<img src="https://github.com/wuxiaolang/self_commit_ORB-SLAM2/blob/master/doc/imgs/GetFeaturesInArea.jpg?raw=true" alt=""></li>
+</ul>
+</li>
+<li>
+<p><strong>步骤二：</strong> 对上一步获取的候选特征点依次<strong>计算描述子距离，并找到最小的两个距离</strong></p>
+<ul>
+<li><strong>步骤 1：</strong> 获取两个特征点在对应帧中的特征描述符
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">F1</span><span class="p">.</span><span class="n">mDescriptors</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i1</span><span class="p">);</span> <span class="c1">// 参考帧中的特征点.
+</span><span class="c1"></span><span class="n">cv</span><span class="o">::</span><span class="n">Mat</span> <span class="n">d2</span> <span class="o">=</span> <span class="n">F2</span><span class="p">.</span><span class="n">mDescriptors</span><span class="p">.</span><span class="n">row</span><span class="p">(</span><span class="n">i2</span><span class="p">);</span> <span class="c1">// 当前帧中的候选特征点.
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 2：</strong> 计算<strong>描述子距离</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">DescriptorDistance</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span><span class="n">d2</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 3：</strong> 保存下所有候选特征点中描述子<strong>距离最小的两个</strong>;</li>
+<li><strong>步骤 4：</strong> 确保最小距离小于阈值（50），并确保最小距离小于 mfNNratio（取 0.7 或 0.9 ） 倍的次小距离，<strong>保证该匹配的鲁棒性</strong>；
+<ul>
+<li>记录匹配状态
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">vnMatches12</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">=</span><span class="n">bestIdx2</span><span class="p">;</span>       <span class="c1">// 参考帧中的特征点 i1 对应当前帧的 bestIdx2.
+</span><span class="c1"></span><span class="n">vnMatches21</span><span class="p">[</span><span class="n">bestIdx2</span><span class="p">]</span><span class="o">=</span><span class="n">i1</span><span class="p">;</span>       <span class="c1">// 当前帧中的特征点 bestIdx2 对应参考帧的 i1.
+</span><span class="c1"></span><span class="n">vMatchedDistance</span><span class="p">[</span><span class="n">bestIdx2</span><span class="p">]</span><span class="o">=</span><span class="n">bestDist</span><span class="p">;</span>
+<span class="n">nmatches</span><span class="o">++</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>步骤三：</strong> <strong>直方图角度统（旋转一致性）计，剔除误匹配</strong>：每个特征点在提取描述子时的旋转主方向角度，<strong>如果图像旋转了，这个角度将发生改变，所有的特征点的角度变化应该是一致的</strong>，通过<strong>直方图统计得到最准确的角度变化值</strong></p>
+<ul>
+<li><strong>步骤 1：</strong> 计算没对匹配的<strong>角度差</strong> 【0, 360） 度之间
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">float</span> <span class="n">rot</span> <span class="o">=</span> <span class="n">F1</span><span class="p">.</span><span class="n">mvKeysUn</span><span class="p">[</span><span class="n">i1</span><span class="p">].</span><span class="n">angle</span><span class="o">-</span><span class="n">F2</span><span class="p">.</span><span class="n">mvKeysUn</span><span class="p">[</span><span class="n">bestIdx2</span><span class="p">].</span><span class="n">angle</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="n">rot</span><span class="o">&lt;</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">rot</span><span class="o">+=</span><span class="mf">360.0f</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 2：</strong> 将 360° 30 等分，没对匹配的角度差存储到一个 bin 组中，得到<strong>直方图</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">bin</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="n">rot</span><span class="o">*</span><span class="n">factor</span><span class="p">);</span>
+<span class="k">if</span><span class="p">(</span><span class="n">bin</span><span class="o">==</span><span class="n">HISTO_LENGTH</span><span class="p">)</span>
+    <span class="n">bin</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="n">assert</span><span class="p">(</span><span class="n">bin</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">bin</span><span class="o">&lt;</span><span class="n">HISTO_LENGTH</span><span class="p">);</span>
+
+<span class="c1">// 得到直方图.
+</span><span class="c1"></span><span class="n">rotHist</span><span class="p">[</span><span class="n">bin</span><span class="p">].</span><span class="n">push_back</span><span class="p">(</span><span class="n">i1</span><span class="p">);</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>步骤 3：</strong> 取出<strong>直方图 rotHist 中最大的三个索引</strong> ind1, ind2, ind3，实现在 <code>ORBmatcher::ComputeThreeMaxima()</code> 函数中</li>
+<li><strong>步骤 4：</strong> <strong>误匹配剔除</strong>，对于角度差在这三个索引中特征匹配不进行处理，<strong>剩下方向不在这三个索引中匹配进行剔除</strong>。</li>
+</ul>
+</li>
+<li>
+<p>结束。至此<strong>完成了初始两帧之间的特征匹配</strong>。</p>
+</li>
+</ul>
+<hr>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://blog.csdn.net/hzwwpgmwy/article/details/83419329">https://blog.csdn.net/hzwwpgmwy/article/details/83419329</a></li>
+<li><a href="http://www.pianshen.com/article/156343678/">http://www.pianshen.com/article/156343678/</a></li>
+<li><a href="https://www.cnblogs.com/shang-slam/p/6431017.html">https://www.cnblogs.com/shang-slam/p/6431017.html</a></li>
+</ul>
+<hr>
+<blockquote>
+<p>2019.06.16     <br>
+<a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a></p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-06-17-orb-slam2-monocular-initialization/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 😀 ORB-SLAM2 代码解读（三）：单目初始化</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-06-10-skim/">
+            <span class="next-text nav-default">2019 年 6 月论文泛读（21篇）</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wu-xiao-lang-84-85" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wuyanmin.coding.me/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?f954ea31dde6007cbdd4477fc4e3a836";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>
