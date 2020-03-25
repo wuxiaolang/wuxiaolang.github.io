@@ -2,94 +2,94 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ORB-SLAM2 on 吴言吴语</title>
-    <link>https://wuyanmin.coding.me/categories/orb-slam2/</link>
+    <link>https://wuxiaolang.cn/categories/orb-slam2/</link>
     <description>Recent content in ORB-SLAM2 on 吴言吴语</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
     <lastBuildDate>Fri, 05 Jul 2019 00:00:00 +0800</lastBuildDate>
     
-	<atom:link href="https://wuyanmin.coding.me/categories/orb-slam2/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wuxiaolang.cn/categories/orb-slam2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：优化 2（详解 &#43; g2o 使用）</title>
-      <link>https://wuyanmin.coding.me/2019-07-05-orb-slam2-optimization2/</link>
+      <link>https://wuxiaolang.cn/2019-07-05-orb-slam2-optimization2/</link>
       <pubDate>Fri, 05 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-07-05-orb-slam2-optimization2/</guid>
+      <guid>https://wuxiaolang.cn/2019-07-05-orb-slam2-optimization2/</guid>
       <description>0. 基本使用 0.1 构造 g2o 模型 首先构造 g2o 模型，包括选择线性方程求解器、矩阵求解器和下降算法； 1 2 3 4 5 6 7 8 9 10 11 12 13 // 设置图模型创建优化器. g2o::SparseOptimizer optimizer; //</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：优化 1（概述）</title>
-      <link>https://wuyanmin.coding.me/2019-07-03-orb-slam2-optimization1/</link>
+      <link>https://wuxiaolang.cn/2019-07-03-orb-slam2-optimization1/</link>
       <pubDate>Wed, 03 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-07-03-orb-slam2-optimization1/</guid>
+      <guid>https://wuxiaolang.cn/2019-07-03-orb-slam2-optimization1/</guid>
       <description>1. ORB-SLAM2 中优化的变量和误差 ORB-SLAM2 采用非线性优化的方式进行 BA 优化，由于 BA 的稀疏性（具体表现为雅克比矩阵和 H 矩阵的稀疏性），可以由图优化（将优化表示为图</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：单目初始化</title>
-      <link>https://wuyanmin.coding.me/2019-06-17-orb-slam2-monocular-initialization/</link>
+      <link>https://wuxiaolang.cn/2019-06-17-orb-slam2-monocular-initialization/</link>
       <pubDate>Mon, 17 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-06-17-orb-slam2-monocular-initialization/</guid>
+      <guid>https://wuxiaolang.cn/2019-06-17-orb-slam2-monocular-initialization/</guid>
       <description>单目初始化通过并行地计算基础矩阵 F 和单应矩阵 H ，恢复出最开始两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图，并对恢复的点云</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：特征提取</title>
-      <link>https://wuyanmin.coding.me/2019-06-16-orb-slam2-features/</link>
+      <link>https://wuxiaolang.cn/2019-06-16-orb-slam2-features/</link>
       <pubDate>Sun, 16 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-06-16-orb-slam2-features/</guid>
+      <guid>https://wuxiaolang.cn/2019-06-16-orb-slam2-features/</guid>
       <description>特征匹配 1. 初始化时两帧之间的特征匹配 SearchForInitialization() 在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出图像金字塔第 0 层（即原图）的特征点</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：闭环检测线程</title>
-      <link>https://wuyanmin.coding.me/2019-05-30-orb-slam2-loop/</link>
+      <link>https://wuxiaolang.cn/2019-05-30-orb-slam2-loop/</link>
       <pubDate>Thu, 30 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-05-30-orb-slam2-loop/</guid>
+      <guid>https://wuxiaolang.cn/2019-05-30-orb-slam2-loop/</guid>
       <description>0. 闭环检测线程介绍 通过检测闭环来消除 SLAM 系统的累计误差是比较直接且有效的方式，在局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 mlploopKeyFrameQueue 队列</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：局部建图线程</title>
-      <link>https://wuyanmin.coding.me/2019-05-30-orb-slam2-mapping/</link>
+      <link>https://wuxiaolang.cn/2019-05-30-orb-slam2-mapping/</link>
       <pubDate>Thu, 30 May 2019 00:00:00 +2000</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-05-30-orb-slam2-mapping/</guid>
+      <guid>https://wuxiaolang.cn/2019-05-30-orb-slam2-mapping/</guid>
       <description>0. 局部建图线程介绍 在 Tracking 线程中每次跟踪成功之后会判断是否将当前帧作为关键帧并送入到局部建图线程，关键帧的判断在 Tracking 线程中进行，但关键帧、地图点插</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：可视化线程</title>
-      <link>https://wuyanmin.coding.me/2019-05-28-orb-slam2-viewer/</link>
+      <link>https://wuxiaolang.cn/2019-05-28-orb-slam2-viewer/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-05-28-orb-slam2-viewer/</guid>
+      <guid>https://wuxiaolang.cn/2019-05-28-orb-slam2-viewer/</guid>
       <description>0. 可视化线程介绍 可视化线程用于显示 3D 地图绘制器和 2D 图像帧绘制器，还包括一些运行模式的开关，不涉及到具体的算法，只负责接受、传递和显示数据，不</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：跟踪线程</title>
-      <link>https://wuyanmin.coding.me/2019-04-27-orb-slam2-tracking/</link>
+      <link>https://wuxiaolang.cn/2019-04-27-orb-slam2-tracking/</link>
       <pubDate>Sat, 27 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-04-27-orb-slam2-tracking/</guid>
+      <guid>https://wuxiaolang.cn/2019-04-27-orb-slam2-tracking/</guid>
       <description>0. 跟踪线程总体介绍 Tracking 线程运行在系统主线程中，负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作，可以简单理解为 SLAM 的前端里程计部</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统</title>
-      <link>https://wuyanmin.coding.me/2019-03-20-orb-slam2-overview/</link>
+      <link>https://wuxiaolang.cn/2019-03-20-orb-slam2-overview/</link>
       <pubDate>Wed, 20 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-03-20-orb-slam2-overview/</guid>
+      <guid>https://wuxiaolang.cn/2019-03-20-orb-slam2-overview/</guid>
       <description>注：本文从 mono_tum.cc 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。 ORB-SLAM2 从 mono_tum.cc 开</description>
     </item>
     

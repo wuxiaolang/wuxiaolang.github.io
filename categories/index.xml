@@ -2,76 +2,76 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on 吴言吴语</title>
-    <link>https://wuyanmin.coding.me/categories/</link>
+    <link>https://wuxiaolang.cn/categories/</link>
     <description>Recent content in Categories on 吴言吴语</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
     <lastBuildDate>Fri, 13 Mar 2020 00:00:00 +0800</lastBuildDate>
     
-	<atom:link href="https://wuyanmin.coding.me/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wuxiaolang.cn/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>SLAM</title>
-      <link>https://wuyanmin.coding.me/categories/slam/</link>
+      <link>https://wuxiaolang.cn/categories/slam/</link>
       <pubDate>Fri, 13 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/slam/</guid>
+      <guid>https://wuxiaolang.cn/categories/slam/</guid>
       <description></description>
     </item>
     
     <item>
       <title>论文阅读</title>
-      <link>https://wuyanmin.coding.me/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</link>
+      <link>https://wuxiaolang.cn/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</link>
       <pubDate>Fri, 13 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</guid>
+      <guid>https://wuxiaolang.cn/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</guid>
       <description></description>
     </item>
     
     <item>
       <title>code</title>
-      <link>https://wuyanmin.coding.me/categories/code/</link>
+      <link>https://wuxiaolang.cn/categories/code/</link>
       <pubDate>Fri, 05 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/code/</guid>
+      <guid>https://wuxiaolang.cn/categories/code/</guid>
       <description></description>
     </item>
     
     <item>
       <title>ORB-SLAM2</title>
-      <link>https://wuyanmin.coding.me/categories/orb-slam2/</link>
+      <link>https://wuxiaolang.cn/categories/orb-slam2/</link>
       <pubDate>Fri, 05 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/orb-slam2/</guid>
+      <guid>https://wuxiaolang.cn/categories/orb-slam2/</guid>
       <description></description>
     </item>
     
     <item>
       <title>object slam</title>
-      <link>https://wuyanmin.coding.me/categories/object-slam/</link>
+      <link>https://wuxiaolang.cn/categories/object-slam/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/object-slam/</guid>
+      <guid>https://wuxiaolang.cn/categories/object-slam/</guid>
       <description></description>
     </item>
     
     <item>
       <title>AR &amp; MR &amp; VR</title>
-      <link>https://wuyanmin.coding.me/categories/ar-mr-vr/</link>
+      <link>https://wuxiaolang.cn/categories/ar-mr-vr/</link>
       <pubDate>Sat, 25 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/ar-mr-vr/</guid>
+      <guid>https://wuxiaolang.cn/categories/ar-mr-vr/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cube slam</title>
-      <link>https://wuyanmin.coding.me/categories/cube-slam/</link>
+      <link>https://wuxiaolang.cn/categories/cube-slam/</link>
       <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/categories/cube-slam/</guid>
+      <guid>https://wuxiaolang.cn/categories/cube-slam/</guid>
       <description></description>
     </item>
     

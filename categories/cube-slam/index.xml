@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>cube slam on 吴言吴语</title>
-    <link>https://wuyanmin.coding.me/categories/cube-slam/</link>
+    <link>https://wuxiaolang.cn/categories/cube-slam/</link>
     <description>Recent content in cube slam on 吴言吴语</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
     <lastBuildDate>Fri, 22 Feb 2019 00:00:00 +0800</lastBuildDate>
     
-	<atom:link href="https://wuyanmin.coding.me/categories/cube-slam/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wuxiaolang.cn/categories/cube-slam/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿</title>
-      <link>https://wuyanmin.coding.me/2019-02-22-cubeslam/</link>
+      <link>https://wuxiaolang.cn/2019-02-22-cubeslam/</link>
       <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-02-22-cubeslam/</guid>
+      <guid>https://wuxiaolang.cn/2019-02-22-cubeslam/</guid>
       <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,</description>
     </item>
     
     <item>
       <title> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</title>
-      <link>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</link>
+      <link>https://wuxiaolang.cn/2019-01-11-pup-up-slam/</link>
       <pubDate>Fri, 11 Jan 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</guid>
+      <guid>https://wuxiaolang.cn/2019-01-11-pup-up-slam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM&lt;/strong&gt;&lt;br /&gt;
 Yang S, Song Y, Kaess M, et al. &lt;a href=&#34;https://arxiv.org/pdf/1703.07334&#34;&gt;&lt;strong&gt;Pop-up slam: Semantic monocular plane slam for low-texture environments&lt;/strong&gt;&lt;/a&gt;[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2016&lt;/strong&gt;: 1222-1229.&lt;br /&gt;
@@ -38,10 +38,10 @@ Yang S, Song Y, Kaess M, et al. &lt;a href=&#34;https://arxiv.org/pdf/1703.0733
     
     <item>
       <title> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</title>
-      <link>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</link>
+      <link>https://wuxiaolang.cn/2019-01-06-object-plane-slam/</link>
       <pubDate>Sun, 06 Jan 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</guid>
+      <guid>https://wuxiaolang.cn/2019-01-06-object-plane-slam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;结构化环境中单目物体级与平面级的SLAM&lt;/strong&gt;&lt;br /&gt;
 Yang S, Scherer S. &lt;strong&gt;&lt;a href=&#34;https://arxiv.org/pdf/1809.03415.pdf&#34;&gt;Monocular Object and Plane SLAM in Structured Environments&lt;/a&gt;&lt;/strong&gt;[J]. arXiv preprint arXiv:1809.03415, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
@@ -53,10 +53,10 @@ Yang S, Scherer S. &lt;strong&gt;&lt;a href=&#34;https://arxiv.org/pdf/1809.0341
     
     <item>
       <title> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</title>
-      <link>https://wuyanmin.coding.me/2018-11-30-cubeslam/</link>
+      <link>https://wuxiaolang.cn/2018-11-30-cubeslam/</link>
       <pubDate>Fri, 30 Nov 2018 00:00:00 +0800</pubDate>
       
-      <guid>https://wuyanmin.coding.me/2018-11-30-cubeslam/</guid>
+      <guid>https://wuxiaolang.cn/2018-11-30-cubeslam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM&lt;/strong&gt;&lt;br /&gt;
 Yang S, Scherer S. &lt;a href=&#34;https://arxiv.org/abs/1806.00557&#34;&gt;&lt;strong&gt;CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1806.00557, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;

@@ -1,302 +1,302 @@
-<?xml-stylesheet type="text/xsl" href="https://wuyanmin.coding.me/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://wuxiaolang.cn/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://wuyanmin.coding.me/2020-03-13-building-models/</loc>
+    <loc>https://wuxiaolang.cn/2020-03-13-building-models/</loc>
     <lastmod>2020-03-13T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-10-19-eigen-factors/</loc>
+    <loc>https://wuxiaolang.cn/2019-10-19-eigen-factors/</loc>
     <lastmod>2019-10-19T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-07-12-nonparametric-statistics-and-clustering/</loc>
+    <loc>https://wuxiaolang.cn/2019-07-12-nonparametric-statistics-and-clustering/</loc>
     <lastmod>2019-07-12T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-07-05-orb-slam2-optimization2/</loc>
+    <loc>https://wuxiaolang.cn/2019-07-05-orb-slam2-optimization2/</loc>
     <lastmod>2019-07-05T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-07-03-orb-slam2-optimization1/</loc>
+    <loc>https://wuxiaolang.cn/2019-07-03-orb-slam2-optimization1/</loc>
     <lastmod>2019-07-03T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-07-01-nonlinear-optimization/</loc>
+    <loc>https://wuxiaolang.cn/2019-07-01-nonlinear-optimization/</loc>
     <lastmod>2019-07-01T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-06-17-orb-slam2-monocular-initialization/</loc>
+    <loc>https://wuxiaolang.cn/2019-06-17-orb-slam2-monocular-initialization/</loc>
     <lastmod>2019-06-17T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-06-16-orb-slam2-features/</loc>
+    <loc>https://wuxiaolang.cn/2019-06-16-orb-slam2-features/</loc>
     <lastmod>2019-06-16T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-06-10-skim/</loc>
+    <loc>https://wuxiaolang.cn/2019-06-10-skim/</loc>
     <lastmod>2019-06-10T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-06-09-line-based-object-slam/</loc>
+    <loc>https://wuxiaolang.cn/2019-06-09-line-based-object-slam/</loc>
     <lastmod>2019-06-09T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-06-06-plane-reconstruction/</loc>
+    <loc>https://wuxiaolang.cn/2019-06-06-plane-reconstruction/</loc>
     <lastmod>2019-06-06T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-30-orb-slam2-loop/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-30-orb-slam2-loop/</loc>
     <lastmod>2019-05-30T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-30-orb-slam2-mapping/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-30-orb-slam2-mapping/</loc>
     <lastmod>2019-05-30T00:00:00+20:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-28-orb-slam2-viewer/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-28-orb-slam2-viewer/</loc>
     <lastmod>2019-05-28T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-27-skim3/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-27-skim3/</loc>
     <lastmod>2019-05-27T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-25-skim2/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-25-skim2/</loc>
     <lastmod>2019-05-25T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-15-skim1/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-15-skim1/</loc>
     <lastmod>2019-05-15T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-05-07-nonparametric-pose-graph/</loc>
+    <loc>https://wuxiaolang.cn/2019-05-07-nonparametric-pose-graph/</loc>
     <lastmod>2019-05-07T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-04-27-orb-slam2-tracking/</loc>
+    <loc>https://wuxiaolang.cn/2019-04-27-orb-slam2-tracking/</loc>
     <lastmod>2019-04-27T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-04-06-privacy-preserving/</loc>
+    <loc>https://wuxiaolang.cn/2019-04-06-privacy-preserving/</loc>
     <lastmod>2019-04-06T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-04-01-skim/</loc>
+    <loc>https://wuxiaolang.cn/2019-04-01-skim/</loc>
     <lastmod>2019-04-01T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-03-20-orb-slam2-overview/</loc>
+    <loc>https://wuxiaolang.cn/2019-03-20-orb-slam2-overview/</loc>
     <lastmod>2019-03-20T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-03-14-learnable-line/</loc>
+    <loc>https://wuxiaolang.cn/2019-03-14-learnable-line/</loc>
     <lastmod>2019-03-14T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-02-27-object-ba/</loc>
+    <loc>https://wuxiaolang.cn/2019-02-27-object-ba/</loc>
     <lastmod>2019-02-27T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-02-22-cubeslam/</loc>
+    <loc>https://wuxiaolang.cn/2019-02-22-cubeslam/</loc>
     <lastmod>2019-02-22T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-01-28-quadric-slam/</loc>
+    <loc>https://wuxiaolang.cn/2019-01-28-quadric-slam/</loc>
     <lastmod>2019-01-28T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-01-11-pup-up-slam/</loc>
+    <loc>https://wuxiaolang.cn/2019-01-11-pup-up-slam/</loc>
     <lastmod>2019-01-11T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2019-01-06-object-plane-slam/</loc>
+    <loc>https://wuxiaolang.cn/2019-01-06-object-plane-slam/</loc>
     <lastmod>2019-01-06T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/2018-11-30-cubeslam/</loc>
+    <loc>https://wuxiaolang.cn/2018-11-30-cubeslam/</loc>
     <lastmod>2018-11-30T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/slam/</loc>
+    <loc>https://wuxiaolang.cn/slam/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/about/</loc>
+    <loc>https://wuxiaolang.cn/about/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/za/</loc>
+    <loc>https://wuxiaolang.cn/za/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/</loc>
+    <loc>https://wuxiaolang.cn/categories/</loc>
     <lastmod>2020-03-13T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/post/</loc>
+    <loc>https://wuxiaolang.cn/post/</loc>
     <lastmod>2020-03-13T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/slam/</loc>
+    <loc>https://wuxiaolang.cn/categories/slam/</loc>
     <lastmod>2020-03-13T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
+    <loc>https://wuxiaolang.cn/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
     <lastmod>2020-03-13T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/code/</loc>
+    <loc>https://wuxiaolang.cn/categories/code/</loc>
     <lastmod>2019-07-05T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/orb-slam2/</loc>
+    <loc>https://wuxiaolang.cn/categories/orb-slam2/</loc>
     <lastmod>2019-07-05T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/object-slam/</loc>
+    <loc>https://wuxiaolang.cn/categories/object-slam/</loc>
     <lastmod>2019-06-09T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/ar-mr-vr/</loc>
+    <loc>https://wuxiaolang.cn/categories/ar-mr-vr/</loc>
     <lastmod>2019-05-25T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/categories/cube-slam/</loc>
+    <loc>https://wuxiaolang.cn/categories/cube-slam/</loc>
     <lastmod>2019-02-22T00:00:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/</loc>
+    <loc>https://wuxiaolang.cn/</loc>
     <lastmod>2017-08-28T21:41:52+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://wuyanmin.coding.me/tags/</loc>
+    <loc>https://wuxiaolang.cn/tags/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
