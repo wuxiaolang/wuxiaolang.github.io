@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>吴言吴语</title>
-    <link>https://wuxiaolang.cn/</link>
+    <link>https://wym.netlify.com/</link>
     <description>Recent content on 吴言吴语</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
     <lastBuildDate>Sun, 20 Aug 2017 21:38:52 +0800</lastBuildDate>
     
-	<atom:link href="https://wuxiaolang.cn/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wym.netlify.com/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title> 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位</title>
-      <link>https://wuxiaolang.cn/2020-03-13-building-models/</link>
+      <link>https://wym.netlify.com/2020-03-13-building-models/</link>
       <pubDate>Fri, 13 Mar 2020 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2020-03-13-building-models/</guid>
+      <guid>https://wym.netlify.com/2020-03-13-building-models/</guid>
       <description>&lt;h1 id=&#34;towards-slam-based-outdoor-localization-using-poor-gps-and-2.5-d-building-models&#34;&gt;Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models&lt;/h1&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位&lt;/strong&gt;&lt;br /&gt;
@@ -29,10 +29,10 @@ Liu R, Zhang J, Chen S, et al. &lt;a href=&#34;https://ieeexplore.ieee.org/abst
     
     <item>
       <title> 📜 论文阅读 | 特征因子：多帧和时间连续点云对齐的平面估计</title>
-      <link>https://wuxiaolang.cn/2019-10-19-eigen-factors/</link>
+      <link>https://wym.netlify.com/2019-10-19-eigen-factors/</link>
       <pubDate>Sat, 19 Oct 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-10-19-eigen-factors/</guid>
+      <guid>https://wym.netlify.com/2019-10-19-eigen-factors/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;特征因子：多帧和时间连续点云对齐的平面估计&lt;/strong&gt;&lt;br /&gt;
 Ferrer G. &lt;a href=&#34;http://sites.skoltech.ru/app/data/uploads/sites/50/2019/07/ferrer2019planes.pdf&#34;&gt;&lt;strong&gt;Eigen-Factors: Plane Estimation for Multi-Frame and Time-Continuous Point Cloud Alignment&lt;/strong&gt;&lt;/a&gt;[C]. &lt;strong&gt;IROS 2019&lt;/strong&gt;&lt;br /&gt;
@@ -42,10 +42,10 @@ Ferrer G. &lt;a href=&#34;http://sites.skoltech.ru/app/data/uploads/sites/50/201
     
     <item>
       <title> 📜 论文阅读 | 在非参数和聚类的 SLAM 中使用类别物体进行定位</title>
-      <link>https://wuxiaolang.cn/2019-07-12-nonparametric-statistics-and-clustering/</link>
+      <link>https://wym.netlify.com/2019-07-12-nonparametric-statistics-and-clustering/</link>
       <pubDate>Fri, 12 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-07-12-nonparametric-statistics-and-clustering/</guid>
+      <guid>https://wym.netlify.com/2019-07-12-nonparametric-statistics-and-clustering/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;在非参数和聚类的 SLAM 中使用类别物体进行定位&lt;/strong&gt;&lt;br /&gt;
 Iqbal A, Gans N R. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8593541/&#34;&gt;&lt;strong&gt;Localization of Classified Objects in SLAM using Nonparametric Statistics and Clustering&lt;/strong&gt;&lt;/a&gt;[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2018&lt;/strong&gt;: 161-168.&lt;br /&gt;
@@ -55,55 +55,55 @@ Iqbal A, Gans N R. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：优化 2（详解 &#43; g2o 使用）</title>
-      <link>https://wuxiaolang.cn/2019-07-05-orb-slam2-optimization2/</link>
+      <link>https://wym.netlify.com/2019-07-05-orb-slam2-optimization2/</link>
       <pubDate>Fri, 05 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-07-05-orb-slam2-optimization2/</guid>
+      <guid>https://wym.netlify.com/2019-07-05-orb-slam2-optimization2/</guid>
       <description>0. 基本使用 0.1 构造 g2o 模型 首先构造 g2o 模型，包括选择线性方程求解器、矩阵求解器和下降算法； 1 2 3 4 5 6 7 8 9 10 11 12 13 // 设置图模型创建优化器. g2o::SparseOptimizer optimizer; //</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：优化 1（概述）</title>
-      <link>https://wuxiaolang.cn/2019-07-03-orb-slam2-optimization1/</link>
+      <link>https://wym.netlify.com/2019-07-03-orb-slam2-optimization1/</link>
       <pubDate>Wed, 03 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-07-03-orb-slam2-optimization1/</guid>
+      <guid>https://wym.netlify.com/2019-07-03-orb-slam2-optimization1/</guid>
       <description>1. ORB-SLAM2 中优化的变量和误差 ORB-SLAM2 采用非线性优化的方式进行 BA 优化，由于 BA 的稀疏性（具体表现为雅克比矩阵和 H 矩阵的稀疏性），可以由图优化（将优化表示为图</description>
     </item>
     
     <item>
       <title>非线性优化之高斯牛顿法、L-M 算法</title>
-      <link>https://wuxiaolang.cn/2019-07-01-nonlinear-optimization/</link>
+      <link>https://wym.netlify.com/2019-07-01-nonlinear-optimization/</link>
       <pubDate>Mon, 01 Jul 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-07-01-nonlinear-optimization/</guid>
+      <guid>https://wym.netlify.com/2019-07-01-nonlinear-optimization/</guid>
       <description>1. 状态估计中的最小二乘问题 1.1 贝叶斯法则 SLAM 要解决的两个问题是定位（求解相机位姿）和建图（求解路标的位置），因此可以分别用一个运动方程和观测方程</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：单目初始化</title>
-      <link>https://wuxiaolang.cn/2019-06-17-orb-slam2-monocular-initialization/</link>
+      <link>https://wym.netlify.com/2019-06-17-orb-slam2-monocular-initialization/</link>
       <pubDate>Mon, 17 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-06-17-orb-slam2-monocular-initialization/</guid>
+      <guid>https://wym.netlify.com/2019-06-17-orb-slam2-monocular-initialization/</guid>
       <description>单目初始化通过并行地计算基础矩阵 F 和单应矩阵 H ，恢复出最开始两帧的匹配、相机初始位姿，三角化得到 MapPoints 的深度，获得初始化点云地图，并对恢复的点云</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（三）：特征提取</title>
-      <link>https://wuxiaolang.cn/2019-06-16-orb-slam2-features/</link>
+      <link>https://wym.netlify.com/2019-06-16-orb-slam2-features/</link>
       <pubDate>Sun, 16 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-06-16-orb-slam2-features/</guid>
+      <guid>https://wym.netlify.com/2019-06-16-orb-slam2-features/</guid>
       <description>特征匹配 1. 初始化时两帧之间的特征匹配 SearchForInitialization() 在单目初始化时，对用于初始化的连续两帧特征点数大于 100 的图像处理，取出图像金字塔第 0 层（即原图）的特征点</description>
     </item>
     
     <item>
       <title>2019 年 6 月论文泛读（21篇）</title>
-      <link>https://wuxiaolang.cn/2019-06-10-skim/</link>
+      <link>https://wym.netlify.com/2019-06-10-skim/</link>
       <pubDate>Mon, 10 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-06-10-skim/</guid>
+      <guid>https://wym.netlify.com/2019-06-10-skim/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;6 项开源代码工作&lt;/strong&gt;：用于跟踪与建图的模块化优化框架    用于室内 RGB-D 重建的基于平面的几何和纹理优化    ReFusion：利用残差的 RGB-D 相机动态环境下的三维重建    学习双目，推断单目：用于自我监督，单目，深度估计的连体网络    用于地面机器人的 RGBD-惯导轨迹估计与建图    从单个深度图像完成语义场景理解			
 &lt;strong&gt;其他&lt;/strong&gt;：将基于线的特定类别物体模型集成到单目 SLAM 中    基于鲁棒的物体 SLAM 的高速导航系统    无组织点云中平面检测的定向点采样&lt;/p&gt;
@@ -112,10 +112,10 @@ Iqbal A, Gans N R. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document
     
     <item>
       <title> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</title>
-      <link>https://wuxiaolang.cn/2019-06-09-line-based-object-slam/</link>
+      <link>https://wym.netlify.com/2019-06-09-line-based-object-slam/</link>
       <pubDate>Sun, 09 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-06-09-line-based-object-slam/</guid>
+      <guid>https://wym.netlify.com/2019-06-09-line-based-object-slam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;将基于线的特定类别物体模型集成到单目 SLAM 中&lt;/strong&gt;&lt;br /&gt;
 Joshi N, Sharma Y, Parkhiya P, et al. &lt;a href=&#34;https://arxiv.org/pdf/1905.04698.pdf&#34;&gt;&lt;strong&gt;Integrating Objects into Monocular SLAM: Line Based Category Specific Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1905.04698, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
@@ -126,10 +126,10 @@ Joshi N, Sharma Y, Parkhiya P, et al. &lt;a href=&#34;https://arxiv.org/pdf/190
     
     <item>
       <title> 📜 论文阅读 | 用于室内 RGB-D 重建的基于平面的几何和纹理优化</title>
-      <link>https://wuxiaolang.cn/2019-06-06-plane-reconstruction/</link>
+      <link>https://wym.netlify.com/2019-06-06-plane-reconstruction/</link>
       <pubDate>Thu, 06 Jun 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-06-06-plane-reconstruction/</guid>
+      <guid>https://wym.netlify.com/2019-06-06-plane-reconstruction/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;用于室内 RGB-D 重建的基于平面的几何和纹理优化&lt;/strong&gt;&lt;br /&gt;
 Wang C, Guo X. &lt;a href=&#34;https://arxiv.org/pdf/1905.08853.pdf&#34;&gt;&lt;strong&gt;Efficient Plane-Based Optimization of Geometry and Texture for Indoor RGB-D Reconstruction&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1905.08853, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
@@ -140,37 +140,37 @@ Wang C, Guo X. &lt;a href=&#34;https://arxiv.org/pdf/1905.08853.pdf&#34;&gt;&lt;
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：闭环检测线程</title>
-      <link>https://wuxiaolang.cn/2019-05-30-orb-slam2-loop/</link>
+      <link>https://wym.netlify.com/2019-05-30-orb-slam2-loop/</link>
       <pubDate>Thu, 30 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-30-orb-slam2-loop/</guid>
+      <guid>https://wym.netlify.com/2019-05-30-orb-slam2-loop/</guid>
       <description>0. 闭环检测线程介绍 通过检测闭环来消除 SLAM 系统的累计误差是比较直接且有效的方式，在局部建图线程处理完每一帧关键帧序列之后会将该关键帧保存到 mlploopKeyFrameQueue 队列</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：局部建图线程</title>
-      <link>https://wuxiaolang.cn/2019-05-30-orb-slam2-mapping/</link>
+      <link>https://wym.netlify.com/2019-05-30-orb-slam2-mapping/</link>
       <pubDate>Thu, 30 May 2019 00:00:00 +2000</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-30-orb-slam2-mapping/</guid>
+      <guid>https://wym.netlify.com/2019-05-30-orb-slam2-mapping/</guid>
       <description>0. 局部建图线程介绍 在 Tracking 线程中每次跟踪成功之后会判断是否将当前帧作为关键帧并送入到局部建图线程，关键帧的判断在 Tracking 线程中进行，但关键帧、地图点插</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：可视化线程</title>
-      <link>https://wuxiaolang.cn/2019-05-28-orb-slam2-viewer/</link>
+      <link>https://wym.netlify.com/2019-05-28-orb-slam2-viewer/</link>
       <pubDate>Tue, 28 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-28-orb-slam2-viewer/</guid>
+      <guid>https://wym.netlify.com/2019-05-28-orb-slam2-viewer/</guid>
       <description>0. 可视化线程介绍 可视化线程用于显示 3D 地图绘制器和 2D 图像帧绘制器，还包括一些运行模式的开关，不涉及到具体的算法，只负责接受、传递和显示数据，不</description>
     </item>
     
     <item>
       <title>2019 年 5 月论文泛读（下） Learning SLAM &amp; Others（6&#43;20）</title>
-      <link>https://wuxiaolang.cn/2019-05-27-skim3/</link>
+      <link>https://wym.netlify.com/2019-05-27-skim3/</link>
       <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-27-skim3/</guid>
+      <guid>https://wym.netlify.com/2019-05-27-skim3/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Learning SLAM &amp;amp; Others&lt;/strong&gt;		
 多视角立体重建的条件&lt;strong&gt;单视图外形生成&lt;/strong&gt; 代码开源    Pointflownet：从点云学习&lt;strong&gt;刚体运动估计&lt;/strong&gt;的表示 代码开源    		
@@ -180,10 +180,10 @@ Wang C, Guo X. &lt;a href=&#34;https://arxiv.org/pdf/1905.08853.pdf&#34;&gt;&lt;
     
     <item>
       <title>2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）</title>
-      <link>https://wuxiaolang.cn/2019-05-25-skim2/</link>
+      <link>https://wym.netlify.com/2019-05-25-skim2/</link>
       <pubDate>Sat, 25 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-25-skim2/</guid>
+      <guid>https://wym.netlify.com/2019-05-25-skim2/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;二、AR &amp;amp; MR &amp;amp; VR&lt;/strong&gt;		
 DAQRI 智能眼镜&lt;strong&gt;远程稠密重建&lt;/strong&gt;交互    基于三维点云真实环境的&lt;strong&gt;虚拟对象替换&lt;/strong&gt;    &lt;strong&gt;网易开源单目深度估计、稠密重建增强现实&lt;/strong&gt;&lt;/p&gt;
@@ -192,10 +192,10 @@ DAQRI 智能眼镜&lt;strong&gt;远程稠密重建&lt;/strong&gt;交互    基
     
     <item>
       <title>2019 年 5 月论文泛读（上） Geometric SLAM（16篇）</title>
-      <link>https://wuxiaolang.cn/2019-05-15-skim1/</link>
+      <link>https://wym.netlify.com/2019-05-15-skim1/</link>
       <pubDate>Wed, 15 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-15-skim1/</guid>
+      <guid>https://wym.netlify.com/2019-05-15-skim1/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;一、Geometric SLAM&lt;/strong&gt;		
 日本国家先进工业科学技术研究所&lt;strong&gt;极密特征视觉 SLAM&lt;/strong&gt;    &lt;strong&gt;开源直接法稀疏建图&lt;/strong&gt;    &lt;strong&gt;线模型&lt;/strong&gt;约束单目漂移		
@@ -205,10 +205,10 @@ DAQRI 智能眼镜&lt;strong&gt;远程稠密重建&lt;/strong&gt;交互    基
     
     <item>
       <title> 📜 论文阅读 | 使用非参数位姿图的物体 SLAM</title>
-      <link>https://wuxiaolang.cn/2019-05-07-nonparametric-pose-graph/</link>
+      <link>https://wym.netlify.com/2019-05-07-nonparametric-pose-graph/</link>
       <pubDate>Tue, 07 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-05-07-nonparametric-pose-graph/</guid>
+      <guid>https://wym.netlify.com/2019-05-07-nonparametric-pose-graph/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;使用非参数位姿图的物体 SLAM&lt;/strong&gt;&lt;br /&gt;
 Mu B, Liu S Y, Paull L, et al. &lt;a href=&#34;https://arxiv.org/pdf/1704.05959.pdf&#34;&gt;&lt;strong&gt;Slam with objects using a nonparametric pose graph&lt;/strong&gt;&lt;/a&gt;[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2016&lt;/strong&gt;: 4602-4609.&lt;br /&gt;
@@ -219,19 +219,19 @@ Mu B, Liu S Y, Paull L, et al. &lt;a href=&#34;https://arxiv.org/pdf/1704.05959
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（二）：跟踪线程</title>
-      <link>https://wuxiaolang.cn/2019-04-27-orb-slam2-tracking/</link>
+      <link>https://wym.netlify.com/2019-04-27-orb-slam2-tracking/</link>
       <pubDate>Sat, 27 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-04-27-orb-slam2-tracking/</guid>
+      <guid>https://wym.netlify.com/2019-04-27-orb-slam2-tracking/</guid>
       <description>0. 跟踪线程总体介绍 Tracking 线程运行在系统主线程中，负责对每帧图像进行特征提取、位姿估计、地图跟踪、关键帧选取等工作，可以简单理解为 SLAM 的前端里程计部</description>
     </item>
     
     <item>
       <title> 📜 论文阅读 | 隐私保护：利用线云进行基于图像的定位</title>
-      <link>https://wuxiaolang.cn/2019-04-06-privacy-preserving/</link>
+      <link>https://wym.netlify.com/2019-04-06-privacy-preserving/</link>
       <pubDate>Sat, 06 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-04-06-privacy-preserving/</guid>
+      <guid>https://wym.netlify.com/2019-04-06-privacy-preserving/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;基于图像隐私保护的定位&lt;/strong&gt;&lt;br /&gt;
 Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. &lt;a href=&#34;https://arxiv.org/pdf/1903.05572.pdf&#34;&gt;&lt;strong&gt;Privacy Preserving Image-Based Localization&lt;/strong&gt;&lt;/a&gt;[J] &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
@@ -241,28 +241,28 @@ Pablo Speciale, Johannes L. Schonberg, Sing Bing Kang. &lt;a href=&#34;https://a
     
     <item>
       <title>2019 年 4 月论文泛读（17 篇）</title>
-      <link>https://wuxiaolang.cn/2019-04-01-skim/</link>
+      <link>https://wym.netlify.com/2019-04-01-skim/</link>
       <pubDate>Mon, 01 Apr 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-04-01-skim/</guid>
+      <guid>https://wym.netlify.com/2019-04-01-skim/</guid>
       <description>1. SlamCraft：单目平面稠密 SLAM [1] Rambach J, Lesur P, Pagani A, et al. SlamCraft: Dense Planar RGB Monocular SLAM[C]. International Conference on Machine Vision Applications MVA 2019. + ==SlamCraft：单目平面稠密 SLAM== + Jason Rambach</description>
     </item>
     
     <item>
       <title> 😀 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统</title>
-      <link>https://wuxiaolang.cn/2019-03-20-orb-slam2-overview/</link>
+      <link>https://wym.netlify.com/2019-03-20-orb-slam2-overview/</link>
       <pubDate>Wed, 20 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-03-20-orb-slam2-overview/</guid>
+      <guid>https://wym.netlify.com/2019-03-20-orb-slam2-overview/</guid>
       <description>注：本文从 mono_tum.cc 文件开始分析（单目） ORB-SLAM2 的完整流程，重点关注的步骤和执行顺序，函数的具体实现大部分只是略讲，后面系列的笔记会有详细的解读。 ORB-SLAM2 从 mono_tum.cc 开</description>
     </item>
     
     <item>
       <title> 📜 论文阅读 | 视觉 SLAM 的可学习线段描述符</title>
-      <link>https://wuxiaolang.cn/2019-03-14-learnable-line/</link>
+      <link>https://wym.netlify.com/2019-03-14-learnable-line/</link>
       <pubDate>Thu, 14 Mar 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-03-14-learnable-line/</guid>
+      <guid>https://wym.netlify.com/2019-03-14-learnable-line/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;视觉 SLAM 的可学习线段描述符&lt;/strong&gt;&lt;br /&gt;
 Vakhitov A, Lempitsky V. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8651490/&#34;&gt;&lt;strong&gt;Learnable Line Segment Descriptor for Visual SLAM&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Access, &lt;strong&gt;2019&lt;/strong&gt;.&lt;br /&gt;
@@ -278,10 +278,10 @@ ECCV 2018：&lt;a href=&#34;http://openaccess.thecvf.com/content_ECCV_2018/html/
     
     <item>
       <title> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</title>
-      <link>https://wuxiaolang.cn/2019-02-27-object-ba/</link>
+      <link>https://wym.netlify.com/2019-02-27-object-ba/</link>
       <pubDate>Wed, 27 Feb 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-02-27-object-ba/</guid>
+      <guid>https://wym.netlify.com/2019-02-27-object-ba/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度&lt;/strong&gt;&lt;br /&gt;
 Frost D, Prisacariu V, Murray D. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8353862&#34;&gt;&lt;strong&gt;Recovering stable scale in monocular SLAM using object-supplemented bundle adjustment&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Transactions on Robotics, &lt;strong&gt;2018&lt;/strong&gt;, 34(3): 736-747.&lt;br /&gt;
@@ -293,19 +293,19 @@ Frost D, Prisacariu V, Murray D. &lt;a href=&#34;https://ieeexplore.ieee.org/abs
     
     <item>
       <title> 😜 Cube SLAM 代码总结：如何从 2D 目标检测恢复 3D 物体位姿</title>
-      <link>https://wuxiaolang.cn/2019-02-22-cubeslam/</link>
+      <link>https://wym.netlify.com/2019-02-22-cubeslam/</link>
       <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-02-22-cubeslam/</guid>
+      <guid>https://wym.netlify.com/2019-02-22-cubeslam/</guid>
       <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,</description>
     </item>
     
     <item>
       <title> 📜 论文阅读 | Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标</title>
-      <link>https://wuxiaolang.cn/2019-01-28-quadric-slam/</link>
+      <link>https://wym.netlify.com/2019-01-28-quadric-slam/</link>
       <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-01-28-quadric-slam/</guid>
+      <guid>https://wym.netlify.com/2019-01-28-quadric-slam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Quadric SLAM：以目标检测获得的对偶二次曲面为面向物体 SLAM 的路标&lt;/strong&gt;&lt;br /&gt;
 Nicholson L, Milford M, Sünderhauf N. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8440105&#34;&gt;&lt;strong&gt;Quadricslam: Dual quadrics from object detections as landmarks in object-oriented slam&lt;/strong&gt;&lt;/a&gt;[J]. IEEE Robotics and Automation Letters, &lt;strong&gt;2019&lt;/strong&gt;, 4(1): 1-8.&lt;br /&gt;
@@ -319,10 +319,10 @@ Nicholson L, Milford M, Sünderhauf N. &lt;a href=&#34;https://ieeexplore.ieee.o
     
     <item>
       <title> 📜 论文阅读 | Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM</title>
-      <link>https://wuxiaolang.cn/2019-01-11-pup-up-slam/</link>
+      <link>https://wym.netlify.com/2019-01-11-pup-up-slam/</link>
       <pubDate>Fri, 11 Jan 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-01-11-pup-up-slam/</guid>
+      <guid>https://wym.netlify.com/2019-01-11-pup-up-slam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Pop-up SLAM：面向低纹理环境下的单目平面语义SLAM&lt;/strong&gt;&lt;br /&gt;
 Yang S, Song Y, Kaess M, et al. &lt;a href=&#34;https://arxiv.org/pdf/1703.07334&#34;&gt;&lt;strong&gt;Pop-up slam: Semantic monocular plane slam for low-texture environments&lt;/strong&gt;&lt;/a&gt;[C]//2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (&lt;strong&gt;IROS&lt;/strong&gt;). IEEE, &lt;strong&gt;2016&lt;/strong&gt;: 1222-1229.&lt;br /&gt;
@@ -334,10 +334,10 @@ Yang S, Song Y, Kaess M, et al. &lt;a href=&#34;https://arxiv.org/pdf/1703.0733
     
     <item>
       <title> 📜 论文阅读 | 结构化环境中单目物体与平面SLAM</title>
-      <link>https://wuxiaolang.cn/2019-01-06-object-plane-slam/</link>
+      <link>https://wym.netlify.com/2019-01-06-object-plane-slam/</link>
       <pubDate>Sun, 06 Jan 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2019-01-06-object-plane-slam/</guid>
+      <guid>https://wym.netlify.com/2019-01-06-object-plane-slam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;结构化环境中单目物体级与平面级的SLAM&lt;/strong&gt;&lt;br /&gt;
 Yang S, Scherer S. &lt;strong&gt;&lt;a href=&#34;https://arxiv.org/pdf/1809.03415.pdf&#34;&gt;Monocular Object and Plane SLAM in Structured Environments&lt;/a&gt;&lt;/strong&gt;[J]. arXiv preprint arXiv:1809.03415, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
@@ -349,10 +349,10 @@ Yang S, Scherer S. &lt;strong&gt;&lt;a href=&#34;https://arxiv.org/pdf/1809.0341
     
     <item>
       <title> 📜 论文阅读 | CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM</title>
-      <link>https://wuxiaolang.cn/2018-11-30-cubeslam/</link>
+      <link>https://wym.netlify.com/2018-11-30-cubeslam/</link>
       <pubDate>Fri, 30 Nov 2018 00:00:00 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/2018-11-30-cubeslam/</guid>
+      <guid>https://wym.netlify.com/2018-11-30-cubeslam/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;CubeSLAM：单目 3D 物体检测与没有先验模型的 SLAM&lt;/strong&gt;&lt;br /&gt;
 Yang S, Scherer S. &lt;a href=&#34;https://arxiv.org/abs/1806.00557&#34;&gt;&lt;strong&gt;CubeSLAM: Monocular 3D Object Detection and SLAM without Prior Models&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:1806.00557, &lt;strong&gt;2018&lt;/strong&gt;.&lt;br /&gt;
@@ -364,28 +364,28 @@ Yang S, Scherer S. &lt;a href=&#34;https://arxiv.org/abs/1806.00557&#34;&gt;&lt;
     
     <item>
       <title>SLAM</title>
-      <link>https://wuxiaolang.cn/slam/</link>
+      <link>https://wym.netlify.com/slam/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/slam/</guid>
+      <guid>https://wym.netlify.com/slam/</guid>
       <description>🌍 ORB-SLAM2 系列 ORB-SLAM2 代码解读（一）：从 mono_tum.cc 走一遍系统 ORB-SLAM2 代码解读（二）：跟踪线程 ORB-SLAM2 代码解读（二）：可视化线程 ORB-SLAM2 代码解读（二）：局部建图线程 ORB-SLAM2 代码解读（二）</description>
     </item>
     
     <item>
       <title>about</title>
-      <link>https://wuxiaolang.cn/about/</link>
+      <link>https://wym.netlify.com/about/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/about/</guid>
+      <guid>https://wym.netlify.com/about/</guid>
       <description>About me 机器人科学与工程专业在读硕士研究生，学习方向为视觉 SLAM、增强现实，当前关注物体级 SLAM、多路标 SLAM 和轻量化建图。 喜欢电影，推理、犯罪</description>
     </item>
     
     <item>
       <title></title>
-      <link>https://wuxiaolang.cn/za/</link>
+      <link>https://wym.netlify.com/za/</link>
       <pubDate>Sun, 20 Aug 2017 21:38:52 +0800</pubDate>
       
-      <guid>https://wuxiaolang.cn/za/</guid>
+      <guid>https://wym.netlify.com/za/</guid>
       <description>杂·记</description>
     </item>
     

@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://wuxiaolang.cn/sitemap.xml
+Sitemap: https://wym.netlify.com/sitemap.xml
