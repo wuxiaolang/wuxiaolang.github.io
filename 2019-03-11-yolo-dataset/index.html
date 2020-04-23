@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 😜 YOLO 批量处理 TUM、KITTI 数据集并保存检测结果 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content="0. 主要工作： 代码：https://github.com/wuxiaolang/darknet 在 darknet.c 中添加了 detect_tum_batch 命令处理 tum 和自制数据集，添加 detect_kitti_batch 命令" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+<meta name="baidu-site-verification" content="fHOS0ah0i1" />
+<meta name="google-site-verification" content="4aEA7KB3m7LrWKNH4axTcMxXigooU2CLbEs_pmc_09s" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wym.netlify.app/2019-03-11-yolo-dataset/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 😜 YOLO 批量处理 TUM、KITTI 数据集并保存检测结果" />
+<meta property="og:description" content="0. 主要工作： 代码：https://github.com/wuxiaolang/darknet 在 darknet.c 中添加了 detect_tum_batch 命令处理 tum 和自制数据集，添加 detect_kitti_batch 命令" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wym.netlify.app/2019-03-11-yolo-dataset/" />
+<meta property="article:published_time" content="2019-03-11T00:00:00+08:00" />
+<meta property="article:modified_time" content="2019-03-11T00:00:00+08:00" />
+<meta itemprop="name" content=" 😜 YOLO 批量处理 TUM、KITTI 数据集并保存检测结果">
+<meta itemprop="description" content="0. 主要工作： 代码：https://github.com/wuxiaolang/darknet 在 darknet.c 中添加了 detect_tum_batch 命令处理 tum 和自制数据集，添加 detect_kitti_batch 命令">
+<meta itemprop="datePublished" content="2019-03-11T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2019-03-11T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="1911">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 😜 YOLO 批量处理 TUM、KITTI 数据集并保存检测结果"/>
+<meta name="twitter:description" content="0. 主要工作： 代码：https://github.com/wuxiaolang/darknet 在 darknet.c 中添加了 detect_tum_batch 命令处理 tum 和自制数据集，添加 detect_kitti_batch 命令"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 😜 YOLO 批量处理 TUM、KITTI 数据集并保存检测结果</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-03-11 </span>
+        <div class="post-category">
+            <a href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/"> 目标检测 </a>
+            </div>
+          <span class="more-meta"> 约 1911 字 </span>
+          <span class="more-meta"> 预计阅读 4 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#0-主要工作">0. 主要工作：</a></li>
+    <li><a href="#1-指令">1. 指令</a>
+      <ul>
+        <li><a href="#11-tum-数据集">1.1 TUM 数据集</a></li>
+        <li><a href="#12-kitti-数据集">1.2 KITTI 数据集</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-tum-数据集">2. TUM 数据集</a>
+      <ul>
+        <li><a href="#21-在-darknetc-中添加指令参数">2.1 在 darknet.c 中添加指令参数</a></li>
+        <li><a href="#22-在-detectorc-中添加读取图片函数">2.2 在 detector.c 中添加读取图片函数</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-kitti-数据集">3. KITTI 数据集</a>
+      <ul>
+        <li><a href="#31-在-darknetc-中添加指令参数">3.1 在 darknet.c 中添加指令参数</a></li>
+        <li><a href="#32-在-detectorc-中添加读取并检测图像的函数">3.2 在 detector.c 中添加读取并检测图像的函数</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-在-imagec-中添加保存结果函数">4. 在 image.c 中添加保存结果函数</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="0-主要工作">0. 主要工作：</h2>
+<ul>
+<li>代码：<a href="https://github.com/wuxiaolang/darknet"><strong>https://github.com/wuxiaolang/darknet</strong></a></li>
+<li>在 <a href="https://github.com/wuxiaolang/darknet/blob/master/examples/darknet.c?1552372879559"><strong>darknet.c</strong></a> 中添加了 <code>detect_tum_batch</code> 命令处理 <strong>tum 和自制数据集</strong>，添加 <code>detect_kitti_batch</code> 命令处理 <strong>kitti 数据集</strong>；</li>
+<li>在 <a href="https://github.com/wuxiaolang/darknet/blob/master/examples/detector.c?1552372948327"><strong>detector.c</strong></a> 中添加了<strong>读取数据集图像</strong>的函数 <code>test_detector_tum_batch()</code> 和 <code>test_detector_kitti_batch()</code>；</li>
+<li>在 <a href="https://github.com/wuxiaolang/darknet/blob/master/src/image.c?1552373025166"><strong>image.c</strong></a> 中添加了绘制与<strong>保存结果</strong>（txt 文件和绘制检测框的图像）的函数 <code>draw_save_detections()</code>。</li>
+</ul>
+<hr>
+<h2 id="1-指令">1. 指令</h2>
+<h3 id="11-tum-数据集">1.1 TUM 数据集</h3>
+<ul>
+<li>指令：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./darknet detect_tum_batch [path_of_cfg] [path_of_weight] [path_of_dataset] [output_folder] [-thresh thresh]
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>例如：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./darknet detect_tum_batch cfg/yolov3.cfg yolov3.weights /home/wu/data/dataset/rgbd_dataset_freiburg1_desk/ /home/wu/data/ -thresh 0.4
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>注意</strong>：请在 [output_folder] 下创建 <code>yolo_imgs</code> 和 <code>yolo_txts</code> 文件夹来存放绘制了检测框的图片和检测框 txt 信息。</li>
+</ul>
+<h3 id="12-kitti-数据集">1.2 KITTI 数据集</h3>
+<ul>
+<li>指令：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./darknet detect_kitti_batch [path_of_cfg] [path_of_weight] [path_of_dataset] [output_folder] [-thresh thresh]
+</code></pre></td></tr></table>
+</div>
+</div><p>  例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./darknet detect_kitti_batch cfg/yolov3.cfg yolov3.weights /home/wu/data/dataset/kitti/color/07/ /home/wu/data/ -thresh 0.4
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>注意</strong>：
+<ul>
+<li>① 请在 [output_folder] 下创建 <code>yolo_imgs</code> 和 <code>yolo_txts</code> 文件夹来存放绘制了检测框的图片和检测框 txt 信息；</li>
+<li>② 在 <code>test_detector_kitti_batch()</code> 函数中默认<strong>采用的是 <code>image_2</code> kitti 彩色数据集</strong>，如果使用 gray 数据集，可以将 <code>image_2</code> 改成 <code>image_0</code> 或 <code>image_1</code>。</li>
+</ul>
+</li>
+<li><strong>其他数据集</strong>：可仿照改动的函数写。</li>
+</ul>
+<hr>
+<h2 id="2-tum-数据集">2. TUM 数据集</h2>
+<h3 id="21-在-darknetc-中添加指令参数">2.1 在 darknet.c 中添加指令参数</h3>
+<ul>
+<li><strong>具体代码：</strong><a href="https://github.com/wuxiaolang/darknet/blob/master/examples/darknet.c?1552372879559"><strong>darknet.c</strong></a></li>
+<li>在 main 函数中添加输入的第二个参数 detect_tum_batch
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">else if (0 == strcmp(argv[1], &#34;detect_tum_batch&#34;))
+{
+     // 读取阈值，默认为 0.5.
+     float thresh = find_float_arg(argc, argv, &#34;-thresh&#34;, .5);
+     // @PARAM    input_folder   输入数据集路径.
+     char *input_folder = (argc &gt; 4) ? argv[4]: 0;
+     // @PARAM    output_folder  输出结果存放路径.
+     char *output_folder = (argc &gt; 5) ? argv[5]: 0;
+     // 开始处理.
+     test_detector_tum_batch(   &#34;cfg/coco.data&#34;, 
+                                argv[2],            /* 网络模型 */
+                                argv[3],            /* 权重文件 */
+                                input_folder,       /* 输入数据集路径 */
+                                output_folder,      /* 输出的结果路径 */
+                                thresh, 
+                                .5);
+}
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h3 id="22-在-detectorc-中添加读取图片函数">2.2 在 detector.c 中添加读取图片函数</h3>
+<ul>
+<li><strong>具体代码：</strong><a href="https://github.com/wuxiaolang/darknet/blob/master/examples/detector.c?1552372948327"><strong>detector.c</strong></a></li>
+<li>在 detector.c 中添加上一步中用到的函数
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">void test_detector_tum_batch(   char *datacfg,      /* cfg/coco.data */
+                                char *cfgfile,      /* 网络模型 */
+                                char *weightfile,   /* 权重文件 */
+                                char *input_folder, /* 输入数据集路径 */
+                                char *output_folder,/* 输出结果保存路径 */
+                                float thresh,       /* 置信度阈值 */
+                                float hier_thresh)
+{……}
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>下面是处理的主要步骤。</li>
+</ul>
+<h4 id="221-读取数据集路径下的-rgbtxt-文件">2.2.1 读取数据集路径下的 rgb.txt 文件</h4>
+<ul>
+<li>由于给出的路径是 <code>~/dataset/rgbd_dataset_freiburg1_desk/</code> ，数据集图片存放在 <code>~/dataset/rgbd_dataset_freiburg1_desk/rgb</code>，图片名存放在 <code>~/dataset/rgbd_dataset_freiburg1_desk/rgb.txt</code> 中，首先读取 <code>rgb.txt</code> 文件：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// NOTE 读取图像文件列表 rgb.txt. rgb_txt_path = ~/dataset/rgbd_dataset_freiburg1_desk/rgb.txt
+char buff[256];
+char *rgb_txt_path = buff;
+strncpy(rgb_txt_path, input_folder, 256); // input_folder 还是 ~/dataset/rgbd_dataset_freiburg3_long_office_household/
+FILE *fp_rgb_txt = fopen(strcat(rgb_txt_path,&#34;rgb.txt&#34;), &#34;r&#34;);
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h4 id="222-读取图片文件名">2.2.2 读取图片文件名</h4>
+<ul>
+<li><code>rgb.txt</code> 存储的内容形式如下，不考虑前三行，后面每行分别为时间戳和文件名：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback"># color images
+# file: &#39;rgbd_dataset_freiburg1_desk.bag&#39;
+# timestamp filename
+1305031452.791720 rgb/1305031452.791720.png
+1305031452.823674 rgb/1305031452.823674.png
+1305031452.859642 rgb/1305031452.859642.png
+1305031452.891726 rgb/1305031452.891726.png
+1305031452.923715 rgb/1305031452.923715.png
+1305031452.959701 rgb/1305031452.959701.png
+1305031452.991647 rgb/1305031452.991647.png
+1305031453.023650 rgb/1305031453.023650.png
+1305031453.059754 rgb/1305031453.059754.png
+1305031453.091704 rgb/1305031453.091704.png
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li><strong>读取 19-43 列的图片文件名</strong> img_name，再添加路径得到 input_img_name
+<ul>
+<li>另外需注意 txt 文件的<strong>前三行无效，需要跳过</strong></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">int img_counter = -4;   // rgb.txt 文件前三行无效.
+while(!feof(fp_rgb_txt))
+{
+    img_counter++;
+
+    memset(szTest, 0, sizeof(szTest));
+    fgets(szTest, sizeof(szTest) - 1, fp_rgb_txt); // 包含了换行符
+
+    // 前三行无效不存储，但得遍历读取，所以这个判断在上两行后面.
+    if( img_counter &lt; 0)
+        continue;
+
+    strncpy(img_name, szTest+22, 17);               // 每行前面 18位为时间戳，后面是文件名.
+    sprintf(input_img_name, &#34;%srgb/%s.png&#34;, input_folder, img_name);
+    printf(&#34;文件名： %s\n&#34;, input_img_name);
+}
+fclose(fp_rgb_txt);
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>输出检测的<strong>图片结果</strong>，输出在 <code>output_folder/yolo_imgs</code> 中</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// NOTE 输出图片.
+strncpy(output_file, output_folder, 256);
+char frame_index_c3[256];
+//sprintf(frame_index_c3,&#34;/yolo_imgs/%04d_yolo_%.2f&#34;,img_counter,thresh);  // 0001_yolo2_0.50.jpg
+sprintf(frame_index_c3,&#34;yolo_imgs/%s&#34;,img_name);  // 1905140001.223000.jpg
+char * result_img = strcat(output_file,frame_index_c3);
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<h2 id="3-kitti-数据集">3. KITTI 数据集</h2>
+<h3 id="31-在-darknetc-中添加指令参数">3.1 在 darknet.c 中添加指令参数</h3>
+<ul>
+<li>与 TUM 数据集类似，修改指令名和调用的函数名即可：detect_kitti_batch，test_detector_kitti_batch()。</li>
+</ul>
+<h3 id="32-在-detectorc-中添加读取并检测图像的函数">3.2 在 detector.c 中添加读取并检测图像的函数</h3>
+<ul>
+<li>与 TUM 数据集类似，创建 <code>test_detector_kitti_batch()</code> 函数；</li>
+<li>读取图像按照 6 位数序号来读取：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// STEP 1. 得到输入文件
+// 读取输入的图像文件：~/color/21/image_2/000001.png
+sprintf(input_img_name, &#34;%simage_2/%06d.png&#34;, input_folder, num);   // color image_2，gray image_0
+printf(&#34;输入文件名： %s\n&#34;, input_img_name);
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>输出结果的文件名有两种存储方式：
+<ul>
+<li><strong>第一种是按序号命名</strong>（默认情况），结果保存为：<code>000001.jpg</code> 和 <code>000001.txt</code>；</li>
+<li><strong>第二种是按照时间戳命名</strong>，结果保存为：<code>0.10387.jpg</code> 和 <code>0.10387.txt</code>；</li>
+<li>可在 <code>test_detector_kitti_batch()</code> 函数中选择
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// 【方法 ①】： 以序号命名
+</span><span class="c1"></span><span class="n">printf</span><span class="p">(</span><span class="s">&#34;文件序号： %06d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">num</span><span class="p">);</span>
+<span class="n">sprintf</span><span class="p">(</span><span class="n">output_file_name</span><span class="p">,</span> <span class="s">&#34;%06d&#34;</span><span class="p">,</span> <span class="n">num</span><span class="p">);</span>
+<span class="c1">// // 【方法 ②】： 以时间戳命名
+</span><span class="c1">// // 逐行读取 txt 文件的时间戳：1.036224e-01.
+</span><span class="c1">// memset(szTest, 0, sizeof(szTest));
+</span><span class="c1">// fgets(szTest, sizeof(szTest) - 1, fp_rgb_txt); // 包含了换行符
+</span><span class="c1">// strncpy(output_file_name, szTest, 12);
+</span><span class="c1">// // 将时间戳转换成十进制
+</span><span class="c1">// double tmp_name = strtod(output_file_name, NULL);   // note strtod() 转换成 lf 十进制类型.
+</span><span class="c1">// // 保留 5 位小数.
+</span><span class="c1">// sprintf(output_file_name, &#34;%.5lf&#34;, tmp_name);
+</span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-在-imagec-中添加保存结果函数">4. 在 image.c 中添加保存结果函数</h2>
+<ul>
+<li><strong>具体代码：</strong><a href="https://github.com/wuxiaolang/darknet/blob/master/src/image.c?1552373025166"><strong>image.c</strong></a></li>
+<li>此函数仿写的 <code>draw_detections()</code>，具体详见：</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">void draw_save_detections(  image im, 
+                            detection *dets, 
+                            int num, 
+                            float thresh, 
+                            char **names, 
+                            image **alphabet, 
+                            int classes,
+                            FILE *save_txt)
+{……}
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li><strong>分别保存 类别、左上角坐标 + 宽 + 长、置信度</strong>，也可以修改为类别在 coco.name 中的编号，左上角和右下角坐标</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">// NOTE 左上角坐标和右下脚坐标
+int left  = (b.x-b.w/2.)*im.w;
+int top   = (b.y-b.h/2.)*im.h;
+int right = (b.x+b.w/2.)*im.w;
+int bot   = (b.y+b.h/2.)*im.h;
+
+if(left &lt; 0) left = 0;
+if(right &gt; im.w-1) right = im.w-1;
+if(top &lt; 0) top = 0;
+if(bot &gt; im.h-1) bot = im.h-1;
+            
+// NOTE 分别写入类别和坐标
+// fprintf(save_txt,&#34;%s\t%d\t%d\t%d\t%d\t%.2f\n&#34;, names[class], left, top, right-left, bot-top, dets[i].prob[class]);
+fprintf(save_txt,&#34;%d %d %d %d %d\n&#34;, class, left, top, right-left, bot-top);
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>输出 <strong>txt 结果</strong>，保存格式：类别 ID   左上角.x   左上角.y   长   宽   [置信度]
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">66   70    294   260   185    0.794691
+64   255   258   63     38    0.813716
+62   224   0     243   234    0.610995
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>可指定<strong>只保存某种类型的结果</strong>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// NOTE 只筛选出 &#34;cup&#34; 和 &#34;bottle&#34; 类别.
+</span><span class="c1">// if ((strcmp(names[class], &#34;cup&#34;) != 0)&amp;&amp;(strcmp(names[class], &#34;bottle&#34;) != 0))
+</span><span class="c1">//     {continue;}
+</span><span class="c1">// 只选出 car.
+</span><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="k">class</span><span class="err">], &#34;</span><span class="nc">car</span><span class="s">&#34;) != 0)</span>
+    <span class="k">continue</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p><img src="https://github.com/wuxiaolang/darknet/blob/master/gif/yolo_tum.gif?raw=true" alt=""></p>
+<hr>
+<blockquote>
+<p>2019.03.11 <br>
+<a href="mailto:wuyanminmax@gmail.com">wuyanminmax@gmail.com</a></p>
+</blockquote>
+
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        <a class="prev" href="/2019-03-14-learnable-line/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default"> 📜 论文阅读 | 视觉 SLAM 的可学习线段描述符</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/2019-02-27-object-ba/">
+            <span class="next-text nav-default"> 📜 论文阅读 | 使用物体补充的 BA 来恢复单目 SLAM 的稳定尺度</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wuyanmin2018" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wym.netlify.app/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160646347-2', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?352520a6e7c1df580f6de1f879049608";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>目标检测 on 吴言吴语</title>
+    <link>https://wym.netlify.app/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/</link>
+    <description>Recent content in 目标检测 on 吴言吴语</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>wu</copyright>
+    <lastBuildDate>Mon, 11 Mar 2019 00:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://wym.netlify.app/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title> 😜 YOLO 批量处理 TUM、KITTI 数据集并保存检测结果</title>
+      <link>https://wym.netlify.app/2019-03-11-yolo-dataset/</link>
+      <pubDate>Mon, 11 Mar 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wym.netlify.app/2019-03-11-yolo-dataset/</guid>
+      <description>0. 主要工作： 代码：https://github.com/wuxiaolang/darknet 在 darknet.c 中添加了 detect_tum_batch 命令处理 tum 和自制数据集，添加 detect_kitti_batch 命令</description>
+    </item>
+    
+  </channel>
+</rss>

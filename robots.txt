@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://wym.netlify.com/sitemap.xml
+Sitemap: https://wym.netlify.app/sitemap.xml

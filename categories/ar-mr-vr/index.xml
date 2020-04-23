@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>AR &amp; MR &amp; VR on 吴言吴语</title>
-    <link>https://wym.netlify.com/categories/ar-mr-vr/</link>
+    <link>https://wym.netlify.app/categories/ar-mr-vr/</link>
     <description>Recent content in AR &amp; MR &amp; VR on 吴言吴语</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
     <lastBuildDate>Sat, 25 May 2019 00:00:00 +0800</lastBuildDate>
     
-	<atom:link href="https://wym.netlify.com/categories/ar-mr-vr/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://wym.netlify.app/categories/ar-mr-vr/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>2019 年 5 月论文泛读（中） AR &amp; MR &amp; VR（8篇）</title>
-      <link>https://wym.netlify.com/2019-05-25-skim2/</link>
+      <link>https://wym.netlify.app/2019-05-25-skim2/</link>
       <pubDate>Sat, 25 May 2019 00:00:00 +0800</pubDate>
       
-      <guid>https://wym.netlify.com/2019-05-25-skim2/</guid>
+      <guid>https://wym.netlify.app/2019-05-25-skim2/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;二、AR &amp;amp; MR &amp;amp; VR&lt;/strong&gt;		
 DAQRI 智能眼镜&lt;strong&gt;远程稠密重建&lt;/strong&gt;交互    基于三维点云真实环境的&lt;strong&gt;虚拟对象替换&lt;/strong&gt;    &lt;strong&gt;网易开源单目深度估计、稠密重建增强现实&lt;/strong&gt;&lt;/p&gt;
