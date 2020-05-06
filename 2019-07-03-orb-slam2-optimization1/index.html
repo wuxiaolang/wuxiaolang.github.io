@@ -177,7 +177,7 @@
 <li>在<strong>已经处理完队列中的最后一个关键帧之后</strong>，并且闭环检测线程没有请求停止局部建图线程，则开始<strong>对当前帧进行局部 BA 优化</strong>，在 <code>Optimizer::LocalBundleAdjustment()</code> 函数中进行；</li>
 <li>当新的关键帧加入到 convisibility graph 时，<strong>在关键帧附近进行一次局部优化</strong>，如下图所示；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/fig1.png" title="fig1" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/fig1.png" title="fig1" width="400" />
 </center>
 <ul>
 <li>Pos3 是新加入的关键帧，其初始估计位姿已经得到，此时，Pos2 是和 Pos3 相连的关键帧，X2 是 Pos3 看到的三维点，X1 是 Pos2 看到的三维点，这些都属于局部信息，<strong>共同参与Bundle Adjustment</strong>（圈内红色部分）；</li>
@@ -191,10 +191,10 @@
 <li>全局优化在<strong>单目初始化和闭环矫正时</strong>执行，在函数 <code>Optimizer::GlobalBundleAdjustemnt</code> 中；</li>
 <li>在全局优化中，所有的关键帧（除了第一帧）和三维点都参与优化，如下图所示：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/fig2.png" title="fig2" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/fig2.png" title="fig2" width="400" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/BA.png" title="fig1" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/BA.png" title="fig1" width="700" />
 </center></li>
 </ul>
 <h4 id="位姿优化-optimizerposeoptimization">1.4.3 位姿优化 <code>Optimizer::PoseOptimization()</code></h4>
@@ -203,7 +203,7 @@
 <li><strong>只优化当前帧 pose，地图点固定</strong>；</li>
 <li>用于 LocalTracking 中运动模型跟踪，参考帧跟踪，地图跟踪 TrackLocalMap，重定位。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/PoseOptimization.png" title="fig1" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/PoseOptimization.png" title="fig1" width="700" />
 </center></li>
 </ul>
 <h4 id="闭环处的-sim3-位姿优化-optimizeroptimizesim3">1.4.4 闭环处的 Sim3 位姿优化 <code>Optimizer::OptimizeSim3()</code></h4>
@@ -212,10 +212,10 @@
 <li>当检测到闭环时，<strong>闭环连接的两个关键帧的位姿需要通过 Sim3 优化（以使得其尺度一致）</strong>，在函数 <code>Optimizer::OptimizeSim3()</code> 中实现，优化求解<strong>两帧之间的相似变换矩阵</strong>，使得二维对应点（feature）的<strong>投影误差最小</strong>；</li>
 <li>如下图所示，Pos6 和 Pos2 为一个可能的闭环，则通过 <span class="math inline">\((u_{4,2},v_{4,2})\)</span> 和 <span class="math inline">\((u_{4,6},v_{4,6})\)</span> 之间的投影误差来优化 <span class="math inline">\(S_{6,2}\)</span>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/fig3.png" title="fig3" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/fig3.png" title="fig3" width="400" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/OptimizeSim3.png" title="fig3" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/OptimizeSim3.png" title="fig3" width="700" />
 </center></li>
 </ul>
 <h4 id="sim3上的位姿优化-optimizeroptimizeessentialgraph">1.4.5 Sim3上的位姿优化 <code>Optimizer::OptimizeEssentialGraph()</code></h4>
@@ -230,10 +230,10 @@
 <li><span class="math inline">\(S_{ij}\)</span> 表示 pos i 和 pos j 之间的相对位姿矩阵（sim3 优化之前），表示 <span class="math inline">\(S_{iw}\)</span> 和 <span class="math inline">\(S_{jw}\)</span> 之间的测量；</li>
 <li>此处相当于<strong>认为局部的相对位姿是准确的，而全局位姿有累计误差</strong>，是不准确的
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/fig4.png" title="fig4" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/fig4.png" title="fig4" width="400" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/blog/190703/OptimizeEssentialGraph.png" title="fig3" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/blog/190703/OptimizeEssentialGraph.png" title="fig3" width="700" />
 </center></li>
 </ul></li>
 </ul>
