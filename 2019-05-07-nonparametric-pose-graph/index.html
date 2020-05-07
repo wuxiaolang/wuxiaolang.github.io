@@ -363,7 +363,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>③ 从 RGB 和深度图中生成点云；</li>
 <li>④ <font color = red><strong>计算点云的质心作为物体的中心</strong></font>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig2.PNG" title="fig2" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig2.PNG" title="fig2" width="700" />
 </center></li>
 </ul></li>
 <li>如图 2a 中可以清楚地看出，具有深度学习目标检测的<strong>物体 SLAM 具有两个主要挑战</strong>；
@@ -391,7 +391,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>其中 A 是所有因子的集合；</li>
 <li>每个因子 <span class="math inline">\(\psi _{a}\left ( X_{\left \{ a \right \}} \right )\)</span> 将随机变量 X 的值映射为一个<strong>表示变量似然</strong>的严格正实数，它也表示了<strong>因子中变量之间的概率依赖性</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f1.PNG" title="f1" width="350" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f1.PNG" title="f1" width="350" />
 </center></li>
 </ul></li>
 </ul></li>
@@ -401,7 +401,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>每个因子 <span class="math inline">\(\psi _{a}\left ( X_{\left \{ a \right \}} \right )\)</span> 将随机变量的值映射为表示变量的对数似然的严格正实数；</li>
 <li>使用图模型，存在快速算法来计算统计属性，例如<strong>边缘化、期望和最大似然</strong> <sup><strong>[30]</strong></sup> 。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig3.PNG" title="fig3" width="600" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig3.PNG" title="fig3" width="600" />
 </center></li>
 </ul></li>
 </ul>
@@ -418,12 +418,12 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <ul>
 <li>其中 <span class="math inline">\(\ominus\)</span> 是在 SE(2) 或 SE(3) 空间中取两个时刻<strong>相对位姿</strong>的操作符， Q 是里程计的噪声协方差；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f2.PNG" title="f2" width="350" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f2.PNG" title="f2" width="350" />
 </center></li>
 </ul></li>
 <li>然后给出两个位姿之间里程计 <span class="math inline">\(o_{t}\)</span> 的<strong>似然</strong>为公式（3）
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f3.PNG" title="f3" width="350" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f3.PNG" title="f3" width="350" />
 </center></li>
 </ul></li>
 <li>在导航过程中，机器人还会观察环境中的路标，假设环境中存在 M 个路标（这可能是未知的），<strong>路标的位置</strong>表示为 <span class="math inline">\(\mathbf{L} = \left \{ L_{1},L_{2},\cdots , L_{N}\right \}\)</span>，在2D 空间中 <span class="math inline">\(L_{i}\in \mathbb{R}^{2}\)</span>，在 3D 空间中 <span class="math inline">\(L_{i}\in \mathbb{R}^{3}\)</span>；
@@ -435,23 +435,23 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <ul>
 <li>其中 R 是测量的噪声矩阵；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f4_f5.PNG" title="f4_f5.PNG" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f4_f5.PNG" title="f4_f5.PNG" width="400" />
 </center></li>
 </ul></li>
 <li>通过联立公式（2）和（4），<font color = red><strong>里程计和路标测量的联合对数似然</strong></font>为公式（6），根据高斯噪声的概率分布公式，可知两个因子都是服从<strong>二次型</strong>的，如公式（7）；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f6_f7.PNG" title="f6_f7.PNG" width="600" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f6_f7.PNG" title="f6_f7.PNG" width="600" />
 </center></li>
 <li><font color = red>位姿图 SLAM 问题通过<strong>最大化对数似然</strong>公式（8）来优化机器人位姿 <span class="math inline">\(\mathbf{X}_{0:T}\)</span> 和物体位置 <span class="math inline">\(\mathbf{L}\)</span></font>；
 <ul>
 <li>注意对数似然在 <span class="math inline">\(X_{t}\)</span> 和 <span class="math inline">\(L_{t}\)</span> 中是<strong>非线性</strong>的，因为 <span class="math inline">\(\ominus\)</span> 在公式（2）（4）中是非线性运算。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f8.PNG" title="f8.PNG" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f8.PNG" title="f8.PNG" width="400" />
 </center></li>
 </ul></li>
 <li>SLAM 的因子图表示也称为位姿图，图 4 展示了这种位姿图，<strong>变量表示机器人或路标的位置，因子包括里程计和路标测量</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig4.PNG" title="fig4.PNG" width="600" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig4.PNG" title="fig4.PNG" width="600" />
 </center></li>
 </ul>
 <hr />
@@ -464,10 +464,10 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>假设总共有 <strong>N 个物体类</strong>，对于物体 i，定义 <strong>u 表示对物体类别的观测</strong>；</li>
 <li><strong>u 的似然使用分类分布来建模</strong>为公式（9）
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f9.PNG" title="f9.PNG" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f9.PNG" title="f9.PNG" width="400" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig5.PNG" title="fig5.PNG" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig5.PNG" title="fig5.PNG" width="550" />
 </center></li>
 </ul></li>
 <li>注意 1 ≤ u ≤ N，但本文特别设计了 <span class="math inline">\(\pi _{i} \left ( 0 \right )\)</span> 来表示<strong>误报的概率</strong>，这种设计<strong>有助于算法在实际实验中过滤掉不存在的物体检测</strong>。</li>
@@ -475,7 +475,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <ul>
 <li>当观察到类 j， 即 u = j 时， <span class="math inline">\(\pi _{i}\)</span> 的<strong>后验分布</strong>为公式（11），其中 <span class="math inline">\(e_{j}\)</span> 表示第 j 个元素为 1 的单位向量
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f10_f11.PNG" title="f10_f11.PNG" width="350" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f10_f11.PNG" title="f10_f11.PNG" width="350" />
 </center></li>
 </ul></li>
 <li>注意 <span class="math inline">\(\beta _{i}\left ( 0 \right )\)</span> 表示<strong>物体 i 为假阳性的初始似然</strong>；
@@ -488,16 +488,16 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>回忆前面， <span class="math inline">\(y_{t}^{k} = i\in \left \{ 1,\cdots ,M \right \}\)</span> 表示<strong>在 t 时刻的第 k 次测量来自物体 i</strong>；</li>
 <li><span class="math inline">\(u_{t}^{k}\)</span> 是来自<strong>后验分布</strong> <span class="math inline">\(\pi _{y_{t}^{k}}\)</span> （公式 12）的样本：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f12.PNG" title="f12.PNG" width="450" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f12.PNG" title="f12.PNG" width="450" />
 </center></li>
 </ul></li>
 <li><font color =red><strong>里程计、路标测量、物体类别的联合对数似然</strong></font>变成公式（13）
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f13.png" title="f13.png" width="650" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f13.png" title="f13.png" width="650" />
 </center></li>
 <li>新的<strong>优化问题</strong>变成了<font color = red><strong>通过优化相机位姿、物体测量和物体类别来最大化对数似然</strong></font>，见公式（14）
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f14.PNG" title="f14.PNG" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f14.PNG" title="f14.PNG" width="400" />
 </center></li>
 <li>与公式（8）相比，公式（14）中的<strong>观测数据还包括物体观察</strong> <span class="math inline">\(u_{0:T}\)</span> ，并且在<strong>要估计的变量还包括物体类别</strong> <span class="math inline">\(\pi\)</span>
 <ul>
@@ -521,19 +521,19 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li><font color =red>这个模型后背的思想是：<span class="math inline">\(y_{t}^{k}\)</span> 来<strong>自于某个现有物体</strong> i ≤ M 的概率<strong>与物体 i 的测量次数成正比</strong>；来<strong>自于新物体</strong>的概率<strong>与 DP 先验的浓度参数</strong> <span class="math inline">\(\alpha\)</span> <strong>成正比</strong>。</font><br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f15.PNG" title="f15.PNG" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f15.PNG" title="f15.PNG" width="550" />
 </center></li>
 </ul></li>
 </ul></li>
 <li><strong>里程计</strong> <span class="math inline">\(\mathbf{o}_{0:T}\)</span>、<strong>物体测量</strong> <span class="math inline">\(\mathbf{z}_{0:T}\)</span> 和<strong>给定数据关联</strong> <span class="math inline">\(\mathbf{y}_{0:T}\)</span> <strong>的物体类别</strong> <span class="math inline">\(\mathbf{u}_{0:T}\)</span> 的<strong>联合对数似然</strong>可以写成以下形式，其形式与公式（13）相似，但在这个公式中，<font color = red>物体测量 <span class="math inline">\(\mathbf{z}_{0:T}\)</span> 的似然与物体类别 <span class="math inline">\(\mathbf{u}_{0:T}\)</span> 的似然<strong>通过数据关联</strong> <span class="math inline">\(\mathbf{y}_{0:T}\)</span> <strong>联系起来</strong></font>。<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f15.5.PNG" title="f15.5.PNG" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f15.5.PNG" title="f15.5.PNG" width="550" />
 </center></li>
 <li><strong>新的优化</strong>问题涵盖了<strong>里程计、物体测量和给定数据关联的物体类别的联合对数似然</strong>：<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f16.PNG" title="f16.PNG" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f16.PNG" title="f16.PNG" width="550" />
 </center></li>
 <li>与公式（8）相比，新的优化问题公式（16）<strong>更具挑战性</strong>，因为<strong>数据关联是未知的</strong>，从而物体测量的对数概率不再具有简单形式，并且问题公式（16）变为混合整数非线性问题（不再像之前可以独立）；
 <ul>
@@ -549,7 +549,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li><strong>里程计</strong> <span class="math inline">\(o_{0:T}\)</span> 、<strong>物体测量</strong> <span class="math inline">\(z_{0:T},u_{0:T}\)</span> 是<strong>观测数据</strong>。<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f17.PNG" title="f17.PNG" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f17.PNG" title="f17.PNG" width="550" />
 </center></li>
 </ul></li>
 <li>与规范的 DP 混合模型不同，<font color = red><strong>观测数据</strong> <span class="math inline">\(o_{0:T}, z_{0:T}, u_{0:T}\)</span> 不是给定变量 <span class="math inline">\(X_{0:T}, L, \pi\)</span> 的独立样本，而<strong>是通过因子图相关联的</strong></font>；
@@ -579,7 +579,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>然后将<strong>数据关联</strong> <span class="math inline">\(y_{t}^{k}\)</span> <strong>分配给最大似然对象</strong>，见公式（19）。<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f18_f19.PNG" title="f18_f19.PNG" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f18_f19.PNG" title="f18_f19.PNG" width="500" />
 </center></li>
 </ul></li>
 <li><strong>步骤三：位姿优化（line 10）</strong>
@@ -587,12 +587,12 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>在优化位姿时，<strong>数据关联是固定的</strong>，可以用公式（20）来<strong>更新物体类的 Dirichlet 分布的后验参数</strong><br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f20.PNG" title="f20.PNG" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f20.PNG" title="f20.PNG" width="500" />
 </center></li>
 <li>利用 Dirichlet 先验 <span class="math inline">\(Dir\left ( \beta _{i} \right )\)</span>，每个物体类别的最大似然（ML）与参数 <span class="math inline">\(\beta _{i}\)</span> 成正比，如公式（21）所示；<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/f21.PNG" title="f21.PNG" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/f21.PNG" title="f21.PNG" width="400" />
 </center></li>
 <li>然后<strong>通过标准 SLAM 求解器获得机器人位姿</strong> <span class="math inline">\(X_{0:T}\)</span> <strong>和物体位置 L 的最大似然</strong>（参见公式（8））。</li>
 </ul></li>
@@ -604,7 +604,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>组后通过简单地<font color = red>在 <span class="math inline">\(\pi _{i}\left ( 0 \right )\)</span> 上设置阈值 <span class="math inline">\(\epsilon\)</span> 来<strong>剔除假阳检测</strong></font>。<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/a1.PNG" title="a1.PNG" width="600" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/a1.PNG" title="a1.PNG" width="600" />
 </center></li>
 </ul></li>
 </ul>
@@ -617,7 +617,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>在<strong>每个位姿</strong> <span class="math inline">\(X_{t}\)</span> <strong>处</strong>，机器人观察其视野内的相对<strong>位置</strong> <span class="math inline">\(o_{t}^{k}\)</span> 和<strong>物体的类别</strong> <span class="math inline">\(u_{t}^{k}\)</span> ；</li>
 <li><strong>高斯噪声</strong>被添加到里程计测量和物体测量中（见公式 2 和 4），表 1 列出了模拟数据集包含的参数。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/tab1_tab2.PNG" title="tab1_tab2.PNG" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/tab1_tab2.PNG" title="tab1_tab2.PNG" width="800" />
 </center></li>
 </ul></li>
 <li>实验结果：
@@ -633,7 +633,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>② <strong>开环目标检测（OL）</strong>：使用机器人里程计在图像之间执行数据关联，但<strong>不使用数据关联结果来纠正机器人位姿</strong>（图 7c）；</li>
 <li>③ <strong>鲁棒性 SLAM（R-SLAM）</strong>：后端算法，<strong>可以找到最大的一致性测量集，并消除不一致的测量</strong>（图 7b）。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig6_fig7.PNG" title="fig6_fig7.PNG" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig6_fig7.PNG" title="fig6_fig7.PNG" width="800" />
 </center></li>
 </ul></li>
 <li>图 7 和表 2 比较了<strong>四种不同算法的 SLAM 性能</strong>，图 8 展示了<strong>机器人轨迹与 ground truth 相比的累积位置误差</strong>，而图 9 对 R-SLAM 和 OL 方法的各种参数进行了设置<strong>比较其物体数量和它们的定位误差</strong>；
@@ -647,7 +647,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>另一方面，<strong>NP-Graph 利用所有对象测量并共同推断机器人姿势和数据关联</strong>，因此可以准确地推断出正确的物体数量。<br />
 
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig8_fig9.PNG" title="fig8_fig9.PNG" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig8_fig9.PNG" title="fig8_fig9.PNG" width="800" />
 </center></li>
 </ul></li>
 </ul>
@@ -655,7 +655,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <ul>
 <li>为了测试真实场景中的性能，收集了办公环境的数据集，并使用深度学习来检测物体，如椅子，屏幕，杯子等。有关办公室数据集的统计信息如表 3 所示。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/tab3_tab4.PNG" title="tab3_tab4.PNG" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/tab3_tab4.PNG" title="tab3_tab4.PNG" width="700" />
 </center></li>
 <li>表 4 和图 10 比较了 FbF，R-SLAM，OL 和本文 NP-Graph 的性能，虽然物体位置的 ground truth 不适用于此数据集，但比较了<strong>有效物体</strong>的数量，<strong>inlier 测量</strong>数量和物体位置方差的性能；
 <ul>
@@ -671,7 +671,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>另一方面，<strong>NP-Graph 能够使轨迹闭环并恢复角落的转弯</strong>；</li>
 <li>虽然办公室数据集中没有计算物体定位误差的 ground truth，但值得注意的是，在最左下角的衣架上挂着毛衣，我们的算法能够<strong>恢复其距离</strong>而其他方法则失败。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig10.PNG" title="fig10.PNG" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig10.PNG" title="fig10.PNG" width="800" />
 </center></li>
 </ul></li>
 <li>图 11 展示了检测到的和良好关联的物体的一些<strong>示例</strong>，其包括椅子，屏幕，键盘，玩具车和悬挂在角落的毛衣；
@@ -679,7 +679,7 @@ IJRR 2018：<a href="http://web.mit.edu/~mrrobot/filez/ijrr17.pdf">Reliable Grap
 <li>这些图是从<strong>与相应物体相关联的单个边界框的点云中提取</strong>的；</li>
 <li>请注意，这些点云仅用于说明目的，但不在算法中维护，<strong>该算法仅使用这些点云的质心作为对象测量</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190507/fig11.PNG" title="fig11.PNG" width="450" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190507/fig11.PNG" title="fig11.PNG" width="450" />
 </center></li>
 </ul></li>
 </ul>

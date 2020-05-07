@@ -257,7 +257,7 @@ Joshi N, Sharma Y, Parkhiya P, et al. <a href="https://arxiv.org/pdf/1905.04698
 <ul>
 <li>来自轨迹采样的相机位置以粉色圆圈显示，相机轨迹本身以黑色虚线显示。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig1.PNG" title="fig1" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig1.PNG" title="fig1" width="500" />
 </center></li>
 </ul></li>
 </ul>
@@ -293,7 +293,7 @@ Joshi N, Sharma Y, Parkhiya P, et al. <a href="https://arxiv.org/pdf/1905.04698
 <ul>
 <li>我们使用这些模型（图2），通过<strong>用同一模型表示一个类别的所有实例</strong>，将目标观测因子纳入单目 SLAM 中。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig2.PNG" title="fig2" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig2.PNG" title="fig2" width="550" />
 </center></li>
 </ul></li>
 </ul>
@@ -330,7 +330,7 @@ Joshi N, Sharma Y, Parkhiya P, et al. <a href="https://arxiv.org/pdf/1905.04698
 </ul></li>
 <li>整体框架如下图所示
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig3.PNG" title="fig3" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig3.PNG" title="fig3" width="800" />
 </center></li>
 </ul>
 <h3 id="基于线段的类别级模型">3.2 基于线段的类别级模型</h3>
@@ -345,7 +345,7 @@ Joshi N, Sharma Y, Parkhiya P, et al. <a href="https://arxiv.org/pdf/1905.04698
 <li>m 中的每条线都由一个<font color = red><strong>三维方向 D 和一个在直线上的三维点 M 表示</strong></font>，虽然该 3D 点可以是线上的任意点，但大致选择为 3D CAD 模型的中点；</li>
 <li>各参数关系如下
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f1_f4.PNG" title="f1_f4" width="400" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f1_f4.PNG" title="f1_f4" width="400" />
 </center></li>
 </ul></li>
 <li>如果<strong>没有已知的关于物体的先验信息</strong>，那么搜索空间是一个 6 * m 的空间，它代表物体的形状；
@@ -397,7 +397,7 @@ C = C_{1} + k_{1}\times C_{2}+ k_{2}\times C_{3} \qquad(6)
 <li>如果<strong>物体的平均 3D 模型的高度和宽度分别与平均模型匹配</strong>，则边界框的高度和宽度独立地足以获得 <span class="math inline">\(T_{z}\)</span> 的良好估计；</li>
 <li>在物体高度和宽度均<strong>偏离平均模型</strong>的一般情况下，为了得到更好的估计，我们<strong>对这两种估计取平均值</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f7.PNG" title="f7" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f7.PNG" title="f7" width="500" />
 </center></li>
 </ul></li>
 </ul>
@@ -408,17 +408,17 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 \]</span></li>
 <li><strong>3D 边缘线段到图像平面的 2D 投影</strong>可以通过<strong>从 3D 线上投影两个任意点然后取其方向和中点</strong>来找到（如下图 5 所示），R 和 T 是 3D 线的旋转和平移。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig4.png" title="fig4" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig4.png" title="fig4" width="700" />
 </center></li>
 <li>直接在代价函数中添加角度会产生带有角度的距离的复杂性，观察到 <span class="math inline">\(\left | p_{2}-p_{1} \right |\)</span> 捕获两条线之间的角度变化，记做 <span class="math inline">\(C_{1}\)</span>；</li>
 <li><span class="math inline">\(\frac{p1+p2}{2}\)</span> 表示 <span class="math inline">\(\bar{x1x2}\)</span> 的中点投影到线 <span class="math inline">\(\bar{I_{p1}I_{p2}}\)</span>d的垂直距离，记做 <span class="math inline">\(C_{2}\)</span>；</li>
 <li>最后，最小化 <span class="math inline">\(M_{p}\)</span> 和 <span class="math inline">\(\frac{x1+x2}{2}\)</span> 之间的距离，以选取里投影线较近的直线，记做 <span class="math inline">\(C_{3}\)</span>；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f10.PNG" title="f10" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f10.PNG" title="f10" width="500" />
 </center></li>
 <li>从而公式（6）的<strong>代价函数</strong>可以写成
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f15.PNG" title="f15" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f15.PNG" title="f15" width="500" />
 </center></li>
 </ul>
 <h4 id="关联伪代码">3.3.3 关联伪代码</h4>
@@ -431,7 +431,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <ul>
 <li>具有视点和平移的<strong>模型中的线</strong>的关联是<strong>图像中的线段</strong>，其具有与模型中的该线对应的最小成本，最终<strong>选择关联成本最低的关联</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/a1.PNG" title="a1" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/a1.PNG" title="a1" width="500" />
 </center></li>
 </ul></li>
 </ul>
@@ -445,15 +445,15 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <ul>
 <li>如图 6 中所示， 3D 线 AB 在图像平面的投影得到 2D 线 ab，<strong>由 oa 和 ob 的叉积得到发现 N ，其垂直于 3D 线 AB</strong>，假设 M 是线上的一个点，D 是线的方向，满足公式（17）；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig6.PNG" title="fig6" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig6.PNG" title="fig6" width="550" />
 </center></li>
 <li>取同一条线上取两个点 M1 和 M2 之差，满足公式（18）
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f18.PNG" title="f18" width="450" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f18.PNG" title="f18" width="450" />
 </center></li>
 <li>从而<font color = red><strong>代价函数中的位姿约束项</strong></font>可以写成公式（19），其中 R 和 T 是需要优化的项。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f19.PNG" title="f19" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f19.PNG" title="f19" width="500" />
 </center></li>
 </ul>
 <h4 id="法向约束项">3.4.2 法向约束项</h4>
@@ -461,7 +461,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>每个类别对象都有一个基底，例如用于坐的椅子底座，我们<font color = red><strong>将物体的底面定义为当物体保持在正常位置时与地平面平行的平面</strong></font>；</li>
 <li>我们使用这个观察并加入约束来<strong>迫使物体的基部平行于地面</strong>，我们认为地平面的法线是 y 轴
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f20.PNG" title="f20" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f20.PNG" title="f20" width="500" />
 </center></li>
 </ul>
 <h4 id="形状约束项">3.4.3 形状约束项</h4>
@@ -469,11 +469,11 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>最后使用 3.2 节中讨论的<strong>特征向量公式来优化物体的形状</strong>（公式（5））：<span class="math inline">\(X=\bar{X}+V\Lambda\)</span></li>
 <li>对于<strong>物体形状中的任意一条线</strong> <span class="math inline">\(L_{i} = \left \langle M_{i},D_{i} \right \rangle \in X\)</span> 满足：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f21.PNG" title="f21" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f21.PNG" title="f21" width="500" />
 </center></li>
 <li>带入公式（19）中获得<font color = red><strong>形状约束</strong></font>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f23.PNG" title="f23" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f23.PNG" title="f23" width="800" />
 </center></li>
 </ul>
 <h4 id="优化位姿和形状">3.4.4 优化位姿和形状</h4>
@@ -493,14 +493,14 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <ul>
 <li><strong>使用基于线的方法学习分类模型，并将其集成到单目 SLAM 的后端</strong>，存在 <span class="math inline">\(Z_{ij} = Z_{j}Z_{i}^{-1}\)</span>，其中 <span class="math inline">\(Z_{ij}\in SE\left ( 3 \right )\)</span> 表示<strong>相对于时间 j 时相机在时间 i 处相机帧中 3D 点的刚体变换</strong>，<span class="math inline">\(Z_{ij}\)</span> 是由下式表示的一个 4 * 4 的矩阵
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f26.PNG" title="f26" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f26.PNG" title="f26" width="500" />
 </center></li>
 <li>如果世界坐标系中一个点 <span class="math inline">\(_{}^{w}\textrm{}X\)</span> 相对于帧 i 时刻的相机坐标系的 3D 坐标是 <span class="math inline">\(_{}^{i}\textrm{}X\)</span>，则使用变换 <span class="math inline">\(Z_{ij}\)</span>，可以将其相对于相机帧 j 的表示为 <span class="math inline">\(_{}^{j}\textrm{X}=Z_{ij}^{i}X\)</span>；</li>
 <li>对于所有帧 <span class="math inline">\(\forall ij \in \left \{ 1\cdots F \right \}\)</span> 中机器人的一组给定的相对位姿测量 <span class="math inline">\(\bar{Z}_{ij}\)</span> ，我们将<strong>位姿 SLAM 问题</strong>定义为估计 <span class="math inline">\(Z_{i}\forall i \in \left \{ 1\cdots F \right \}\)</span> <strong>最大化相对位姿测量的对数似然</strong>，可作为<strong>最小化观测误差（最小化对数似然的负值）</strong> 的问题来构建；
 <ul>
 <li>为了最大限度地解决问题（公式 27），<strong>采用因子图[28]使用公开的 GTSAM 框架[36]</strong> 来构建和优化所提出的因子图模型
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f27.PNG" title="f27" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f27.PNG" title="f27" width="500" />
 </center></li>
 </ul></li>
 <li>以交替的方式最小化误差函数（24, 25）的形状和位姿参数，<strong>得到给定帧 i 的估计的形状 <span class="math inline">\(\left ( \Lambda \right )\)</span> 和位姿 <span class="math inline">\(\bar{Z}_{i}^{O}\)</span></strong>；
@@ -509,7 +509,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <ul>
 <li>其中 <span class="math inline">\(\phi \left ( m \right )\)</span> 表示到目前为止观察到对象 <span class="math inline">\(O_m\)</span> 的唯一关联函数。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/f28.PNG" title="f28" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/f28.PNG" title="f28" width="500" />
 </center></li>
 </ul></li>
 </ul></li>
@@ -526,7 +526,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>我们还强调了我们的方法的性质，<font color = red><strong>该方法利用物体中的关键边缘，对应于相应的线框模型以获得对象轨迹并在各种真实场景中精确估计它们的姿势</strong></font>；</li>
 <li>图 10 显示了在 PASCAL VOC [33] 数据集的基于线的方法的结果。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig10.PNG" title="fig10" width="1000" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig10.PNG" title="fig10" width="1000" />
 </center></li>
 </ul></li>
 <li>在表 1 中，我们的方法与 ORB-SLAM 产生的轨迹进行了比较;
@@ -536,7 +536,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>通过在目标位置<strong>放置标记</strong>来收集 groundtruth；</li>
 <li>本表强调的是，<font color = red><strong>我们的方法能够在三维空间中嵌入物体，而不会恶化（甚至稍微改善）ORB SLAM 产生的轨迹</strong></font>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/tab1.PNG" title="tab1" width="600" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/tab1.PNG" title="tab1" width="600" />
 </center></li>
 </ul></li>
 <li>最后，我们<strong>通过比较执行时间来针对关键点方法[2]评估</strong>我们的方法；
@@ -549,7 +549,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>用于 8GB 内存的<strong>基于线路的方法</strong> intel i5处理器；</li>
 <li>对于同一过程，<font color = red><strong>本文基于线的方法速度提高了 2 倍以上</strong></font>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/timecost.PNG" title="timecost" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/timecost.PNG" title="timecost" width="500" />
 </center></li>
 </ul></li>
 </ul>
@@ -561,7 +561,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>我们的数据序列的序列 1 和 2 具有 2 个平行边的轮廓线，遵循显着的直线运动，而序列 3 是 360°旋转，没有原点的平移；</li>
 <li><strong>对于 ORB-SLAM[12] 和我们基于直线的物体SLAM，在有或无对象回路闭合的情况下，这些运行的估计机器人（MAV）轨迹和对象位置已在图 8 中可视化</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig8.PNG" title="fig8" width="1000" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig8.PNG" title="fig8" width="1000" />
 </center></li>
 </ul></li>
 </ul>
@@ -574,7 +574,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>在图 9 中，我们通过运行 5 近邻搜索，然后手动选择最近的实例，给出了<strong>三维 CAD 模型实例检索结果</strong>；</li>
 <li>我们<strong>使用这些检索到的实例来可视化机器人轨迹中的物体</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig9.PNG" title="fig9" width="1000" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig9.PNG" title="fig9" width="1000" />
 </center></li>
 </ul></li>
 </ul>
@@ -585,7 +585,7 @@ L_{i}=\left \langle m_{s},m_{y},m_{z},d_{x},d_{y},d_{z} \right \rangle=\left \la
 <li>如图 7 中，<font color = red><strong>加入了法向校正项（公式 20）之后可以看出物体的俯仰角和滚转角明显改进</strong></font>；</li>
 <li>这里使用凉亭可视化数据集序列 3 相对应的轨迹来演示。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190609/fig7.PNG" title="fig7" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190609/fig7.PNG" title="fig7" width="700" />
 </center></li>
 </ul></li>
 </ul>

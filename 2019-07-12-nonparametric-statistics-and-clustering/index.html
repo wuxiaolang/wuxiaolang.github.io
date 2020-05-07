@@ -240,10 +240,10 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 </ul></li>
 <li>如下图 1 是在 RGB-D 数据集中
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig1.PNG" title="fig1" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig1.PNG" title="fig1" width="500" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig2.PNG" title="fig1" width="1000" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig2.PNG" title="fig1" width="1000" />
 </center></li>
 </ul>
 <hr />
@@ -312,7 +312,7 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li>首先<strong>从深度图 <span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 中提取两组样本</strong>；</li>
 <li>设 <span class="math inline">\(k\)</span> 和 <span class="math inline">\(l\)</span> 表示在时间 t 和 t-1 时刻检测到的<strong>两个物体</strong>，其对应的区域为 <span class="math inline">\(B_{k}^{t}\)</span> 和 <span class="math inline">\(B_{l}^{t-1}\)</span> ，那么<strong>统计量 U</strong> 可以定义为：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f0.PNG" title="f0" width="600" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/f0.PNG" title="f0" width="600" />
 </center></li>
 </ul></li>
 <li><strong>两组深度样本的累计分布函数</strong>分别为 <span class="math inline">\(F\left(d_{k}^{t}\right)\)</span> 和 <span class="math inline">\(F\left(d_{l}^{t-1}\right)\)</span> ，如果满足以下公式（1）的条件，我们不否认 <font color = red><strong><span class="math inline">\(d^t\)</span> 和 <span class="math inline">\(d^{t-1}\)</span> 来源于相同分布</strong></font>的假设： <span class="math display">\[
@@ -340,12 +340,12 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li>在这种情况下， <span class="math inline">\(\left\{d_{k}^{t}(x), d_{l}^{t-1}(y)\right\}\)</span> 中的<strong>重复值</strong>称为 <span class="math inline">\(ties\)</span>；</li>
 <li>如果我们有 <span class="math inline">\(g\)</span> 个 <span class="math inline">\(tie\)</span> 组，<span class="math inline">\(t_z\)</span> 表示第 <span class="math inline">\(z\)</span> 个 <span class="math inline">\(tie\)</span> 组中的观察数，然后使用 <font color = red><strong>U 的正态近似</strong></font>；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f6.PNG" title="f6" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/f6.PNG" title="f6" width="550" />
 </center></li>
 </ul></li>
 <li>需要计算 <span class="math inline">\(q_a\)</span> 和 <span class="math inline">\(q_b\)</span> 的值以在公式（5）中使用，通过公式（6）和 <span class="math inline">\(\Delta = 80\%\)</span> 的置信区间，我们可以<font color = red><strong>近似计算 <span class="math inline">\(q_a\)</span> 和 <span class="math inline">\(q_b\)</span></strong></font>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f7.PNG" title="f7" width="450" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/f7.PNG" title="f7" width="450" />
 </center></li>
 <li>现在使用公式（7）的估计值，如果满足公式（5），那么我们就不能拒绝零假设，因此回想：当至少有 <span class="math inline">\(q_a\)</span> 和最多有 <span class="math inline">\(q_b\)</span> 个元素满足 <span class="math inline">\(d_{k}^{t}(x)&lt;d_{l}^{t-1}(y)+\Delta\)</span> 时，<span class="math inline">\(d_{k}^{t}\)</span> 和 <span class="math inline">\(d_{l}^{t-1}\)</span> 是相同的；
 <ul>
@@ -354,7 +354,7 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li>虽然这些是直观的推测，但我们并没有根据这些假设推导出数据关联；（这句话啥意思？？？）</li>
 <li>如图 3 显示了两帧图像，其对应的物体区域分别为 <span class="math inline">\(B_{k}^{t},B_{l}^{t-1}\)</span> ，其对应的深度分别为 <span class="math inline">\(d_{k}^{t}, d_{l}^{t-1}\)</span>，以及经过非参数数据关联之后的关联物体。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig3.PNG" title="fig3" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig3.PNG" title="fig3" width="800" />
 </center></li>
 </ul></li>
 </ul>
@@ -384,13 +384,13 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li>设 <span class="math inline">\(a \in p_{k}^{W^{t}}\)</span> 和 <span class="math inline">\(a \in p_{m}^{W^{t}}\)</span> 是一对匹配的点集；</li>
 <li>然后再 ICP 中<strong>最小化</strong>以找到相机的旋转 <span class="math inline">\(\mathbf{R} \in S O(3)\)</span> 和平移 <span class="math inline">\(\tau \in \mathbb{R}^{3}\)</span> 组成的<strong>刚体运动</strong>，可以写成：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f8.PNG" title="f8" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/f8.PNG" title="f8" width="550" />
 </center></li>
 <li>使用 <span class="math inline">\(d^t\)</span> 、在 t 时刻估计的相机位姿和相机内参<strong>将 <span class="math inline">\(i^t\)</span> 中每个检测到的物体 k 反投影到 W 中</strong>；</li>
 <li>如果在时间段 <span class="math inline">\(t-n\)</span> 和 <code>t</code> 之间，<font color = red><strong>有一个对象可以通过非参数的数据关联成功关联，则将从 <span class="math inline">\(p_{k}^{W^{t-n}}\)</span> 到 <span class="math inline">\(p_{k}^{W^{t}}\)</span> 的所有反投影点组成一个联合分布，以表示单个特征向量</strong></font>；</li>
 <li>一个<strong>对象的特征向量</strong> <span class="math inline">\(f\)</span> 可以表示为：(此特征向量用于计算下一节中的距离度量，图 3 显示了在 W 中反投影的相关物体)
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f.PNG" title="f" width="350" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/f.PNG" title="f" width="350" />
 </center></li>
 </ul></li>
 <li><font color = blue><strong>总结</strong>：这一节描述用 SIFT 作为特征点，通过 ICP 算法估计位姿，并最小化重投影误差，<strong>在物体特征向量表示的时候不是采用质心的方式，而是采用物体所属区域的点的联合分布来表示</strong>。</font></li>
@@ -413,7 +413,7 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li>我们<strong>使用 Bhattacharyya 距离（BD）[30] 来测量所有特征向量之间的距离</strong>，它在<strong>计算两个分布之间的距离时考虑了均值和方差</strong>；</li>
 <li>两个特征向量 <span class="math inline">\(f_a\)</span> 和 <span class="math inline">\(f_b\)</span> 之间的<strong>距离度量</strong> D 是:
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/f3.4.PNG" title="f3.4" width="650" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/f3.4.PNG" title="f3.4" width="650" />
 </center></li>
 </ul></li>
 </ul>
@@ -469,13 +469,13 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li><code>freiburg3 long office household</code> 和 <code>freiburg3 long office household validation</code> 有相同的环境，包括两个办公桌隔墙。结果聚类结果如图 5c 所示；</li>
 <li>所有 TUM 数据集的结果合并在表 I 中。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig4.PNG" title="fig4" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig4.PNG" title="fig4" width="700" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig5.1.PNG" title="fig5.1" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig5.1.PNG" title="fig5.1" width="700" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/tab1_2.PNG" title="tab1_2" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/tab1_2.PNG" title="tab1_2" width="700" />
 </center></li>
 </ul></li>
 </ul>
@@ -485,7 +485,7 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <ul>
 <li>图 5d - 5g 为我们对 4 个场景的仿真结果，结果如表 2 所示。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig5.2.PNG" title="fig5.2" width="900" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig5.2.PNG" title="fig5.2" width="900" />
 </center></li>
 </ul></li>
 </ul>
@@ -496,7 +496,7 @@ Iqbal A, Gans N R. <a href="https://ieeexplore.ieee.org/abstract/document/859354
 <li>我们测试了序列 1,6,10,13,14，在<strong>所有的序列中，小物体被放置在一个平面上</strong>，相机在物体周围移动；</li>
 <li>这些序列的结果如图 5h-5l 所示，表 3 为报道的结果，结果表明，对于这些序列，我们<strong>对地图中检测到的大部分目标进行了聚类</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190712/fig5.3.PNG" title="fig5.3" width="900" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190712/fig5.3.PNG" title="fig5.3" width="900" />
 </center></li>
 </ul></li>
 </ul>

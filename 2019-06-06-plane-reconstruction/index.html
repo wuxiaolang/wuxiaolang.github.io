@@ -339,7 +339,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 </ul></li>
 </ul>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig1.PNG" title="1" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/fig1.PNG" title="1" width="700" />
 </center>
 <h3 id="平面采样">3.2 平面采样</h3>
 <ul>
@@ -366,7 +366,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <li>两个简化模型的面数完全相同，为 41K 点，而 mesh QEM 模型的面数为 30K，大于我们的模型的面数为 22K；</li>
 <li>显然，<strong>QEM 过分简化了平面边界和曲面，而我们的方法更好地保持了尖锐的特征和几何细节</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig2.PNG" title="2" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/fig2.PNG" title="2" width="700" />
 </center></li>
 </ul></li>
 </ul></li>
@@ -394,7 +394,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <li>其中 <span class="math inline">\(E_{s}\)</span> 是文献 [26] 中引入的对彩色图像非刚性校正偏移量的约束；</li>
 <li><span class="math inline">\(\lambda _{1},\lambda _{2}\)</span> 是平衡系数，在实验中 <span class="math inline">\(\lambda _{1}\)</span> 的初值满足 <span class="math inline">\(E_{c} =\lambda _{1}E_{p}\)</span>，<span class="math inline">\(\lambda _{2}=0.1\)</span>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f1.PNG" title="f1" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/f1.PNG" title="f1" width="500" />
 </center></li>
 </ul></li>
 </ul></li>
@@ -405,7 +405,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <ul>
 <li>实验中遵循文献 [26] 的相同参数，每个图像上使用 20 * 16 个网格；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f2.PNG" title="f2" width="850" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/f2.PNG" title="f2" width="850" />
 </center></li>
 </ul></li>
 </ul>
@@ -413,14 +413,14 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <ul>
 <li>平面约束项是最小化 <strong>3D 纹理点到其对应平面的距离</strong>之和；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f6.PNG" title="f6" width="380" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/f6.PNG" title="f6" width="380" />
 </center></li>
 </ul>
 <h4 id="偏移约束项">3.3.3 偏移约束项</h4>
 <ul>
 <li>偏移约束是为了<strong>使偏移向量的大小最小化</strong>；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f7.PNG" title="f7" width="380" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/f7.PNG" title="f7" width="380" />
 </center></li>
 <li>为了使公式（1）中的目标函数最小化，我们采用了类似文献 [26] 的<font color = red><strong>交替优化策略</strong>：其基本思想是<strong>在优化不同变量与固定变量之间进行交替</strong></font>；
 <ul>
@@ -434,7 +434,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <li>图 3 显示了<strong>优化前后</strong>网格上的纹理，在优化之前，对每个纹理使用<strong>所有可见帧的平均颜色</strong>，我们的优化过程可以<strong>降低噪音，使纹理更清晰</strong>。</li>
 </ul>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig3.PNG" title="fig3" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/fig3.PNG" title="fig3" width="550" />
 </center>
 <h3 id="几何优化">3.4 几何优化</h3>
 <ul>
@@ -452,10 +452,10 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <li>另一项是<strong>正则化项</strong>，是为了保证公式（8）有有效的解，见公式（10）用于<strong>最小化每个顶点与其所有邻近的顶点的平均值之间的差</strong>；</li>
 <li>公式（8）中的 <span class="math inline">\(\lambda _{3}\)</span> 是为了平衡两项，在实验中简单地取其为 1.0。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f8.PNG" title="f8" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/f8.PNG" title="f8" width="550" />
 </center>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/f10.PNG" title="f10" width="650" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/f10.PNG" title="f10" width="650" />
 </center></li>
 </ul></li>
 </ul></li>
@@ -466,7 +466,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 </ul></li>
 </ul>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig4.PNG" title="fig4" width="550" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/fig4.PNG" title="fig4" width="550" />
 </center>
 <hr />
 <h2 id="结果">4. 结果</h2>
@@ -487,7 +487,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <li>注意，我们的代码只是 <strong>CPU 版本</strong>，目前在所有步骤中<strong>不包含任何并行加速技术</strong>，如我们在 3.3 节中所描述的，每个平面的优化是相互独立的，可以并行运行，对于每一帧相机的姿态和校正函数的优化也是如此；</li>
 <li>此外，我们发现优化过程中的<strong>大部分时间都花在高斯牛顿算法中雅可比矩阵的计算上</strong>，由于每个纹理的计算过程也独立于其他所有的计算过程，因此<strong>使用 GPU 可以大大加速雅可比矩阵的计算</strong>；
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/tab1_fig5.PNG" title="tab1_fig5" width="900" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/tab1_fig5.PNG" title="tab1_fig5" width="900" />
 </center></li>
 </ul></li>
 <li><font color =red>与两种最先进的方法 <strong>BundleFusion</strong>[6] 和 <strong>3DLite</strong>[13] 比较</font>；
@@ -516,7 +516,7 @@ Wang C, Guo X. <a href="https://arxiv.org/pdf/1905.08853.pdf"><strong>Efficient 
 <ul>
 <li>因此，如果由 BundleFusion 系统生成的初始相机姿态存在较大的误差，我们的结果可能会包含未对齐的表面纹理。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20190606/fig6.PNG" title="fig6" width="700" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20190606/fig6.PNG" title="fig6" width="700" />
 </center></li>
 </ul></li>
 </ul></li>

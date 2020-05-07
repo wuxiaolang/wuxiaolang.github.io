@@ -278,7 +278,7 @@ Ferrer G. <a href="http://sites.skoltech.ru/app/data/uploads/sites/50/2019/07/fe
 <li>对于对称和半正定矩阵，特征分解与奇异值分解（SVD）一致，通过构造 C；</li>
 <li>在第二步中将参数 d 表示为 <span class="math inline">\(d=-\eta^{\top} E\{p\}\)</span>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f2.PNG" title="f2" width="450" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f2.PNG" title="f2" width="450" />
 </center></li>
 </ul></li>
 <li><strong>缺点</strong>是，<strong>每次添加或修改新样本时</strong>，例如由于姿势更新（见下文），<strong>C 也会随着改变，并且需要再次执行所有计算</strong>。</li>
@@ -288,7 +288,7 @@ Ferrer G. <a href="http://sites.skoltech.ru/app/data/uploads/sites/50/2019/07/fe
 <li>如果我们要寻找公式（1）中定义的平面，则有必要对该解进行缩放，以使 <span class="math inline">\(\eta\)</span> 的前三个元素是统一的。</li>
 <li>这种方法最大的优点是 S 允许增量更新。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f3.PNG" title="f3" width="450" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f3.PNG" title="f3" width="450" />
 </center></li>
 </ul></li>
 <li><font color = red><strong>点云平面估计方法三</strong></font>：从一组点估计一个平面有第三种方法，它基于<strong>正交原理</strong>，如公式（4）：
@@ -334,7 +334,7 @@ Ferrer G. <a href="http://sites.skoltech.ru/app/data/uploads/sites/50/2019/07/fe
 <li>其中 <span class="math inline">\(T_{t}\)</span> 与某个时刻的位姿 <span class="math inline">\(\xi_{t}\)</span> 相关；</li>
 <li>该公式等价于公式（3），其中某个时刻 <span class="math inline">\(t\)</span> 的点云 <span class="math inline">\(\left\{\tilde{p}_{t}^{n}\right\}=\tilde{P}_{t}\)</span> 由 <span class="math inline">\(T_{t}\)</span> 变换，因此可以将此求和重写为 <span class="math inline">\(\tilde{P}_{t}\)</span> 的矩阵乘积（公式 11）：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f11.PNG" title="f11" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f11.PNG" title="f11" width="500" />
 </center></li>
 <li>用<strong>奇异值分解 SVD 法</strong>求解这一问题的方法是<strong>将参数从一个局部坐标系粗略地旋转到另一个坐标系的平面上</strong>；</li>
 <li>注意， <span class="math inline">\(Q_{t}\)</span> 只需要计算一次从所有原始齐次点获得的平方项 <span class="math inline">\(S_{t}\)</span>，然后更新矩阵 <span class="math inline">\(Q_{t}\)</span> 只需要两个乘法；</li>
@@ -382,7 +382,7 @@ Q=Q^{\top} \quad \Longrightarrow \quad \pi^{\top} Q=\lambda \pi^{\top} \qquad(19
 \]</span></li>
 <li>可以将表达式（17）乘以 <span class="math inline">\(\pi^{\top}\)</span>，然后替换（19）并进行一些操作：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f20.PNG" title="f20" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f20.PNG" title="f20" width="500" />
 </center></li>
 <li>这个紧凑的结果通过 <span class="math inline">\(\lambda=\lambda_{o}+\pi^{\top} \mathrm{d} Q \pi\)</span> 表达<strong>对代价函数的小扰动</strong>，我们可以<strong>通过流型 <span class="math inline">\(\xi_{t} \in \mathbb{R}^{6}\)</span> 来微分这种小扰动</strong> <span class="math display">\[
   \frac{\partial \lambda}{\partial \xi_{t}}=\frac{\partial}{\partial \xi_{t}}\left(\lambda_{o}+\pi^{\top} \mathrm{d} Q \pi\right)=\pi^{\top} \frac{\partial Q}{\partial \xi_{t}} \pi \qquad(21)
@@ -398,7 +398,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 <li>其中 K 与 <span class="math inline">\(\Delta \xi_{t}\)</span> 无关；</li>
 <li>然后根据左乘原则来拓展和更新公式（8）。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f23.PNG" title="f23" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f23.PNG" title="f23" width="500" />
 </center></li>
 </ul></li>
 <li>现在需要导出每个分量的生成矩阵（公式 7），再将其乘以（23），为简便起见，省去了时间索引（即公式 22 中的）
@@ -409,7 +409,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 </ul></li>
 <li>再次利用<strong>矩阵 <span class="math inline">\(Q_t\)</span> 的对称性</strong>，重写表达式（23）：
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f25.PNG" title="f25" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f25.PNG" title="f25" width="500" />
 </center></li>
 <li>最后整体的梯度定义为公式（26）
 <ul>
@@ -425,7 +425,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 </ul></li>
 <li>文献 [30] 将 NAG 方法描述为基于动量梯度的优化，我们考虑<strong>流形中姿势的特殊更新</strong>
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/f27_28.PNG" title="f27_28" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/f27_28.PNG" title="f27_28" width="500" />
 </center>
 <ul>
 <li>其中 k 表示优化序列上的迭代索引；</li>
@@ -460,7 +460,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 <li>与姿态 <span class="math inline">\(\xi=\left[w^{\top}, v^{\top}\right]^{\top}\)</span> 相对应的<strong>采样值</strong>从均匀分布 <span class="math inline">\(w \sim U(-\pi, \pi)\)</span> 和 <span class="math inline">\(v \sim U(-4, 4)\)</span> 中获取；</li>
 <li>图 2 显示了此类轨迹之一的示例。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig2.PNG" title="fig2" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/fig2.PNG" title="fig2" width="800" />
 </center></li>
 </ul></li>
 <li>虽然我们给出了姿态序列的推导，但结果表明，它们<strong>与观测值过拟合，从而增加了轨迹上的不连续性</strong>；
@@ -483,7 +483,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 <ul>
 <li>图 3 左图显示了相对于姿态数的<strong>迭代次数</strong>，右图显示了使用先前距离的轨迹 <strong>RMSE</strong>，<strong>随着我们增加观察数量，EFs 不断改进</strong>。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig3.PNG" title="fig3" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/fig3.PNG" title="fig3" width="800" />
 </center></li>
 </ul></li>
 <li>在下一阶段的评估中，我们将 EFs 和 NAG 与上述类似设置下的 ICP 点-点和 ICP 点-面基准进行比较；
@@ -495,7 +495,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 </ul></li>
 <li>EFs 的<strong>执行时间</strong>如图 5 所示，它指出 EFs 比 ICP 或基于计算点误差的任何其他方法更有效，ICP 使用多个内核，而 EFs 是单线程进程，但 EFs 仍胜过它们。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig4_5.PNG" title="fig4_5" width="800" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/fig4_5.PNG" title="fig4_5" width="800" />
 </center></li>
 </ul>
 <hr />
@@ -513,7 +513,7 @@ Q_{t}=\left[q_{1}, q_{2}, q_{3}, q_{4}\right]=\left[\begin{array}{l}{q_{1}^{\top
 </ul></li>
 <li>在这项工作中，我们<strong>在固定的时间窗口上优化上使用 EFs 进行点云对齐</strong>，但是确实存在与其他 SLAM 应用程序的直接链接，我们打算在不久的将来进行探索。
 <center>
-<img src="https://dev.tencent.com/u/wuyanmin/p/link/git/raw/master/pic/paper/2019/20191009/fig1.PNG" title="fig1" width="500" />
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2019/20191009/fig1.PNG" title="fig1" width="500" />
 </center></li>
 </ul>
 <hr />
