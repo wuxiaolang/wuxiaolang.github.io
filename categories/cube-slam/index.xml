@@ -18,7 +18,16 @@
       <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
       
       <guid>https://wym.netlify.app/2019-02-22-cubeslam/</guid>
-      <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,</description>
+      <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 原始代码：https://github.com/shichaoy/cube_slam 个人注释：http</description>
+    </item>
+    
+    <item>
+      <title> 😜 Cube SLAM 代码注释</title>
+      <link>https://wym.netlify.app/2019-01-17-cubeslam-code/</link>
+      <pubDate>Thu, 17 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wym.netlify.app/2019-01-17-cubeslam-code/</guid>
+      <description>原始代码：https://github.com/shichaoy/cube_slam 个人注释：https://github.com/wuxi</description>
     </item>
     
     <item>

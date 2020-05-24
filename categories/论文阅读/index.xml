@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
-    <lastBuildDate>Fri, 13 Mar 2020 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 05 May 2020 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://wym.netlify.app/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title> 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计</title>
+      <link>https://wym.netlify.app/2020-05-05-cluster-vo/</link>
+      <pubDate>Tue, 05 May 2020 00:00:00 +0800</pubDate>
+      
+      <guid>https://wym.netlify.app/2020-05-05-cluster-vo/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计&lt;/strong&gt;&lt;br /&gt;
+Huang J, Yang S, Mu T J, et al. &lt;a href=&#34;https://arxiv.org/pdf/2003.12980&#34;&gt;&lt;strong&gt;ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:2003.12980, &lt;strong&gt;2020&lt;/strong&gt;. （CVPR 2020）&lt;br /&gt;
+清华大学胡事民教授；&lt;a href=&#34;https://www.youtube.com/watch?v=paK-WCQpX-Y&amp;amp;feature=youtu.be&#34;&gt;演示视频&lt;/a&gt;&lt;br /&gt;
+前期研究：Huang J, Yang S, Zhao Z, et al. &lt;a href=&#34;http://openaccess.thecvf.com/content_ICCV_2019/papers/Huang_ClusterSLAM_A_SLAM_Backend_for_Simultaneous_Rigid_Body_Clustering_and_ICCV_2019_paper.pdf&#34;&gt;&lt;strong&gt;ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation&lt;/strong&gt;&lt;/a&gt;[C]//Proceedings of the IEEE International Conference on Computer Vision. &lt;strong&gt;2019&lt;/strong&gt;: 5875-5884.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
     
     <item>
       <title> 📜 论文阅读 | 使用低精度 GPS 和 2.5D 建筑模型实现基于 SLAM 的户外定位</title>
@@ -18,8 +32,7 @@
       <pubDate>Fri, 13 Mar 2020 00:00:00 +0800</pubDate>
       
       <guid>https://wym.netlify.app/2020-03-13-building-models/</guid>
-      <description>&lt;h1 id=&#34;towards-slam-based-outdoor-localization-using-poor-gps-and-2.5-d-building-models&#34;&gt;Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models&lt;/h1&gt;
-&lt;blockquote&gt;
+      <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;使用低精度 GPS 和 2.5D 建筑模型实现基于单目 SLAM 的户外定位&lt;/strong&gt;&lt;br /&gt;
 Liu R, Zhang J, Chen S, et al. &lt;a href=&#34;https://ieeexplore.ieee.org/abstract/document/8943728/&#34;&gt;&lt;strong&gt;Towards SLAM-based outdoor localization using poor GPS and 2.5 D building models&lt;/strong&gt;&lt;/a&gt;[C]//2019 IEEE International Symposium on Mixed and Augmented Reality (&lt;strong&gt;ISMAR&lt;/strong&gt;). IEEE, &lt;strong&gt;2019&lt;/strong&gt;: 1-7.&lt;br /&gt;
 浙江工业大学、汉堡大学；&lt;a href=&#34;https://github.com/lauchlry/Buiding-GPS-SLAM&#34;&gt;&lt;strong&gt;代码开源&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;

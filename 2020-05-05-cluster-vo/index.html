@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title> 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计 - 吴言吴语</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="wuxiaolang" /><meta name="description" content=" ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计
+Huang J, Yang S, Mu T J, et al. ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings[J]. arXiv preprint arXiv:2003.12980, 2020. （CVPR 2020）
+清华大学胡事民教授；演示视频
+前期研究：Huang J, Yang S, Zhao Z, et al. ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation[C]//Proceedings of the IEEE International Conference on Computer Vision. 2019: 5875-5884.
+" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+<meta name="baidu-site-verification" content="fHOS0ah0i1" />
+<meta name="google-site-verification" content="4aEA7KB3m7LrWKNH4axTcMxXigooU2CLbEs_pmc_09s" />
+
+
+<meta name="generator" content="Hugo 0.68.0 with theme even" />
+
+
+<link rel="canonical" href="https://wym.netlify.app/2020-05-05-cluster-vo/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.fdd8141c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content=" 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计" />
+<meta property="og:description" content="
+ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计
+Huang J, Yang S, Mu T J, et al. ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings[J]. arXiv preprint arXiv:2003.12980, 2020. （CVPR 2020）
+清华大学胡事民教授；演示视频
+前期研究：Huang J, Yang S, Zhao Z, et al. ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation[C]//Proceedings of the IEEE International Conference on Computer Vision. 2019: 5875-5884.
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://wym.netlify.app/2020-05-05-cluster-vo/" />
+<meta property="article:published_time" content="2020-05-05T00:00:00+08:00" />
+<meta property="article:modified_time" content="2020-05-05T00:00:00+08:00" />
+<meta itemprop="name" content=" 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计">
+<meta itemprop="description" content="
+ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计
+Huang J, Yang S, Mu T J, et al. ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings[J]. arXiv preprint arXiv:2003.12980, 2020. （CVPR 2020）
+清华大学胡事民教授；演示视频
+前期研究：Huang J, Yang S, Zhao Z, et al. ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation[C]//Proceedings of the IEEE International Conference on Computer Vision. 2019: 5875-5884.
+">
+<meta itemprop="datePublished" content="2020-05-05T00:00:00&#43;08:00" />
+<meta itemprop="dateModified" content="2020-05-05T00:00:00&#43;08:00" />
+<meta itemprop="wordCount" content="8165">
+
+
+
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=" 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计"/>
+<meta name="twitter:description" content="
+ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计
+Huang J, Yang S, Mu T J, et al. ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings[J]. arXiv preprint arXiv:2003.12980, 2020. （CVPR 2020）
+清华大学胡事民教授；演示视频
+前期研究：Huang J, Yang S, Zhao Z, et al. ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation[C]//Proceedings of the IEEE International Conference on Computer Vision. 2019: 5875-5884.
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">小吴同学的吴言吴语</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">博客</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/slam/">
+        <li class="mobile-menu-item">SLAM</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/za/">
+        <li class="mobile-menu-item"></li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">小吴同学的吴言吴语</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">博客</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/slam/">SLAM</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/za/"></a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title"> 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-05-05 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
+            <a href="/categories/slam/"> SLAM </a>
+            <a href="/categories/object-slam/"> object slam </a>
+            </div>
+          <span class="more-meta"> 约 8165 字 </span>
+          <span class="more-meta"> 预计阅读 17 分钟 </span>
+        
+        
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content">
+    
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p><strong>ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计</strong><br />
+Huang J, Yang S, Mu T J, et al. <a href="https://arxiv.org/pdf/2003.12980"><strong>ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings</strong></a>[J]. arXiv preprint arXiv:2003.12980, <strong>2020</strong>. （CVPR 2020）<br />
+清华大学胡事民教授；<a href="https://www.youtube.com/watch?v=paK-WCQpX-Y&amp;feature=youtu.be">演示视频</a><br />
+前期研究：Huang J, Yang S, Zhao Z, et al. <a href="http://openaccess.thecvf.com/content_ICCV_2019/papers/Huang_ClusterSLAM_A_SLAM_Backend_for_Simultaneous_Rigid_Body_Clustering_and_ICCV_2019_paper.pdf"><strong>ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation</strong></a>[C]//Proceedings of the IEEE International Conference on Computer Vision. <strong>2019</strong>: 5875-5884.</p>
+</blockquote>
+<h2 id="c-穷理以致知一文而四问">【C】 穷理以致知，一文而四问</h2>
+<ul>
+<li><font color = red><strong>1.</strong> <strong>针对什么问题？</strong></font>
+<ul>
+<li>① 如何在<strong>不需要物体或环境先验假设</strong>的情况下实现一种<strong>通用的动态 SLAM/VO</strong>？</li>
+<li>② 如何<strong>同时估计、优化自身位姿和多个动态物体的运动状态</strong>？</li>
+<li>③ 如何实现二维几何路标、二维语义路标、三维点云和运动状态之间的<strong>数据关联</strong>？</li>
+</ul></li>
+<li><font color = red><strong>2.</strong> <strong>采用什么方法？</strong></font>
+<ul>
+<li>① 针对动态路标提出一种<strong>多级别的概率数据关联策略</strong>，实现低层次特征与路标的关联和高层次检测与聚类簇的关联。（相当于当前帧的点关联当前帧的物体）</li>
+<li>② 采用结合语义、空间和运动的<strong>异构 CRF 推断细化现有聚类簇或创建新的聚类簇</strong>。（相当于当前帧的物体关联地图中的物体）</li>
+<li>③ 在优化时分别对静态场景和动态场景的<strong>能量函数添加了边缘化误差项和运动先验误差项</strong>。</li>
+<li>④ 设计了<strong>时间和空间双通道的关键帧管理</strong>方法保证速度和效率，以及被遮挡时的运动预测。</li>
+</ul></li>
+<li><font color = red><strong>3.</strong> <strong>达到什么效果？</strong></font>
+<ul>
+<li>① 在 Oxford Multimotion 室内数据集中相对基准方案<strong>有一半以上的序列漂移减小 25% 以上</strong>。</li>
+<li>② 在室外 kitti 数据集中与 4 项对比工作比较在 <strong>ATE 有较大优势</strong>；</li>
+<li>③ 在室外车辆 3D 检测方面与专门用于 <strong>3D 目标检测</strong>的方法存在较大差距，但<strong>速度上有很大优势</strong>；与 Dyn SLAM 比较有一定的提升。</li>
+</ul></li>
+<li><font color = red><strong>4.</strong> <strong>存在什么不足？</strong></font>
+<ul>
+<li>① 公式（7）提供的 3D 项可以对 2D 关联的离异点进行剔除，但似乎需要建立在路标点服从高斯分布的假设上？但事实上物体中的路标点的分布基本上是不服从高斯分布的。</li>
+<li>② 与采用几何方法的 MOV 基准比较，本文语义检测提供了足够的先验，似乎不太公平。</li>
+<li>③ 数据关联方法看似完善，实际上不能实现通用的，因为实验中仅针对单一物体，比如室内实验针对同样大小的箱子，室外实验针对同样大小的车辆，在多类别物体下该数据关联方法的效果有待验证。</li>
+</ul></li>
+<li><font color = red><strong>5.</strong> <strong>个人的疑问</strong></font>
+<ul>
+<li>① 多级概率关联和异构 CRF 之间存在什么关系呢？或者怎么个执行流程？他们完成的工作是否有重叠的部分？</li>
+</ul></li>
+</ul>
+<h2 id="摘要">0. 摘要</h2>
+<p>  本文提出一种<strong>双目视觉里程计 ClusterVO，能同时完成对自我和周围刚性簇/物体的运动进行聚类与估计</strong>。不同于以往依赖于批量输入或对场景结构或动态对象模型施加优先级的解决方案，它是在线的、通用的，可以用于各种场景，包括室内场景理解和自动驾驶。该系统的核心是<strong>一种多级概率关联机制和一种结合语义、空间和运动信息的异构条件随机场（CRF）聚类方法</strong>，对每一帧进行在线联合聚类。通过滑动窗口优化，快速<strong>求解相机和动态目标的姿态</strong>。系统在 Oxford Multimotion 和 KITTI 数据集上进行了定量和定性评估，在里程计测量量和动态轨迹恢复方面达到了与最新解决方案相当的结果。</p>
+<h2 id="introduction">1. Introduction</h2>
+<p>  <strong>感知和理解动态目标是当前视觉 SLAM 中超越自我定位的一项重要任务</strong>。比如增强现实中与移动实例交互、自动驾驶中避开动态车辆。<br />
+  但大多数经典的 SLAM 系统都将动态因素视作离群值进行剔除。虽然<strong>视觉技术（检测、分割与跟踪）为动态感知提供了新的可能</strong>，但对于室内场景，通常利用了几何特征（例如凸性、规则化结构）来辅助分割；对于室外场景，通常利用了车辆尺寸、道路平面假设来约束空间。这些方法很难应用在通用场景，相反，本文的前期工作 Cluster SLAM 不包含场景先验，但只充当后端不是一个完整的系统，其性能严重依赖于路标的跟踪和关联质量。<br />
+  <strong>1)</strong> 本文提出的 Cluster VO <strong>同时优化相机位姿和多个动态目标的姿态</strong>（将其视为点路标的簇），实现良好的跟踪和分割性能，此外没有任何几何或形状先验，展现了系统的通用性。本文策略<strong>仅基于稀疏路标和 YOLO 2D 目标检测</strong>。<br />
+  <strong>2)</strong> 提出一种鲁棒的<strong>多级概率数据关联技术</strong>，以有效地跟踪 3D 空间中的低层特征和高层检测。<br />
+  <strong>3)</strong> 在此基础上，结合语义包围盒、空间亲和性和运动一致性，提出了一种<strong>高效的异构 CRF 算法，用于发现新的聚类、聚类新的标记和细化已有的聚类</strong>。<br />
+  <strong>4)</strong> 最后，采用<strong>滑动窗口优化</strong>的方法对场景的静态部分和动态部分进行求解。</p>
+<hr />
+<h2 id="related-work">2. Related Work</h2>
+<h3 id="动态-slam-vo">2.1 动态 SLAM / VO</h3>
+<ul>
+<li><strong>1)</strong> <strong>显式地检测动态</strong>并使用运动一致性 [8、19、20] 或目标检测模块 [4、49、50] 对其进行滤除。<br />
+</li>
+<li><strong>2)</strong> <strong>同时估计自我运动和多个刚体运动的想法开创于 SLAMMOT</strong> [44]，后续研究 [6、34、35、38、46] 重建运动物体的三维稠密模型。<br />
+</li>
+<li><strong>3)</strong> [22、40、43] 可以在<strong>预定义的关节运动模板</strong>（例如，人的手或运动学结构）上跟踪和重建刚性物体部分。<br />
+</li>
+<li><strong>4)</strong> [9，31] 将现有的<strong>视觉惯性系统与使用标记跟踪</strong>的运动对象结合在一起.</li>
+</ul>
+<h3 id="目标检测与位姿估计">2.2 目标检测与位姿估计</h3>
+<ul>
+<li>许多方法 [13，23] 利用预定义的目标模板或先验来共同推断物体的深度和旋转。<strong>在 ClusterVO 中，在定位和建图过程中同时推断出的低级几何特征描述符和语义检测可以为有效跟踪和准确的对象姿态估计提供其他线索</strong>。</li>
+</ul>
+<hr />
+<h2 id="clustervo">3. ClusterVO</h2>
+  ClusterVO 将经过同步和校准的<strong>立体图像作为输入</strong>，并<strong>为每帧输出相机和物体位姿</strong>。对于每个传入帧，使用 YOLO 检测语义边界框，并提取 ORB 特征在整个立体图像上进行匹配。<strong>1）</strong>首先通过<strong>多级概率关联</strong>公式将检测到的边界框和提取的特征分别关联到先前发现的簇和地标（第3.1节）。<strong>2）</strong>然后，我们对所有具有相关地图路标的特征执行<strong>异构条件随机场（CRF），以确定当前帧的聚类分割</strong>（第3.2节）。<strong>3）</strong>最后，状态估计步骤通过<strong>边缘化和平滑运动先验优化</strong>滑动窗口上的所有状态（第3.3节）。该流程如图 2 所示。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig2.PNG" title="fig2" width="1000" />
+</center>
+<center>
+fig2. 系统框架。① 特征检测与语义检测。② 多级概率关联将特征与路标关联，并将边界框与现有簇关联。③ 利用异构 CRF 模块将当前帧中观测到的路标聚类成不同的刚体。④ 状态估计是以滑动窗口的方式进行的，采用特殊设计的关键帧机制。优化的状态用于更新静态地图和聚类。
+</center>
+<h3 id="多级概率关联">3.1 多级概率关联</h3>
+  对于<strong>静态地图的路标</strong>（即<span class="math inline">\(q^i=0\)</span>），可以通过<strong>最近邻搜索和描述符匹配</strong>来稳健地关联特征 [ORB-SLAM2]。然而，在图像空间上<strong>快速移动的动态地标</strong>跟踪并不是一件容易的事情。此外，如果可能的话，需要将每个检测到的边界框 <span class="math inline">\(B^m_t\)</span> 关联到一个现有的地图中的一个聚类，这在随后的异构 CRF 模块中是必需的。<br />
+  为此，本文提出一个用于<font color = red><strong>动态路标（<span class="math inline">\(q^i\neq 0\)</span>）的多级概率关联</strong></font>方法，将<strong>低层特征</strong> <span class="math inline">\(z^k_t\)</span> 分配源路标 ID <span class="math inline">\(k\rightarrow i\)</span>，将<strong>高层边界框</strong> <span class="math inline">\(B^m_t\)</span> 分配聚类 <span class="math inline">\(m \rightarrow q\)</span>。<strong>概率方法的本质是用均值为 <span class="math inline">\(p^i_t\)</span> 的高斯分布和协方差 <span class="math inline">\(\sum_{t}^{i}\)</span> 来模拟地标的位置，并考虑整个匹配过程中的不确定性。</strong><br />
+  理想情况下，应该从<strong>最后一个状态估计步骤的系统信息矩阵</strong>中提取 <span class="math inline">\(\sum_{t}^{i}\)</span> ，但是计算量很大，因此，本文用<strong>最小的行列式近似</strong> <span class="math inline">\(\sum_{t}^{i}\)</span> 变换为 <span class="math inline">\(_{Z}^{ }\textrm{}\sum_{t{}&#39; &lt; t}^{i}\)</span> （公式 1），可以被逐步更新，其中 <span class="math inline">\(R_t^c\)</span> 是 <span class="math inline">\(P_t^c\)</span> 的旋转部分。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f1.PNG" title="f1" width="400" />
+</center>
+  对于每个新帧，我们使用 <span class="math inline">\(v_t^q\)</span> <strong>对每个聚类执行运动预测</strong>。使用 <span class="math inline">\(\zeta_{t}^{i}=\pi\left({p}_{t}^{i}+{v}_{t}^{\mathbf{q}}\right), \Gamma_{t}^{i}=\mathbf{J}_{\pi} \Sigma_{t}^{i} \mathbf{J}_{\pi}^{\top}\)</span> 将预测的 3D 路标的位置及其噪声协方差矩阵重新投影回当前帧中。<strong>将第 k 个观察值分配给路标 i 的概率得分为</strong>公式（2）。对于每个观测值 k，我们<strong>选择与其对应的具有最高得分的路标 i 关联</strong>：<span class="math inline">\(k \rightarrow {argmax}_{i} p_{i}(k)\)</span>。实际上公式（2）仅在 <span class="math inline">\(z_t^k\)</span> 的一个小邻域上进行评估。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f2.PNG" title="f2" width="450" />
+</center>
+  通过公式（3）计算香农交叉熵 <span class="math inline">\(\varepsilon _t^q\)</span> 进一步测量关联 <span class="math inline">\(m \rightarrow \mathbf{q}:={argmax}_{\mathbf{q}^{\prime}} p_{\mathbf{q}^{\prime}}(m)\)</span> 的不确定性。其中 <span class="math inline">\(p_q(m)\)</span> 是<strong>第 m 个boundingbox 分配给第 q 个聚类的概率</strong>，如果 <span class="math inline">\(\varepsilon _t^q\)</span> 小于 1，则认为这是一个<strong>成功的高级别关联</strong>，在这种情况下<strong>在边界框内执行额外的暴力低级别特征描述符匹配，以找到更多的特征对应</strong>。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f3.PNG" title="f3" width="400" />
+</center>
+<h3 id="用于聚类簇分配的异构-crf">3.2 用于聚类簇分配的异构 CRF</h3>
+  在这一步确定<strong>当前帧观测到的每个路标 i 被分配的聚类簇</strong> <span class="math inline">\(q^i\)</span>，应用了<strong>将语义，空间和运动信息结合在一起的条件随机场模型</strong>（称为“异构CRF”），从而将公式（4）的能量降至最低。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f4.PNG" title="f4" width="400" />
+</center>
+<p>它是一元能量和成对能量在观察到的路标的完整图的加权总和（<span class="math inline">\(\alpha &gt; 0\)</span> 是平衡因子）。<strong>CRF 的类别总数</strong>被设置为 M = N1 + N2 + 1，其中 N1 是活跃（live）群集的数量，N2 是该帧中未关联的边界框的数量，并且最后一项 1 表示允许离群值的类别。<strong>如果在过去的 L 帧中至少观察到一个地标，则认为群集处于活动状态</strong>。</p>
+<h4 id="一元势能">3.2.1 一元势能</h4>
+  <font color = red><strong>一元能量决定观察到的地标 i 属于特定聚类簇 <span class="math inline">\(q^i\)</span> 的概率</strong></font>，并且包含三个信息源：
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f5.PNG" title="f5" width="400" />
+</center>
+  <strong>第一项 <span class="math inline">\(p_{2D}\)</span> 合并来自检测到的语义边界框的信息</strong>。如果路标位于边界框内，则概率应该很大。设 <span class="math inline">\(C_t^i\)</span> 是路标 <span class="math inline">\(z_i\)</span> 所在的边界框对应的聚类簇索引的集合，<span class="math inline">\(\eta\)</span> 是检测置信度的常数，
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f6.PNG" title="f6" width="400" />
+</center>
+  <strong>第二个 <span class="math inline">\(p_{3D}\)</span> 通过向聚类簇中心附近的路标分配高概率来强调空间亲和力</strong>，见公式（7），其中 <span class="math inline">\(c_{qi}\)</span> 和 <span class="math inline">\(l_{qi}\)</span> 分别是<strong>聚类中心和维度</strong>，由聚类路标点云的中心和第 30/70 个百分位数（凭经验找到）确定。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f7.PNG" title="f7" width="400" />
+</center>
+  <strong>第三项定义了集群 <span class="math inline">\(q^i\)</span> 在一组时间步长 <span class="math inline">\(\mathcal{T}\)</span> 上的轨迹如何解释观测</strong>（见公式（8）），这是一个简单的重投影误差，在实验中设置 <span class="math inline">\(\mathcal{T}=\{t-5, t\}\)</span> ，对于前 5 帧，这一项不包括在公式（5）中。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f8.PNG" title="f8" width="400" />
+</center>
+<p>  <font color = red><strong>单个 2D 项只考虑 2D 语义检测，可能在边界框的边缘附近包含许多离群点。通过添加 3D 项，可以修剪属于较远背景的路标点。然而，接近 3D 边界的特征，例如在移动车辆附近的地面上，仍然具有属于该簇的高概率，其置信度由运动项进一步细化</strong></font>。 4.4 节将对这三项的进行评价和视觉比较。</p>
+<h4 id="成对势能">3.2.2 成对势能</h4>
+  <strong>成对势能</strong>定义为公式（9），可以看作<strong>是一个噪声敏感的高斯平滑核，以鼓励空间标记的连续性</strong>。其中指数算子内的项是 3D 空间中两个路标 <span class="math inline">\(p_t^i,p_t^j\)</span> 的距离。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f9.PNG" title="f9" width="400" />
+</center>
+<p>  本文使用一个有效的稠密 <strong>CRF 推理方法 [21] 来解决能量最小化问题</strong>。在成功的推理之后，使用 <strong>Kuhn-Munkres 算法将当前的 CRF 聚类结果与之前的聚类分配相匹配</strong>。如果没有为推断的标签找到正确的群集分配，则会创建新的群集。然后，根据 [41] 中介绍的策略更新每个路标的权重 <span class="math inline">\(w_i\)</span>，并在必要时更改其群集分配：<strong>当新分配的群集与路标的上一个群集相同时，将权重 <span class="math inline">\(w_i\)</span> 增加 1，否则权重将减少 1</strong>。当 <span class="math inline">\(w_i\)</span> 减少到0时，将触发集群分配的更改以接受当前分配的集群。</p>
+<h3 id="滑动窗口状态估计">3.3 滑动窗口状态估计</h3>
+<h4 id="双轨帧管理">3.3.1 双轨帧管理</h4>
+  像 ORB-SLAM2 这类基于关键帧的 SLAM 系统根据帧之间的空间距离和帧之间可见特征的数量来选择关键帧。对于<strong>每个簇的轨迹都被纳入状态估计过程</strong>的 ClusterVO，上述关键帧选择策略<strong>不足以捕获相对快速移动的簇</strong>。<br />
+  不同于 ClusterSLAM 中提出的块策略，本文根据一种新颖的<strong>双轨帧管理设计</strong>（图 3）采用了滑动窗口优化方案。系统维护和优化的帧分为两个连续的轨道：<strong>时间轨道 <span class="math inline">\(T_t\)</span> 和空间轨道 <span class="math inline">\(T_s\)</span></strong> 。 <span class="math inline">\(T_t\)</span> 包含最新的输入帧，每当出现新帧时， <span class="math inline">\(T_t\)</span> 中最旧的帧将被移出。如果该帧在空间上距离 <span class="math inline">\(T_s\)</span> 中的第一帧足够远，或者可见的路标数量足够少，则将该帧追加到 <span class="math inline">\(T_s\)</span> 的尾部，否则将丢弃该帧。<br />
+  这种设计的优点。<strong>1)</strong> <strong>时间轨迹中的帧记录了所有最近的观测值</strong>，因此允许足够的观测值来跟踪快速移动的聚类。<strong>2)</strong> <strong>可以更正先前错误聚集的路标</strong>，并可以根据新的分配进行重新优化。<strong>3)</strong> 在空间轨迹中检测到的特征有助于创建<strong>足够的视差</strong>，以进行精确的路标三角化和状态估计。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig3.PNG" title="fig3" width="400" />
+</center>
+<center>
+fig3. 双通道帧管理策略
+</center>
+<h4 id="静态场景和相机位姿估计">3.3.2 静态场景和相机位姿估计</h4>
+  用于优化的能量函数是标准的 BA，并增加了一个边缘化项
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f10.PNG" title="f10" width="550" />
+</center>
+<p>  由于静态场景涉及大量变量，并且仅将这些变量从滑动窗口中删除会导致信息丢失，从而可能产生漂移，因此需要<strong>将某些变量边缘化</strong>，或者将其删除，并在公式（10）中使用边缘化项表示对系统的影响。<strong>仅当从空间轨道 <span class="math inline">\(T_s\)</span> 丢弃帧时才执行边缘化</strong>。为了限制信息矩阵中路标块的稠密填充，如果相应的路标被最新的帧所观察到，则将删除的帧中观察道德结果也删除，或者被边缘化。<strong>这种边缘化策略仅在帧中添加了稠密的 Hessian 块，而不是路标，从而使系统仍然可以实时解决</strong>。<br />
+  在<strong>边缘化项中，<span class="math inline">\(\delta x\)</span> 是相对于边缘化发生时捕获的临界状态 <span class="math inline">\(x^*\)</span> 的状态变化</strong>。对于 H 和 <span class="math inline">\(\beta\)</span> 的计算采用<strong>标准的舒尔补</strong>：<span class="math inline">\(\mathbf{H}=\mathbf{\Lambda}_{a a}-\mathbf{\Lambda}_{a b} \mathbf{\Lambda}_{b b}^{-1} \mathbf{\Lambda}_{b a}, {\beta}=\mathbf{b}_{a}-\mathbf{\Lambda}_{a b} \mathbf{\Lambda}_{b b}^{-1} {b}_{b}\)</span>。其中 <span class="math inline">\(\Lambda \left ( \cdot \right )\)</span> 和 <span class="math inline">\(b \left ( \cdot \right )\)</span> 通过在 <span class="math inline">\(x^*\)</span> 附近线性化提取的系统信息矩阵 <span class="math inline">\(\Lambda\)</span> 和信息向量 <span class="math inline">\(b\)</span> 的组成部分： <span class="math display">\[
+{\Lambda}=\left[\begin{array}{ll}
+{\Lambda}_{a a} &amp; {\Lambda}_{a b} \\
+{\Lambda}_{b a} &amp; {\Lambda}_{b b}
+\end{array}\right], \quad {b}=\left[\begin{array}{l}
+{b}_{a} \\
+{b}_{b}
+\end{array}\right] \qquad(11)
+\]</span></p>
+<h4 id="动态聚类">3.3.3 动态聚类</h4>
+  <strong>利用加速度先验值 [1] 上的白噪声对运动进行建模</strong>，在连续时间 <span class="math inline">\(t,t{}&#39; \in \mathbb{R}\)</span> 内可以写成：
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f12.PNG" title="f12" width="400" />
+</center>
+  定义用于<strong>优化</strong>第 q 个聚类簇的<strong>轨迹</strong>及其对应路标<strong>位置</strong>的能量函数
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/f13_14.PNG" title="f13_14" width="800" />
+</center>
+<p>其中 $$ 是克罗内克积，<span class="math inline">\(\Delta t=t^{+}-t\)</span>，公式（13）是<strong>运动先验和重投影</strong>之和，运动先验是通过查询公式（12）获得的，其直观地<strong>惩罚了速度随时间的变化并平滑了簇的运动轨迹</strong>，否则当簇上的特征少于静态场景，簇的运动轨迹会变得波动。注意：<strong>不同于静态场景的能量项对 <span class="math inline">\(T_s\)</span> 和 <span class="math inline">\(T_t\)</span> 均进行了优化，动态场景只优化了 <span class="math inline">\(T_t\)</span> 。</strong><br />
+  在<strong>优化群集状态期间，相机状态 <span class="math inline">\(x^c_t\)</span> 保持不变</strong>。每个集群的优化过程可以很容易地<strong>并行进行</strong>，因为它们的状态是相互独立的（实际上，对于 2 个集群和 6 个集群，系统速度分别为 8.5Hz 和 7.8Hz）。</p>
+<hr />
+<h2 id="实验">4. 实验</h2>
+<h3 id="数据集和参数设置">4.1 数据集和参数设置</h3>
+<p>  ClusterVO 系统的有效性和普遍适用性主要在两种场景下展示：<strong>带运动物体的室内场景和带运动车辆的自动驾驶</strong>。对于<strong>室内场景</strong>，采用双目相机的 Oxford Mul timotion dataset（OMD）[17] 进行评估。<strong>该数据集是专门为室内同时相机定位和刚体运动估计而设计的</strong>，使用运动捕捉系统恢复了真实的轨迹。评估和比较按以下两个序列进行： swinging_4_unconstrained 和 occlusion_2_unconstrained，因为这些是 [16,18] 在序列研究中报告的仅有的具有 baseline 结果的序列，命名为“<strong>MVO</strong>”。<br />
+  对于<strong>室外自动驾驶</strong>情况，采用具有挑战性的 KITTI 数据集进行验证。由于 odometry 数据集中的大多数序列都具有较低的动态性，并且与其他 SLAM 解决方案（例如 ORB-SLAM）相比，对这些数据的比较很难导致明显的改进，类似于文献 [24]，本文在<strong>从 raw 数据集选择的序列中以及在许多运动车辆的完整 21 个跟踪训练序列</strong>中证明了本文的方法的强大。从数据集提供的 OxTS 包（结合 GNSS 和惯性导航）中获得相机自运动的 Groundtruth。【不适用的 odometry 而是 raw】<br />
+  CRF 权重设为α=5.0，2D 一元能量常数 η=0.95，运动先验的功率谱矩阵Q=0.01I。双轨的最大尺寸设置为 <span class="math inline">\(T_s=5\)</span> 和 <span class="math inline">\(T_t = 15\)</span> 。确定群集是否仍处于活动状态的阈值设置为 <span class="math inline">\(L = T_t\)</span> 。所有的实验都是在一台英特尔酷睿 i7-8700K，32GB RAM 台式机上进行的，并配有 nvidia gtx1080 gpu。</p>
+<h3 id="室内场景评估">4.2 室内场景评估</h3>
+  采用与文献 [18] 相同的评估方案，<strong>计算相机的自运动和移动集群轨迹在整个序列上的最大平移和旋转误差</strong> 。由于本文的方法没有为检测到的簇定义一个标准坐标系，因此需要将恢复的姿态与 groundtruth 轨迹对齐。为此，本文将恢复的姿态与刚性变换 <span class="math inline">\(T_r\)</span> 相乘，使得 <span class="math inline">\(P^q_t T_r\)</span> 与所有 t 的 groundtruth 位姿之差的和最小。这是基于这样一个假设：<strong>利用刚性变换可以将恢复的路标的局部坐标与 groundtruth 位姿的位置配准。</strong> 【就是坐标对齐，世界坐标系、相机坐标系、地面坐标系和运动的物体坐标系】<br />
+  对于语义边界框提取，YOLOv3 被重新训练以检测表示数据集中摆动或旋转的块，名为‘block’的附加类。用于训练的检测框用一种带有<strong>人工注释</strong>的组合方法进行标记，并在来自 S4 和 O2 的剩余帧上使用<strong>中值流跟踪器</strong>。<br />
+  图 4 是与 MOV 基准 [18,16] 比较的减小漂移的比例，<strong>超过一半的轨迹估计结果提高了 25% 以上</strong>，实现了精确的相机位姿估计和簇运动恢复。ClusterVO 的<strong>主要优势</strong>是：<strong>1)</strong> MVO 中的需要在每个输入批（50 帧）中稳定地跟踪特征，这只保留了一小部分的标记，其中噪声的影响变得更为主要，而 <strong>ClusterVO 为每个个体保持一致的标记对低层和高层信息进行聚类和关联，以最大限度地利用历史信息</strong>。<strong>2)</strong> 如果局部窗口中的运动很小，<strong>基于几何的方法将容易误分类动态标志</strong>，降低恢复的姿态结果，而 ClusterVO 利用额外的语义和空间信息来实现更准确和有意义的分类和估计。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig4.PNG" title="fig4" width="500" />
+</center>
+  同时，<strong>鲁棒的关联策略和双轨帧管理设计使得ClusterVO能够在被暂时遮挡的情况下连续跟踪簇的运动</strong>。图 5 展示了 O2 序列的这一特征，在 O2 序列中，该区块被塔遮挡了 10 帧。在遮挡过程中对簇的运动进行预测，最后预测结果与重新检测到的块的语义包围盒相关联。然后重新启动状态估计模块，利用遮挡前后的信息恢复运动。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig5.PNG" title="fig5" width="500" />
+</center>
+  图 6（a）显示了 S4 序列的定性结果，图 6（b）显示了使用 Mynteye 立体相机记录的两个移动瓶子的实际室内实验室场景的另一个结果。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig6.PNG" title="fig6" width="500" />
+</center>
+<h3 id="室外-kitti-数据集评估">4.3 室外 Kitti 数据集评估</h3>
+  与文献 [24] 类似，本文将<strong>定量评估分为自运动比较和 3D 对象检测比较</strong>。本文的结果与 ORB-SLAM2 [28]，DynSLAM [2]，[24] 和 ClusterSLAM [15] 比较，采用 TUM 评估指标：绝对轨迹误差（ATE），旋转和平移相对姿态误差（RPE）的均方根误差（RMSE）。<br />
+  如表 2 所示，<strong>在绝大多数序列中 ATE 取得了最佳的效果</strong>。<strong>ORBSLAM2</strong> 主要针对静态场景，在具有挑战的场景容易失败；<strong>DynSLAM</strong> 保持静态场景和动态对象的密集建图，但底层的稀疏场景流估计是基于帧到帧的视觉里程计 libviso [11]，这将固有地导致长距离行进时的显着漂移；<strong>Li etal [24]</strong> 批量多体 SfM 方法导致一个高度非线性的因子图优化问题，其解决方案并不简单。<strong>ClusterSLAM</strong> 需要关联地标，并且即使状态通过完全优化来求解，不正确的特征跟踪前端也会影响定位性能。<strong>ClusterVO</strong> 由于融合了多种信息来源和强大的滑动窗口优化功能，与所有以前的方法相比，可获得甚至更好的结果。<br />
+
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/tab2.PNG" title="tab2" width="700" />
+</center>
+  在 KITTI 数据集中的 <strong>3D 目标检测</strong>基准中评估了群集轨迹。在<strong>鸟瞰图（APbv）和 3D 视图（AP3D）中都计算“car”类别的平均精度（AP）</strong>。本文检测到的3D盒子中心为 <span class="math inline">\(c_q\)</span> （公式 7 中），尺寸被视为平均汽车尺寸。box 的方向被初始化为垂直于相机，然后随着时间的推移进行跟踪。如果与相关的 groundtruth 检测的 IoU 得分大于0.25，则检测为真阳性。根据 2D 重投影边界框的高度和遮挡/截断级别，所有 groundtruth 的 3D 检测都分为三类（轻松，中等和困难）。将本文方法的性能与来自 Chen 等人 [7] 的最新 3D 目标检测解决方案和 DynSLAM[2] 进行了比较。<strong>在相机坐标系下进行评估</strong>，消除了自运动估计中的误差。<br />
+  Chen 等人的方法和 DynSLAM和 的相似之处在于它们都执行稠密的立体匹配（例如 [47]）来预计算 3D 结构。<strong>DynSLAM 使用 2D 探测裁剪深度图以生成空间探测</strong>；Chen 等人在<strong>三维空间中直接生成并评分目标提案</strong>，在自主驾驶场景中包含许多场景先验，包括地平面和车辆尺寸先验。比较表 3 中的结果，证明这些先验是至关重要的：DynSLAM 在“中度”和“困难”序列中包含遥远的汽车和小型 2D 检测边界框类别均急剧下降。<br />
+  Cluster VO 被设计为通用的，<strong>当原理相机的路标在没有目标大小先验的情况下双目三角化的自然不确定性会变大</strong>。此外，如果聚类的运动很小，我们也不会检测到它的标准方向（即汽车前部），因此方向也可能不精确。这就解释了我们的检测方法和像 [7] 这样的专门的系统在困难示例时的差距。<strong>与 DynSLAM 相比，平均精度有所提高，因为即使 2D 检测网络未发现某些目标，ClusterVO 仍能始终如一地跟踪运动对象并预测其运动</strong>。另外，通过比较表 3 中的时间成本，我们强调了 ClusterVO 系统的高效率，而 Chen 等人的工作每个立体输入对需要 1.2 秒。 KITTI 原始数据集的一些定性结果如图 7 所示。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/tab3.PNG" title="tab3" width="400" />
+</center>
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig7.PNG" title="fig7" width="500" />
+</center>
+<h3 id="消融研究">4.4 消融研究</h3>
+  <strong>使用 SUNG[37] 渲染而成的运动数据集测试异构 CRF 公式（公式 5）中每一项的重要性</strong>。按照与 [15] 中相同的立体相机参数，我们生成了包含 4 个移动椅子和球的室内序列，并在表 4 中比较了相机自运动和群集运动的精度。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/tab4.PNG" title="tab4" width="400" />
+</center>
+  通过逐渐向公式（5）中添加不同的项，我们在估计簇运动方面的性能得到了提高，特别是在绝对轨迹误差方面（与仅用二维 CRF 相比减少了 45.8%），而相机自运动的精度没有受到影响。这是因为<strong>结合了几何和语义线索的移动对象聚类更加精确</strong>。值得注意的是，我们的结果甚至可以与最近的 ClusterSLAM [15] 相比较，ClusterSLAM [15] 是一种具有全局捆束调整优化的后端方法：这表明，<strong>将语义信息纳入运动检测问题有助于有效地规范化解决该问题并获得更一致的轨迹估计。</strong>。图 8 通过仅基于一元项 <span class="math inline">\(\psi _{u}\)</span> 计算分类结果来进一步可视化该效果。<strong>通过结合更多信息成功地过滤出一些错误分类的路标</strong>。
+<center>
+<img src="https://wuyanmin.coding.net/p/link/d/link/git/raw/master/pic/paper/2020/20200506/fig8.PNG" title="fig8" width="500" />
+</center>
+<hr />
+<h2 id="总结">5. 总结</h2>
+<p>  本文提出了一种通用的<strong>同时进行运动刚体聚类和运动估计的快速双目视觉里程计</strong>–ClusterVO。在相机自运动和动态物体姿态估计方面与最先进的解决方案进行比较的结果表明了该系统的有效性。在未来，一个方向是<strong>将特定的场景先验作为可插拔组件，以提高特定应用(如自动驾驶)上的 ClusterVO 性能</strong>；另一个方向是融合来自多个传感器的信息，以进一步提高定位精度。</p>
+<hr />
+<h2 id="参考文献">参考文献</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+<strong>[15]</strong> Jiahui Huang, Sheng Yang, Zishuo Zhao, Yu-Kun Lai, and Shi-Min Hu. <a href="http://openaccess.thecvf.com/content_ICCV_2019/papers/Huang_ClusterSLAM_A_SLAM_Backend_for_Simultaneous_Rigid_Body_Clustering_and_ICCV_2019_paper.pdf"><strong>ClusterSLAM: A slam backend for simultaneous rigid body clustering and motion estimation</strong></a>. ICCV <strong>2019</strong>.<ul>
+<li>本文前期工作，主要关注后端优化</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<strong>[17]</strong> Judd K M, Gammell J D. <a href="https://arxiv.org/pdf/1901.01445"><strong>The Oxford multimotion dataset: Multiple SE (3) motions with ground truth</strong></a>[J]. IEEE Robotics and Automation Letters, <strong>2019</strong>, 4(2): 800-807.<ul>
+<li>牛津多运动体数据集</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<strong>[18]</strong> Judd K M, Gammell J D, Newman P. <a href="https://arxiv.org/pdf/1808.00274"><strong>Multimotion visual odometry (mvo): Simultaneous estimation of camera and third-party motions</strong></a>[C]//2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS). IEEE, <strong>2018</strong>: 3949-3956.<ul>
+<li>对比文献 MOV 基准</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<strong>[21]</strong> Krähenbühl P, Koltun V. <a href="http://papers.nips.cc/paper/4296-efficient-inference-in-fully-connected-crfs-with-gaussian-edge-potentials.pdf"><strong>Efficient inference in fully connected crfs with gaussian edge potentials</strong></a>[C]//Advances in neural information processing systems. <strong>2011</strong>: 109-117.<ul>
+<li>CRF 推理</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<strong>[24]</strong> Li P, Qin T. <a href="http://openaccess.thecvf.com/content_ECCV_2018/papers/Peiliang_LI_Stereo_Vision-based_Semantic_ECCV_2018_paper.pdf"><strong>Stereo vision-based semantic 3d object and ego-motion tracking for autonomous driving</strong></a>[C]//Proceedings of the European Conference on Computer Vision (ECCV). <strong>2018</strong>: 646-661.<ul>
+<li>对比文献，自动驾驶场景运动目标跟踪</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<strong>[37]</strong> Song S, Yu F, Zeng A, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2017/papers/Song_Semantic_Scene_Completion_CVPR_2017_paper.pdf"><strong>Semantic scene completion from a single depth image</strong></a>[C]//Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition. <strong>2017</strong>: 1746-1754.<ul>
+<li>SUNG 渲染数据集</li>
+</ul></li>
+<li><input type="checkbox" disabled="" />
+<strong>[44]</strong> Wang C C, Thorpe C, Thrun S, et al. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.70.1229&amp;rep=rep1&amp;type=pdf"><strong>Simultaneous localization, mapping and moving object tracking</strong></a>[J]. The International Journal of Robotics Research, <strong>2007</strong>, 26(9): 889-916.<ul>
+<li>同时估计相机位姿和运动物体的开创性工作</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="q问题">【Q】问题</h2>
+<hr />
+<h2 id="t思考">【T】思考</h2>
+<hr />
+<blockquote>
+<p>wuyanminmax@gmail.com<br />
+2020.05.15</p>
+</blockquote>
+    </div>
+
+    
+<footer class="post-footer">
+      
+      <nav class="post-nav">
+        
+        <a class="next" href="/2020-04-26-slam-lab/">
+            <span class="next-text nav-default"> ⭐ 总结 | SLAM 领域国内外优秀实验室汇总</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="wuyanminmax@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/wuxiaolang" class="iconfont icon-github" title="github"></a>
+      <a href="https://www.zhihu.com/people/wuyanmin2018" class="iconfont icon-zhihu" title="zhihu"></a>
+  <a href="https://wym.netlify.app/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  
+  
+
+  
+  <div class="busuanzi-footer">
+    
+      
+    
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">wu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-160646347-2', 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?352520a6e7c1df580f6de1f879049608";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script id="baidu_push">
+  (function(){
+    if (window.location.hostname === 'localhost') return;
+    var bp = document.createElement('script'); bp.async = true;
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+  })();
+</script>
+
+
+
+
+</body>
+</html>

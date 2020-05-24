@@ -7,10 +7,24 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>wu</copyright>
-    <lastBuildDate>Sun, 09 Jun 2019 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 05 May 2020 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="https://wym.netlify.app/categories/object-slam/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title> 📜 论文阅读 | ClusterVO：对移动实例进行聚类并估算自身和周围环境的视觉里程计</title>
+      <link>https://wym.netlify.app/2020-05-05-cluster-vo/</link>
+      <pubDate>Tue, 05 May 2020 00:00:00 +0800</pubDate>
+      
+      <guid>https://wym.netlify.app/2020-05-05-cluster-vo/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;ClusterVO：对移动实例进行聚类并估计自身和周围环境的视觉里程计&lt;/strong&gt;&lt;br /&gt;
+Huang J, Yang S, Mu T J, et al. &lt;a href=&#34;https://arxiv.org/pdf/2003.12980&#34;&gt;&lt;strong&gt;ClusterVO: Clustering Moving Instances and Estimating Visual Odometry for Self and Surroundings&lt;/strong&gt;&lt;/a&gt;[J]. arXiv preprint arXiv:2003.12980, &lt;strong&gt;2020&lt;/strong&gt;. （CVPR 2020）&lt;br /&gt;
+清华大学胡事民教授；&lt;a href=&#34;https://www.youtube.com/watch?v=paK-WCQpX-Y&amp;amp;feature=youtu.be&#34;&gt;演示视频&lt;/a&gt;&lt;br /&gt;
+前期研究：Huang J, Yang S, Zhao Z, et al. &lt;a href=&#34;http://openaccess.thecvf.com/content_ICCV_2019/papers/Huang_ClusterSLAM_A_SLAM_Backend_for_Simultaneous_Rigid_Body_Clustering_and_ICCV_2019_paper.pdf&#34;&gt;&lt;strong&gt;ClusterSLAM: A SLAM Backend for Simultaneous Rigid Body Clustering and Motion Estimation&lt;/strong&gt;&lt;/a&gt;[C]//Proceedings of the IEEE International Conference on Computer Vision. &lt;strong&gt;2019&lt;/strong&gt;: 5875-5884.&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
     
     <item>
       <title> 📜 论文阅读 | 将基于线的特定类别物体模型集成到单目 SLAM 中</title>
@@ -47,7 +61,7 @@ Frost D, Prisacariu V, Murray D. &lt;a href=&#34;https://ieeexplore.ieee.org/abs
       <pubDate>Fri, 22 Feb 2019 00:00:00 +0800</pubDate>
       
       <guid>https://wym.netlify.app/2019-02-22-cubeslam/</guid>
-      <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 0. 函数 0.1. 函数调用 main_obj.cpp 文件中 detect_cuboid_obj.detect_cuboid(); 开始进行物体立方体结构检测； detect_cuboid_obj 是立方体检测类（定义在 detect_3d_cuboid.h 中） detect_3d_cuboid 的一个对象； 1 detect_cuboid_obj.detect_cuboid(raw_rgb_img,transToWolrd,raw_2d_objs,all_lines_raw,</description>
+      <description>注：🌐 Cube SLAM 系列论文，代码注释、总结汇总 原始代码：https://github.com/shichaoy/cube_slam 个人注释：http</description>
     </item>
     
     <item>
@@ -65,6 +79,15 @@ Nicholson L, Milford M, Sünderhauf N. &lt;a href=&#34;https://ieeexplore.ieee.o
 二作：&lt;strong&gt;Michael Milford&lt;/strong&gt;（Rat SLAM 的提出者）  &lt;a href=&#34;https://scholar.google.com/citations?user=TDSmCKgAAAAJ&amp;amp;hl=zh-CN&amp;amp;oi=sra&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;
 三作：&lt;strong&gt;Niko Sünderhauf&lt;/strong&gt; (Suenderhauf)（感觉这个更大佬）  &lt;a href=&#34;https://scholar.google.com/citations?user=WnKjfFEAAAAJ&amp;amp;hl=zh-CN&#34;&gt;&lt;strong&gt;谷歌学术&lt;/strong&gt;&lt;/a&gt;   &lt;a href=&#34;https://nikosuenderhauf.github.io/publications/&#34;&gt;&lt;strong&gt;个人主页&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title> 😜 Cube SLAM 代码注释</title>
+      <link>https://wym.netlify.app/2019-01-17-cubeslam-code/</link>
+      <pubDate>Thu, 17 Jan 2019 00:00:00 +0800</pubDate>
+      
+      <guid>https://wym.netlify.app/2019-01-17-cubeslam-code/</guid>
+      <description>原始代码：https://github.com/shichaoy/cube_slam 个人注释：https://github.com/wuxi</description>
     </item>
     
     <item>
